@@ -18,6 +18,7 @@ VentanaJuego::VentanaJuego(int screen_width, int screen_height, int tiles_x, int
 	if (init()){
 		this->imagen = this->loadTexture("image.png");
 	}
+
 	// Dimensiones de la imagen a cargar
 	this->escala_pixel_tile = 10;
 
