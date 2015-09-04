@@ -1,16 +1,8 @@
-//============================================================================
-// Name        : TP.cpp
-// Author      : P.Federico
-// Version     :
-// Copyright   : 
-// Description : Hello World in C++, Ansi-style
-//============================================================================
-
 #include <iostream>
 #include <SDL2/SDL.h>
 #include "VentanaJuego.h"
 using namespace std;
-
+//PROBANDOOOOOOOOOOOOOOOOOO
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
 const int TILES_X = 20;
