@@ -18,6 +18,12 @@ const int TILES_Y = 20;
 int main() {
 	VentanaJuego *vent_juego = new VentanaJuego(SCREEN_WIDTH,SCREEN_HEIGHT,TILES_X,TILES_Y);
 	vent_juego->dibujarSuperficie();
+	SDL_Event evento;
+	while(true)	{
+	  SDL_WaitEvent(&evento);
+	  if(evento.type == SDL_QUIT)
+	    break;
+	}
 	delete vent_juego;
 	return 0;
 }

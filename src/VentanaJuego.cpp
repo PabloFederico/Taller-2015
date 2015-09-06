@@ -6,6 +6,7 @@
  */
 
 #include "VentanaJuego.h"
+#include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <math.h>
 
@@ -20,7 +21,7 @@ VentanaJuego::VentanaJuego(int screen_width, int screen_height, int tiles_x, int
 	}
 
 	// Dimensiones de la imagen a cargar
-	this->escala_pixel_tile = 10;
+	this->escala_pixel_tile = 30;
 
 	// El (0,0) relativo del mapa respecto a la ventana principal
 	this->cero_x = floor(this->SCREEN_WIDTH / 2) - this->escala_pixel_tile;
@@ -85,7 +86,8 @@ void VentanaJuego::dibujarSuperficie(){
 
 		for(int i = 0; i < this->TILES_X; i++){
 			SDL_RenderCopy(this->renderer,this->imagen,NULL,&posicion);
-			SDL_RenderPresent(this->renderer);
+			//Este renderPresent se puede sacar
+			//SDL_RenderPresent(this->renderer);
 
 			posicion.x = posicion.x + this->escala_pixel_tile;
 			posicion.y = posicion.y + this->escala_pixel_tile;
@@ -100,7 +102,6 @@ void VentanaJuego::dibujarSuperficie(){
 	SDL_RenderCopy(this->renderer,player,NULL,&pos_player);
 
 	SDL_RenderPresent(this->renderer);
-	SDL_Delay(5000);
 }
 
 SDL_Rect VentanaJuego::posicionRelativa(int x, int y){
