@@ -9,6 +9,7 @@
 #define JUEGO_H_
 #include "Entidad.h"
 #include "Escenario.h"
+#include <map>
 
 class Juego {
 private:
