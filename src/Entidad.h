@@ -7,27 +7,30 @@
 
 #ifndef ENTIDAD_H_
 #define ENTIDAD_H_
-
-#include <string>
 using namespace std;
+#include <string>
 
+enum TipoEntidad  { TIERRA , AGUA , ARBOL , CASTILLO, SOLDADO };
 
 class Entidad {
+private:
+	TipoEntidad tipo;
+	string path;
 
-	private:
-		string nombre;
-		string imagen_path;
-		float fps;
-		float delay;
-		int ancho_base;
-		int alto_base;
-		float pixel_ref_x;
-		float pixel_ref_y;
+public:
+	Entidad(TipoEntidad tipo);
 
+	/* Devuelve el path de la imagen de la entidad*/
+	std::string getPath();
 
-	public:
-		Entidad();
-		virtual ~Entidad();
+	/* Devuelve el tipo de entidad*/
+	TipoEntidad getTipo();
+
+	/* Setea el path de la imagen de la entidad */
+	void setPath(std::string path);
+
+	virtual ~Entidad();
 };
 
 #endif /* ENTIDAD_H_ */
+
