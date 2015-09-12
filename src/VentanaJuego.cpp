@@ -181,26 +181,6 @@ void VentanaJuego::dibujar(){
 
 	SDL_RenderCopy(this->renderer,this->imagenPlayer,NULL,&posicionPlayer);
 
-
-	// Esto debería dar el efecto de scrolling /
-	SDL_Rect clip_rec;
-	clip_rec.x = this->posicionPlayer.x - 40;
-	clip_rec.y = this->posicionPlayer.y - 40;
-	clip_rec.w = 100;
-	clip_rec.h = 100;
-
-	//SDL_RenderSetClipRect(this->renderer,&clip_rec);
-
-	SDL_Texture *texture = this->cargarImagen("e.png");
-	//SDL_RenderCopy(this->renderer,texture,NULL,&clip_rec);
-	SDL_Rect po;
-	po.x = 100;
-	po.y = 100;
-	po.w = 200;
-	po.h = 200;
-	SDL_RenderCopyEx(this->renderer,texture,&po,&clip_rec,0.0,NULL,SDL_FLIP_NONE);
-	//void render( int x, int y, SDL_Rect* clip = NULL, double angle = 0.0, SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE );
-
 	SDL_RenderPresent(this->renderer);
 
 
