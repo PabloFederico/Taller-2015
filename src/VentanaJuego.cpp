@@ -7,7 +7,6 @@
 
 #include "VentanaJuego.h"
 #include <SDL2/SDL_image.h>
-#include <math.h>
 
 VentanaJuego::VentanaJuego(Juego *juego){
 	std::pair<int,int> dimensionVentana = juego->dimensionVentana();
@@ -19,6 +18,15 @@ VentanaJuego::VentanaJuego(Juego *juego){
 	this->TILES_Y = this->escenario->getDimension().second;
 
 	if (init()){
+		/* Dimensiones de la imagen a cargar */
+		this->escala_pixel_tile_x = 20;
+		this->escala_pixel_tile_y = 10;
+
+		/* El (0,0) relativo del mapa respecto a la ventana principal */
+		/* la función "floor" es para que quede un numero entero */
+		this->cero_x = (this->SCREEN_WIDTH / 2) - this->escala_pixel_tile_x;
+		this->cero_y = (this->SCREEN_HEIGHT - this->TILES_Y) / (2 * this->escala_pixel_tile_y) - this->escala_pixel_tile_y;
+
 		this->relieveDefault = this->cargarImagen("pasto.png");
 
 		/* map donde se almacenan las imagenes que se van a usar */
@@ -26,24 +34,22 @@ VentanaJuego::VentanaJuego(Juego *juego){
 
 		this->cargarImagenes(juego->getEntidades());
 
-		//this->cargarPosicionesEntidades(juego->mapa->getPosEntidades());
+		this->vectorPosiciones = new vector<DataPos>();
+
+		this->cargarPosicionesEntidades(this->escenario->getPosEntidades());
 
 		/* Configurar de manera que se cargue el protagonista
 		 * con su respectiva posicion*/
 		std::map<TipoEntidad,SDL_Texture*>::iterator p = this->mapImagenes->find(juego->getProtagonista()->getTipo());
 		this->imagenPlayer = (*p).second;
+		this->posicionPlayer.y -= 5;
+		this->posicionPlayer.w = 30;
+		this->posicionPlayer.h = 20;
 
 		/* Borramos la referencia de la imagen del protagonistia del map de imagenes
 		 * y guardamos una referencia en imagenPlayer (en forma directa) */
 		this->mapImagenes->erase(juego->getProtagonista()->getTipo());
 	}
-	/* Dimensiones de la imagen a cargar */
-	this->escala_pixel_tile = 20;
-
-	/* El (0,0) relativo del mapa respecto a la ventana principal */
-	/* la función "floor" es para que quede un numero entero */
-	this->cero_x = floor(this->SCREEN_WIDTH / 2) - this->escala_pixel_tile;
-	this->cero_y = (this->SCREEN_HEIGHT - this->TILES_Y) / (2 * this->escala_pixel_tile) - this->escala_pixel_tile;
 }
 
 /********************************************************************************/
@@ -76,7 +82,7 @@ SDL_Texture* VentanaJuego::cargarImagen(string path){
 }
 
 /********************************************************************************/
-void VentanaJuego::cargarImagenes(std::map<TipoEntidad,Entidad*>* entidades){
+void VentanaJuego::cargarImagenes(std::map<TipoEntidad,Entidad*> *entidades){
 	std::map<TipoEntidad,Entidad*>::iterator p = entidades->begin();
 	while (p != entidades->end()){
 		TipoEntidad tipo = (*p).first;
@@ -84,6 +90,39 @@ void VentanaJuego::cargarImagenes(std::map<TipoEntidad,Entidad*>* entidades){
 		p++;
 		SDL_Texture *imagen = this->cargarImagen(ente->getPath());
 		this->mapImagenes->insert(std::make_pair(tipo,imagen));
+	}
+}
+
+/********************************************************************************/
+void VentanaJuego::cargarPosicionesEntidades(std::map<std::pair<int,int>, std::vector<Entidad*>* > *posEntidades){
+	std::map<std::pair<int,int>, std::vector<Entidad*>* >::iterator p = posEntidades->begin();
+	while (p != posEntidades->end()){
+
+		vector<Entidad*> *vectorEntidades = (*p).second;
+		int tile_x = (*p).first.first;
+		int tile_y = (*p).first.second;
+
+	    /* En una posición puede haber más de una entidad */
+	    for (unsigned i = 0; i < vectorEntidades->size(); i++){
+	    	Entidad *entidad = (*vectorEntidades)[i];
+
+	    	std::pair<int,int> coordenada = this->posicionRelativa(tile_x,tile_y);
+	    	SDL_Rect posicion;
+	    	posicion.x = coordenada.first;
+	    	posicion.y = coordenada.second;
+	    	posicion.w = 2 * this->escala_pixel_tile_x;
+	    	posicion.h = 2 * this->escala_pixel_tile_y;
+
+	    	DataPos data(posicion,entidad->getTipo());
+
+	    	if (entidad->getTipo() == SOLDADO) {
+	    		this->posicionPlayer = data.posicion;
+	    	}
+	    	else{
+	    		this->vectorPosiciones->push_back(data);
+	    	}
+	    }
+	    p++;
 	}
 }
 
@@ -109,10 +148,11 @@ void VentanaJuego::close(){
 void VentanaJuego::dibujar(){
 	SDL_RenderClear(this->renderer);
 	SDL_Rect posicion;
+
 	int cero_relativo_x = this->cero_x;
 	int cero_relativo_y = this->cero_y;
-	posicion.w = 40;//this->escala_pixel_tile;
-	posicion.h = 40; //this->escala_pixel_tile;
+	posicion.w = 2 * this->escala_pixel_tile_x;
+	posicion.h = 2 * this->escala_pixel_tile_y;
 
 	// Se dibuja la superficie
 	for(int j = 0; j < this->TILES_Y; j++){
@@ -123,57 +163,69 @@ void VentanaJuego::dibujar(){
 		for(int i = 0; i < this->TILES_X; i++){
 			SDL_RenderCopy(this->renderer,this->relieveDefault,NULL,&posicion);
 
-			posicion.x = posicion.x + this->escala_pixel_tile;
-			posicion.y = posicion.y + this->escala_pixel_tile;
+			posicion.x = posicion.x + this->escala_pixel_tile_x;
+			posicion.y = posicion.y + this->escala_pixel_tile_y;
 		}
-		cero_relativo_x = cero_relativo_x - this->escala_pixel_tile;
-		cero_relativo_y = cero_relativo_y + this->escala_pixel_tile;
+		cero_relativo_x = cero_relativo_x - this->escala_pixel_tile_x;
+		cero_relativo_y = cero_relativo_y + this->escala_pixel_tile_y;
 	}
 
-	// Dibujamos las entidades
-	std::map<std::pair<int,int>,std::vector<Entidad*>*>::iterator p = this->escenario->getPosEntidades()->begin();
-	SDL_Rect posEntidad;
-
-	/* Recorremos el map de posiciones de entidades del escenario*/
-	while (p != this->escenario->getPosEntidades()->end()){
-		posEntidad = this->posicionRelativa((*p).first.first, (*p).first.second);
-		posEntidad.w = 40;
-	    posEntidad.h = 40;
-
-	    vector<Entidad*> *vectorEntidades = (*p).second;
-
-	    /* En una posición puede haber más de una entidad */
-	    for (int i = 0; i < vectorEntidades->size(); i++){
-	    	Entidad *entidad = (*vectorEntidades)[i];
-			std::map<TipoEntidad,SDL_Texture*>::iterator itImg = this->mapImagenes->find(entidad->getTipo());
-			SDL_Texture *imagenEntidad = itImg->second;
-			SDL_RenderCopy(this->renderer,imagenEntidad,NULL,&posEntidad);
-	    }
-		p++;
+	/* Dibujamos las entidades que no se mueven */
+	for (unsigned i = 0; i < this->vectorPosiciones->size(); i++){
+		DataPos data = (*vectorPosiciones)[i];
+		SDL_Rect pos = data.posicion;
+		std::map<TipoEntidad,SDL_Texture*>::iterator itImg = this->mapImagenes->find(data.tipo);
+		SDL_Texture *imagenEntidad = itImg->second;
+		SDL_RenderCopy(this->renderer,imagenEntidad,NULL,&pos);
 	}
 
-	// Se dibuja al jugador
-	this->posicionPlayer = this->posicionRelativa(5,0);
-	this->posicionPlayer.w = 30;
-	this->posicionPlayer.h = 30;
-	SDL_RenderCopy(this->renderer,this->imagenPlayer,NULL,&(this->posicionPlayer));
+	SDL_RenderCopy(this->renderer,this->imagenPlayer,NULL,&posicionPlayer);
+
+
+	// Esto debería dar el efecto de scrolling /
+	SDL_Rect clip_rec;
+	clip_rec.x = this->posicionPlayer.x - 40;
+	clip_rec.y = this->posicionPlayer.y - 40;
+	clip_rec.w = 100;
+	clip_rec.h = 100;
+
+	//SDL_RenderSetClipRect(this->renderer,&clip_rec);
+
+	SDL_Texture *texture = this->cargarImagen("e.png");
+	//SDL_RenderCopy(this->renderer,texture,NULL,&clip_rec);
+	SDL_Rect po;
+	po.x = 100;
+	po.y = 100;
+	po.w = 200;
+	po.h = 200;
+	SDL_RenderCopyEx(this->renderer,texture,&po,&clip_rec,0.0,NULL,SDL_FLIP_NONE);
+	//void render( int x, int y, SDL_Rect* clip = NULL, double angle = 0.0, SDL_Point* center = NULL, SDL_RendererFlip flip = SDL_FLIP_NONE );
 
 	SDL_RenderPresent(this->renderer);
-	SDL_Delay(5000);
+
+
+	SDL_Event event;
+	bool run = true;
+	while (run){
+		while (SDL_PollEvent(&event)){
+			if (event.type == SDL_QUIT) run = false;
+		}
+	}
 }
 
 /********************************************************************************/
-SDL_Rect VentanaJuego::posicionRelativa(int x, int y){
-	SDL_Rect posicion;
+std::pair<int,int> VentanaJuego::posicionRelativa(int x, int y){
+	int x_nuevo, y_nuevo;
+
 	//Posicionamiento en el eje y relativo
-	posicion.x = this->cero_x - y * this->escala_pixel_tile;
-	posicion.y = this->cero_y + y * this->escala_pixel_tile;
+	x_nuevo = this->cero_x - y * this->escala_pixel_tile_x;
+	y_nuevo = this->cero_y + y * this->escala_pixel_tile_y;
 
 	//posicionamiento en el eje x relativo
-	posicion.x = posicion.x + x * this->escala_pixel_tile;
-	posicion.y = posicion.y + x * this->escala_pixel_tile;
+	x_nuevo = x_nuevo + x * this->escala_pixel_tile_x;
+	y_nuevo = y_nuevo + x * this->escala_pixel_tile_y;
 
-	return posicion;
+	return std::make_pair(x_nuevo,y_nuevo);
 }
 
 /********************************************************************************/
@@ -192,6 +244,9 @@ VentanaJuego::~VentanaJuego() {
 
 	}
 	delete this->mapImagenes;
+
+	delete this->vectorPosiciones;
+
 	this->close();
 }
 

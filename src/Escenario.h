@@ -16,7 +16,7 @@ private:
 	int size_x;
 	int size_y;
 	/* En una posicion puede haber muchas entidades*/
-	std::map<std::pair<int,int>, std::vector<Entidad*>* > *mapEntidades;
+	std::map<std::pair<int,int>, std::vector<Entidad*>* > *mapPosicionesEntidades;
 
 public:
 	Escenario(int ancho, int largo);

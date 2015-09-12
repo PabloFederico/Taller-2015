@@ -11,7 +11,7 @@
 Escenario::Escenario(int ancho, int largo){
 	this->size_x = ancho;
 	this->size_y = largo;
-	this->mapEntidades = new std::map<std::pair<int,int>, std::vector<Entidad*>* >();
+	this->mapPosicionesEntidades = new std::map<std::pair<int,int>, std::vector<Entidad*>* >();
 }
 
 std::pair<int,int> Escenario::getDimension(){
@@ -19,26 +19,26 @@ std::pair<int,int> Escenario::getDimension(){
 }
 
 std::map<std::pair<int,int>, std::vector<Entidad*>* >* Escenario::getPosEntidades(){
-	return this->mapEntidades;
+	return this->mapPosicionesEntidades;
 }
 
 void Escenario::agregarEntidad(std::pair<int,int> pos, Entidad* entidad){
-	std::map<std::pair<int,int>,std::vector<Entidad*>* >::iterator p = this->mapEntidades->find(pos);
-	if (p == this->mapEntidades->end()){
+	std::map<std::pair<int,int>,std::vector<Entidad*>* >::iterator p = this->mapPosicionesEntidades->find(pos);
+	if (p == this->mapPosicionesEntidades->end()){
 		std::vector<Entidad*> *entidades = new std::vector<Entidad*>();
 		entidades->push_back(entidad);
-		this->mapEntidades->insert(std::make_pair(pos,entidades));
+		this->mapPosicionesEntidades->insert(std::make_pair(pos,entidades));
 	}
 	else (*p).second->push_back(entidad);
 }
 
 Escenario::~Escenario() {
-	std::map<std::pair<int,int>,std::vector<Entidad*>* >::iterator p = this->mapEntidades->begin();
-	while (p != this->mapEntidades->end()){
+	std::map<std::pair<int,int>,std::vector<Entidad*>* >::iterator p = this->mapPosicionesEntidades->begin();
+	while (p != this->mapPosicionesEntidades->end()){
 		std::vector<Entidad*> *vectorEntidades = (*p).second;
 		p++;
 		delete vectorEntidades;
 	}
-	delete this->mapEntidades;
+	delete this->mapPosicionesEntidades;
 }
 
