@@ -14,7 +14,7 @@
 class Juego {
 private:
 	int screenWidth;
-	int screenHeigth;
+	int screenHeight;
 	std::map<TipoEntidad,Entidad*> *mapEntidades;
 	Escenario *escenario;
 	Entidad *protagonista;

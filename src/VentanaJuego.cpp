@@ -27,7 +27,9 @@ VentanaJuego::VentanaJuego(Juego *juego){
 		this->cero_x = (this->SCREEN_WIDTH / 2) - this->escala_pixel_tile_x;
 		this->cero_y = (this->SCREEN_HEIGHT - this->TILES_Y) / (2 * this->escala_pixel_tile_y) - this->escala_pixel_tile_y;
 
-		this->relieveDefault = this->cargarImagen("pasto.png");
+		this->calculador = new Calculador(this->cero_x, this->cero_y, this->escala_pixel_tile_x, this->escala_pixel_tile_y);
+
+		this->relieveDefault = this->loader.cargarImagen(this->renderer,"pasto.png");
 
 		/* map donde se almacenan las imagenes que se van a usar */
 		this->mapImagenes = new std::map<TipoEntidad,SDL_Texture*>();
@@ -71,24 +73,13 @@ bool VentanaJuego::init(){
 }
 
 /********************************************************************************/
-SDL_Texture* VentanaJuego::cargarImagen(string path){
-	SDL_Texture* texture = NULL;
-	SDL_Surface *surface = IMG_Load(path.c_str());
-	if (surface != NULL){
-		texture = SDL_CreateTextureFromSurface(this->renderer, surface);
-		SDL_FreeSurface(surface);
-	}
-	return texture;
-}
-
-/********************************************************************************/
 void VentanaJuego::cargarImagenes(std::map<TipoEntidad,Entidad*> *entidades){
 	std::map<TipoEntidad,Entidad*>::iterator p = entidades->begin();
 	while (p != entidades->end()){
 		TipoEntidad tipo = (*p).first;
 		Entidad *ente = (*p).second;
 		p++;
-		SDL_Texture *imagen = this->cargarImagen(ente->getPath());
+		SDL_Texture *imagen = this->loader.cargarImagen(this->renderer,ente->getPath());
 		this->mapImagenes->insert(std::make_pair(tipo,imagen));
 	}
 }
@@ -106,7 +97,7 @@ void VentanaJuego::cargarPosicionesEntidades(std::map<std::pair<int,int>, std::v
 	    for (unsigned i = 0; i < vectorEntidades->size(); i++){
 	    	Entidad *entidad = (*vectorEntidades)[i];
 
-	    	std::pair<int,int> coordenada = this->posicionRelativa(tile_x,tile_y);
+	    	std::pair<int,int> coordenada = this->calculador->calcularPosicionRelativa(tile_x,tile_y);//this->posicionRelativa(tile_x,tile_y);
 	    	SDL_Rect posicion;
 	    	posicion.x = coordenada.first;
 	    	posicion.y = coordenada.second;
@@ -145,7 +136,7 @@ void VentanaJuego::close(){
 }
 
 /********************************************************************************/
-void VentanaJuego::dibujar(){
+void VentanaJuego::render(){
 	SDL_RenderClear(this->renderer);
 	SDL_Rect posicion;
 
@@ -154,7 +145,7 @@ void VentanaJuego::dibujar(){
 	posicion.w = 2 * this->escala_pixel_tile_x;
 	posicion.h = 2 * this->escala_pixel_tile_y;
 
-	// Se dibuja la superficie
+	/* Dibujamos el relieve por Default */
 	for(int j = 0; j < this->TILES_Y; j++){
 
 		posicion.x = cero_relativo_x;
@@ -179,24 +170,10 @@ void VentanaJuego::dibujar(){
 		SDL_RenderCopy(this->renderer,imagenEntidad,NULL,&pos);
 	}
 
+	/* Dibujamos al player */
 	SDL_RenderCopy(this->renderer,this->imagenPlayer,NULL,&posicionPlayer);
 
 	SDL_Delay(15);
-}
-
-/********************************************************************************/
-std::pair<int,int> VentanaJuego::posicionRelativa(int x, int y){
-	int x_nuevo, y_nuevo;
-
-	//Posicionamiento en el eje y relativo
-	x_nuevo = this->cero_x - y * this->escala_pixel_tile_x;
-	y_nuevo = this->cero_y + y * this->escala_pixel_tile_y;
-
-	//posicionamiento en el eje x relativo
-	x_nuevo = x_nuevo + x * this->escala_pixel_tile_x;
-	y_nuevo = y_nuevo + x * this->escala_pixel_tile_y;
-
-	return std::make_pair(x_nuevo,y_nuevo);
 }
 
 /********************************************************************************/
@@ -204,18 +181,22 @@ void VentanaJuego::mostrar(){
 	bool run = true;
 	SDL_Event event;
 
+	float posX_player = float(this->posicionPlayer.x);
+	float posY_player = float(this->posicionPlayer.y);
+
 	int MouseX, MouseY;
     bool Follow = false;
     int Follow_Point_X;
     int Follow_Point_Y;
 
 		while (run && event.type != SDL_QUIT){
-			this->dibujar();
+
 			SDL_PollEvent(&event);
 
 			if (event.type == SDL_QUIT) run = false;
 			SDL_GetMouseState(&MouseX,&MouseY);
 
+			/* Analisis del evento de movimiento */
 			if (event.type == SDL_MOUSEBUTTONDOWN){
 				if (event.button.button == SDL_BUTTON_LEFT){
                     Follow_Point_X = MouseX;
@@ -223,37 +204,35 @@ void VentanaJuego::mostrar(){
                     Follow = true;
 				}
 			}
+
             if (Follow) {
-				float distance = GetDistance(posicionPlayer.x, posicionPlayer.y, Follow_Point_X, Follow_Point_Y);
+            	float distance = this->calculador->calcularDistancia(posX_player, posY_player, Follow_Point_X, Follow_Point_Y);
+				//float distance = GetDistance(posX_player, posY_player, Follow_Point_X, Follow_Point_Y);
 
 				if (distance != 0){
-                    if (posicionPlayer.x != Follow_Point_X) {
-                    	posicionPlayer.x = (posicionPlayer.x - ((posicionPlayer.x - Follow_Point_X) / distance) * 1.5f);
-                        //bob->SetX( bob->GetX() -  ((bob->GetX()-Follow_Point_X)/distance) * 1.5f );
+                    if (posX_player != Follow_Point_X) {
+                    	float x_result = (posX_player - ((posX_player - Follow_Point_X) / distance) * 1.5f);
+                    	posicionPlayer.x = int(x_result);
+                    	posX_player = x_result;
                     }
 
-                    if (posicionPlayer.y != Follow_Point_Y) {
-                       posicionPlayer.y = (posicionPlayer.y - ((posicionPlayer.y - Follow_Point_Y) / distance) * 1.5f);
-                      // bob->SetY( bob->GetY() -  ((bob->GetY()-Follow_Point_Y)/distance) * 1.5f );
+                    if (posY_player != Follow_Point_Y) {
+                        float y_result = (posY_player - ((posY_player - Follow_Point_Y) / distance) * 1.5f);
+                        posicionPlayer.y = int(y_result);
+                        posY_player = y_result;
                     }
                  }else  Follow = false;
             }
-            //cout<<posicionPlayer.x<<" "<<posicionPlayer.y<<endl;
-            //this->dibujar();
+            /* Fin de analisis de evento de movimiento */
+
+
+            /* Actualiza el renderer */
+            this->render();
 
             SDL_RenderPresent(this->renderer);
 
 		}
 
-}
-
-/********************************************************************************/
-double VentanaJuego::GetDistance(int X1, int Y1, int X2, int Y2)
-{
-        double DifferenceX = X1 - X2;
-        double DifferenceY = Y1 - Y2;
-        double distance = sqrt((DifferenceX * DifferenceX) + (DifferenceY * DifferenceY));
-        return distance;
 }
 
 /********************************************************************************/
@@ -269,6 +248,8 @@ VentanaJuego::~VentanaJuego() {
 	delete this->mapImagenes;
 
 	delete this->vectorPosiciones;
+
+	delete this->calculador;
 
 	this->close();
 }
