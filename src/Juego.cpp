@@ -50,7 +50,7 @@ void Juego::cargarJuego(){
 	/* En la parte de escenario definimos las dimensiones del escenario
 	 * y ubicamos las entidades en su respectiva posicion y la del protagonista
 	 * */
-	this->escenario = new Escenario(50,50);
+	this->escenario = new Escenario(20,20);
 
 	Entidad *arbol = new Entidad(ARBOL);
 	arbol->setPath("arbol.png");

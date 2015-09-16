@@ -65,6 +65,8 @@ private:
 	/* Dibuja el escenario*/
 	void dibujar();
 
+	double GetDistance(int,int,int,int);
+
 
 public:
 	VentanaJuego(Juego *juego);

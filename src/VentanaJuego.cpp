@@ -181,16 +181,7 @@ void VentanaJuego::dibujar(){
 
 	SDL_RenderCopy(this->renderer,this->imagenPlayer,NULL,&posicionPlayer);
 
-	SDL_RenderPresent(this->renderer);
-
-
-	SDL_Event event;
-	bool run = true;
-	while (run){
-		while (SDL_PollEvent(&event)){
-			if (event.type == SDL_QUIT) run = false;
-		}
-	}
+	SDL_Delay(15);
 }
 
 /********************************************************************************/
@@ -210,7 +201,59 @@ std::pair<int,int> VentanaJuego::posicionRelativa(int x, int y){
 
 /********************************************************************************/
 void VentanaJuego::mostrar(){
-	this->dibujar();
+	bool run = true;
+	SDL_Event event;
+
+	int MouseX, MouseY;
+    bool Follow = false;
+    int Follow_Point_X;
+    int Follow_Point_Y;
+
+		while (run && event.type != SDL_QUIT){
+			this->dibujar();
+			SDL_PollEvent(&event);
+
+			if (event.type == SDL_QUIT) run = false;
+			SDL_GetMouseState(&MouseX,&MouseY);
+
+			if (event.type == SDL_MOUSEBUTTONDOWN){
+				if (event.button.button == SDL_BUTTON_LEFT){
+                    Follow_Point_X = MouseX;
+                    Follow_Point_Y = MouseY;
+                    Follow = true;
+				}
+			}
+            if (Follow) {
+				float distance = GetDistance(posicionPlayer.x, posicionPlayer.y, Follow_Point_X, Follow_Point_Y);
+
+				if (distance != 0){
+                    if (posicionPlayer.x != Follow_Point_X) {
+                    	posicionPlayer.x = (posicionPlayer.x - ((posicionPlayer.x - Follow_Point_X) / distance) * 1.5f);
+                        //bob->SetX( bob->GetX() -  ((bob->GetX()-Follow_Point_X)/distance) * 1.5f );
+                    }
+
+                    if (posicionPlayer.y != Follow_Point_Y) {
+                       posicionPlayer.y = (posicionPlayer.y - ((posicionPlayer.y - Follow_Point_Y) / distance) * 1.5f);
+                      // bob->SetY( bob->GetY() -  ((bob->GetY()-Follow_Point_Y)/distance) * 1.5f );
+                    }
+                 }else  Follow = false;
+            }
+            //cout<<posicionPlayer.x<<" "<<posicionPlayer.y<<endl;
+            //this->dibujar();
+
+            SDL_RenderPresent(this->renderer);
+
+		}
+
+}
+
+/********************************************************************************/
+double VentanaJuego::GetDistance(int X1, int Y1, int X2, int Y2)
+{
+        double DifferenceX = X1 - X2;
+        double DifferenceY = Y1 - Y2;
+        double distance = sqrt((DifferenceX * DifferenceX) + (DifferenceY * DifferenceY));
+        return distance;
 }
 
 /********************************************************************************/
