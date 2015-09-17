@@ -37,7 +37,7 @@ Escenario::~Escenario() {
 	while (p != this->mapPosicionesEntidades->end()){
 		std::vector<Entidad*> *vectorEntidades = (*p).second;
 		p++;
-		delete vectorEntidades;
+		delete vectorEntidades;	// ¿Esto borra sólo el vector o también hace delete de cada entidad en el mismo?
 	}
 	delete this->mapPosicionesEntidades;
 }

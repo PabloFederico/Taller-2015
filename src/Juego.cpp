@@ -16,6 +16,7 @@ Juego::Juego() {
 	this->screenWidth = 800; // Default
 	this->screenHeigth = 600; // Default
 	this->mapEntidades = new std::map<TipoEntidad,Entidad*>();
+
 	this->cargarJuego();
 }
 
@@ -25,7 +26,7 @@ void Juego::cargarDatosEntidad(TipoEntidad tipo, Entidad *entidad){
 }
 
 /********************************************************************************/
-std::map<TipoEntidad,Entidad*>* Juego::getEntidades(){
+std::map<TipoEntidad,Entidad*>* Juego::getMapEntidades(){
 	return this->mapEntidades;
 }
 
@@ -50,15 +51,15 @@ void Juego::cargarJuego(){
 	/* En la parte de escenario definimos las dimensiones del escenario
 	 * y ubicamos las entidades en su respectiva posicion y la del protagonista
 	 * */
-	this->escenario = new Escenario(50,50);
+	this->escenario = new Escenario(50,50);	// Default?
 
 	Entidad *arbol = new Entidad(ARBOL);
 	arbol->setPath("arbol.png");
 
-	Entidad *tierra = new Entidad(TIERRA);
+	Suelo *tierra = new Suelo(TIERRA);
 	tierra->setPath("tierra.png");
 
-	Entidad *agua = new Entidad(AGUA);
+	Suelo *agua = new Suelo(AGUA);
 	agua->setPath("agua.png");
 
 	Castillo *castillo = new Castillo(CASTILLO);
@@ -100,7 +101,7 @@ std::pair<int,int> Juego::dimensionVentana(){
 /********************************************************************************/
 Juego::~Juego() {
 	std::map<TipoEntidad,Entidad*>::iterator p = this->mapEntidades->begin();
-	while (p != this->mapEntidades->end()){
+	while (p != this->mapEntidades->end()){		// Por qué no lo siguiente: for (p = this->mapEntidades->begin(); p != this->mapEntidades->end(); p++) \n delete (*p).second;
 		Entidad* ente = (*p).second;
 		p++;
 		delete ente;

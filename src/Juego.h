@@ -8,6 +8,7 @@
 #ifndef JUEGO_H_
 #define JUEGO_H_
 #include "Entidad.h"
+#include "Suelo.h"
 #include "Escenario.h"
 #include <map>
 
@@ -34,7 +35,7 @@ public:
 
 	Escenario* getEscenario();
 
-	std::map<TipoEntidad,Entidad*>* getEntidades();
+	std::map<TipoEntidad,Entidad*>* getMapEntidades();
 
 	Entidad* getProtagonista();
 

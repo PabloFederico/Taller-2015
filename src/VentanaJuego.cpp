@@ -18,12 +18,8 @@ VentanaJuego::VentanaJuego(Juego *juego){
 	this->TILES_Y = this->escenario->getDimension().second;
 
 	if (init()){
-		/* Dimensiones de la imagen a cargar */
-		this->escala_pixel_tile_x = 20;
-		this->escala_pixel_tile_y = 10;
-
 		/* El (0,0) relativo del mapa respecto a la ventana principal */
-		/* la función "floor" es para que quede un numero entero */
+		/* la función "floor" es para que quede un numero entero */						/*** No se está usando floor */
 		this->cero_x = (this->SCREEN_WIDTH / 2) - this->escala_pixel_tile_x;
 		this->cero_y = (this->SCREEN_HEIGHT - this->TILES_Y) / (2 * this->escala_pixel_tile_y) - this->escala_pixel_tile_y;
 
@@ -31,25 +27,24 @@ VentanaJuego::VentanaJuego(Juego *juego){
 
 		/* map donde se almacenan las imagenes que se van a usar */
 		this->mapImagenes = new std::map<TipoEntidad,SDL_Texture*>();
-
-		this->cargarImagenes(juego->getEntidades());
+		this->cargarImagenes(juego->getMapEntidades());
 
 		this->vectorPosiciones = new vector<DataPos>();
-
 		this->cargarPosicionesEntidades(this->escenario->getPosEntidades());
 
 		/* Configurar de manera que se cargue el protagonista
 		 * con su respectiva posicion*/
 		std::map<TipoEntidad,SDL_Texture*>::iterator p = this->mapImagenes->find(juego->getProtagonista()->getTipo());
 		this->imagenPlayer = (*p).second;
-		this->posicionPlayer.y -= 5;
-		this->posicionPlayer.w = 30;
+		this->posicionPlayer.y -= 5;		// Estos tres deberían ser también en proporción a escala_pixel_tile_
+		this->posicionPlayer.w = 30;		// Por ejemplo el primero: "this->posicionPlayer.y -= this.escala_pixel_tile_y / 2;"
 		this->posicionPlayer.h = 20;
 
-		/* Borramos la referencia de la imagen del protagonistia del map de imagenes
+		/* Borramos la referencia de la imagen del protagonista del map de imagenes
 		 * y guardamos una referencia en imagenPlayer (en forma directa) */
-		this->mapImagenes->erase(juego->getProtagonista()->getTipo());
+		this->mapImagenes->erase(juego->getProtagonista()->getTipo());			// Esta implementación deberá revisarse cuando haya más de un personaje seleccionable
 	}
+	// else ??
 }
 
 /********************************************************************************/
@@ -57,7 +52,7 @@ bool VentanaJuego::init(){
 	bool success = true;
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0) success = false;
 	else{
-		 this->window = SDL_CreateWindow("Juego",60,60,this->SCREEN_WIDTH,this->SCREEN_HEIGHT,SDL_WINDOW_SHOWN);
+		 this->window = SDL_CreateWindow("AoF",60,60,this->SCREEN_WIDTH,this->SCREEN_HEIGHT,SDL_WINDOW_SHOWN);
 		 if (this->window == NULL) success = false;
 
 		 this->renderer = SDL_CreateRenderer(this->window,-1,SDL_RENDERER_ACCELERATED);
@@ -72,9 +67,9 @@ bool VentanaJuego::init(){
 
 /********************************************************************************/
 SDL_Texture* VentanaJuego::cargarImagen(string path){
-	SDL_Texture* texture = NULL;
+	SDL_Texture *texture = NULL;
 	SDL_Surface *surface = IMG_Load(path.c_str());
-	if (surface != NULL){
+	if (surface != NULL){		// TODO manejo de error
 		texture = SDL_CreateTextureFromSurface(this->renderer, surface);
 		SDL_FreeSurface(surface);
 	}
@@ -97,21 +92,18 @@ void VentanaJuego::cargarImagenes(std::map<TipoEntidad,Entidad*> *entidades){
 void VentanaJuego::cargarPosicionesEntidades(std::map<std::pair<int,int>, std::vector<Entidad*>* > *posEntidades){
 	std::map<std::pair<int,int>, std::vector<Entidad*>* >::iterator p = posEntidades->begin();
 	while (p != posEntidades->end()){
-
 		vector<Entidad*> *vectorEntidades = (*p).second;
-		int tile_x = (*p).first.first;
-		int tile_y = (*p).first.second;
+		std::pair<int,int> coordenada = this->posicionRelativa((*p).first.first, (*p).first.second);
+
+    	SDL_Rect posicion;
+    	posicion.x = coordenada.first;
+    	posicion.y = coordenada.second;
+    	posicion.w = 2 * this->escala_pixel_tile_x;
+    	posicion.h = 2 * this->escala_pixel_tile_y;
 
 	    /* En una posición puede haber más de una entidad */
 	    for (unsigned i = 0; i < vectorEntidades->size(); i++){
 	    	Entidad *entidad = (*vectorEntidades)[i];
-
-	    	std::pair<int,int> coordenada = this->posicionRelativa(tile_x,tile_y);
-	    	SDL_Rect posicion;
-	    	posicion.x = coordenada.first;
-	    	posicion.y = coordenada.second;
-	    	posicion.w = 2 * this->escala_pixel_tile_x;
-	    	posicion.h = 2 * this->escala_pixel_tile_y;
 
 	    	DataPos data(posicion,entidad->getTipo());
 
@@ -154,7 +146,7 @@ void VentanaJuego::dibujar(){
 	posicion.w = 2 * this->escala_pixel_tile_x;
 	posicion.h = 2 * this->escala_pixel_tile_y;
 
-	// Se dibuja la superficie
+	// Se dibuja la superficie base
 	for(int j = 0; j < this->TILES_Y; j++){
 
 		posicion.x = cero_relativo_x;
@@ -163,11 +155,11 @@ void VentanaJuego::dibujar(){
 		for(int i = 0; i < this->TILES_X; i++){
 			SDL_RenderCopy(this->renderer,this->relieveDefault,NULL,&posicion);
 
-			posicion.x = posicion.x + this->escala_pixel_tile_x;
-			posicion.y = posicion.y + this->escala_pixel_tile_y;
+			posicion.x += this->escala_pixel_tile_x;
+			posicion.y += this->escala_pixel_tile_y;
 		}
-		cero_relativo_x = cero_relativo_x - this->escala_pixel_tile_x;
-		cero_relativo_y = cero_relativo_y + this->escala_pixel_tile_y;
+		cero_relativo_x -= this->escala_pixel_tile_x;
+		cero_relativo_y += this->escala_pixel_tile_y;
 	}
 
 	/* Dibujamos las entidades que no se mueven */
@@ -221,7 +213,6 @@ VentanaJuego::~VentanaJuego() {
 		p++;
 		SDL_DestroyTexture(imagen);
 		imagen = NULL;
-
 	}
 	delete this->mapImagenes;
 

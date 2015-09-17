@@ -40,8 +40,9 @@ private:
 	int cero_x;
 	int cero_y;
 
-	int escala_pixel_tile_x;
-	int escala_pixel_tile_y;
+	/* Dimensiones de la imagen a cargar */
+	const static int escala_pixel_tile_x = 20;
+	const static int escala_pixel_tile_y = 10;
 
 	Escenario *escenario;
 
