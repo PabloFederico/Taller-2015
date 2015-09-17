@@ -14,9 +14,8 @@ Juego::Juego() {
 	this->escenario = NULL;
 	this->protagonista = NULL;
 	this->screenWidth = 800; // Default
-	this->screenHeigth = 600; // Default
+	this->screenHeight = 600; // Default
 	this->mapEntidades = new std::map<TipoEntidad,Entidad*>();
-
 	this->cargarJuego();
 }
 
@@ -51,22 +50,22 @@ void Juego::cargarJuego(){
 	/* En la parte de escenario definimos las dimensiones del escenario
 	 * y ubicamos las entidades en su respectiva posicion y la del protagonista
 	 * */
-	this->escenario = new Escenario(50,50);	// Default?
+	this->escenario = new Escenario(30,30);	// Default?
 
 	Entidad *arbol = new Entidad(ARBOL);
-	arbol->setPath("arbol.png");
+	arbol->setPath("images/arbol.png");
 
 	Suelo *tierra = new Suelo(TIERRA);
-	tierra->setPath("tierra.png");
+	tierra->setPath("images/tierra.png");
 
 	Suelo *agua = new Suelo(AGUA);
-	agua->setPath("agua.png");
+	agua->setPath("images/agua.png");
 
 	Castillo *castillo = new Castillo(CASTILLO);
-	castillo->setPath("castle.png");
+	castillo->setPath("images/castle.png");
 
 	Soldado *soldado = new Soldado(SOLDADO);
-	soldado->setPath("soldier.png");
+	soldado->setPath("images/man.png");
 
 	this->cargarDatosEntidad(ARBOL,arbol);
 	this->cargarDatosEntidad(TIERRA,tierra);
@@ -95,7 +94,7 @@ void Juego::cargarJuego(){
 
 /********************************************************************************/
 std::pair<int,int> Juego::dimensionVentana(){
-	return std::make_pair(this->screenWidth,this->screenHeigth);
+	return std::make_pair(this->screenWidth,this->screenHeight);
 }
 
 /********************************************************************************/

@@ -9,6 +9,9 @@
 #define VENTANAJUEGO_H_
 #include <SDL2/SDL.h>
 #include "Juego.h"
+#include "Calculador.h"
+#include "Loader.h"
+#include "Sprite.h"
 using namespace std;
 
 struct DataPos{
@@ -29,13 +32,17 @@ private:
 
 	SDL_Window *window;
 	SDL_Renderer *renderer;
-	SDL_Texture *relieveDefault;
-	std::map<TipoEntidad, SDL_Texture*> *mapImagenes;
+
+	Imagen *imagenRelieve;
+	std::map<TipoEntidad, Imagen*> *mapImagenes;
+
+	Sprite *spritePlayer;
+	SDL_Rect posicionPlayer;
 
 	vector<DataPos> *vectorPosiciones;
 
-	SDL_Texture *imagenPlayer;
-	SDL_Rect posicionPlayer;
+	Calculador *calculador;
+	Loader loader;
 
 	int cero_x;
 	int cero_y;
@@ -49,22 +56,18 @@ private:
 	/* Inicializa los recursos SDL */
 	bool init();
 
-	/* Devuelve una referencia a una variable SDL_Texture que contiene la imagen */
-	SDL_Texture* cargarImagen(string path);
-
 	/* Carga las imagenes que se van a utilizar en el juego */
 	void cargarImagenes(std::map<TipoEntidad, Entidad*> *entidades);
 
+	/* Crea SDL_Rect para cada entidad que se encuentre en el escenario y las guarda en un
+	 * vector asociada a un SDL_Texture (imagen) */
 	void cargarPosicionesEntidades(std::map<std::pair<int,int>, std::vector<Entidad*>* > *posEntidades);
 
 	/* Libera recursos utilizados por SDL*/
 	void close();
 
-	/* Convierte una posición del escenario a una posición de la ventana principal*/
-	std::pair<int,int> posicionRelativa(int x, int y);
-
 	/* Dibuja el escenario*/
-	void dibujar();
+	void render();
 
 
 public:
