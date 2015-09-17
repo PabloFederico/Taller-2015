@@ -12,10 +12,14 @@ Loader::Loader() {
 
 }
 
-SDL_Texture* Loader::cargarImagen(SDL_Renderer* renderer, std::string path){
+Imagen* Loader::cargarImagen(SDL_Renderer* renderer, std::string path){
 	SDL_Texture *texture = NULL;
-	texture = IMG_LoadTexture(renderer, path.c_str());
-	return texture;
+	SDL_Surface* surface = IMG_Load(path.c_str());
+
+	texture = SDL_CreateTextureFromSurface(renderer,surface);
+	Imagen* imagen = new Imagen(surface->w, surface->h, texture);
+
+	return imagen;
 }
 
 Loader::~Loader() {

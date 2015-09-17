@@ -53,19 +53,19 @@ void Juego::cargarJuego(){
 	this->escenario = new Escenario(30,30);
 
 	Entidad *arbol = new Entidad(ARBOL);
-	arbol->setPath("arbol.png");
+	arbol->setPath("images/arbol.png");
 
 	Entidad *tierra = new Entidad(TIERRA);
-	tierra->setPath("tierra.png");
+	tierra->setPath("images/tierra.png");
 
 	Entidad *agua = new Entidad(AGUA);
-	agua->setPath("agua.png");
+	agua->setPath("images/agua.png");
 
 	Castillo *castillo = new Castillo(CASTILLO);
-	castillo->setPath("castle.png");
+	castillo->setPath("images/castle.png");
 
 	Soldado *soldado = new Soldado(SOLDADO);
-	soldado->setPath("soldier.png");
+	soldado->setPath("images/man.png");
 
 	this->cargarDatosEntidad(ARBOL,arbol);
 	this->cargarDatosEntidad(TIERRA,tierra);

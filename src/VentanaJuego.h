@@ -11,6 +11,7 @@
 #include "Juego.h"
 #include "Calculador.h"
 #include "Loader.h"
+#include "Sprite.h"
 using namespace std;
 
 struct DataPos{
@@ -31,16 +32,17 @@ private:
 
 	SDL_Window *window;
 	SDL_Renderer *renderer;
-	SDL_Texture *relieveDefault;
-	std::map<TipoEntidad, SDL_Texture*> *mapImagenes;
+
+	Imagen *imagenRelieve;
+	std::map<TipoEntidad, Imagen*> *mapImagenes;
+
+	Sprite *spritePlayer;
+	SDL_Rect posicionPlayer;
 
 	vector<DataPos> *vectorPosiciones;
 
 	Calculador *calculador;
 	Loader loader;
-
-	SDL_Texture *imagenPlayer;
-	SDL_Rect posicionPlayer;
 
 	int cero_x;
 	int cero_y;

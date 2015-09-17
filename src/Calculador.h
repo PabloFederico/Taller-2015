@@ -8,6 +8,7 @@
 #ifndef CALCULADOR_H_
 #define CALCULADOR_H_
 #include <map>
+#include "Direccion.h"
 
 class Calculador {
 private:
@@ -22,6 +23,8 @@ public:
 	double calcularDistancia(int X1, int Y1, int X2, int Y2);
 
 	std::pair<int,int> calcularPosicionRelativa(int x, int y);
+
+	Direccion calcularDireccion(int x_dest, int y_dest, int x_orig, int y_orig);
 
 	virtual ~Calculador();
 };

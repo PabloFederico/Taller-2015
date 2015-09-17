@@ -7,6 +7,7 @@
 
 #include "Calculador.h"
 #include <math.h>
+#include <stdlib.h>
 
 Calculador::Calculador(int cero_x, int cero_y, int escala_x, int escala_y) {
 	this->cero_x = cero_x;
@@ -34,6 +35,30 @@ double Calculador::calcularDistancia(int X1, int Y1, int X2, int Y2){
     double DifferenceY = Y1 - Y2;
     double distance = sqrt((DifferenceX * DifferenceX) + (DifferenceY * DifferenceY));
     return distance;
+}
+
+Direccion Calculador::calcularDireccion(int x_dest, int y_dest, int x_orig, int y_orig){
+	Direccion direccion;
+	int x_result = x_dest - x_orig;
+	int y_result = y_dest - y_orig;
+
+	if (abs(x_result) < 20){
+		if (y_result < 0) direccion = NORTE;
+		else direccion = SUR;
+	}
+	else if (abs(y_result) < 20){
+			if (x_result < 0) direccion = OESTE;
+				else direccion = ESTE;
+	}
+	else if (x_result > 0){
+			if (y_result < 0) direccion = NORESTE;
+				else direccion = SURESTE;
+	}else{
+		  if (y_result < 0) direccion = NOROESTE;
+		  else direccion = SUROESTE;
+	}
+
+	return direccion;
 }
 
 Calculador::~Calculador() {

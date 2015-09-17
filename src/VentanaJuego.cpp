@@ -29,21 +29,21 @@ VentanaJuego::VentanaJuego(Juego *juego){
 
 		this->calculador = new Calculador(this->cero_x, this->cero_y, this->escala_pixel_tile_x, this->escala_pixel_tile_y);
 
-		this->relieveDefault = this->loader.cargarImagen(this->renderer,"pasto.png");
+		this->imagenRelieve = this->loader.cargarImagen(this->renderer,"images/pasto.png");
 
 		/* map donde se almacenan las imagenes que se van a usar */
-		this->mapImagenes = new std::map<TipoEntidad,SDL_Texture*>();
-
+		this->mapImagenes = new std::map<TipoEntidad,Imagen*>();
 		this->cargarImagenes(juego->getEntidades());
 
 		this->vectorPosiciones = new vector<DataPos>();
-
 		this->cargarPosicionesEntidades(this->escenario->getPosEntidades());
 
 		/* Configurar de manera que se cargue el protagonista
 		 * con su respectiva posicion*/
-		std::map<TipoEntidad,SDL_Texture*>::iterator p = this->mapImagenes->find(juego->getProtagonista()->getTipo());
-		this->imagenPlayer = (*p).second;
+		std::map<TipoEntidad,Imagen*>::iterator p = this->mapImagenes->find(juego->getProtagonista()->getTipo());
+		Imagen* imagenPlayer = (*p).second;
+		this->spritePlayer = new Sprite(8,6,imagenPlayer);
+
 		this->posicionPlayer.y -= 5;
 		this->posicionPlayer.w = 30;
 		this->posicionPlayer.h = 20;
@@ -79,7 +79,7 @@ void VentanaJuego::cargarImagenes(std::map<TipoEntidad,Entidad*> *entidades){
 		TipoEntidad tipo = (*p).first;
 		Entidad *ente = (*p).second;
 		p++;
-		SDL_Texture *imagen = this->loader.cargarImagen(this->renderer,ente->getPath());
+		Imagen *imagen = this->loader.cargarImagen(this->renderer,ente->getPath());
 		this->mapImagenes->insert(std::make_pair(tipo,imagen));
 	}
 }
@@ -119,11 +119,7 @@ void VentanaJuego::cargarPosicionesEntidades(std::map<std::pair<int,int>, std::v
 
 /********************************************************************************/
 void VentanaJuego::close(){
-	SDL_DestroyTexture(this->relieveDefault);
-	this->relieveDefault = NULL;
-
-	SDL_DestroyTexture(this->imagenPlayer);
-	this->imagenPlayer = NULL;
+	delete this->imagenRelieve;
 
 	SDL_DestroyRenderer(this->renderer);
 	this->renderer = NULL;
@@ -142,6 +138,7 @@ void VentanaJuego::render(){
 
 	int cero_relativo_x = this->cero_x;
 	int cero_relativo_y = this->cero_y;
+
 	posicion.w = 2 * this->escala_pixel_tile_x;
 	posicion.h = 2 * this->escala_pixel_tile_y;
 
@@ -152,7 +149,7 @@ void VentanaJuego::render(){
 		posicion.y = cero_relativo_y;
 
 		for(int i = 0; i < this->TILES_X; i++){
-			SDL_RenderCopy(this->renderer,this->relieveDefault,NULL,&posicion);
+			SDL_RenderCopy(this->renderer,this->imagenRelieve->getTexture(),NULL,&posicion);
 
 			posicion.x = posicion.x + this->escala_pixel_tile_x;
 			posicion.y = posicion.y + this->escala_pixel_tile_y;
@@ -165,15 +162,15 @@ void VentanaJuego::render(){
 	for (unsigned i = 0; i < this->vectorPosiciones->size(); i++){
 		DataPos data = (*vectorPosiciones)[i];
 		SDL_Rect pos = data.posicion;
-		std::map<TipoEntidad,SDL_Texture*>::iterator itImg = this->mapImagenes->find(data.tipo);
-		SDL_Texture *imagenEntidad = itImg->second;
-		SDL_RenderCopy(this->renderer,imagenEntidad,NULL,&pos);
+		std::map<TipoEntidad,Imagen*>::iterator itImg = this->mapImagenes->find(data.tipo);
+		Imagen *imagenEntidad = itImg->second;
+		SDL_RenderCopy(this->renderer,imagenEntidad->getTexture(),NULL,&pos);
 	}
 
 	/* Dibujamos al player */
-	SDL_RenderCopy(this->renderer,this->imagenPlayer,NULL,&posicionPlayer);
-
-	SDL_Delay(15);
+	SDL_Texture* texturePlayer = this->spritePlayer->getImagen()->getTexture();
+	SDL_Rect frame = this->spritePlayer->getSDLRectActual();
+	SDL_RenderCopy(this->renderer,texturePlayer,&frame,&posicionPlayer);
 }
 
 /********************************************************************************/
@@ -199,15 +196,16 @@ void VentanaJuego::mostrar(){
 			/* Analisis del evento de movimiento */
 			if (event.type == SDL_MOUSEBUTTONDOWN){
 				if (event.button.button == SDL_BUTTON_LEFT){
-                    Follow_Point_X = MouseX;
-                    Follow_Point_Y = MouseY;
+                    Follow_Point_X = MouseX - posicionPlayer.w / 2;
+                    Follow_Point_Y = MouseY - posicionPlayer.h / 2;
                     Follow = true;
+                    Direccion direccion = this->calculador->calcularDireccion(Follow_Point_X, Follow_Point_Y, posicionPlayer.x, posicionPlayer.y);
+                    this->spritePlayer->setDireccion(direccion);
 				}
 			}
 
             if (Follow) {
             	float distance = this->calculador->calcularDistancia(posX_player, posY_player, Follow_Point_X, Follow_Point_Y);
-				//float distance = GetDistance(posX_player, posY_player, Follow_Point_X, Follow_Point_Y);
 
 				if (distance != 0){
                     if (posX_player != Follow_Point_X) {
@@ -221,15 +219,16 @@ void VentanaJuego::mostrar(){
                         posicionPlayer.y = int(y_result);
                         posY_player = y_result;
                     }
+                    this->spritePlayer->efectuarMovimiento();
                  }else  Follow = false;
             }
             /* Fin de analisis de evento de movimiento */
-
 
             /* Actualiza el renderer */
             this->render();
 
             SDL_RenderPresent(this->renderer);
+            SDL_Delay(25);
 
 		}
 
@@ -237,14 +236,15 @@ void VentanaJuego::mostrar(){
 
 /********************************************************************************/
 VentanaJuego::~VentanaJuego() {
-	std::map<TipoEntidad,SDL_Texture*>::iterator p = this->mapImagenes->begin();
+	std::map<TipoEntidad,Imagen*>::iterator p = this->mapImagenes->begin();
 	while (p != this->mapImagenes->end()){
-		SDL_Texture *imagen = (*p).second;
+		Imagen *imagen = (*p).second;
 		p++;
-		SDL_DestroyTexture(imagen);
-		imagen = NULL;
+		delete imagen;
 
 	}
+	delete this->spritePlayer;
+
 	delete this->mapImagenes;
 
 	delete this->vectorPosiciones;

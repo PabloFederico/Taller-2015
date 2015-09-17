@@ -10,12 +10,13 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <string>
+#include "Imagen.h"
 
 class Loader {
 public:
 	Loader();
 
-	SDL_Texture* cargarImagen(SDL_Renderer* renderer, std::string path);
+	Imagen* cargarImagen(SDL_Renderer* renderer, std::string path);
 
 	virtual ~Loader();
 };
