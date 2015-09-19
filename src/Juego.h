@@ -65,7 +65,7 @@ private:
 	 * (TIERRA , AGUA , ARBOL , CASTILLO, SOLDADO , etc)*/
 	void cargarConfigEntidad(std::string,VistaEntidad* vEntidad);
 
-	std::vector<DatosEscenario> parsearConfig();
+	std::vector<DatosEscenario> parsearConfig(YAML::Node config);
 
 public:
 	Juego();

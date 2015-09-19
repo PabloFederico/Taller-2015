@@ -6,6 +6,7 @@
  */
 
 #include "Juego.h"
+#include "ConfigDefault.h"
 #include "Soldado.h"
 #include "Castillo.h"
 #include "VistaEntidad.h"
@@ -65,7 +66,7 @@ void Juego::cargarEscenario(std::vector<DatosEscenario> vecEscenarios) {
 	this->escenario->agregarEntidad(std::make_pair(8,8),castillo);
 
 	this->escenario->agregarEntidad(std::make_pair(3,3),soldado);
-
+	///////////////////////
 
 	this->protagonista = soldado;
 }
@@ -82,59 +83,15 @@ Entidad* Juego::getProtagonista(){
 
 /********************************************************************************/
 void Juego::cargarJuego(){
-	/* Cargar estructura de YAML */
-
-	/* modificar los tamanios de las ventanas segun YAML */
-
-	/* Cargar la info de las entidades que se pueden usar */
-
-	/* En la parte de escenario definimos las dimensiones del escenario
-	 * y ubicamos las entidades en su respectiva posicion y la del protagonista
-	 * */
-	///////////////////////
-
-
-	/*Entidad *arbol = new Entidad(ARBOL);
-	arbol->setPath("images/arbol.png");
-
-	Suelo *tierra = new Suelo(TIERRA);
-	tierra->setPath("images/tierra.png");
-
-	Suelo *agua = new Suelo(AGUA);
-	agua->setPath("images/agua.png");
-
-	Castillo *castillo = new Castillo(CASTILLO);
-	castillo->setPath("images/castle.png");
-
-	Soldado *soldado = new Soldado(SOLDADO);
-	soldado->setPath("images/man.png");
-
-	this->cargarDatosEntidad(ARBOL,arbol);
-	this->cargarDatosEntidad(TIERRA,tierra);
-	this->cargarDatosEntidad(SOLDADO,soldado);
-	this->cargarDatosEntidad(AGUA,agua);
-	this->cargarDatosEntidad(CASTILLO,castillo);*/
-
-	/*this->escenario->agregarEntidad(std::make_pair(10,0),agua);
-	this->escenario->agregarEntidad(std::make_pair(11,0),agua);
-
-	this->escenario->agregarEntidad(std::make_pair(0,10),tierra);
-	this->escenario->agregarEntidad(std::make_pair(0,11),tierra);
-	this->escenario->agregarEntidad(std::make_pair(0,12),tierra);
-
-	this->escenario->agregarEntidad(std::make_pair(4,5),arbol);
-	this->escenario->agregarEntidad(std::make_pair(4,6),arbol);
-	this->escenario->agregarEntidad(std::make_pair(5,5),arbol);
-	this->escenario->agregarEntidad(std::make_pair(0,12),arbol);
-
-	this->escenario->agregarEntidad(std::make_pair(8,8),castillo);
-
-	this->escenario->agregarEntidad(std::make_pair(3,3),soldado);
-
-	this->protagonista = soldado;
-*/
-
-	cargarEscenario(parsearConfig());
+	YAML::Node config;
+	try {
+		config = YAML::LoadFile("config.yaml");
+	}
+	catch (YAML::BadFile &e) {
+		crearConfigDefault();
+		config = YAML::LoadFile("config.yaml");
+	}
+	cargarEscenario(parsearConfig(config));
 }
 
 /********************************************************************************/
@@ -143,15 +100,8 @@ std::pair<int,int> Juego::dimensionVentana(){
 }
 
 /********************************************************************************/
-std::vector<DatosEscenario> Juego::parsearConfig() {
-	YAML::Node config = YAML::LoadFile("config.yaml");
-	/*
-	int alto;
-	if (config["pantalla"]["prueba"])
-		alto = config["pantalla"]["prueba"].as<int>();
+std::vector<DatosEscenario> Juego::parsearConfig(YAML::Node config) {
 
-	std::cout << alto;
-	*/
 	// Valores por default.		!! Algún otro parámetro?
 	int vel_personaje = 3;
 	int margen_scroll = 30;		// Acá se tienen los valores, hacer con ellos lo que se quiera. //
@@ -195,8 +145,12 @@ std::vector<DatosEscenario> Juego::parsearConfig() {
 				vecEscenarios.push_back(DatosEscenario(config["escenario"][i]));
 			}
 		} else std::cout << "Escenario no definido, se usará uno por defecto" << std::endl;
+
 	}
-	catch( YAML::BadConversion &e )
+	catch( YAML::BadConversion &e )		// Hay forma de hacer un catch múltiple?
+	{
+		std::cout << "Error en el archivo de configuración: se tomará el resto de los valores por defecto." << std::endl;
+	} catch( YAML::BadSubscript &e )
 	{
 		std::cout << "Error en el archivo de configuración: se tomará el resto de los valores por defecto." << std::endl;
 	}
