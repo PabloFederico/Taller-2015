@@ -14,20 +14,13 @@ enum TipoEntidad  { TIERRA , AGUA , ARBOL , CASTILLO, SOLDADO };
 
 class Entidad {
 private:
-	TipoEntidad tipo;
-	string path;
+	std::string tipo;
 
 public:
-	Entidad(TipoEntidad tipo);
-
-	/* Devuelve el path de la imagen de la entidad*/
-	std::string getPath();
+	Entidad(std::string tipo);
 
 	/* Devuelve el tipo de entidad*/
-	TipoEntidad getTipo();
-
-	/* Setea el path de la imagen de la entidad */
-	void setPath(std::string path);
+	std::string getTipo();
 
 	virtual ~Entidad();
 };

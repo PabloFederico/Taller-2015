@@ -15,7 +15,7 @@ private:
 	int delay;
 
 public:
-	Soldado(TipoEntidad tipo);
+	Soldado(std::string tipo);
 	void setFps(int fps);
 	void setDelay(int delay);
 	virtual ~Soldado();

@@ -29,7 +29,7 @@ VentanaJuego::VentanaJuego(Juego *juego){
 		this->imagenRelieve = this->loader.cargarImagen(this->renderer,"images/pasto.png");
 
 		/* map donde se almacenan las imagenes que se van a usar */
-		this->mapImagenes = new std::map<TipoEntidad,Imagen*>();
+		this->mapImagenes = new std::map<std::string,Imagen*>();
 		this->cargarImagenes(juego->getMapEntidades());
 		
 		this->vectorPosiciones = new vector<DataPos>();
@@ -37,7 +37,7 @@ VentanaJuego::VentanaJuego(Juego *juego){
 
 		/* Configurar de manera que se cargue el protagonista
 		 * con su respectiva posicion*/
-		std::map<TipoEntidad,Imagen*>::iterator p = this->mapImagenes->find(juego->getProtagonista()->getTipo());
+		std::map<std::string,Imagen*>::iterator p = this->mapImagenes->find(juego->getProtagonista()->getTipo());
 		Imagen* imagenPlayer = (*p).second;
 		this->spritePlayer = new Sprite(8,6,imagenPlayer);
 
@@ -71,11 +71,11 @@ bool VentanaJuego::init(){
 }
 
 /********************************************************************************/
-void VentanaJuego::cargarImagenes(std::map<TipoEntidad,Entidad*> *entidades){
-	std::map<TipoEntidad,Entidad*>::iterator p = entidades->begin();
+void VentanaJuego::cargarImagenes(std::map<std::string, VistaEntidad*> *entidades){
+	std::map<std::string, VistaEntidad*>::iterator p = entidades->begin();
 	while (p != entidades->end()){
-		TipoEntidad tipo = (*p).first;
-		Entidad *ente = (*p).second;
+		std::string tipo = (*p).first;
+		VistaEntidad *ente = (*p).second;
 		p++;
 		Imagen *imagen = this->loader.cargarImagen(this->renderer,ente->getPath());
 		this->mapImagenes->insert(std::make_pair(tipo,imagen));
@@ -103,7 +103,7 @@ void VentanaJuego::cargarPosicionesEntidades(std::map<std::pair<int,int>, std::v
 
 	    	DataPos data(posicion,entidad->getTipo());
 
-	    	if (entidad->getTipo() == SOLDADO) {
+	    	if (entidad->getTipo() == "soldado") {
 	    		this->posicionPlayer = data.posicion;
 	    	}
 	    	else{
@@ -159,7 +159,7 @@ void VentanaJuego::render(){
 	for (unsigned i = 0; i < this->vectorPosiciones->size(); i++){
 		DataPos data = (*vectorPosiciones)[i];
 		SDL_Rect pos = data.posicion;
-		std::map<TipoEntidad,Imagen*>::iterator itImg = this->mapImagenes->find(data.tipo);
+		std::map<std::string,Imagen*>::iterator itImg = this->mapImagenes->find(data.tipo);
 		Imagen *imagenEntidad = itImg->second;
 		SDL_RenderCopy(this->renderer,imagenEntidad->getTexture(),NULL,&pos);
 	}
@@ -233,7 +233,7 @@ void VentanaJuego::mostrar(){
 
 /********************************************************************************/
 VentanaJuego::~VentanaJuego() {
-	std::map<TipoEntidad,Imagen*>::iterator p = this->mapImagenes->begin();
+	std::map<std::string,Imagen*>::iterator p = this->mapImagenes->begin();
 	while (p != this->mapImagenes->end()){
 		Imagen *imagen = (*p).second;
 		p++;

@@ -12,7 +12,7 @@
 
 class Suelo: public Entidad {
 public:
-	Suelo(TipoEntidad tipo);
+	Suelo(std::string tipo);
 	virtual ~Suelo();
 };
 

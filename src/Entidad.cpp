@@ -7,21 +7,12 @@
 
 #include "Entidad.h"
 
-Entidad::Entidad(TipoEntidad tipo) {
+Entidad::Entidad(std::string tipo) {
 	this->tipo = tipo;
-	this->path = "";
 }
 
-void Entidad::setPath(std::string path){
-	this->path = path;
-}
-
-TipoEntidad Entidad::getTipo(){
+std::string Entidad::getTipo(){
 	return this->tipo;
-}
-
-std::string Entidad::getPath(){
-	return this->path;
 }
 
 Entidad::~Entidad() {

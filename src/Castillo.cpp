@@ -7,7 +7,7 @@
 
 #include "Castillo.h"
 
-Castillo::Castillo(TipoEntidad tipo): Entidad(tipo){
+Castillo::Castillo(std::string tipo): Entidad(tipo){
 	this->alto_base = 1;
 	this->ancho_base = 1;
 	this->pixel_ref_x = 0;

@@ -16,8 +16,8 @@ using namespace std;
 
 struct DataPos{
 	SDL_Rect posicion;
-	TipoEntidad tipo;
-	DataPos(SDL_Rect pos, TipoEntidad tipo){
+	std::string tipo;
+	DataPos(SDL_Rect pos, std::string tipo){
 		this->posicion = pos;
 		this->tipo = tipo;
 	};
@@ -34,7 +34,7 @@ private:
 	SDL_Renderer *renderer;
 
 	Imagen *imagenRelieve;
-	std::map<TipoEntidad, Imagen*> *mapImagenes;
+	std::map<std::string, Imagen*> *mapImagenes;
 
 	Sprite *spritePlayer;
 	SDL_Rect posicionPlayer;
@@ -57,7 +57,7 @@ private:
 	bool init();
 
 	/* Carga las imagenes que se van a utilizar en el juego */
-	void cargarImagenes(std::map<TipoEntidad, Entidad*> *entidades);
+	void cargarImagenes(std::map<std::string, VistaEntidad*> *entidades);
 
 	/* Crea SDL_Rect para cada entidad que se encuentre en el escenario y las guarda en un
 	 * vector asociada a un SDL_Texture (imagen) */

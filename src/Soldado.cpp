@@ -7,7 +7,7 @@
 
 #include "Soldado.h"
 
-Soldado::Soldado(TipoEntidad tipo):Entidad(tipo) {
+Soldado::Soldado(std::string tipo): Entidad(tipo) {
 	this->fps = 1;
 	this->delay = 1;
 }

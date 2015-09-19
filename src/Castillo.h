@@ -18,7 +18,7 @@ private:
 	int pixel_ref_y;
 
 public:
-	Castillo(TipoEntidad tipo);
+	Castillo(std::string tipo);
 
 	void setDimension(int ancho, int alto);
 

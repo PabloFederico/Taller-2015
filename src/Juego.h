@@ -8,15 +8,46 @@
 #ifndef JUEGO_H_
 #define JUEGO_H_
 #include "Entidad.h"
+#include "VistaEntidad.h"
 #include "Suelo.h"
 #include "Escenario.h"
 #include <map>
+#include <yaml-cpp/yaml.h>
+
+
+struct DatoPosicion {	/* Sin verificación de datos */
+	int x, y;
+	int tipo;
+
+	DatoPosicion(): x(0), y(0), tipo(0) {}
+	DatoPosicion(YAML::Node d):
+		x(d["x"].as<int>()), y(d["y"].as<int>()), tipo(d["tipo"].as<int>()) {};
+};
+
+struct DatosEscenario {		/* Sin verificación de datos */
+	std::string nombre;
+	int size_x, size_y;
+	std::vector<DatoPosicion> entidades;
+	DatoPosicion protagonista;	/** Único protagonista; adaptable. */
+
+	DatosEscenario(YAML::Node unEscenario) {
+		this->nombre = unEscenario["nombre"].as<std::string>();
+		this->size_x = unEscenario["size_x"].as<int>();
+		this->size_y = unEscenario["size_y"].as<int>();
+		for(std::size_t i = 0; i < unEscenario["entidades"].size(); ++i) {
+			DatoPosicion dp(unEscenario["entidades"][i]);
+			this->entidades.push_back(dp);
+		}
+		this->protagonista = unEscenario["protagonista"];
+	};
+};
+
 
 class Juego {
 private:
 	int screenWidth;
 	int screenHeight;
-	std::map<TipoEntidad,Entidad*> *mapEntidades;
+	std::map<std::string,VistaEntidad*> *mapEntidades;
 	Escenario *escenario;
 	Entidad *protagonista;
 
@@ -24,9 +55,13 @@ private:
 	 * de un archivo de configuración */
 	void cargarJuego();
 
+	void cargarEscenario(std::vector<DatosEscenario> vecEscenarios);
+
 	/* Carga en un map los tipos de entidades posibles del juego
 	 * (TIERRA , AGUA , ARBOL , CASTILLO, SOLDADO , etc)*/
-	void cargarDatosEntidad(TipoEntidad,Entidad* entidad);
+	void cargarConfigEntidad(std::string,VistaEntidad* vEntidad);
+
+	std::vector<DatosEscenario> parsearConfig();
 
 public:
 	Juego();
@@ -35,7 +70,7 @@ public:
 
 	Escenario* getEscenario();
 
-	std::map<TipoEntidad,Entidad*>* getMapEntidades();
+	std::map<std::string,VistaEntidad*>* getMapEntidades();
 
 	Entidad* getProtagonista();
 

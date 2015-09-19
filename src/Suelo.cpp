@@ -7,7 +7,7 @@
 
 #include "Suelo.h"
 
-Suelo::Suelo(TipoEntidad tipo): Entidad(tipo){
+Suelo::Suelo(std::string tipo): Entidad(tipo){
 	// TODO Auto-generated constructor stub
 
 }
