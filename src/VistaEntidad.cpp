@@ -6,22 +6,14 @@
  */
 
 #include "VistaEntidad.h"
-
-
-class bad_nombreTipoEntidad: public exception
-{
-  virtual const char* what() const throw()
-  {
-    return "Tipo de entidad mal especificado.";
-  }
-} bad_nombreTipoEntidad;
+#include "Exceptions.h"
 
 
 VistaEntidad::VistaEntidad(string nombre, string path,
 				int alto_base, int ancho_base, int pixel_ref_x, int pixel_ref_y, int fps, int delay)
 					: nombreTipo(nombre), pathImagen(path), alto_base(alto_base), ancho_base(ancho_base),
 					  pixel_ref_x(pixel_ref_x), pixel_ref_y(pixel_ref_y), fps(fps), delay(delay) {
-	if (nombre == "") throw bad_nombreTipoEntidad;
+	if (nombre == "") throw bad_nombreTipoEntidad(nombre);
 }
 
 

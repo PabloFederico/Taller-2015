@@ -11,10 +11,10 @@
 using namespace std;
 
 
+
 class VistaEntidad {
 	string nombreTipo;
 	string pathImagen;
-
 
 public:
 	// Ya sé que a Carlos Fontela no le gusta esto, pero esto no es Java, así que no jo*a.

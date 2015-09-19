@@ -7,6 +7,7 @@
 
 #ifndef JUEGO_H_
 #define JUEGO_H_
+#include "Exceptions.h"
 #include "Entidad.h"
 #include "VistaEntidad.h"
 #include "Suelo.h"
@@ -17,11 +18,13 @@
 
 struct DatoPosicion {	/* Sin verificación de datos */
 	int x, y;
-	int tipo;
+	std::string tipo;
 
-	DatoPosicion(): x(0), y(0), tipo(0) {}
+	DatoPosicion(): x(0), y(0), tipo("") {
+		//if (this->tipo == "") throw bad_nombreTipoEntidad(this->tipo);
+	}
 	DatoPosicion(YAML::Node d):
-		x(d["x"].as<int>()), y(d["y"].as<int>()), tipo(d["tipo"].as<int>()) {};
+		x(d["x"].as<int>()), y(d["y"].as<int>()), tipo(d["tipo"].as<std::string>()) {};
 };
 
 struct DatosEscenario {		/* Sin verificación de datos */
@@ -38,7 +41,8 @@ struct DatosEscenario {		/* Sin verificación de datos */
 			DatoPosicion dp(unEscenario["entidades"][i]);
 			this->entidades.push_back(dp);
 		}
-		this->protagonista = unEscenario["protagonista"];
+		DatoPosicion protag(unEscenario["protagonista"][0]);
+		this->protagonista = protag;
 	};
 };
 

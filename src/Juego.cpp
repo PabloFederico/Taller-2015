@@ -36,8 +36,8 @@ void Juego::cargarEscenario(std::vector<DatosEscenario> vecEscenarios) {
 	int size_x = 30, size_y = 30;	// Default?
 	/* Posible selección de escenario */
 
-	//size_x = vecEscenarios[0].size_x;
-	//size_y = vecEscenarios[0].size_y;
+	size_x = vecEscenarios[0].size_x;
+	size_y = vecEscenarios[0].size_y;
 
 	this->escenario = new Escenario(size_x,size_y);
 
@@ -176,7 +176,6 @@ std::vector<DatosEscenario> Juego::parsearConfig() {
 		if (config["tipos"]) {
 			for(std::size_t i = 0; i < config["tipos"].size(); ++i) {
 				// Separar este código
-				// Los VistaEntidad deben tener valores por defecto.
 				YAML::Node tipo = config["tipos"][i];
 				VistaEntidad *ve = new VistaEntidad( tipo["nombre"].as<string>() );
 				if (tipo["imagen"]) 	ve->setPath(tipo["imagen"].as<string>());
