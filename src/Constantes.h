@@ -13,12 +13,12 @@
  *  independientes de las demás */
 
 #define ANCHO_PIXEL_PASTO 60
-#define ALTO_PIXEL_PASTO  40
+#define ALTO_PIXEL_PASTO  30
 
 #define DISTANCIA_ENTRE_X 30
-#define DISTANCIA_ENTRE_Y 20
+#define DISTANCIA_ENTRE_Y 15
 
 #define DIRECCIONES       8
-#define IMAGENES_DIFERENTES 6
+#define IMAGENES_DIFERENTES 8
 
 #endif /* CONSTANTES_H_ */
