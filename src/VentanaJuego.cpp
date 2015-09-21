@@ -25,15 +25,14 @@ VentanaJuego::VentanaJuego(Juego *juego){
 	this->LIMITE_DESPLAZAMIENTO_EN_X = ANCHO_PIXEL_PASTO * this->TILES_X / 2;
 	this->LIMITE_DESPLAZAMIENTO_EN_Y = ALTO_PIXEL_PASTO * this->TILES_Y / 2;
 
-	this->x_camara = (LIMITE_DESPLAZAMIENTO_EN_X - SCREEN_WIDTH) / 2;
-	this->y_camara =  ANCHO_PIXEL_PASTO;
-
-
 	if (init()){
 
 		/* El (0,0) relativo del mapa respecto a la ventana principal */
-		this->cero_x = new int(x_camara + SCREEN_WIDTH);
-		this->cero_y = new int(y_camara);
+		int centro_x = SCREEN_WIDTH / 2;
+		int centro_y = SCREEN_HEIGHT / 2;
+		this->cero_x = new int(centro_x - DISTANCIA_ENTRE_X);
+		this->cero_y = new int(centro_y - LIMITE_DESPLAZAMIENTO_EN_Y);
+
 		this->calculador = new Calculador(this->cero_x, this->cero_y);
 
 		/* map donde se almacenan las imágenes que se van a usar *
@@ -399,8 +398,7 @@ void VentanaJuego::procesarScroll(int MouseX, int MouseY,
 			if (MouseX < MARGEN_SCROLL / 2) cantidad = MARGEN_SCROLL;
 			else cantidad = MARGEN_SCROLL / 2;
 
-			if (this->x_camara > cantidad){
-				this->x_camara -= cantidad;
+			if ((*this->cero_x) < LIMITE_DESPLAZAMIENTO_EN_X){
 				*cero_x += cantidad;
 				this->posicionPlayer.x += cantidad;
 				posPlayerX += cantidad;
@@ -414,8 +412,7 @@ void VentanaJuego::procesarScroll(int MouseX, int MouseY,
 			if (MouseX > SCREEN_WIDTH - MARGEN_SCROLL / 2) cantidad = MARGEN_SCROLL;
 			else cantidad = MARGEN_SCROLL / 2;
 
-			if (this->x_camara + cantidad < LIMITE_DESPLAZAMIENTO_EN_X){
-				this->x_camara += cantidad;
+			if (*this->cero_x > - LIMITE_DESPLAZAMIENTO_EN_X){
 				*cero_x -= cantidad;
 				this->posicionPlayer.x -= cantidad;
 				posPlayerX -= cantidad;
@@ -429,8 +426,7 @@ void VentanaJuego::procesarScroll(int MouseX, int MouseY,
 			if (MouseX < MARGEN_SCROLL / 2) cantidad = MARGEN_SCROLL;
 			else cantidad = MARGEN_SCROLL / 2;
 
-			if (this->y_camara > cantidad){
-				this->y_camara -= cantidad;
+			if (*this->cero_y < 0){
 				*cero_y += cantidad;
 				this->posicionPlayer.y += cantidad;
 				posPlayerY += cantidad;
@@ -444,8 +440,7 @@ void VentanaJuego::procesarScroll(int MouseX, int MouseY,
 			if (MouseY > SCREEN_HEIGHT - MARGEN_SCROLL / 2) cantidad = MARGEN_SCROLL;
 			else cantidad = MARGEN_SCROLL / 2;
 
-			if (this->y_camara + cantidad < LIMITE_DESPLAZAMIENTO_EN_Y){
-				this->y_camara += cantidad;
+			if (abs(*this->cero_y) < 2*LIMITE_DESPLAZAMIENTO_EN_Y - SCREEN_HEIGHT){
 				*cero_y -= cantidad;
 				this->posicionPlayer.y -= cantidad;
 				posPlayerY -= cantidad;

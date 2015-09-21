@@ -60,9 +60,6 @@ private:
 	int LIMITE_DESPLAZAMIENTO_EN_X;
 	int LIMITE_DESPLAZAMIENTO_EN_Y;
 
-	int x_camara;
-	int y_camara;
-
 	/* Inicializa los recursos SDL */
 	bool init();
 

@@ -85,8 +85,8 @@ Entidad* Juego::getProtagonista(){
 
 /********************************************************************************/
 void Juego::cargarJuego(){
-	this->screenWidth = 600;
-	this->screenHeight = 480;
+	this->screenWidth = 800;
+	this->screenHeight = 600;
 	this->vel_personaje = 5;
 	this->margen_scroll = 30;
 	
