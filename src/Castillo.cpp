@@ -7,7 +7,7 @@
 
 #include "Castillo.h"
 
-Castillo::Castillo(std::string tipo): Entidad(tipo){
+/*Castillo::Castillo(std::string tipo): Entidad(tipo){
 	this->alto_base = 1;
 	this->ancho_base = 1;
 	this->pixel_ref_x = 0;
@@ -30,6 +30,10 @@ std::pair<int,int> Castillo::getPixelRef(){
 void Castillo::setPixelRef(int ref_x, int ref_y){
 	this->pixel_ref_x = ref_x;
 	this->pixel_ref_y = ref_y;
+}
+*/
+
+Castillo::Castillo(TipoEntidad tipo): Entidad(tipo){
 }
 
 Castillo::~Castillo() {

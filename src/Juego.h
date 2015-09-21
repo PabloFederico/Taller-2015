@@ -7,16 +7,19 @@
 
 #ifndef JUEGO_H_
 #define JUEGO_H_
+#include <stdio.h>
 #include "Exceptions.h"
 #include "Entidad.h"
 #include "VistaEntidad.h"
-#include "Suelo.h"
+#include "ConfigDefault.h"
+#include "Castillo.h"
 #include "Escenario.h"
+#include "Map.h"
 #include <map>
 #include <yaml-cpp/yaml.h>
 
-
-struct DatoPosicion {	/* Sin verificación de datos */
+/*
+struct DatoPosicion {	// Sin verificación de datos
 	int x, y;
 	std::string tipo;
 
@@ -27,11 +30,11 @@ struct DatoPosicion {	/* Sin verificación de datos */
 		x(d["x"].as<int>()), y(d["y"].as<int>()), tipo(d["tipo"].as<std::string>()) {};
 };
 
-struct DatosEscenario {		/* Sin verificación de datos */
+struct DatosEscenario {		// Sin verificación de datos
 	std::string nombre;
 	int size_x, size_y;
 	std::vector<DatoPosicion> entidades;
-	DatoPosicion protagonista;	/** Único protagonista; adaptable. */
+	DatoPosicion protagonista;	//// Único protagonista; adaptable. /
 
 	DatosEscenario(YAML::Node unEscenario) {
 		this->nombre = unEscenario["nombre"].as<std::string>();
@@ -45,38 +48,47 @@ struct DatosEscenario {		/* Sin verificación de datos */
 		this->protagonista = protag;
 	};
 };
-
+*/
 
 class Juego {
 private:
 	int screenWidth;
 	int screenHeight;
-	std::map<std::string,VistaEntidad*> *mapEntidades;
+	//std::map<std::string,VistaEntidad*> *mapEntidades;
+	
+	vector<InfoEntidad> vectorInfoTiposEntidades;
+	
 	Escenario *escenario;
 	Entidad *protagonista;
+
+	int vel_personaje;
+	int margen_scroll;
 
 	/* Carga la configuración inicial del juego a traves
 	 * de un archivo de configuración */
 	void cargarJuego();
 
-	void cargarEscenario(std::vector<DatosEscenario> vecEscenarios);
+//	void cargarEscenario(std::vector<DatosEscenario> vecEscenarios);
 
 	/* Carga en un map los tipos de entidades posibles del juego
 	 * (TIERRA , AGUA , ARBOL , CASTILLO, SOLDADO , etc)*/
-	void cargarConfigEntidad(std::string,VistaEntidad* vEntidad);
+//	void cargarConfigEntidad(std::string,VistaEntidad* vEntidad);
 
-	std::vector<DatosEscenario> parsearConfig(YAML::Node config);
+//	std::vector<DatosEscenario> parsearConfig(YAML::Node config);
 
 public:
 	Juego();
 
-	std::pair<int,int> dimensionVentana();
+	pair<int,int> dimensionVentana();
 
 	Escenario* getEscenario();
 
-	std::map<std::string,VistaEntidad*>* getMapEntidades();
+	vector<InfoEntidad> getInfoTiposEntidades();
+	//map<std::string,VistaEntidad*>* getMapEntidades();
 
 	Entidad* getProtagonista();
+
+	int getMargenScroll();
 
 	virtual ~Juego();
 };

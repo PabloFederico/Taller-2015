@@ -7,11 +7,13 @@
 
 #include "Entidad.h"
 
-Entidad::Entidad(std::string tipo) {
+//Entidad::Entidad(std::string tipo) {
+Entidad::Entidad(TipoEntidad tipo) {
 	this->tipo = tipo;
 }
 
-std::string Entidad::getTipo(){
+//std::string Entidad::getTipo(){
+TipoEntidad Entidad::getTipo(){
 	return this->tipo;
 }
 

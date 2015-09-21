@@ -10,42 +10,54 @@
 #include <map>
 
 template <class K,class V>
-class Map{
+class Map {
 private:
-	std::map<K,V>* map;
+	std::map<K,V> *mapa;
 
 public:
 	Map();
 
-	void put(K, V);
+	void insert(K,V);
 
-	V get(K);
+	typename std::map<K,V>::iterator find(K);
+
+	typename std::map<K,V>::iterator begin();
+
+	typename std::map<K,V>::iterator end();
 
 	virtual ~Map();
 };
 
 template <class K, class V>
 Map<K,V>::Map(){
-   this->map = new std::map<K,V>();
+   this->mapa = new std::map<K,V>();
 }
 
 template <class K, class V>
-void Map<K,V>::put(K key,V value){
-   this->map->insert(std::make_pair(key,value));
+void Map<K,V>::insert(K key,V value){
+   this->mapa->insert(std::make_pair(key,value));
 }
 
 template <class K, class V>
-V Map<K,V>::get(K key){
-	std::map<K,V>::iterator p = this->map->find(key);
-	//if (p != this->map->end()) return p.second;
-    return 0;
+typename std::map<K,V>::iterator Map<K,V>::find(K key){
+	typename std::map<K,V>::iterator p = this->mapa->find(key);
+	if (p != this->mapa->end()) return p;
+    return this->mapa->end();
+}
+
+template <class K, class V>
+typename std::map<K,V>::iterator Map<K,V>::begin(){
+	return this->mapa->begin();
+}
+
+template <class K, class V>
+typename std::map<K,V>::iterator Map<K,V>::end(){
+	return this->mapa->end();
 }
 
 template <class K, class V>
 Map<K,V>::~Map(){
-   delete this->map;
+   delete this->mapa;
 }
-
-
 
 #endif /* MAP_H_ */

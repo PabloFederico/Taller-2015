@@ -14,11 +14,19 @@
 
 class Loader {
 public:
-	Loader();
+	Loader(){};
 
-	Imagen* cargarImagen(SDL_Renderer* renderer, std::string path);
+	Imagen* cargarImagen(SDL_Renderer* renderer, std::string path){
+		SDL_Texture *texture = NULL;
+		SDL_Surface* surface = IMG_Load(path.c_str());
 
-	virtual ~Loader();
+		texture = SDL_CreateTextureFromSurface(renderer,surface);
+		Imagen* imagen = new Imagen(surface->w, surface->h, texture);
+
+		return imagen;
+	};
+
+	virtual ~Loader(){};
 };
 
 #endif /* LOADER_H_ */

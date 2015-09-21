@@ -12,19 +12,19 @@
 
 class Calculador {
 private:
-	int cero_x;
-	int cero_y;
-	int escala_x;
-	int escala_y;
+	int *cero_x;
+	int *cero_y;
 
 public:
-	Calculador(int cero_x, int cero_y, int escala_x, int escala_y);
+	Calculador(int *cero_x, int *cero_y);
 
 	double calcularDistancia(int X1, int Y1, int X2, int Y2);
 
 	std::pair<int,int> calcularPosicionRelativa(int x, int y);
 
 	Direccion calcularDireccion(int x_dest, int y_dest, int x_orig, int y_orig);
+
+	bool puntoContenidoEnEscenario(int x, int , int tiles_x, int tiles_yy);
 
 	virtual ~Calculador();
 };

@@ -5,37 +5,67 @@
  *      Author: pgfederi
  */
 #include <stdio.h>
-
 #include "Escenario.h"
 
-Escenario::Escenario(int ancho, int largo){
-	this->size_x = ancho;
-	this->size_y = largo;
-	this->mapPosicionesEntidades = new std::map<std::pair<int,int>, std::vector<Entidad*>* >();
+Escenario::Escenario(InfoEscenario info){
+	this->size_x = info.size_x;
+	this->size_y = info.size_y;
+	//this->mapPosicionesEntidades = new std::map<std::pair<int,int>, std::vector<Entidad*>* >();
+	this->mapPosicionesEntidades = new Map<pair<int,int>,vector<Entidad*>*>();
+
+	map<pair<int,int>,vector<TipoEntidad> > mapAux = info.getPosicionesEntidades();
+	map<pair<int,int>,vector<TipoEntidad> >::iterator it = info.getPosicionesEntidades().begin();
+	while(it != info.getPosicionesEntidades().end()){
+		pair<int,int> pos = (*it).first;
+		vector<TipoEntidad> tipos = mapAux[pos];
+		for (unsigned i = 0; i < tipos.size(); i++){
+			TipoEntidad tipo = TipoEntidad(tipos[i]);
+			Entidad *entidad = new Entidad(tipo);
+			this->agregarEntidad(pos,entidad);
+		}
+		it++;
+	}
+	this->protagonista = new Entidad(info.protagonista);
+	pair<int,int> pos(info.posX_protagonista,info.posY_protagonista);
+	this->agregarEntidad(pos,this->protagonista);
 }
 
-std::pair<int,int> Escenario::getDimension(){
+/********************************************************************************/
+Entidad* Escenario::getProtagonista(){
+	return this->protagonista;
+}
+
+/********************************************************************************/
+pair<int,int> Escenario::getDimension(){
 	return std::make_pair(this->size_x,this->size_y);
 }
 
-std::map<std::pair<int,int>, std::vector<Entidad*>* >* Escenario::getPosEntidades(){
+/********************************************************************************/
+Map<pair<int,int>, vector<Entidad*>* >* Escenario::getPosEntidades(){
 	return this->mapPosicionesEntidades;
 }
 
-void Escenario::agregarEntidad(std::pair<int,int> pos, Entidad* entidad){
-	std::map<std::pair<int,int>,std::vector<Entidad*>* >::iterator p = this->mapPosicionesEntidades->find(pos);
+/********************************************************************************/
+void Escenario::agregarEntidad(pair<int,int> pos, Entidad* entidad){
+	map<std::pair<int,int>,vector<Entidad*>* >::iterator p = this->mapPosicionesEntidades->find(pos);
 	if (p == this->mapPosicionesEntidades->end()){
-		std::vector<Entidad*> *entidades = new std::vector<Entidad*>();
+		vector<Entidad*> *entidades = new vector<Entidad*>();
 		entidades->push_back(entidad);
-		this->mapPosicionesEntidades->insert(std::make_pair(pos,entidades));
+		//this->mapPosicionesEntidades->insert(std::make_pair(pos,entidades));
+		this->mapPosicionesEntidades->insert(pos,entidades);
 	}
 	else (*p).second->push_back(entidad);
 }
 
+/********************************************************************************/
 Escenario::~Escenario() {
-	std::map<std::pair<int,int>,std::vector<Entidad*>* >::iterator p = this->mapPosicionesEntidades->begin();
+	map<pair<int,int>,vector<Entidad*>* >::iterator p = this->mapPosicionesEntidades->begin();
 	while (p != this->mapPosicionesEntidades->end()){
-		std::vector<Entidad*> *vectorEntidades = (*p).second;
+		vector<Entidad*> *vectorEntidades = (*p).second;
+		for (unsigned i = 0; i < vectorEntidades->size(); i++){
+			Entidad* entidad = (*vectorEntidades)[i];
+			delete entidad;
+		}
 		p++;
 		delete vectorEntidades;	// ¿Esto borra sólo el vector o también hace delete de cada entidad en el mismo?
 	}

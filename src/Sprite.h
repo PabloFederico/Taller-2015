@@ -16,6 +16,8 @@ private:
 	int cant_Direcciones;
 	int cant_Img_Distintas;
 	Imagen* imagen;
+	int fps;
+	int delay;
 
 	SDL_Rect** frames;
 	SDL_Rect frameActual;
@@ -35,6 +37,20 @@ public:
 	Imagen* getImagen();
 
 	SDL_Rect getSDLRectActual();
+
+	int getFps();
+
+	void setFps(int fps);
+
+	void setDelay(int delay);
+
+	SDL_Rect getSDLRect(int i, int j);
+
+	int cantidadDirecciones();
+
+	int cantidadImgDiferentes();
+
+	void acomodar();
 
 	virtual ~Sprite();
 };

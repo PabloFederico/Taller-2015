@@ -11,14 +11,15 @@
 #include <map>
 
 class Castillo : public Entidad{
-private:
+/*private:
 	int ancho_base;
 	int alto_base;
 	int pixel_ref_x;
 	int pixel_ref_y;
+*/
 
 public:
-	Castillo(std::string tipo);
+/*	Castillo(std::string tipo);
 
 	void setDimension(int ancho, int alto);
 
@@ -27,6 +28,8 @@ public:
 	std::pair<int,int> getPixelRef();
 
 	void setPixelRef(int ref_x, int ref_y);
+*/
+	Castillo(TipoEntidad tipo);
 
 	virtual ~Castillo();
 };

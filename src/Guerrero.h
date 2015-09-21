@@ -5,20 +5,21 @@
  *      Author: emanuel
  */
 
-#ifndef SOLDADO_H_
-#define SOLDADO_H_
+#ifndef GUERRERO_H_
+#define GUERRERO_H_
 #include "Entidad.h"
 
-class Soldado : public Entidad{
+class Guerrero : public Entidad{
 private:
 	int fps;
 	int delay;
-
 public:
-	Soldado(std::string tipo);
+	Guerrero(TipoEntidad tipo);
+	int getFps();
 	void setFps(int fps);
+	int getDelay();
 	void setDelay(int delay);
-	virtual ~Soldado();
+	virtual ~Guerrero();
 };
 
-#endif /* SOLDADO_H_ */
+#endif /* GUERRERO_H_ */
