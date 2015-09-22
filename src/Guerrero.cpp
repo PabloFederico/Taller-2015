@@ -9,7 +9,7 @@
 
 Guerrero::Guerrero(TipoEntidad tipo):Entidad(tipo) {
 	this->fps = 1;
-	this->delay = 0;
+	this->delay = 1;
 }
 
 int Guerrero::getFps(){

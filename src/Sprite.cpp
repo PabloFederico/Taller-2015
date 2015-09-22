@@ -7,17 +7,21 @@
 
 #include "Sprite.h"
 
-Sprite::Sprite(int cant_Direcciones, int cant_Img_Distintas, Imagen* imagen){
+Sprite::Sprite(int cant_Direcciones, Uint32 cant_Img_Distintas, Imagen* imagen){
 	this->cant_Direcciones = cant_Direcciones;
 	this->cant_Img_Distintas = cant_Img_Distintas;
 	this->imagen = imagen;
 	this->frames = new SDL_Rect*[cant_Direcciones];
+	this->ticks =SDL_GetTicks(); //Veo cuantos ciclos va
+	this->segundos = ticks/1000 ; // convierto esa cantidad de ticks a segundos (me interesa la parte entera nomas)
+	this->num_sprite = segundos/cant_Img_Distintas; // Quiero un frame por segundo, divido los segs por cant de frames y cuando eso me de  mayor que
+														// cant de img distintas, ahi vuelvo a animar otravez
 
 	for (int i = 0; i < cant_Direcciones; i++){
 		this->frames[i] = new SDL_Rect[cant_Img_Distintas];
 	}
-	this->fps = 20;
-	this->delay = 0;
+	this->fps = 30;
+	this->delay = 100;
 
 	this->cargarFrames();
 
@@ -60,12 +64,12 @@ void Sprite::setDireccion(int direccion){
 
 /********************************************************************************/
 void Sprite::efectuarMovimiento(){
-	if (this->indexSpriteActual < this->cant_Img_Distintas)
+	if (this->num_sprite < this->cant_Img_Distintas)
 		this->indexSpriteActual++;
 	else this->indexSpriteActual = 0;
 
-	this->frameActual = this->frames[this->direccion][this->indexSpriteActual];
-	SDL_Delay(this->delay);
+	this->frameActual = this->frames[this->direccion][this->indexSpriteActual%this->cant_Img_Distintas];
+
 }
 
 /********************************************************************************/
@@ -104,7 +108,8 @@ int Sprite::cantidadImgDiferentes(){
 
 /********************************************************************************/
 void Sprite::acomodar(){
-	this->frameActual = this->frames[this->direccion][this->cant_Img_Distintas-1];
+
+	this->frameActual = this->frames[this->direccion][1];
 }
 /********************************************************************************/
 Sprite::~Sprite() {
