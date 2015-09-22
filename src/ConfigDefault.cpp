@@ -8,8 +8,6 @@
 #include "ConfigDefault.h"
 
 
-
-
 void crearConfigDefault () {
 	std::vector< std::map<std::string,std::string> > vec;
 
@@ -119,7 +117,7 @@ void crearConfigDefault () {
 
 	out << YAML::EndMap;
 
-	// código de prueba
+	//código de prueba
 	//std::cout << out.c_str() << std::endl;
 
 	std::ofstream fout("config.yaml");

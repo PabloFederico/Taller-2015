@@ -76,8 +76,8 @@ bool Calculador::puntoContenidoEnEscenario(int x, int y, int tiles_x, int tiles_
 			x_relativo += DISTANCIA_ENTRE_X;
 			y_relativo += DISTANCIA_ENTRE_Y;
 		}
-		cero_relativo_x = cero_relativo_x - DISTANCIA_ENTRE_X;
-		cero_relativo_y = cero_relativo_y + DISTANCIA_ENTRE_Y;
+		cero_relativo_x -= DISTANCIA_ENTRE_X;
+		cero_relativo_y += DISTANCIA_ENTRE_Y;
 
 	}
 	return contenido;

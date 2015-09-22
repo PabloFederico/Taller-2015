@@ -42,6 +42,10 @@ struct InfoEscenario{
 	map<pair<int,int>, vector<TipoEntidad> > getPosicionesEntidades(){
 		return this->mapPosTipoEntidades;
 	}
+
+	bool operator!() {
+		return !((size_x > 0) && (size_y > 0) && (posX_protagonista >= 0) && (posY_protagonista >= 0));
+	}
 };
 
 class Escenario {

@@ -76,6 +76,8 @@ private:
 
 //	std::vector<DatosEscenario> parsearConfig(YAML::Node config);
 
+	InfoEscenario infoEscenarioDefault();
+
 public:
 	Juego();
 

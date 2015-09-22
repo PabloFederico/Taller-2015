@@ -23,7 +23,7 @@ struct InfoEntidad{
 	int delay;
 	InfoEntidad(){
 		tipo = DEFAULT;
-		path = "";
+		path = "images/mann.png";	// Acá poner la imagen de ImagenNoEncontrada.
 		ancho = 1;
 		alto = 1;
 		pixel_ref_x = 0;

@@ -11,20 +11,20 @@ tipos:
     imagen: images/arbol.png
 
   - nombre: castillo
-    alto_base: 2
-    ancho_base: 2
-    imagen: images/castle.png
+    alto_base: 3
+    ancho_base: 4
+    imagen: images/castillo.png
     pixel_ref_x: 30
     pixel_ref_y: 40
 
   - nombre: soldado
     delay: 5
-    fps: 10
-    imagen: images/man.png
+    fps: 40
+    imagen: images/soldado.png
 
   - nombre: juana_de_arco
     fps: 10
-    imagen: images/man.png	# Faltante
+    imagen: images/juana.png
 
   - nombre: tierra
     imagen: images/tierra.png
@@ -34,14 +34,20 @@ tipos:
 
 escenario:
   - nombre: orleans
-    size_x: 100
-    size_y: 100
+    size_x: 30
+    size_y: 30
     entidades:
-      - {x: 10, y: 15, tipo: tierra}
-      - {x: 10, y: 20, tipo: tierra}
-      - {x: 10, y: 15, tipo: agua}
-      - {x: 30, y: 55, tipo: castillo}
+      - {x: 10, y: 0, tipo: agua}
+      - {x: 11, y: 0, tipo: tierra}
+      - {x: 4, y: 10, tipo: agua}
+      - {x: 4, y: 11, tipo: castillo}
+      - {x: 4, y: 12, tipo: tierra}
+      - {x: 4, y: 5, tipo: arbol}
+      - {x: 4, y: 6, tipo: arbol}
+      - {x: 5, y: 5, tipo: arbol}
+      - {x: 4, y: 12, tipo: arbol}
+      - {x: 0, y: 10, tipo: castillo}
     protagonista:
-      - tipo: juana_de_arco
-        x: 50
-        y: 50
+      - tipo: soldado	#juana_de_arco
+        x: 25
+        y: 25
