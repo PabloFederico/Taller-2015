@@ -55,7 +55,6 @@ class Juego {
 private:
 	int screenWidth;
 	int screenHeight;
-	//std::map<std::string,VistaEntidad*> *mapEntidades;
 	
 	vector<InfoEntidad> vectorInfoTiposEntidades;
 	
@@ -69,15 +68,12 @@ private:
 	 * de un archivo de configuración */
 	void cargarJuego();
 
-//	void cargarEscenario(std::vector<DatosEscenario> vecEscenarios);
-
-	/* Carga en un map los tipos de entidades posibles del juego
-	 * (TIERRA , AGUA , ARBOL , CASTILLO, SOLDADO , etc)*/
-//	void cargarConfigEntidad(std::string,VistaEntidad* vEntidad);
-
-//	std::vector<DatosEscenario> parsearConfig(YAML::Node config);
-
 	InfoEscenario infoEscenarioDefault();
+
+	InfoEscenario parsearConfig();
+
+	//de prueba		!!!
+	InfoEscenario OdioYAML();
 
 public:
 	Juego();

@@ -43,7 +43,23 @@ void Juego::cargarJuego(){
 	this->margen_scroll = 30;
 	//	std::vector<InfoEscenario> vecEscenarios;
 
-	map<string,TipoEntidad> tipos;
+	//----------------------------------------------------------------------------------------!!
+	InfoEscenario infoEsc = parsearConfig();
+	// !!! Para el que no le funciona YAML, comentar la línea de arriba y descomentar la de abajo.
+	//InfoEscenario infoEsc = OdioYAML();
+	//----------------------------------------------------------------------------------------!!
+
+
+	// Acá me imagino la posibilidad de un selector de escenarios.
+
+	this->escenario = new Escenario(infoEsc);
+	this->protagonista = this->escenario->getProtagonista();
+
+}
+
+/********************************************************************************/
+InfoEscenario Juego::parsearConfig() {
+map<string,TipoEntidad> tipos;
 		tipos["arbol"] = ARBOL;
 		tipos["tierra"] = TIERRA;
 		tipos["agua"] = AGUA;
@@ -146,11 +162,7 @@ void Juego::cargarJuego(){
 		std::cerr << "Errores en la configuración de escenario; se utilizará uno predeterminado" << std::endl;
 	}
 
-	// Acá me imagino la posibilidad de un selector de escenarios.
-
-	this->escenario = new Escenario(infoEsc);
-	this->protagonista = this->escenario->getProtagonista();
-
+	return infoEsc;
 }
 
 /********************************************************************************/
@@ -197,3 +209,53 @@ Juego::~Juego() {
 	delete this->escenario;
 }
 
+
+
+/*************!!!***********************!!!**************************!!!********/
+InfoEscenario Juego::OdioYAML() {
+	map<string,TipoEntidad> tipos;
+		tipos["arbol"] = ARBOL;
+		tipos["tierra"] = TIERRA;
+		tipos["agua"] = AGUA;
+		tipos["castillo"] = CASTILLO;
+		tipos["soldado"] = SOLDADO;
+		tipos["juana_de_arco"] = JUANA_DE_ARCO;
+
+	InfoEntidad infoArbol;
+	infoArbol.tipo = tipos["arbol"];
+	infoArbol.path = "images/arbol.png";
+
+	InfoEntidad infoTierra;
+	infoTierra.tipo = tipos["tierra"];
+	infoTierra.path = "images/tierra.png";
+
+	InfoEntidad infoAgua;
+	infoAgua.tipo = tipos["agua"];
+	infoAgua.path = "images/agua.png";
+
+	InfoEntidad infoCastillo;
+	infoCastillo.tipo = tipos["castillo"];
+	infoCastillo.path = "images/castillo.png";
+	infoCastillo.ancho = 4;
+	infoCastillo.alto = 3;
+
+	InfoEntidad infoSoldado;
+	infoSoldado.tipo = tipos["soldado"];
+	infoSoldado.path = "images/soldado.png";
+	infoSoldado.fps = 40;
+	infoSoldado.delay = 5;
+
+	InfoEntidad infoJuana;
+	infoJuana.tipo = tipos["juana_de_arco"];
+	infoJuana.path = "images/juana.png";
+	infoJuana.fps = 10;
+
+	this->vectorInfoTiposEntidades.push_back(infoArbol);
+	this->vectorInfoTiposEntidades.push_back(infoTierra);
+	this->vectorInfoTiposEntidades.push_back(infoAgua);
+	this->vectorInfoTiposEntidades.push_back(infoCastillo);
+	this->vectorInfoTiposEntidades.push_back(infoSoldado);
+	this->vectorInfoTiposEntidades.push_back(infoJuana);
+
+	return infoEscenarioDefault();
+}
