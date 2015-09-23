@@ -17,6 +17,7 @@
 #include "Map.h"
 #include <map>
 #include <yaml-cpp/yaml.h>
+#include <unistd.h>
 
 /*
 struct DatoPosicion {	// Sin verificación de datos

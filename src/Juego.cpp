@@ -37,8 +37,8 @@ Entidad* Juego::getProtagonista(){
 /********************************************************************************/
 void Juego::cargarJuego(){
 	// Valores default
-	this->screenWidth = 800;
-	this->screenHeight = 600;
+	this->screenWidth = 1920;
+	this->screenHeight = 1080;
 	this->vel_personaje = 5;
 	this->margen_scroll = 30;
 	//	std::vector<InfoEscenario> vecEscenarios;

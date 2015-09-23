@@ -3,8 +3,8 @@ pantalla:
   alto: 600
 
 configuracion:
-  vel_personaje: 3
-  margen_scroll: 30
+  vel_personaje: 10
+  margen_scroll: 50
 
 tipos:
   - nombre: arbol
@@ -37,15 +37,15 @@ escenario:
     size_x: 30
     size_y: 30
     entidades:
-      - {x: 10, y: 0, tipo: agua}
-      - {x: 11, y: 0, tipo: tierra}
+      - {x: 25, y: 0, tipo: agua}
+      - {x: 22, y: 0, tipo: tierra}
       - {x: 4, y: 10, tipo: agua}
       - {x: 4, y: 11, tipo: castillo}
-      - {x: 4, y: 12, tipo: tierra}
+      - {x: 30, y: 12, tipo: tierra}
       - {x: 4, y: 5, tipo: arbol}
       - {x: 4, y: 6, tipo: arbol}
       - {x: 5, y: 5, tipo: arbol}
-      - {x: 4, y: 12, tipo: arbol}
+      - {x: 15, y: 12, tipo: arbol}
       - {x: 0, y: 10, tipo: castillo}
     protagonista:
       - tipo: soldado	#juana_de_arco

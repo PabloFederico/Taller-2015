@@ -172,8 +172,8 @@ void VentanaJuego::cargarPosicionesEntidades(Map<std::pair<int,int>, vector<Enti
 	    						posicion.h = (ALTO_PIXEL_PASTO * this->mapInfoEntidades[CASTILLO].ancho + ALTO_PIXEL_PASTO) / this->mapInfoEntidades[CASTILLO].ancho;
 	    						break;
 	    		case SOLDADO  :	posicion.x += ANCHO_PIXEL_PASTO / 4;
-	    						posicion.w = ANCHO_PIXEL_PASTO / 4;
-	    						posicion.h = ALTO_PIXEL_PASTO * 3 / 4;
+	    						posicion.w = ANCHO_PIXEL_PASTO / 2;
+	    						posicion.h = ALTO_PIXEL_PASTO *5 / 4;
 	    						break;
 	    		case JUANA_DE_ARCO :
 	    						posicion.x += ANCHO_PIXEL_PASTO / 4;
@@ -303,7 +303,8 @@ void VentanaJuego::mostrar(){
 
 			if (event.type == SDL_QUIT) run = false;
 			SDL_GetMouseState(&MouseX,&MouseY);
-
+			cout << "POSX" << MouseX << endl;
+			cout << "POSY" << MouseY << endl;
 /////* OLD
 			/* Analisis del evento de movimiento
 			if (event.type == SDL_MOUSEBUTTONDOWN){
@@ -398,7 +399,7 @@ void VentanaJuego::procesarScroll(int MouseX, int MouseY,
 			if (MouseX < MARGEN_SCROLL / 2) cantidad = MARGEN_SCROLL;
 			else cantidad = MARGEN_SCROLL / 2;
 
-			if ((*this->cero_x) < LIMITE_DESPLAZAMIENTO_EN_X){
+			if ((*this->cero_x) < LIMITE_DESPLAZAMIENTO_EN_X ){
 				*cero_x += cantidad;
 				this->posicionPlayer.x += cantidad;
 				posPlayerX += cantidad;
@@ -409,10 +410,11 @@ void VentanaJuego::procesarScroll(int MouseX, int MouseY,
 
 		/* La camara se mueve hacia la derecha */
 		if (MouseX > SCREEN_WIDTH - MARGEN_SCROLL && MouseX < SCREEN_WIDTH){
-			if (MouseX > SCREEN_WIDTH - MARGEN_SCROLL / 2) cantidad = MARGEN_SCROLL;
+			if (MouseX > SCREEN_WIDTH - MARGEN_SCROLL / 2)
+				cantidad = MARGEN_SCROLL;
 			else cantidad = MARGEN_SCROLL / 2;
 
-			if (*this->cero_x > - LIMITE_DESPLAZAMIENTO_EN_X){
+			if (*this->cero_x > - LIMITE_DESPLAZAMIENTO_EN_X +((TILES_X/13)*TILES_X)){
 				*cero_x -= cantidad;
 				this->posicionPlayer.x -= cantidad;
 				posPlayerX -= cantidad;
@@ -463,7 +465,7 @@ void VentanaJuego::procesarClick(SDL_Event event, int MouseX, int MouseY,
             Follow_Point_Y = MouseY - posicionPlayer.h / 2;
 
             /* Validación de click dentro del escenario */
-            if (this->calculador->puntoContenidoEnEscenario(Follow_Point_X,Follow_Point_Y,this->TILES_X, this->TILES_Y)){
+            if (this->calculador->puntoContenidoEnEscenario(Follow_Point_X+posicionPlayer.w,Follow_Point_Y+posicionPlayer.h,this->TILES_X, this->TILES_Y)){
                 Follow = true;
                 x_anterior = Follow_Point_X;
                 y_anterior = Follow_Point_Y;
@@ -472,8 +474,10 @@ void VentanaJuego::procesarClick(SDL_Event event, int MouseX, int MouseY,
             }else {
             	/* Si el click esta fuera del escenario, su punto destino será
             	 * el anterior al click (si es que se encontraba en movimiento) */
-            	Follow_Point_X = x_anterior;
-            	Follow_Point_Y = y_anterior;
+
+
+            	Follow_Point_X = MouseX - posicionPlayer.w /2;
+            	Follow_Point_Y = MouseY - posicionPlayer.h/2;
             }
 
 		}
@@ -484,13 +488,13 @@ void VentanaJuego::procesarClick(SDL_Event event, int MouseX, int MouseY,
 
 		if (distance > 1){
             if (posX_player != Follow_Point_X) {
-            	float x_result = (posX_player - ((posX_player - Follow_Point_X) / distance) * 1.5f);
+            	float x_result = (posX_player - ((posX_player - Follow_Point_X) / distance) * 3.5f);
             	posicionPlayer.x = int(x_result);
             	posX_player = x_result;
             }
 
             if (posY_player != Follow_Point_Y) {
-                float y_result = (posY_player - ((posY_player - Follow_Point_Y) / distance) * 1.5f);
+                float y_result = (posY_player - ((posY_player - Follow_Point_Y) / distance) * 3.5f);
                 posicionPlayer.y = int(y_result);
                 posY_player = y_result;
             }

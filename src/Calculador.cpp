@@ -32,7 +32,7 @@ std::pair<int,int> Calculador::calcularPosicionRelativa(int x, int y){
 double Calculador::calcularDistancia(int X1, int Y1, int X2, int Y2){
 	double DifferenceX = X1 - X2;
     double DifferenceY = Y1 - Y2;
-    double distance = sqrt((DifferenceX * DifferenceX) + (DifferenceY * DifferenceY));
+    double distance = floor(sqrt((DifferenceX * DifferenceX) + (DifferenceY * DifferenceY)))	;
     return distance;
 }
 
