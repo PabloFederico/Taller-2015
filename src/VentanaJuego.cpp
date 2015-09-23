@@ -178,8 +178,8 @@ void VentanaJuego::cargarPosicionesEntidades(Map<std::pair<int,int>, vector<Enti
 	    						break;
 	    		case JUANA_DE_ARCO :
 	    						posicion.x += ANCHO_PIXEL_PASTO / 4;
-	    						posicion.w = ANCHO_PIXEL_PASTO / 2;
-	    						posicion.h = ALTO_PIXEL_PASTO / 2;
+	    						posicion.w = ANCHO_PIXEL_PASTO / 3;
+	    						posicion.h = ALTO_PIXEL_PASTO * 3 / 4;
 	    						break;
 	    		default       : break;
 	    	}
