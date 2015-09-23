@@ -499,13 +499,13 @@ void VentanaJuego::procesarClick(SDL_Event event, int MouseX, int MouseY,
 
 		if (distance > 1){
             if (posX_player != Follow_Point_X) {
-            	float x_result = (posX_player - ((posX_player - Follow_Point_X) / distance) *this->velocidad_personaje  * dt);
+            	float x_result = (posX_player - ((posX_player - Follow_Point_X) / distance) *(this->velocidad_personaje*10)  * dt);
             	posicionPlayer.x = int(x_result);
             	posX_player = x_result;
             }
 
             if (posY_player != Follow_Point_Y) {
-                float y_result = (posY_player - ((posY_player - Follow_Point_Y) / distance) * this->velocidad_personaje * dt);
+                float y_result = (posY_player - ((posY_player - Follow_Point_Y) / distance) * (this->velocidad_personaje*10) * dt);
                 posicionPlayer.y = int(y_result);
                 posY_player = y_result;
             }
