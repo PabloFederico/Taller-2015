@@ -19,7 +19,7 @@ tipos:
 
   - nombre: soldado
     delay: 5
-    fps: 10
+    fps: 60
     imagen: images/soldado.png
 
   - nombre: juana_de_arco

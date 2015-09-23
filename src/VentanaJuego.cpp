@@ -280,97 +280,107 @@ void VentanaJuego::dibujar(){
 
 /********************************************************************************/
 void VentanaJuego::mostrar(){
-	bool run = true;
-	SDL_Event event;
+		float dt;
+		Uint32 frame_ant = 0;
+		Uint32 frame_act = 0;
+		Uint32 mil_fps = 1000/this->spritePlayer->getFps();
+		bool run = true;
+		SDL_Event event;
+		SDL_Cursor* cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_HAND);
+		if (cursor == NULL) printf("Fallo la creacion del cursor %s",SDL_GetError());
+		SDL_SetCursor(cursor);
+		float posX_player = float(this->posicionPlayer.x);
+		float posY_player = float(this->posicionPlayer.y);
 
-	float posX_player = float(this->posicionPlayer.x);
-	float posY_player = float(this->posicionPlayer.y);
+		int MouseX, MouseY;
 
-	int MouseX, MouseY;
+		/* Indica si el protagonista debe seguir moviendose */
+		bool Follow = false;
 
-	/* Indica si el protagonista debe seguir moviendose */
-	bool Follow = false;
+	    /* Siguiente punto a donde debería moverse el protagonista */
+	    int Follow_Point_X;
+	    int Follow_Point_Y;
 
-    /* Siguiente punto a donde debería moverse el protagonista */
-    int Follow_Point_X;
-    int Follow_Point_Y;
+	    int x_anterior;
+	    int y_anterior;
+	    frame_act = SDL_GetTicks();
+			while (run && event.type != SDL_QUIT){
+				frame_ant = frame_act;
+				frame_act = SDL_GetTicks();
+				dt = (float) (frame_act - frame_ant)/1000;
 
-    int x_anterior;
-    int y_anterior;
+				SDL_PollEvent(&event);
 
-		while (run && event.type != SDL_QUIT){
-
-			SDL_PollEvent(&event);
-
-			if (event.type == SDL_QUIT) run = false;
-			SDL_GetMouseState(&MouseX,&MouseY);
-
-/////* OLD
-			/* Analisis del evento de movimiento
-			if (event.type == SDL_MOUSEBUTTONDOWN){
-				if (event.button.button == SDL_BUTTON_LEFT){
-                    Follow_Point_X = MouseX - posicionPlayer.w / 2;
-                    Follow_Point_Y = MouseY - posicionPlayer.h / 2;
-                    Follow = true;
-                    Direccion direccion = this->calculador->calcularDireccion(Follow_Point_X, Follow_Point_Y, posicionPlayer.x, posicionPlayer.y);
-                    this->spritePlayer->setDireccion(direccion);
+				if (event.type == SDL_QUIT) run = false;
+				SDL_GetMouseState(&MouseX,&MouseY);
+	/////* OLD
+				/* Analisis del evento de movimiento
+				if (event.type == SDL_MOUSEBUTTONDOWN){
+					if (event.button.button == SDL_BUTTON_LEFT){
+	                    Follow_Point_X = MouseX - posicionPlayer.w / 2;
+	                    Follow_Point_Y = MouseY - posicionPlayer.h / 2;
+	                    Follow = true;
+	                    Direccion direccion = this->calculador->calcularDireccion(Follow_Point_X, Follow_Point_Y, posicionPlayer.x, posicionPlayer.y);
+	                    this->spritePlayer->setDireccion(direccion);
+					}
 				}
+
+	            if (Follow) {
+	            	float distance = this->calculador->calcularDistancia(posX_player, posY_player, Follow_Point_X, Follow_Point_Y);
+
+					if (distance != 0){
+	                    if (posX_player != Follow_Point_X) {
+	                    	float x_result = (posX_player - ((posX_player - Follow_Point_X) / distance) * 1.5f);
+	                    	posicionPlayer.x = int(x_result);
+	                    	posX_player = x_result;
+	                    }
+
+	                    if (posY_player != Follow_Point_Y) {
+	                        float y_result = (posY_player - ((posY_player - Follow_Point_Y) / distance) * 1.5f);
+	                        posicionPlayer.y = int(y_result);
+	                        posY_player = y_result;
+	                    }
+	                    this->spritePlayer->efectuarMovimiento();
+	                 }else  Follow = false;
+	            }
+	            /* Fin de analisis de evento de movimiento */
+	/////
+
+				int orig_inicial_x = *this->cero_x;
+				int orig_inicial_y = *this->cero_y;
+				this->procesarScroll(MouseX,MouseY,
+									posX_player,posY_player,
+									x_anterior,y_anterior,
+									Follow_Point_X,Follow_Point_Y);
+
+				/* Analizamos si hubo algún corrimiento del scroll.
+				 * si corrimiento_x ó corrimiento_y son distintos de cero,
+				 * entonces hubo un corrimiento. */
+				int corrimiento_x = *this->cero_x - orig_inicial_x;
+				int corrimiento_y = *this->cero_y - orig_inicial_y;
+
+				if (corrimiento_x != 0 || corrimiento_y != 0){
+					this->actualizarPosicionesEntidades(corrimiento_x, corrimiento_y);
+				}
+
+				this->procesarClick(event,MouseX,MouseY,
+										  posX_player,posY_player,
+										  x_anterior,y_anterior,
+										  Follow_Point_X,Follow_Point_Y,Follow,dt);
+
+
+	            /* Actualiza el renderer */
+	            this->dibujar();
+
+	            SDL_RenderPresent(this->renderer);
+	            cout << mil_fps -(SDL_GetTicks() - frame_act) << endl;
+	            if (mil_fps > (SDL_GetTicks() - frame_act)) SDL_Delay(mil_fps -(SDL_GetTicks() - frame_act));
+	            //SDL_Delay(1000/this->spritePlayer->getFps());
+
 			}
 
-            if (Follow) {
-            	float distance = this->calculador->calcularDistancia(posX_player, posY_player, Follow_Point_X, Follow_Point_Y);
+	}
 
-				if (distance != 0){
-                    if (posX_player != Follow_Point_X) {
-                    	float x_result = (posX_player - ((posX_player - Follow_Point_X) / distance) * 1.5f);
-                    	posicionPlayer.x = int(x_result);
-                    	posX_player = x_result;
-                    }
-
-                    if (posY_player != Follow_Point_Y) {
-                        float y_result = (posY_player - ((posY_player - Follow_Point_Y) / distance) * 1.5f);
-                        posicionPlayer.y = int(y_result);
-                        posY_player = y_result;
-                    }
-                    this->spritePlayer->efectuarMovimiento();
-                 }else  Follow = false;
-            }
-            /* Fin de analisis de evento de movimiento */
-/////
-
-			int orig_inicial_x = *this->cero_x;
-			int orig_inicial_y = *this->cero_y;
-			this->procesarScroll(MouseX,MouseY,
-								posX_player,posY_player,
-								x_anterior,y_anterior,
-								Follow_Point_X,Follow_Point_Y);
-
-			/* Analizamos si hubo algún corrimiento del scroll.
-			 * si corrimiento_x ó corrimiento_y son distintos de cero,
-			 * entonces hubo un corrimiento. */
-			int corrimiento_x = *this->cero_x - orig_inicial_x;
-			int corrimiento_y = *this->cero_y - orig_inicial_y;
-
-			if (corrimiento_x != 0 || corrimiento_y != 0){
-				this->actualizarPosicionesEntidades(corrimiento_x, corrimiento_y);
-			}
-
-			this->procesarClick(event,MouseX,MouseY,
-									  posX_player,posY_player,
-									  x_anterior,y_anterior,
-									  Follow_Point_X,Follow_Point_Y,Follow);
-
-
-            /* Actualiza el renderer */
-            this->dibujar();
-
-            SDL_RenderPresent(this->renderer);
-
-            SDL_Delay(1000/this->spritePlayer->getFps());
-
-		}
-
-}
 
 /********************************************************************************/
 void VentanaJuego::actualizarPosicionesEntidades(int corrimiento_x, int corrimiento_y){
@@ -456,7 +466,7 @@ void VentanaJuego::procesarScroll(int MouseX, int MouseY,
 void VentanaJuego::procesarClick(SDL_Event event, int MouseX, int MouseY,
 												  float &posX_player, float &posY_player,
 												  int &x_anterior, int &y_anterior,
-												  int &Follow_Point_X, int &Follow_Point_Y, bool &Follow){
+												  int &Follow_Point_X, int &Follow_Point_Y, bool &Follow, float dt){
 
 	//======Analisis del evento de movimiento======//
 	if (event.type == SDL_MOUSEBUTTONDOWN){
@@ -488,13 +498,13 @@ void VentanaJuego::procesarClick(SDL_Event event, int MouseX, int MouseY,
 
 		if (distance > 1){
             if (posX_player != Follow_Point_X) {
-            	float x_result = (posX_player - ((posX_player - Follow_Point_X) / distance) * 3.5f);
+            	float x_result = (posX_player - ((posX_player - Follow_Point_X) / distance) * 30.0 * dt);
             	posicionPlayer.x = int(x_result);
             	posX_player = x_result;
             }
 
             if (posY_player != Follow_Point_Y) {
-                float y_result = (posY_player - ((posY_player - Follow_Point_Y) / distance) * 3.5f);
+                float y_result = (posY_player - ((posY_player - Follow_Point_Y) / distance) * 30.0 * dt);
                 posicionPlayer.y = int(y_result);
                 posY_player = y_result;
             }

@@ -85,7 +85,7 @@ private:
 	void procesarClick(SDL_Event event, int MouseX, int MouseY,
 										float &posPlayerX, float &posPlayerY,
 										int &x_anterior, int &y_anterior,
-										int &followX, int &followY, bool &Follow);
+										int &followX, int &followY, bool &Follow, float dt);
 
 	/* Actualiza las posiciones de las entidades según el movimiento de la cámara*/
 	void actualizarPosicionesEntidades(int corrimiento_x, int corrimiento_y);
