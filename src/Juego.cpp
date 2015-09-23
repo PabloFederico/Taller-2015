@@ -75,6 +75,10 @@ InfoEscenario Juego::parsearConfig() {
 		crearConfigDefault();
 		config = YAML::LoadFile("config.yaml");
 	}
+	catch (YAML::ParserException &e) {
+		std::cerr << "Error en el archivo de configuración: se tomarán los valores por defecto." << std::endl;
+		return OdioYAML();
+	}
 
 	InfoEscenario infoEsc;
 
@@ -88,7 +92,7 @@ InfoEscenario Juego::parsearConfig() {
 		else std::cout << "Ancho de pantalla no definido, se tomará " << this->screenWidth << std::endl;
 
 		if (config["configuracion"]["vel_personaje"])
-			vel_personaje = config["configuracion"]["vel_personaje"].as<int>();
+			vel_personaje = ChequeoDeBorde(250, config["configuracion"]["vel_personaje"].as<int>());
 		else std::cout << "Velocidad de personaje no definido, se tomará " << vel_personaje << std::endl;
 		if (config["configuracion"]["margen_scroll"] && config["configuracion"]["margen_scroll"].as<int>() >= 0)
 			margen_scroll = config["configuracion"]["margen_scroll"].as<int>();
@@ -103,7 +107,7 @@ InfoEscenario Juego::parsearConfig() {
 					iE.tipo = tipos[unTipo["nombre"].as<string>()];
 					if ((unTipo["imagen"]) && (access(unTipo["imagen"].as<string>().c_str(), F_OK) != -1))		// Verificación de existencia
 												iE.path = unTipo["imagen"].as<string>();
-					else std::cerr << "Error: No se encontró imagen para" << unTipo["nombre"].as<string>() << std::endl;
+					else std::cerr << "Error: No se encontró imagen para " << unTipo["nombre"].as<string>() << std::endl;
 					if (unTipo["alto_base"] && unTipo["alto_base"].as<int>() > 0)	iE.alto = unTipo["alto_base"].as<int>();
 					if (unTipo["ancho_base"] && unTipo["ancho_base"].as<int>() > 0) iE.ancho = unTipo["ancho_base"].as<int>();
 					if (unTipo["pixel_ref_x"])										iE.pixel_ref_x = unTipo["pixel_ref_x"].as<int>();
@@ -150,16 +154,24 @@ InfoEscenario Juego::parsearConfig() {
 	}
 	catch( YAML::BadConversion &e )			//Hay forma de hacer un catch múltiple?
 	{
-		infoEsc = infoEscenarioDefault();
-		std::cerr << "Error en el archivo de configuración: se tomará el resto de los valores por defecto." << std::endl;
+		//infoEsc = infoEscenarioDefault();
+		std::cerr << "Error en el archivo de configuración: se tomarán los valores por defecto." << std::endl;
+		return OdioYAML();
 	} catch( YAML::BadSubscript &e )
 	{
-		infoEsc = infoEscenarioDefault();
-		std::cerr << "Error en el archivo de configuración: se tomará el resto de los valores por defecto." << std::endl;
+		//infoEsc = infoEscenarioDefault();
+		std::cerr << "Error en el archivo de configuración: se tomarán los valores por defecto." << std::endl;
+		return OdioYAML();
+	} catch( YAML::ParserException &e )
+	{
+		//infoEsc = infoEscenarioDefault();
+		std::cerr << "Error en el archivo de configuración: se tomarán los valores por valores por defecto." << std::endl;
+		return OdioYAML();
 	}
 	if (!infoEsc) {		// Si no se cargó un escenario válido, se revierte al default.
-		infoEsc = infoEscenarioDefault();
+		//infoEsc = infoEscenarioDefault();
 		std::cerr << "Errores en la configuración de escenario; se utilizará uno predeterminado" << std::endl;
+		return OdioYAML();
 	}
 
 	return infoEsc;

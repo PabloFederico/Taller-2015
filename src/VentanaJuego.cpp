@@ -314,7 +314,13 @@ void VentanaJuego::mostrar(){
 
 				if (event.type == SDL_QUIT) run = false;
 				SDL_GetMouseState(&MouseX,&MouseY);
-	/////* OLD
+
+				this->procesarClick(event,MouseX,MouseY,
+										  posX_player,posY_player,
+										  x_anterior,y_anterior,
+										  Follow_Point_X,Follow_Point_Y,Follow,dt);
+
+/////* OLD
 				/* Analisis del evento de movimiento
 				if (event.type == SDL_MOUSEBUTTONDOWN){
 					if (event.button.button == SDL_BUTTON_LEFT){
@@ -363,11 +369,6 @@ void VentanaJuego::mostrar(){
 				if (corrimiento_x != 0 || corrimiento_y != 0){
 					this->actualizarPosicionesEntidades(corrimiento_x, corrimiento_y);
 				}
-
-				this->procesarClick(event,MouseX,MouseY,
-										  posX_player,posY_player,
-										  x_anterior,y_anterior,
-										  Follow_Point_X,Follow_Point_Y,Follow,dt);
 
 
 	            /* Actualiza el renderer */
@@ -499,13 +500,13 @@ void VentanaJuego::procesarClick(SDL_Event event, int MouseX, int MouseY,
 
 		if (distance > 1){
             if (posX_player != Follow_Point_X) {
-            	float x_result = (posX_player - ((posX_player - Follow_Point_X) / distance) *(this->velocidad_personaje*10)  * dt);
+            	float x_result = (posX_player - ((posX_player - Follow_Point_X) / distance) *(this->velocidad_personaje)  * dt);
             	posicionPlayer.x = int(x_result);
             	posX_player = x_result;
             }
 
             if (posY_player != Follow_Point_Y) {
-                float y_result = (posY_player - ((posY_player - Follow_Point_Y) / distance) * (this->velocidad_personaje*10) * dt);
+                float y_result = (posY_player - ((posY_player - Follow_Point_Y) / distance) * (this->velocidad_personaje) * dt);
                 posicionPlayer.y = int(y_result);
                 posY_player = y_result;
             }

@@ -27,14 +27,14 @@ void crearConfigDefault () {
 
 	std::map<std::string, std::string> soldado;
 	soldado.insert(std::make_pair("nombre", "soldado"));
-	soldado.insert(std::make_pair("imagen", "images/man.png"));
+	soldado.insert(std::make_pair("imagen", "images/soldado.png"));
 	soldado.insert(std::make_pair("fps", "10"));
 	soldado.insert(std::make_pair("delay", "5"));
 	vec.push_back(soldado);
 
 	std::map<std::string, std::string> juana_de_arco;
 	juana_de_arco.insert(std::make_pair("nombre", "juana_de_arco"));
-	juana_de_arco.insert(std::make_pair("imagen", "images/man.png"));	// Faltante
+	juana_de_arco.insert(std::make_pair("imagen", "images/juana.png"));
 	juana_de_arco.insert(std::make_pair("fps", "10"));
 	vec.push_back(juana_de_arco);
 
