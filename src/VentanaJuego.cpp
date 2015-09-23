@@ -373,7 +373,7 @@ void VentanaJuego::mostrar(){
 	            this->dibujar();
 
 	            SDL_RenderPresent(this->renderer);
-	            cout << mil_fps -(SDL_GetTicks() - frame_act) << endl;
+
 	            if (mil_fps > (SDL_GetTicks() - frame_act)) SDL_Delay(mil_fps -(SDL_GetTicks() - frame_act));
 	            //SDL_Delay(1000/this->spritePlayer->getFps());
 
@@ -472,7 +472,7 @@ void VentanaJuego::procesarClick(SDL_Event event, int MouseX, int MouseY,
 	if (event.type == SDL_MOUSEBUTTONDOWN){
 		if (event.button.button == SDL_BUTTON_LEFT){
             Follow_Point_X = MouseX - posicionPlayer.w / 2;
-            Follow_Point_Y = MouseY - posicionPlayer.h / 2;
+            Follow_Point_Y = MouseY - posicionPlayer.h ;
 
             /* Validación de click dentro del escenario */
             if (this->calculador->puntoContenidoEnEscenario(Follow_Point_X+posicionPlayer.w,Follow_Point_Y+posicionPlayer.h,this->TILES_X, this->TILES_Y)){

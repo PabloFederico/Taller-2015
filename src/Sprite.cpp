@@ -64,8 +64,10 @@ void Sprite::setDireccion(int direccion){
 
 /********************************************************************************/
 void Sprite::efectuarMovimiento(){
-	if (this->num_sprite < this->cant_Img_Distintas)
+	if (this->num_sprite < this->cant_Img_Distintas){
+		SDL_Delay(this->delay);
 		this->indexSpriteActual++;
+	}
 	else this->indexSpriteActual = 0;
 
 	this->frameActual = this->frames[this->direccion][this->indexSpriteActual%this->cant_Img_Distintas];
