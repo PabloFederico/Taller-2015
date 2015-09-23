@@ -49,10 +49,6 @@ public:
 
 	SDL_Rect getSDLRect(int i, int j);
 
-	int cantidadDirecciones();
-
-	int cantidadImgDiferentes();
-
 	void acomodar();
 
 	virtual ~Sprite();

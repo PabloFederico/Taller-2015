@@ -254,13 +254,14 @@ void VentanaJuego::dibujar(){
 		/* Buscamos la imagen de la entidad a traves del tipo */
 		map<TipoEntidad,Sprite*>::iterator itImg = this->mapSprites->find(tipo);
 		Imagen *imagenEntidad = (*itImg).second->getImagen();
+		int tiles_ocupados = this->mapInfoEntidades[tipo].ancho;
 
 		int x = pos.x;
 
 		/* Estos solo se van a ejecutar una vez, salvo el caso de dibujar un castillo,
 		 * eso dependera de cuantos tiles ocupe */
-		for (int j = 0; j < itImg->second->cantidadDirecciones(); j++){
-			for (int k = 0; k < itImg->second->cantidadImgDiferentes(); k++){
+		for (int j = 0; j < tiles_ocupados; j++){
+			for (int k = 0; k < tiles_ocupados; k++){
 				SDL_Rect rect = itImg->second->getSDLRect(j,k);
 				SDL_RenderCopy(this->renderer,imagenEntidad->getTexture(),&rect,&pos);
 				pos.x += pos.w;
@@ -281,9 +282,7 @@ void VentanaJuego::dibujar(){
 void VentanaJuego::mostrar(){
 	bool run = true;
 	SDL_Event event;
-	SDL_Cursor* cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_HAND);
-	if (cursor == NULL) printf("Fallo la creacion del cursor %s",SDL_GetError());
-	SDL_SetCursor(cursor);
+
 	float posX_player = float(this->posicionPlayer.x);
 	float posY_player = float(this->posicionPlayer.y);
 
@@ -305,6 +304,7 @@ void VentanaJuego::mostrar(){
 
 			if (event.type == SDL_QUIT) run = false;
 			SDL_GetMouseState(&MouseX,&MouseY);
+
 /////* OLD
 			/* Analisis del evento de movimiento
 			if (event.type == SDL_MOUSEBUTTONDOWN){
@@ -462,7 +462,7 @@ void VentanaJuego::procesarClick(SDL_Event event, int MouseX, int MouseY,
 	if (event.type == SDL_MOUSEBUTTONDOWN){
 		if (event.button.button == SDL_BUTTON_LEFT){
             Follow_Point_X = MouseX - posicionPlayer.w / 2;
-            Follow_Point_Y = MouseY - posicionPlayer.h;
+            Follow_Point_Y = MouseY - posicionPlayer.h / 2;
 
             /* Validación de click dentro del escenario */
             if (this->calculador->puntoContenidoEnEscenario(Follow_Point_X+posicionPlayer.w,Follow_Point_Y+posicionPlayer.h,this->TILES_X, this->TILES_Y)){
@@ -488,13 +488,13 @@ void VentanaJuego::procesarClick(SDL_Event event, int MouseX, int MouseY,
 
 		if (distance > 1){
             if (posX_player != Follow_Point_X) {
-            	float x_result = (posX_player - ((posX_player - Follow_Point_X) / distance) );
+            	float x_result = (posX_player - ((posX_player - Follow_Point_X) / distance) * 3.5f);
             	posicionPlayer.x = int(x_result);
             	posX_player = x_result;
             }
 
             if (posY_player != Follow_Point_Y) {
-                float y_result = (posY_player - ((posY_player - Follow_Point_Y) / distance)  );
+                float y_result = (posY_player - ((posY_player - Follow_Point_Y) / distance) * 3.5f);
                 posicionPlayer.y = int(y_result);
                 posY_player = y_result;
             }
@@ -515,10 +515,12 @@ VentanaJuego::~VentanaJuego() {
 	map<TipoEntidad,Sprite*>::iterator p = this->mapSprites->begin();
 	while (p != this->mapSprites->end()){
 		Imagen *imagen = (*p).second->getImagen();
+		Sprite *sprite = (*p).second;
 		p++;
 		delete imagen;
-
+		delete sprite;
 	}
+
 	delete this->spritePlayer;
 
 	//delete this->mapImagenes;

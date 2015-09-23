@@ -93,17 +93,8 @@ SDL_Rect Sprite::getSDLRect(int i, int j){
 }
 
 /********************************************************************************/
-int Sprite::cantidadDirecciones(){
-	return this->cant_Direcciones;
-}
-
-/********************************************************************************/
 void Sprite::setDelay(int delay){
 	this->delay = delay;
-}
-/********************************************************************************/
-int Sprite::cantidadImgDiferentes(){
-	return this->cant_Img_Distintas;
 }
 
 /********************************************************************************/
