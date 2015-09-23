@@ -68,6 +68,7 @@ private:
 	 * de un archivo de configuración */
 	void cargarJuego();
 
+
 	int ChequeoDeBorde(int max, int input);
 
 	InfoEscenario infoEscenarioDefault();
@@ -79,7 +80,7 @@ private:
 
 public:
 	Juego();
-
+	int getVelocidad();
 	pair<int,int> dimensionVentana();
 
 	Escenario* getEscenario();

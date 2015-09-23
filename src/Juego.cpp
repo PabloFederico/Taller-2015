@@ -266,3 +266,9 @@ InfoEscenario Juego::OdioYAML() {
 
 	return infoEscenarioDefault();
 }
+
+/***************************************************/
+int Juego::getVelocidad(){
+	return this->vel_personaje;
+}
+
