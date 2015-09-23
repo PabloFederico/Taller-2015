@@ -31,7 +31,7 @@ private:
 	int MARGEN_SCROLL;
 	int TILES_X;
 	int TILES_Y;
-
+	float velocidad_personaje;
 	SDL_Window *window;
 	SDL_Renderer *renderer;
 

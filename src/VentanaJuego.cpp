@@ -25,6 +25,7 @@ VentanaJuego::VentanaJuego(Juego *juego){
 	this->LIMITE_DESPLAZAMIENTO_EN_X = ANCHO_PIXEL_PASTO * this->TILES_X / 2;
 	this->LIMITE_DESPLAZAMIENTO_EN_Y = ALTO_PIXEL_PASTO * this->TILES_Y / 2;
 
+	this->velocidad_personaje = juego->getVelocidad();
 	if (init()){
 
 		/* El (0,0) relativo del mapa respecto a la ventana principal */
@@ -373,7 +374,7 @@ void VentanaJuego::mostrar(){
 	            this->dibujar();
 
 	            SDL_RenderPresent(this->renderer);
-	            cout << mil_fps -(SDL_GetTicks() - frame_act) << endl;
+
 	            if (mil_fps > (SDL_GetTicks() - frame_act)) SDL_Delay(mil_fps -(SDL_GetTicks() - frame_act));
 	            //SDL_Delay(1000/this->spritePlayer->getFps());
 
@@ -472,7 +473,7 @@ void VentanaJuego::procesarClick(SDL_Event event, int MouseX, int MouseY,
 	if (event.type == SDL_MOUSEBUTTONDOWN){
 		if (event.button.button == SDL_BUTTON_LEFT){
             Follow_Point_X = MouseX - posicionPlayer.w / 2;
-            Follow_Point_Y = MouseY - posicionPlayer.h / 2;
+            Follow_Point_Y = MouseY - posicionPlayer.h ;
 
             /* Validación de click dentro del escenario */
             if (this->calculador->puntoContenidoEnEscenario(Follow_Point_X+posicionPlayer.w,Follow_Point_Y+posicionPlayer.h,this->TILES_X, this->TILES_Y)){
@@ -498,13 +499,13 @@ void VentanaJuego::procesarClick(SDL_Event event, int MouseX, int MouseY,
 
 		if (distance > 1){
             if (posX_player != Follow_Point_X) {
-            	float x_result = (posX_player - ((posX_player - Follow_Point_X) / distance) * 30.0 * dt);
+            	float x_result = (posX_player - ((posX_player - Follow_Point_X) / distance) *this->velocidad_personaje  * dt);
             	posicionPlayer.x = int(x_result);
             	posX_player = x_result;
             }
 
             if (posY_player != Follow_Point_Y) {
-                float y_result = (posY_player - ((posY_player - Follow_Point_Y) / distance) * 30.0 * dt);
+                float y_result = (posY_player - ((posY_player - Follow_Point_Y) / distance) * this->velocidad_personaje * dt);
                 posicionPlayer.y = int(y_result);
                 posY_player = y_result;
             }
