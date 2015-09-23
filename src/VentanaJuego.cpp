@@ -305,8 +305,6 @@ void VentanaJuego::mostrar(){
 
 			if (event.type == SDL_QUIT) run = false;
 			SDL_GetMouseState(&MouseX,&MouseY);
-			cout << "POSX" << MouseX << endl;
-			cout << "POSY" << MouseY << endl;
 /////* OLD
 			/* Analisis del evento de movimiento
 			if (event.type == SDL_MOUSEBUTTONDOWN){
@@ -416,7 +414,7 @@ void VentanaJuego::procesarScroll(int MouseX, int MouseY,
 				cantidad = MARGEN_SCROLL;
 			else cantidad = MARGEN_SCROLL / 2;
 
-			if (*this->cero_x > - LIMITE_DESPLAZAMIENTO_EN_X +((TILES_X/13)*TILES_X)){
+			if (SCREEN_WIDTH - *this->cero_x < LIMITE_DESPLAZAMIENTO_EN_X + ANCHO_PIXEL_PASTO){
 				*cero_x -= cantidad;
 				this->posicionPlayer.x -= cantidad;
 				posPlayerX -= cantidad;
