@@ -48,6 +48,6 @@ escenario:
       - {x: 15, y: 12, tipo: arbol}
       - {x: 0, y: 10, tipo: castillo}
     protagonista:
-      - tipo: soldado	#juana_de_arco
+      - tipo: juana_de_arco
         x: 25
         y: 25
