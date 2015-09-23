@@ -281,7 +281,9 @@ void VentanaJuego::dibujar(){
 void VentanaJuego::mostrar(){
 	bool run = true;
 	SDL_Event event;
-
+	SDL_Cursor* cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_HAND);
+	if (cursor == NULL) printf("Fallo la creacion del cursor %s",SDL_GetError());
+	SDL_SetCursor(cursor);
 	float posX_player = float(this->posicionPlayer.x);
 	float posY_player = float(this->posicionPlayer.y);
 
@@ -462,7 +464,7 @@ void VentanaJuego::procesarClick(SDL_Event event, int MouseX, int MouseY,
 	if (event.type == SDL_MOUSEBUTTONDOWN){
 		if (event.button.button == SDL_BUTTON_LEFT){
             Follow_Point_X = MouseX - posicionPlayer.w / 2;
-            Follow_Point_Y = MouseY - posicionPlayer.h / 2;
+            Follow_Point_Y = MouseY - posicionPlayer.h;
 
             /* Validación de click dentro del escenario */
             if (this->calculador->puntoContenidoEnEscenario(Follow_Point_X+posicionPlayer.w,Follow_Point_Y+posicionPlayer.h,this->TILES_X, this->TILES_Y)){
@@ -488,13 +490,13 @@ void VentanaJuego::procesarClick(SDL_Event event, int MouseX, int MouseY,
 
 		if (distance > 1){
             if (posX_player != Follow_Point_X) {
-            	float x_result = (posX_player - ((posX_player - Follow_Point_X) / distance) * 3.5f);
+            	float x_result = (posX_player - ((posX_player - Follow_Point_X) / distance) );
             	posicionPlayer.x = int(x_result);
             	posX_player = x_result;
             }
 
             if (posY_player != Follow_Point_Y) {
-                float y_result = (posY_player - ((posY_player - Follow_Point_Y) / distance) * 3.5f);
+                float y_result = (posY_player - ((posY_player - Follow_Point_Y) / distance)  );
                 posicionPlayer.y = int(y_result);
                 posY_player = y_result;
             }
