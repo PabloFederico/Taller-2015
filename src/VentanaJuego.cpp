@@ -474,17 +474,8 @@ void VentanaJuego::procesarClick(SDL_Event event, int MouseX, int MouseY,
             }else {
             	/* Si el click esta fuera del escenario, su punto destino será
             	 * el anterior al click (si es que se encontraba en movimiento) */
-            	while (!this->calculador->puntoContenidoEnEscenario(MouseX+posicionPlayer.w,MouseY+posicionPlayer.h,this->TILES_X, this->TILES_Y)){
-            	if (MouseX > MouseY ){
-            		MouseX -=1;
-            		MouseY +=1;
-            	}
-            	else{
-            		MouseX -=1;
-            		MouseY -=1;
-            	}
-            	}
-            	Follow = true;
+
+
             	Follow_Point_X = MouseX - posicionPlayer.w /2;
             	Follow_Point_Y = MouseY - posicionPlayer.h/2;
             }
