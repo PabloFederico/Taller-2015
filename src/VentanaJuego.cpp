@@ -486,8 +486,8 @@ void VentanaJuego::procesarClick(SDL_Event event, int MouseX, int MouseY,
             	 * el anterior al click (si es que se encontraba en movimiento) */
 
 
-            	Follow_Point_X = MouseX - posicionPlayer.w /2;
-            	Follow_Point_Y = MouseY - posicionPlayer.h/2;
+            	Follow_Point_X = x_anterior;
+            	Follow_Point_Y = y_anterior;
             }
 
 		}
