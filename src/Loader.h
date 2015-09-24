@@ -22,6 +22,7 @@ public:
 
 		texture = SDL_CreateTextureFromSurface(renderer,surface);
 		Imagen* imagen = new Imagen(surface->w, surface->h, texture);
+		SDL_FreeSurface(surface);
 
 		return imagen;
 	};

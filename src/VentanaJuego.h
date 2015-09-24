@@ -25,6 +25,7 @@ struct DataPos{
 
 class VentanaJuego {
 private:
+	Juego *juego;
 	int SCREEN_WIDTH;
 	int SCREEN_HEIGHT;
 	int MARGEN_SCROLL;
@@ -86,6 +87,11 @@ private:
 	/* Actualiza las posiciones de las entidades según el movimiento de la cámara*/
 	void actualizarPosicionesEntidades(int corrimiento_x, int corrimiento_y);
 
+	void reiniciar();
+
+	void cargarJuego(Juego *juego);
+
+	void liberarRecursos();
 
 public:
 	VentanaJuego(Juego *juego);

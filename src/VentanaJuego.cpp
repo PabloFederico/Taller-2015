@@ -11,39 +11,8 @@
 #include <SDL2/SDL_image.h>
 
 VentanaJuego::VentanaJuego(Juego *juego){
-	pair<int,int> dimensionVentana = juego->dimensionVentana();
-	this->SCREEN_WIDTH = dimensionVentana.first;
-	this->SCREEN_HEIGHT = dimensionVentana.second;
-
-	this->MARGEN_SCROLL = juego->getMargenScroll();
-
-	this->tipoProtagonista = juego->getProtagonista()->getTipo();
-
-	this->TILES_X = juego->getEscenario()->getDimension().first;
-	this->TILES_Y = juego->getEscenario()->getDimension().second;
-
-	this->LIMITE_DESPLAZAMIENTO_EN_X = ANCHO_PIXEL_PASTO * this->TILES_X / 2;
-	this->LIMITE_DESPLAZAMIENTO_EN_Y = ALTO_PIXEL_PASTO * this->TILES_Y / 2;
-
-	this->velocidad_personaje = juego->getVelocidad();
-	if (init()){
-
-		/* El (0,0) relativo del mapa respecto a la ventana principal */
-		int centro_x = SCREEN_WIDTH / 2;
-		int centro_y = SCREEN_HEIGHT / 2;
-		this->cero_x = new int(centro_x - DISTANCIA_ENTRE_X);
-		this->cero_y = new int(centro_y - LIMITE_DESPLAZAMIENTO_EN_Y);
-
-		this->calculador = new Calculador(this->cero_x, this->cero_y);
-
-		/* map donde se almacenan los sprites que se van a usar.
-		 * Es muy génerico, ya que también se guardar imagenes de PASTO, TIERRA, ETC. */
-		this->mapSprites = new Map<TipoEntidad,Sprite*>();
-		this->cargarImagenes(juego->getInfoTiposEntidades());
-
-		this->vectorPosiciones = new vector<DataPos>();
-		this->cargarPosicionesEntidades(juego->getEscenario()->getVectorEntidades());
-	}
+	this->juego = juego;
+	this->cargarJuego(juego);
 	/* y si no init(), entonces deberíamos emitir un mensaje de error
 	 * porque no se pudo inicializar SDL. */
 }
@@ -250,6 +219,8 @@ void VentanaJuego::mostrar(){
 	    int x_anterior;
 	    int y_anterior;
 	    frame_act = SDL_GetTicks();
+
+
 			while (run && event.type != SDL_QUIT){
 				frame_ant = frame_act;
 				frame_act = SDL_GetTicks();
@@ -324,6 +295,16 @@ void VentanaJuego::mostrar(){
 	            if (mil_fps > (SDL_GetTicks() - frame_act)) SDL_Delay(mil_fps -(SDL_GetTicks() - frame_act));
 	            //SDL_Delay(1000/this->spritePlayer->getFps());
 
+	            if (event.type == SDL_KEYDOWN){
+	            	if (event.key.keysym.sym == 'r'){
+	            		this->reiniciar();
+	            		posX_player = this->posicionPlayer.x;
+	            		posY_player = this->posicionPlayer.y;
+	            		x_anterior = posX_player;
+	            		y_anterior = posY_player;
+	            		Follow = false;
+	            	}
+	            }
 			}
 
 	}
@@ -465,7 +446,52 @@ void VentanaJuego::procesarClick(SDL_Event event, int MouseX, int MouseY,
 }
 
 /********************************************************************************/
-VentanaJuego::~VentanaJuego() {
+void VentanaJuego::reiniciar(){
+	delete this->juego;
+	this->liberarRecursos();
+	this->juego = new Juego();
+	this->cargarJuego(this->juego);
+}
+/********************************************************************************/
+void VentanaJuego::cargarJuego(Juego *juego){
+	pair<int,int> dimensionVentana = juego->dimensionVentana();
+	this->SCREEN_WIDTH = dimensionVentana.first;
+	this->SCREEN_HEIGHT = dimensionVentana.second;
+
+	this->MARGEN_SCROLL = juego->getMargenScroll();
+
+	this->tipoProtagonista = juego->getProtagonista()->getTipo();
+
+	this->TILES_X = juego->getEscenario()->getDimension().first;
+	this->TILES_Y = juego->getEscenario()->getDimension().second;
+
+	this->LIMITE_DESPLAZAMIENTO_EN_X = ANCHO_PIXEL_PASTO * this->TILES_X / 2;
+	this->LIMITE_DESPLAZAMIENTO_EN_Y = ALTO_PIXEL_PASTO * this->TILES_Y / 2;
+
+	this->velocidad_personaje = juego->getVelocidad();
+	if (init()){
+
+		/* El (0,0) relativo del mapa respecto a la ventana principal */
+		int centro_x = SCREEN_WIDTH / 2;
+		int centro_y = SCREEN_HEIGHT / 2;
+		this->cero_x = new int(centro_x - DISTANCIA_ENTRE_X);
+		this->cero_y = new int(centro_y - LIMITE_DESPLAZAMIENTO_EN_Y);
+
+		this->calculador = new Calculador(this->cero_x, this->cero_y);
+
+		/* map donde se almacenan los sprites que se van a usar.
+		 * Es muy génerico, ya que también se guardar imagenes de PASTO, TIERRA, ETC. */
+		this->mapSprites = new Map<TipoEntidad,Sprite*>();
+		this->cargarImagenes(juego->getInfoTiposEntidades());
+
+		this->vectorPosiciones = new vector<DataPos>();
+		this->cargarPosicionesEntidades(juego->getEscenario()->getVectorEntidades());
+	}
+}
+
+/********************************************************************************/
+void VentanaJuego::liberarRecursos(){
+	this->mapInfoEntidades.clear();
 	map<TipoEntidad,Sprite*>::iterator p = this->mapSprites->begin();
 	while (p != this->mapSprites->end()){
 		Imagen *imagen = (*p).second->getImagen();
@@ -487,4 +513,11 @@ VentanaJuego::~VentanaJuego() {
 	delete this->cero_y;
 
 	this->close();
+}
+
+
+/********************************************************************************/
+VentanaJuego::~VentanaJuego() {
+	this->liberarRecursos();
+	delete this->juego;
 }

@@ -17,7 +17,7 @@ void Controller::iniciarJuego(){
 }
 
 Controller::~Controller() {
-	delete this->juego;
+	//delete this->juego;
 	delete this->ventana;
 }
 

@@ -21,6 +21,8 @@ Escenario::Escenario(InfoEscenario info){
 		this->agregarEntidad(pos,entidad);
 	}
 
+	info.getPosicionesEntidades().clear();
+
 	this->protagonista = new Entidad(info.protagonista);
 	pair<int,int> pos(info.posX_protagonista,info.posY_protagonista);
 	this->agregarEntidad(pos,this->protagonista);
