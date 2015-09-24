@@ -36,6 +36,22 @@ Entidad* Juego::getProtagonista(){
 }
 
 /********************************************************************************/
+void imprimirAlLog(string output) {
+	time_t rawtime;
+	struct tm * timeinfo;
+	char buffer[80];
+	time (&rawtime);
+	timeinfo = localtime(&rawtime);
+	strftime(buffer,80,"%Y-%m-%d %I:%M:%S",timeinfo);
+	std::string timestamp(buffer);
+
+	std::ofstream fLog("TP.log", std::ofstream::app);
+	fLog << "[" << timestamp << "] " << output << std::endl;
+	fLog.close();
+	std::cerr << output << std::endl;
+}
+
+/********************************************************************************/
 void Juego::cargarJuego(){
 	// Valores default
 	this->screenWidth = 800;
@@ -74,10 +90,11 @@ InfoEscenario Juego::parsearConfig() {
 	}
 	catch (YAML::BadFile &e) {
 		crearConfigDefault();
+		imprimirAlLog("Archivo de configuración no encontrado. Se ha creado uno nuevo por defecto.");
 		config = YAML::LoadFile("config.yaml");
 	}
 	catch (YAML::ParserException &e) {
-		std::cerr << "Error en el archivo de configuración: se tomarán los valores por defecto." << std::endl;
+		imprimirAlLog("Error en el archivo de configuración: se tomarán los valores por defecto.");
 		return OdioYAML();
 	}
 
@@ -87,17 +104,17 @@ InfoEscenario Juego::parsearConfig() {
 	{
 		if (config["pantalla"]["alto"] && config["pantalla"]["alto"].as<int>() > 0)
 			this->screenHeight = config["pantalla"]["alto"].as<int>();
-		else std::cout << "Alto de pantalla no definido, se tomará " << this->screenHeight << std::endl;
+		else imprimirAlLog("Alto de pantalla no definido, se tomará " + this->screenHeight);
 		if (config["pantalla"]["ancho"] && config["pantalla"]["ancho"].as<int>() > 0)
 			this->screenWidth = config["pantalla"]["ancho"].as<int>();
-		else std::cout << "Ancho de pantalla no definido, se tomará " << this->screenWidth << std::endl;
+		else imprimirAlLog("Ancho de pantalla no definido, se tomará " + this->screenWidth);
 
 		if (config["configuracion"]["vel_personaje"])
 			vel_personaje = ChequeoDeBorde(250, config["configuracion"]["vel_personaje"].as<int>());
-		else std::cout << "Velocidad de personaje no definido, se tomará " << vel_personaje << std::endl;
+		else imprimirAlLog("Velocidad de personaje no definido, se tomará " + vel_personaje);
 		if (config["configuracion"]["margen_scroll"] && config["configuracion"]["margen_scroll"].as<int>() >= 0)
 			margen_scroll = config["configuracion"]["margen_scroll"].as<int>();
-		else std::cout << "Margen de scroll no definido, se usará: " << margen_scroll << std::endl;
+		else imprimirAlLog("Margen de scroll no definido, se usará: " + margen_scroll);
 
 		if (config["tipos"]) {
 			for(std::size_t i = 0; i < config["tipos"].size(); ++i) {
@@ -108,7 +125,7 @@ InfoEscenario Juego::parsearConfig() {
 					iE.tipo = tipos[unTipo["nombre"].as<string>()];
 					if ((unTipo["imagen"]) && (access(unTipo["imagen"].as<string>().c_str(), F_OK) != -1))		// Verificación de existencia
 												iE.path = unTipo["imagen"].as<string>();
-					else std::cerr << "Error: No se encontró imagen para " << unTipo["nombre"].as<string>() << std::endl;
+					else imprimirAlLog("Error: No se encontró imagen para " + unTipo["nombre"].as<string>());
 					if (unTipo["alto_base"] && unTipo["alto_base"].as<int>() > 0)	iE.alto = unTipo["alto_base"].as<int>();
 					if (unTipo["ancho_base"] && unTipo["ancho_base"].as<int>() > 0) iE.ancho = unTipo["ancho_base"].as<int>();
 					if (unTipo["pixel_ref_x"])										iE.pixel_ref_x = unTipo["pixel_ref_x"].as<int>();
@@ -118,7 +135,7 @@ InfoEscenario Juego::parsearConfig() {
 
 					this->vectorInfoTiposEntidades.push_back(iE);
 				}
-				else std::cerr << "Error: Tipo '" << unTipo["nombre"].as<string>() << "' desconocido" << std::endl;
+				else imprimirAlLog("Error: Tipo '" + unTipo["nombre"].as<string>() + "' desconocido");
 				// Se podría sencillamente cambiar a que un tipo desconocido se agregue al map.
 			}
 		}
@@ -136,42 +153,42 @@ InfoEscenario Juego::parsearConfig() {
 					if (tipos[ent["tipo"].as<string>()] != 0)
 						infoEsc.agregarEntidad( make_pair( ChequeoDeBorde(infoEsc.size_x, ent["x"].as<int>()),
 								ChequeoDeBorde(infoEsc.size_y, ent["y"].as<int>()) ), tipos[ent["tipo"].as<string>()] );
-					else std::cerr << "Error: Tipo '" << ent["tipo"].as<string>() << "' desconocido" << std::endl;
+					else imprimirAlLog("Error: Tipo '" + ent["tipo"].as<string>() + "' desconocido");
 				}
 
 				YAML::Node protag = unEscenario["protagonista"][0];
 				infoEsc.protagonista = SOLDADO;
 				if (tipos[protag["tipo"].as<string>()] == 0)
-					std::cerr << "Error: Tipo '" << protag["tipo"].as<string>() << "' desconocido" << std::endl;
+					imprimirAlLog("Error: Tipo '" + protag["tipo"].as<string>() + "' desconocido");
 				else infoEsc.protagonista = tipos[protag["tipo"].as<string>()];
 				infoEsc.posX_protagonista = ChequeoDeBorde(infoEsc.size_x, protag["x"].as<int>());
 				infoEsc.posY_protagonista = ChequeoDeBorde(infoEsc.size_y, protag["y"].as<int>());
 			//}
 		} else {
 			infoEsc = infoEscenarioDefault();
-			std::cout << "Escenario no definido, se usará uno por defecto" << std::endl;
+			imprimirAlLog("Escenario no definido, se usará uno por defecto");
 		}
 
 	}
 	catch( YAML::BadConversion &e )			//Hay forma de hacer un catch múltiple?
 	{
 		//infoEsc = infoEscenarioDefault();
-		std::cerr << "Error en el archivo de configuración: se tomarán los valores por defecto." << std::endl;
+		imprimirAlLog("Error en el archivo de configuración: se tomarán los valores por defecto.");
 		return OdioYAML();
 	} catch( YAML::BadSubscript &e )
 	{
 		//infoEsc = infoEscenarioDefault();
-		std::cerr << "Error en el archivo de configuración: se tomarán los valores por defecto." << std::endl;
+		imprimirAlLog("Error en el archivo de configuración: se tomarán los valores por defecto.");
 		return OdioYAML();
 	} catch( YAML::ParserException &e )
 	{
 		//infoEsc = infoEscenarioDefault();
-		std::cerr << "Error en el archivo de configuración: se tomarán los valores por valores por defecto." << std::endl;
+		imprimirAlLog("Error en el archivo de configuración: se tomarán los valores por valores por defecto.");
 		return OdioYAML();
 	}
 	if (!infoEsc) {		// Si no se cargó un escenario válido, se revierte al default.
 		//infoEsc = infoEscenarioDefault();
-		std::cerr << "Errores en la configuración de escenario; se utilizará uno predeterminado" << std::endl;
+		imprimirAlLog("Errores en la configuración de escenario; se utilizará uno predeterminado");
 		return OdioYAML();
 	}
 

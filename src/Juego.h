@@ -8,6 +8,7 @@
 #ifndef JUEGO_H_
 #define JUEGO_H_
 #include <stdio.h>
+#include <ctime>
 #include "Exceptions.h"
 #include "Entidad.h"
 #include "VistaEntidad.h"
