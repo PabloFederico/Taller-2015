@@ -117,12 +117,7 @@ void crearConfigDefault () {
 
 	out << YAML::EndMap;
 
-	//código de prueba
-	//std::cout << out.c_str() << std::endl;
-
 	std::ofstream fout("config.yaml");
 	fout << out.c_str();
 	fout.close();
-
-	std::cout << "Archivo de configuración no encontrado. Se ha creado uno nuevo por defecto." << std::endl;
 }

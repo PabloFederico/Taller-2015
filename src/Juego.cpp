@@ -90,6 +90,7 @@ InfoEscenario Juego::parsearConfig() {
 	}
 	catch (YAML::BadFile &e) {
 		crearConfigDefault();
+		imprimirAlLog("Archivo de configuración no encontrado. Se ha creado uno nuevo por defecto.");
 		config = YAML::LoadFile("config.yaml");
 	}
 	catch (YAML::ParserException &e) {

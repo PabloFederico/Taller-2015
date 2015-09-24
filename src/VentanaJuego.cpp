@@ -295,7 +295,7 @@ void VentanaJuego::mostrar(){
 	                    this->spritePlayer->efectuarMovimiento();
 	                 }else  Follow = false;
 	            }
-	            /* Fin de analisis de evento de movimiento */
+				Fin de analisis de evento de movimiento */
 	/////
 
 				int orig_inicial_x = *this->cero_x;
