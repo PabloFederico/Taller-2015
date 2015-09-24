@@ -7,15 +7,25 @@
 
 #ifndef ESCENARIO_H_
 #define ESCENARIO_H_
-#include "Map.h"
 #include "Entidad.h"
 #include <vector>
 using namespace std;
 
+struct PosTipoEntidad{
+	int x;
+	int y;
+	TipoEntidad tipo;
+	PosTipoEntidad(int x, int y, TipoEntidad tipo){
+		this->x = x;
+		this->y = y;
+		this->tipo = tipo;
+	};
+};
+
 struct InfoEscenario{
 	int size_x;
 	int size_y;
-	map<pair<int,int>,vector<TipoEntidad> > mapPosTipoEntidades;
+	vector<PosTipoEntidad> posTipoEntidades;
 	TipoEntidad protagonista;
 	int posX_protagonista;
 	int posY_protagonista;
@@ -29,18 +39,12 @@ struct InfoEscenario{
 	};
 
 	void agregarEntidad(pair<int,int> pos, TipoEntidad tipo){
-		map<pair<int,int>, vector<TipoEntidad> >::iterator p = this->mapPosTipoEntidades.find(pos);
-		if (p == this->mapPosTipoEntidades.end()){
-			vector<TipoEntidad> entidades;
-			entidades.push_back(tipo);
-			this->mapPosTipoEntidades[pos] = entidades;
-		}else{
-			(*p).second.push_back(tipo);
-		}
+		PosTipoEntidad posTipoEnte(pos.first,pos.second,tipo);
+		this->posTipoEntidades.push_back(posTipoEnte);
 	};
 
-	map<pair<int,int>, vector<TipoEntidad> > getPosicionesEntidades(){
-		return this->mapPosTipoEntidades;
+	vector<PosTipoEntidad> getPosicionesEntidades(){
+		return this->posTipoEntidades;
 	}
 
 	bool operator!() {
@@ -48,13 +52,23 @@ struct InfoEscenario{
 	}
 };
 
+struct PosEntidad{
+	int x;
+	int y;
+	Entidad* entidad;
+	PosEntidad(int x, int y, Entidad* ente){
+		this->x = x;
+		this->y = y;
+		this->entidad = ente;
+	};
+};
+
 class Escenario {
 private:
 	int size_x;
 	int size_y;
-	/* En una posicion puede haber muchas entidades*/
-	//std::map<std::pair<int,int>, std::vector<Entidad*>* > *mapPosicionesEntidades;
-	Map<pair<int,int>, vector<Entidad*>* > *mapPosicionesEntidades;
+
+	vector<PosEntidad>* posicionesEntidades;
 
 	Entidad* protagonista;
 
@@ -68,11 +82,9 @@ public:
 	/* Devuelve las dimensiones del escenario en un par (x,y) */
 	pair<int,int> getDimension();
 
-	/* Devuelve un mapa donde las claves son pares x,y (coordenadas) y los valores
-	 * son vectores que contienen Entidades, ya que en una posición puede haber
-	 * más de una entidad*/
-	//map<pair<int,int>, vector<Entidad*>* >* getPosEntidades();
-	Map<pair<int,int>, vector<Entidad*>* >* getPosEntidades();
+	/* Devuelve un vector que contiene structs de PosEntidad, posición en X,
+	 * posición en Y y la entidad */
+	vector<PosEntidad>* getVectorEntidades();
 
 	Entidad* getProtagonista();
 
