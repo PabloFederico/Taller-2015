@@ -6,6 +6,7 @@
  */
 
 #include "Juego.h"
+#include <iostream>
 
 
 Juego::Juego() {
@@ -39,8 +40,8 @@ void Juego::cargarJuego(){
 	// Valores default
 	this->screenWidth = 800;
 	this->screenHeight = 600;
-	this->vel_personaje = 5;
-	this->margen_scroll = 30;
+	this->vel_personaje = 30;
+	this->margen_scroll = 50;
 	//	std::vector<InfoEscenario> vecEscenarios;
 
 	//---------------------------------------------------------------------------------------------!!
@@ -192,14 +193,25 @@ InfoEscenario Juego::infoEscenarioDefault() {
 	infoEscenario.size_y = 20;
 	infoEscenario.agregarEntidad(std::make_pair(10,0), AGUA);
 	infoEscenario.agregarEntidad(std::make_pair(11,0), AGUA);
+	infoEscenario.agregarEntidad(std::make_pair(12,0), AGUA);
+	infoEscenario.agregarEntidad(std::make_pair(13,0), AGUA);
+	infoEscenario.agregarEntidad(std::make_pair(10,1), AGUA);
+	infoEscenario.agregarEntidad(std::make_pair(11,1), AGUA);
+	infoEscenario.agregarEntidad(std::make_pair(12,1), AGUA);
+	infoEscenario.agregarEntidad(std::make_pair(13,1), AGUA);
+
 	infoEscenario.agregarEntidad(std::make_pair(4,10), TIERRA);
 	infoEscenario.agregarEntidad(std::make_pair(4,11), TIERRA);
 	infoEscenario.agregarEntidad(std::make_pair(4,12), TIERRA);
+
 	infoEscenario.agregarEntidad(std::make_pair(4,5), ARBOL);
 	infoEscenario.agregarEntidad(std::make_pair(4,6), ARBOL);
 	infoEscenario.agregarEntidad(std::make_pair(5,5), ARBOL);
 	infoEscenario.agregarEntidad(std::make_pair(4,12), ARBOL);
-	infoEscenario.agregarEntidad(std::make_pair(10,10), CASTILLO);
+
+	infoEscenario.agregarEntidad(std::make_pair(0,10), CASTILLO);
+
+	std::cout<<infoEscenario.getPosicionesEntidades().size()<<std::endl;
 
 	infoEscenario.protagonista = SOLDADO;
 	infoEscenario.posX_protagonista = 3;
@@ -219,12 +231,6 @@ int Juego::getMargenScroll(){
 
 /********************************************************************************/
 Juego::~Juego() {
-/*	std::map<std::string,VistaEntidad*>::iterator p = this->mapEntidades->begin();
-	while (p != this->mapEntidades->end()){		// Por qué no lo siguiente: for (p = this->mapEntidades->begin(); p != this->mapEntidades->end(); p++) \n delete (*p).second;
-		VistaEntidad* vEnte = (*p).second;
-		p++;
-		delete vEnte;
-	}*/
 	delete this->escenario;
 }
 
@@ -261,8 +267,8 @@ InfoEscenario Juego::OdioYAML() {
 	InfoEntidad infoSoldado;
 	infoSoldado.tipo = tipos["soldado"];
 	infoSoldado.path = "images/soldado.png";
-	infoSoldado.fps = 40;
-	infoSoldado.delay = 5;
+	infoSoldado.fps = 50;
+	infoSoldado.delay = 40;
 
 	InfoEntidad infoJuana;
 	infoJuana.tipo = tipos["juana_de_arco"];

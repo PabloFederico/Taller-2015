@@ -10,7 +10,6 @@
 #include <SDL2/SDL.h>
 #include "Juego.h"
 #include "Calculador.h"
-//#include "Loader.h"
 #include "Sprite.h"
 #include "Map.h"
 using namespace std;
@@ -35,8 +34,6 @@ private:
 	SDL_Window *window;
 	SDL_Renderer *renderer;
 
-//	Imagen *imagenRelieve;
-//	std::map<std::string, Imagen*> *mapImagenes;
 	map<TipoEntidad,InfoEntidad> mapInfoEntidades;
 
 	/* Es muy general*/
@@ -49,7 +46,6 @@ private:
 	vector<DataPos> *vectorPosiciones;
 
 	Calculador *calculador;
-	//Loader loader;
 
 	int *cero_x;
 	int *cero_y;
@@ -68,7 +64,7 @@ private:
 
 	/* Crea SDL_Rect para cada entidad que se encuentre en el escenario y las guarda en un
 	 * vector asociada a un SDL_Texture (imagen) */
-	void cargarPosicionesEntidades(Map<pair<int,int>, vector<Entidad*>* > *posEntidades);
+	void cargarPosicionesEntidades(vector<PosEntidad>* posEntidades);
 
 	/* Libera recursos utilizados por SDL*/
 	void close();

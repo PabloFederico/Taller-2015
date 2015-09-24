@@ -36,33 +36,13 @@ VentanaJuego::VentanaJuego(Juego *juego){
 
 		this->calculador = new Calculador(this->cero_x, this->cero_y);
 
-		/* map donde se almacenan las imágenes que se van a usar *
-		this->mapImagenes = new std::map<std::string,Imagen*>();
-		this->cargarImagenes(juego->getMapEntidades());
-		
-		this->vectorPosiciones = new vector<DataPos>();
-		this->cargarPosicionesEntidades(this->escenario->getPosEntidades());
-
-		/* Configurar de manera que se cargue el protagonista
-		 * con su respectiva posicion*
-		std::map<std::string,Imagen*>::iterator p = this->mapImagenes->find(juego->getProtagonista()->getTipo());
-		Imagen* imagenPlayer = (*p).second;
-		this->spritePlayer = new Sprite(8,6,imagenPlayer);
-
-		this->posicionPlayer.y -= 5;		// Estos tres deberían ser también en proporción a escala_pixel_tile_
-		this->posicionPlayer.w = 30;		// Por ejemplo el primero: "this->posicionPlayer.y -= this.escala_pixel_tile_y / 2;"
-		this->posicionPlayer.h = 20;
-
-		/* Borramos la referencia de la imagen del protagonista del map de imagenes
-		 * y guardamos una referencia en imagenPlayer (en forma directa) *
-		this->mapImagenes->erase(juego->getProtagonista()->getTipo());			// Esta implementación deberá revisarse cuando haya más de un personaje seleccionable
-*/		
-		/* map donde se almacenan las imagenes que se van a usar */
+		/* map donde se almacenan los sprites que se van a usar.
+		 * Es muy génerico, ya que también se guardar imagenes de PASTO, TIERRA, ETC. */
 		this->mapSprites = new Map<TipoEntidad,Sprite*>();
 		this->cargarImagenes(juego->getInfoTiposEntidades());
 
 		this->vectorPosiciones = new vector<DataPos>();
-		this->cargarPosicionesEntidades(juego->getEscenario()->getPosEntidades());
+		this->cargarPosicionesEntidades(juego->getEscenario()->getVectorEntidades());
 	}
 	/* y si no init(), entonces deberíamos emitir un mensaje de error
 	 * porque no se pudo inicializar SDL. */
@@ -84,18 +64,6 @@ bool VentanaJuego::init(){
 		 }
 	}
 	return success;
-}
-
-/********************************************************************************
-void VentanaJuego::cargarImagenes(std::map<std::string, VistaEntidad*> *entidades){
-	std::map<std::string, VistaEntidad*>::iterator p = entidades->begin();
-	while (p != entidades->end()){
-		std::string tipo = (*p).first;
-		VistaEntidad *ente = (*p).second;
-		p++;
-		Imagen *imagen = this->loader.cargarImagen(this->renderer,ente->getPath());
-		this->mapImagenes->insert(std::make_pair(tipo,imagen));
-	}
 }
 
 /********************************************************************************/
@@ -130,77 +98,58 @@ void VentanaJuego::cargarImagenes(vector<InfoEntidad> vectorInfo){
 }
 
 /********************************************************************************/
-void VentanaJuego::cargarPosicionesEntidades(Map<std::pair<int,int>, vector<Entidad*>* > *posEntidades){
-	map<pair<int,int>, vector<Entidad*>* >::iterator p = posEntidades->begin();
-	while (p != posEntidades->end()){
+void VentanaJuego::cargarPosicionesEntidades(vector<PosEntidad>* posEntidades){
+	for (unsigned i = 0; i < posEntidades->size(); i++){
+		int tile_x = (*posEntidades)[i].x;
+		int tile_y = (*posEntidades)[i].y;
+		Entidad* entidad = (*posEntidades)[i].entidad;
+		pair<int,int> coordenada = this->calculador->calcularPosicionRelativa(tile_x,tile_y);
 
-		vector<Entidad*> *vectorEntidades = (*p).second;
-		int tile_x = (*p).first.first;
-		int tile_y = (*p).first.second;
-		//pair<int,int> coordenada = this->calculador->calcularPosicionRelativa(tile_x,tile_y);//this->posicionRelativa(tile_x,tile_y);
+		SDL_Rect posicion;
+    	/* Cargamos por default los siguientes valores para TIERRA ó AGUA */
+		posicion.x = coordenada.first;
+		posicion.y = coordenada.second;
+		posicion.w = ANCHO_PIXEL_PASTO;
+		posicion.h = ALTO_PIXEL_PASTO;
 
-	    /* En una posición puede haber más de una entidad */
-	    for (unsigned i = 0; i < vectorEntidades->size(); i++){
-	    	Entidad *entidad = (*vectorEntidades)[i];
-
-	    	pair<int,int> coordenada = this->calculador->calcularPosicionRelativa(tile_x,tile_y);//this->posicionRelativa(tile_x,tile_y);
-	    	SDL_Rect posicion;
-	    	/* Cargamos por default los siguientes valores para TIERRA ó AGUA */
-	    	posicion.x = coordenada.first;
-	    	posicion.y = coordenada.second;
-	    	posicion.w = ANCHO_PIXEL_PASTO;
-	    	posicion.h = ALTO_PIXEL_PASTO;
-
-/*	    	DataPos data(posicion,entidad->getTipo());
-
-	    	if (entidad->getTipo() == "soldado") {
-	    		this->posicionPlayer = data.posicion;
-	    	}
-	    	else{
-	    		this->vectorPosiciones->push_back(data);
-	    	}
-*/
-	    	switch (entidad->getTipo()){
-	    		case ARBOL 	  : posicion.y -= (1.5 * DISTANCIA_ENTRE_Y);
-	    					    posicion.w = ANCHO_PIXEL_PASTO;
-	    						posicion.h = 2 * ALTO_PIXEL_PASTO;
-	    						break;
+		switch (entidad->getTipo()){
+			case ARBOL 	  : posicion.y -= (1.5 * DISTANCIA_ENTRE_Y);
+							posicion.w = ANCHO_PIXEL_PASTO;
+							posicion.h = 2 * ALTO_PIXEL_PASTO;
+							break;
 	    		/* Modificamos los tamanios de la imagen castillo para que ocupe
 	    		 * los tiles que le corresponden */
-	    		case CASTILLO : posicion.x -= DISTANCIA_ENTRE_X * (this->mapInfoEntidades[CASTILLO].ancho - 1);
-	    						posicion.y = posicion.y - ALTO_PIXEL_PASTO +  DISTANCIA_ENTRE_Y / 4;
-	    						posicion.w = ANCHO_PIXEL_PASTO;
-	    						posicion.h = (ALTO_PIXEL_PASTO * this->mapInfoEntidades[CASTILLO].ancho + ALTO_PIXEL_PASTO) / this->mapInfoEntidades[CASTILLO].ancho;
-	    						break;
-	    		case SOLDADO  :	posicion.x += ANCHO_PIXEL_PASTO / 4;
-	    						posicion.w = ANCHO_PIXEL_PASTO  / 3;
-	    						posicion.h = ALTO_PIXEL_PASTO * 3 / 4;
-	    						break;
-	    		case JUANA_DE_ARCO :
-	    						posicion.x += ANCHO_PIXEL_PASTO / 4;
-	    						posicion.w = ANCHO_PIXEL_PASTO / 3;
-	    						posicion.h = ALTO_PIXEL_PASTO * 3 / 4;
-	    						break;
-	    		default       : break;
-	    	}
-
-	    	/* Guardamos una referencia directa al SDL_Rect del protagonista */
-	    	if (entidad->getTipo() == this->tipoProtagonista) {
-	    		this->posicionPlayer = posicion;
-	    	}
-	    	else{
-	    		/* Guardamos la posicion de la entidad (SDL_Rect) y el tipo de entidad*/
-		    	DataPos data(posicion,entidad->getTipo());
-	    		this->vectorPosiciones->push_back(data);
-	    	}
+			case CASTILLO : posicion.x -= DISTANCIA_ENTRE_X * (this->mapInfoEntidades[CASTILLO].ancho - 1);
+						    posicion.y = posicion.y - ALTO_PIXEL_PASTO +  DISTANCIA_ENTRE_Y / 4;
+						    posicion.w = ANCHO_PIXEL_PASTO;
+						    posicion.h = (ALTO_PIXEL_PASTO * this->mapInfoEntidades[CASTILLO].ancho + ALTO_PIXEL_PASTO) / this->mapInfoEntidades[CASTILLO].ancho;
+						    break;
+			case SOLDADO  :	posicion.x += ANCHO_PIXEL_PASTO / 4;
+							posicion.w = ANCHO_PIXEL_PASTO  / 3;
+							posicion.h = ALTO_PIXEL_PASTO * 3 / 4;
+							break;
+			case JUANA_DE_ARCO :
+							posicion.x += ANCHO_PIXEL_PASTO / 4;
+							posicion.w = ANCHO_PIXEL_PASTO / 3;
+							posicion.h = ALTO_PIXEL_PASTO * 3 / 4;
+							break;
+	    	default       : break;
 	    }
-	    p++;
+
+		/* Guardamos una referencia directa al SDL_Rect del protagonista */
+		if (entidad->getTipo() == this->tipoProtagonista) {
+			this->posicionPlayer = posicion;
+	    }
+		else{
+			/* Guardamos la posicion de la entidad (SDL_Rect) y el tipo de entidad*/
+			DataPos data(posicion,entidad->getTipo());
+			this->vectorPosiciones->push_back(data);
+	    }
 	}
 }
 
 /********************************************************************************/
 void VentanaJuego::close(){
-	//delete this->imagenRelieve;
 
 	SDL_DestroyRenderer(this->renderer);
 	this->renderer = NULL;
@@ -213,7 +162,6 @@ void VentanaJuego::close(){
 }
 
 /********************************************************************************/
-//void VentanaJuego::render(){
 void VentanaJuego::dibujar(){
 	SDL_RenderClear(this->renderer);
 
@@ -246,10 +194,7 @@ void VentanaJuego::dibujar(){
 	for (unsigned i = 0; i < this->vectorPosiciones->size(); i++){
 		DataPos data = (*vectorPosiciones)[i];
 		SDL_Rect pos = data.posicion;
-/*		std::map<std::string,Imagen*>::iterator itImg = this->mapImagenes->find(data.tipo);
-		Imagen *imagenEntidad = itImg->second;
-		SDL_RenderCopy(this->renderer,imagenEntidad->getTexture(),NULL,&pos);
-*/
+
 		TipoEntidad tipo = data.tipo;
 
 		/* Buscamos la imagen de la entidad a traves del tipo */
@@ -521,9 +466,6 @@ void VentanaJuego::procesarClick(SDL_Event event, int MouseX, int MouseY,
 
 /********************************************************************************/
 VentanaJuego::~VentanaJuego() {
-/*	std::map<std::string,Imagen*>::iterator p = this->mapImagenes->begin();
-	while (p != this->mapImagenes->end()){
-		Imagen *imagen = (*p).second;	*/
 	map<TipoEntidad,Sprite*>::iterator p = this->mapSprites->begin();
 	while (p != this->mapSprites->end()){
 		Imagen *imagen = (*p).second->getImagen();
@@ -535,7 +477,6 @@ VentanaJuego::~VentanaJuego() {
 
 	delete this->spritePlayer;
 
-	//delete this->mapImagenes;
 	delete this->mapSprites;
 
 	delete this->vectorPosiciones;
