@@ -57,6 +57,7 @@ typename std::map<K,V>::iterator Map<K,V>::end(){
 
 template <class K, class V>
 Map<K,V>::~Map(){
+   this->mapa->clear();
    delete this->mapa;
 }
 

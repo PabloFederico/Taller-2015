@@ -55,6 +55,7 @@ Escenario::~Escenario() {
 		Entidad* entidad = (*posicionesEntidades)[i].entidad;
 		delete entidad;
 	}
+	this->posicionesEntidades->clear();
 	delete this->posicionesEntidades;
 }
 
