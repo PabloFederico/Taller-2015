@@ -363,7 +363,7 @@ void VentanaJuego::procesarScroll(int MouseX, int MouseY,
 
 		/* La camara se mueve hacia arriba */
 		if (MouseY < MARGEN_SCROLL && MouseY > 0){
-			if (MouseX < MARGEN_SCROLL / 2) cantidad = MARGEN_SCROLL;
+			if (MouseY < MARGEN_SCROLL / 2) cantidad = MARGEN_SCROLL;
 			else cantidad = MARGEN_SCROLL / 4;
 
 			if (*this->cero_y < 0){
