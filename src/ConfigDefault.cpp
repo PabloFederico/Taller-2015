@@ -29,7 +29,7 @@ void crearConfigDefault () {
 	soldado.insert(std::make_pair("nombre", "soldado"));
 	soldado.insert(std::make_pair("imagen", "images/soldado.png"));
 	soldado.insert(std::make_pair("fps", "10"));
-	soldado.insert(std::make_pair("delay", "5"));
+	soldado.insert(std::make_pair("delay", "0"));
 	vec.push_back(soldado);
 
 	std::map<std::string, std::string> juana_de_arco;

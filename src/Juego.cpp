@@ -150,10 +150,18 @@ InfoEscenario Juego::parsearConfig() {
 				infoEsc.size_y = unEscenario["size_y"].as<int>();
 				for(std::size_t i = 0; i < unEscenario["entidades"].size(); ++i) {
 					YAML::Node ent = unEscenario["entidades"][i];
-					if (tipos[ent["tipo"].as<string>()] != 0)
-						infoEsc.agregarEntidad( make_pair( ChequeoDeBorde(infoEsc.size_x, ent["x"].as<int>()),
-								ChequeoDeBorde(infoEsc.size_y, ent["y"].as<int>()) ), tipos[ent["tipo"].as<string>()] );
-					else imprimirAlLog("Error: Tipo '" + ent["tipo"].as<string>() + "' desconocido");
+					TipoEntidad tipo = tipos[ent["tipo"].as<string>()];
+					if (tipo != 0) {
+						std::vector<InfoEntidad>::iterator it;
+						for (it = this->vectorInfoTiposEntidades.begin(); it < this->vectorInfoTiposEntidades.end(); ++it)
+							if (it->tipo == tipo)
+								break;
+						if (it != this->vectorInfoTiposEntidades.end()) {
+							int x = ChequeoDeBorde(infoEsc.size_x-(it->ancho), ent["x"].as<int>());
+							int y = ChequeoDeBorde(infoEsc.size_y-(it->alto), ent["y"].as<int>());
+							infoEsc.agregarEntidad( make_pair(x,y), tipo );
+						} else imprimirAlLog("Error: El tipo '" + ent["tipo"].as<string>() + "' no fue configurado");
+					} else imprimirAlLog("Error: Tipo '" + ent["tipo"].as<string>() + "' desconocido");
 				}
 
 				YAML::Node protag = unEscenario["protagonista"][0];
@@ -197,9 +205,11 @@ InfoEscenario Juego::parsearConfig() {
 
 /********************************************************************************/
 int Juego::ChequeoDeBorde(int max, int input) {
-	if ((input >= 0) && (input < max))
-		return input;
-	else return max-1;
+	if (input >= 0) {
+		if (input < max)
+			return input;
+		else return max-1;
+	} else return 0;
 }
 
 /********************************************************************************/
@@ -285,7 +295,7 @@ InfoEscenario Juego::OdioYAML() {
 	infoSoldado.tipo = tipos["soldado"];
 	infoSoldado.path = "images/soldado.png";
 	infoSoldado.fps = 50;
-	infoSoldado.delay = 40;
+	infoSoldado.delay = 0;
 
 	InfoEntidad infoJuana;
 	infoJuana.tipo = tipos["juana_de_arco"];

@@ -1,10 +1,10 @@
 pantalla:
-  ancho: 800
-  alto: 600
+  ancho: 900
+  alto: 700
 
 configuracion:
-  vel_personaje: 50
-  margen_scroll: 20
+  vel_personaje: 90
+  margen_scroll: 10
 
 tipos:
   - nombre: arbol
@@ -18,7 +18,7 @@ tipos:
     pixel_ref_y: 40
 
   - nombre: soldado
-    delay: 5
+    delay: 0
     fps: 40
     imagen: images/soldado2.png
 
@@ -40,13 +40,13 @@ escenario:
       - {x: 25, y: 0, tipo: agua}
       - {x: 22, y: 0, tipo: tierra}
       - {x: 4, y: 10, tipo: agua}
-      - {x: 0, y: 0, tipo: castillo}
+      - {x: -2, y: 5, tipo: castillo}
       - {x: 30, y: 12, tipo: tierra}
       - {x: 4, y: 5, tipo: arbol}
       - {x: 4, y: 6, tipo: arbol}
       - {x: 5, y: 5, tipo: arbol}
       - {x: 15, y: 12, tipo: arbol}
-      - {x: 0, y: 20, tipo: castillo}
+      - {x: 5, y: 29, tipo: castillo}
     protagonista:
       - tipo: soldado
         x: 15
