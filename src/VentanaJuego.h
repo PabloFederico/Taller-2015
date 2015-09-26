@@ -12,16 +12,10 @@
 #include "Calculador.h"
 #include "Sprite.h"
 #include "Map.h"
+#include "Dibujador.h"
+#include "Structs.h"
 using namespace std;
 
-struct DataPos{
-	SDL_Rect posicion;
-	TipoEntidad tipo;
-	DataPos(SDL_Rect pos, TipoEntidad tipo){
-		this->posicion = pos;
-		this->tipo = tipo;
-	};
-};
 
 class VentanaJuego {
 private:
@@ -47,13 +41,11 @@ private:
 	vector<DataPos> *vectorPosiciones;
 
 	Calculador *calculador;
+	Dibujador *dibujador;
 
 	int *cero_x;
 	int *cero_y;
 
-	/* Dimensiones de la imagen a cargar
-	const static int escala_pixel_tile_x = 20;
-	const static int escala_pixel_tile_y = 10;*/
 	int LIMITE_DESPLAZAMIENTO_EN_X;
 	int LIMITE_DESPLAZAMIENTO_EN_Y;
 

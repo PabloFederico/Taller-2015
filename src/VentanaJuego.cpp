@@ -13,26 +13,60 @@
 VentanaJuego::VentanaJuego(Juego *juego){
 	this->juego = juego;
 	this->cargarJuego(juego);
-	/* y si no init(), entonces deberíamos emitir un mensaje de error
-	 * porque no se pudo inicializar SDL. */
+}
+
+/********************************************************************************/
+void VentanaJuego::cargarJuego(Juego *juego){
+	pair<int,int> dimensionVentana = juego->dimensionVentana();
+	this->SCREEN_WIDTH = dimensionVentana.first;
+	this->SCREEN_HEIGHT = dimensionVentana.second;
+
+	this->MARGEN_SCROLL = juego->getMargenScroll();
+
+	this->tipoProtagonista = juego->getProtagonista()->getTipo();
+
+	this->TILES_X = juego->getEscenario()->getDimension().first;
+	this->TILES_Y = juego->getEscenario()->getDimension().second;
+
+	this->LIMITE_DESPLAZAMIENTO_EN_X = ANCHO_PIXEL_PASTO * this->TILES_X / 2;
+	this->LIMITE_DESPLAZAMIENTO_EN_Y = ALTO_PIXEL_PASTO * this->TILES_Y / 2;
+
+	this->velocidad_personaje = juego->getVelocidad();
+
+	if (init()){
+		/* El (0,0) relativo del mapa respecto a la ventana principal */
+		int centro_x = SCREEN_WIDTH / 2;
+		int centro_y = SCREEN_HEIGHT / 2;
+		this->cero_x = new int(centro_x - DISTANCIA_ENTRE_X);
+		this->cero_y = new int(centro_y - LIMITE_DESPLAZAMIENTO_EN_Y);
+
+		this->calculador = new Calculador(this->cero_x, this->cero_y);
+
+		/* map donde se almacenan los sprites que se van a usar.
+		 * Es muy génerico, ya que también se guardar imagenes de PASTO, TIERRA, ETC. */
+		this->mapSprites = new Map<TipoEntidad,Sprite*>();
+		this->cargarImagenes(juego->getInfoTiposEntidades());
+
+		this->dibujador = new Dibujador(renderer,mapSprites,cero_x,cero_y);
+		this->dibujador->setMapInfoEntidad(this->mapInfoEntidades);
+
+		this->vectorPosiciones = new vector<DataPos>();
+		this->cargarPosicionesEntidades(juego->getEscenario()->getVectorEntidades());
+	}
 }
 
 /********************************************************************************/
 bool VentanaJuego::init(){
-	bool success = true;
-	if (SDL_Init(SDL_INIT_EVERYTHING) < 0) success = false;
-	else{
-		 this->window = SDL_CreateWindow("Taller de Programación I: AoF",60,60,this->SCREEN_WIDTH,this->SCREEN_HEIGHT,SDL_WINDOW_SHOWN);
-		 if (this->window == NULL) success = false;
+	 this->window = SDL_CreateWindow("Taller de Programación I: AoF",60,60,this->SCREEN_WIDTH,this->SCREEN_HEIGHT,SDL_WINDOW_SHOWN);
+	 if (this->window == NULL) return false;
 
-		 this->renderer = SDL_CreateRenderer(this->window,-1,SDL_RENDERER_ACCELERATED);
-		 if (this->renderer == NULL) success = false;
-		 else {
-			 SDL_RenderSetLogicalSize(this->renderer,this->SCREEN_WIDTH,this->SCREEN_HEIGHT);
-			 SDL_SetRenderDrawColor(this->renderer,0,0,0,0);
+	 this->renderer = SDL_CreateRenderer(this->window,-1,SDL_RENDERER_ACCELERATED);
+	 if (this->renderer == NULL) return false;
+	 else {
+		  SDL_RenderSetLogicalSize(this->renderer,this->SCREEN_WIDTH,this->SCREEN_HEIGHT);
+		  SDL_SetRenderDrawColor(this->renderer,0,0,0,0);
 		 }
-	}
-	return success;
+	return true;
 }
 
 /********************************************************************************/
@@ -119,78 +153,20 @@ void VentanaJuego::cargarPosicionesEntidades(vector<PosEntidad>* posEntidades){
 
 /********************************************************************************/
 void VentanaJuego::close(){
-
 	SDL_DestroyRenderer(this->renderer);
 	this->renderer = NULL;
 
 	SDL_DestroyWindow(this->window);
 	this->window = NULL;
-
-	IMG_Quit();
-	SDL_Quit();
 }
 
 /********************************************************************************/
 void VentanaJuego::dibujar(){
 	SDL_RenderClear(this->renderer);
 
-	Imagen *imagenRelieve = this->mapSprites->find(DEFAULT)->second->getImagen();
-	SDL_Rect posicion;
-
-	int cero_relativo_x = *this->cero_x;
-	int cero_relativo_y = *this->cero_y;
-
-	posicion.w = ANCHO_PIXEL_PASTO;
-	posicion.h = ALTO_PIXEL_PASTO;
-
-	/* Dibujamos el relieve por Default */
-	for(int j = 0; j < this->TILES_Y; j++){
-
-		posicion.x = cero_relativo_x;
-		posicion.y = cero_relativo_y;
-
-		for(int i = 0; i < this->TILES_X; i++){
-			SDL_RenderCopy(this->renderer,imagenRelieve->getTexture(),NULL,&posicion);
-
-			posicion.x += DISTANCIA_ENTRE_X;
-			posicion.y += DISTANCIA_ENTRE_Y;
-		}
-		cero_relativo_x -= DISTANCIA_ENTRE_X;
-		cero_relativo_y += DISTANCIA_ENTRE_Y;
-	}
-
-	/* Dibujamos las entidades que no se mueven */
-	for (unsigned i = 0; i < this->vectorPosiciones->size(); i++){
-		DataPos data = (*vectorPosiciones)[i];
-		SDL_Rect pos = data.posicion;
-
-		TipoEntidad tipo = data.tipo;
-
-		/* Buscamos la imagen de la entidad a traves del tipo */
-		map<TipoEntidad,Sprite*>::iterator itImg = this->mapSprites->find(tipo);
-		Imagen *imagenEntidad = (*itImg).second->getImagen();
-		int tiles_ocupados = this->mapInfoEntidades[tipo].ancho;
-
-		int x = pos.x;
-
-		/* Estos solo se van a ejecutar una vez, salvo el caso de dibujar un castillo,
-		 * eso dependera de cuantos tiles ocupe */
-		for (int j = 0; j < tiles_ocupados; j++){
-			for (int k = 0; k < tiles_ocupados; k++){
-				SDL_Rect rect = itImg->second->getSDLRect(j,k);
-				SDL_RenderCopy(this->renderer,imagenEntidad->getTexture(),&rect,&pos);
-				pos.x += pos.w;
-			}
-			pos.x = x;
-			pos.y += pos.h;
-		}
-
-	}
-
-	/* Dibujamos al player */
-	SDL_Texture* texturePlayer = this->spritePlayer->getImagen()->getTexture();
-	SDL_Rect frame = this->spritePlayer->getSDLRectActual();
-	SDL_RenderCopy(this->renderer,texturePlayer,&frame,&posicionPlayer);
+	dibujador->dibujarRelieve(TILES_X,TILES_Y);
+	dibujador->dibujarEntidadesNoMovibles(vectorPosiciones);
+	dibujador->dibujarProtagonista(posicionPlayer,spritePlayer);
 }
 
 /********************************************************************************/
@@ -221,7 +197,7 @@ void VentanaJuego::mostrar(){
 	    frame_act = SDL_GetTicks();
 
 
-			while (run && event.type != SDL_QUIT){
+		while (run && event.type != SDL_QUIT){
 				frame_ant = frame_act;
 				frame_act = SDL_GetTicks();
 				dt = (float) (frame_act - frame_ant)/1000;
@@ -235,39 +211,6 @@ void VentanaJuego::mostrar(){
 										  posX_player,posY_player,
 										  x_anterior,y_anterior,
 										  Follow_Point_X,Follow_Point_Y,Follow,dt);
-
-/////* OLD
-				/* Analisis del evento de movimiento
-				if (event.type == SDL_MOUSEBUTTONDOWN){
-					if (event.button.button == SDL_BUTTON_LEFT){
-	                    Follow_Point_X = MouseX - posicionPlayer.w / 2;
-	                    Follow_Point_Y = MouseY - posicionPlayer.h / 2;
-	                    Follow = true;
-	                    Direccion direccion = this->calculador->calcularDireccion(Follow_Point_X, Follow_Point_Y, posicionPlayer.x, posicionPlayer.y);
-	                    this->spritePlayer->setDireccion(direccion);
-					}
-				}
-
-	            if (Follow) {
-	            	float distance = this->calculador->calcularDistancia(posX_player, posY_player, Follow_Point_X, Follow_Point_Y);
-
-					if (distance != 0){
-	                    if (posX_player != Follow_Point_X) {
-	                    	float x_result = (posX_player - ((posX_player - Follow_Point_X) / distance) * 1.5f);
-	                    	posicionPlayer.x = int(x_result);
-	                    	posX_player = x_result;
-	                    }
-
-	                    if (posY_player != Follow_Point_Y) {
-	                        float y_result = (posY_player - ((posY_player - Follow_Point_Y) / distance) * 1.5f);
-	                        posicionPlayer.y = int(y_result);
-	                        posY_player = y_result;
-	                    }
-	                    this->spritePlayer->efectuarMovimiento();
-	                 }else  Follow = false;
-	            }
-				Fin de analisis de evento de movimiento */
-	/////
 
 				int orig_inicial_x = *this->cero_x;
 				int orig_inicial_y = *this->cero_y;
@@ -305,10 +248,9 @@ void VentanaJuego::mostrar(){
 	            		Follow = false;
 	            	}
 	            }
-			}
 
-	}
-
+		} /* Fin del while*/
+}
 
 /********************************************************************************/
 void VentanaJuego::actualizarPosicionesEntidades(int corrimiento_x, int corrimiento_y){
@@ -412,8 +354,6 @@ void VentanaJuego::procesarClick(SDL_Event event, int MouseX, int MouseY,
             }else {
             	/* Si el click esta fuera del escenario, su punto destino será
             	 * el anterior al click (si es que se encontraba en movimiento) */
-
-
             	Follow_Point_X = x_anterior;
             	Follow_Point_Y = y_anterior;
             }
@@ -452,42 +392,6 @@ void VentanaJuego::reiniciar(){
 	this->juego = new Juego();
 	this->cargarJuego(this->juego);
 }
-/********************************************************************************/
-void VentanaJuego::cargarJuego(Juego *juego){
-	pair<int,int> dimensionVentana = juego->dimensionVentana();
-	this->SCREEN_WIDTH = dimensionVentana.first;
-	this->SCREEN_HEIGHT = dimensionVentana.second;
-
-	this->MARGEN_SCROLL = juego->getMargenScroll();
-
-	this->tipoProtagonista = juego->getProtagonista()->getTipo();
-
-	this->TILES_X = juego->getEscenario()->getDimension().first;
-	this->TILES_Y = juego->getEscenario()->getDimension().second;
-
-	this->LIMITE_DESPLAZAMIENTO_EN_X = ANCHO_PIXEL_PASTO * this->TILES_X / 2;
-	this->LIMITE_DESPLAZAMIENTO_EN_Y = ALTO_PIXEL_PASTO * this->TILES_Y / 2;
-
-	this->velocidad_personaje = juego->getVelocidad();
-	if (init()){
-
-		/* El (0,0) relativo del mapa respecto a la ventana principal */
-		int centro_x = SCREEN_WIDTH / 2;
-		int centro_y = SCREEN_HEIGHT / 2;
-		this->cero_x = new int(centro_x - DISTANCIA_ENTRE_X);
-		this->cero_y = new int(centro_y - LIMITE_DESPLAZAMIENTO_EN_Y);
-
-		this->calculador = new Calculador(this->cero_x, this->cero_y);
-
-		/* map donde se almacenan los sprites que se van a usar.
-		 * Es muy génerico, ya que también se guardar imagenes de PASTO, TIERRA, ETC. */
-		this->mapSprites = new Map<TipoEntidad,Sprite*>();
-		this->cargarImagenes(juego->getInfoTiposEntidades());
-
-		this->vectorPosiciones = new vector<DataPos>();
-		this->cargarPosicionesEntidades(juego->getEscenario()->getVectorEntidades());
-	}
-}
 
 /********************************************************************************/
 void VentanaJuego::liberarRecursos(){
@@ -508,6 +412,8 @@ void VentanaJuego::liberarRecursos(){
 	delete this->vectorPosiciones;
 
 	delete this->calculador;
+
+	delete this->dibujador;
 
 	delete this->cero_x;
 	delete this->cero_y;
