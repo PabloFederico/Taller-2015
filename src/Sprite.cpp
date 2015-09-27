@@ -34,7 +34,7 @@ Sprite::Sprite(int cant_Direcciones, Uint32 cant_Img_Distintas, Imagen* imagen){
 /********************************************************************************/
 void Sprite::cargarFrames(){
 	int posX;
-	int posY = 0;
+	int posY = 1;
 	int ancho = this->imagen->getPixelsX() / this->cant_Img_Distintas;
 	int alto = this->imagen->getPixelsY() / this->cant_Direcciones;
 	for (int i = 0; i < this->cant_Direcciones; i++){
