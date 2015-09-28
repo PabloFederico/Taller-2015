@@ -134,10 +134,7 @@ void VentanaJuego::cargarPosicionesEntidades(vector<PosEntidad>* posEntidades){
 						    posicion.w = ANCHO_PIXEL_PASTO;
 						    posicion.h = (ALTO_PIXEL_PASTO * this->mapInfoEntidades[CASTILLO].ancho + ALTO_PIXEL_PASTO) / this->mapInfoEntidades[CASTILLO].ancho;
 						    break;
-			case SOLDADO  :	posicion.x += ANCHO_PIXEL_PASTO / 4;
-							posicion.w = ANCHO_PIXEL_PASTO  / 3;
-							posicion.h = ALTO_PIXEL_PASTO * 3 / 4;
-							break;
+			case SOLDADO  :
 			case JUANA_DE_ARCO :
 							posicion.x += ANCHO_PIXEL_PASTO / 4;
 							posicion.w = ANCHO_PIXEL_PASTO / 3;
