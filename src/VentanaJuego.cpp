@@ -102,6 +102,7 @@ void VentanaJuego::cargarImagenes(vector<InfoEntidad> vectorInfo){
 			/* Si no, guardamos en sprite en un map de sprites */
 			sprite = new Sprite(vectorInfo[i].ancho,vectorInfo[i].ancho,imagen);
 			this->mapSprites->insert(tipo,sprite);
+			break;
 		}
 	}
 }
