@@ -21,7 +21,7 @@ Sprite::Sprite(int cant_Direcciones, Uint32 cant_Img_Distintas, Imagen* imagen){
 		this->frames[i] = new SDL_Rect[cant_Img_Distintas];
 	}
 	this->fps = 30;
-	this->delay = 100;
+	this->delay = 0;
 
 	this->cargarFrames();
 

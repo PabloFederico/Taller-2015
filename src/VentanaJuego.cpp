@@ -96,6 +96,8 @@ void VentanaJuego::cargarImagenes(vector<InfoEntidad> vectorInfo){
 			break;
 		case (ANIMAL):
 			sprite = new Sprite(DIRECCIONES, IMAGENES_DIFERENTES,imagen);
+			sprite->setDelay(vectorInfo[i].delay);
+			sprite->setFps(vectorInfo[i].fps);
 			this->mapSprites->insert(tipo,sprite);
 			break;
 		default:
@@ -286,8 +288,8 @@ void VentanaJuego::procesarScroll(int MouseX, int MouseY,
 		int cantidad = 0;
 		/* La camara se mueve hacia la izquierda */
 		if (MouseX < MARGEN_SCROLL && MouseX > 0){
-			if (MouseX < MARGEN_SCROLL / 2) cantidad = MARGEN_SCROLL;
-			else cantidad = MARGEN_SCROLL / 4;
+			if (MouseX < MARGEN_SCROLL / 2) cantidad = 2 * MARGEN_SCROLL;
+			else cantidad = MARGEN_SCROLL / 2;
 
 			if ((*this->cero_x) < LIMITE_DESPLAZAMIENTO_EN_X ){
 				*cero_x += cantidad;
@@ -301,8 +303,8 @@ void VentanaJuego::procesarScroll(int MouseX, int MouseY,
 		/* La camara se mueve hacia la derecha */
 		if (MouseX > SCREEN_WIDTH - MARGEN_SCROLL && MouseX < SCREEN_WIDTH){
 			if (MouseX > SCREEN_WIDTH - MARGEN_SCROLL / 2)
-				cantidad = MARGEN_SCROLL;
-			else cantidad = MARGEN_SCROLL / 4;
+				cantidad = 2 * MARGEN_SCROLL;
+			else cantidad = MARGEN_SCROLL / 2;
 
 			if (SCREEN_WIDTH - *this->cero_x < LIMITE_DESPLAZAMIENTO_EN_X + ANCHO_PIXEL_PASTO){
 				*cero_x -= cantidad;
@@ -315,8 +317,8 @@ void VentanaJuego::procesarScroll(int MouseX, int MouseY,
 
 		/* La camara se mueve hacia arriba */
 		if (MouseY < MARGEN_SCROLL && MouseY > 0){
-			if (MouseY < MARGEN_SCROLL / 2) cantidad = MARGEN_SCROLL;
-			else cantidad = MARGEN_SCROLL / 4;
+			if (MouseY < MARGEN_SCROLL / 2) cantidad = 2 * MARGEN_SCROLL;
+			else cantidad = MARGEN_SCROLL / 2;
 
 			if (*this->cero_y < 0){
 				*cero_y += cantidad;
@@ -329,8 +331,8 @@ void VentanaJuego::procesarScroll(int MouseX, int MouseY,
 
 		/* La camara se mueve hacia abajo */
 		if (MouseY > SCREEN_HEIGHT - MARGEN_SCROLL && MouseY < SCREEN_HEIGHT){
-			if (MouseY > SCREEN_HEIGHT - MARGEN_SCROLL / 2) cantidad = MARGEN_SCROLL;
-			else cantidad = MARGEN_SCROLL / 4;
+			if (MouseY > SCREEN_HEIGHT - MARGEN_SCROLL / 2) cantidad = 2 * MARGEN_SCROLL;
+			else cantidad = MARGEN_SCROLL / 2;
 
 			if (abs(*this->cero_y) < 2*LIMITE_DESPLAZAMIENTO_EN_Y - SCREEN_HEIGHT){
 				*cero_y -= cantidad;

@@ -1,6 +1,6 @@
 pantalla:
-  ancho: 1920
-  alto: 1080
+  ancho: 900
+  alto: 700
 
 configuracion:
   vel_personaje: 90
@@ -18,7 +18,6 @@ tipos:
     pixel_ref_y: 40
 
   - nombre: soldado
-    delay: 0
     fps: 40
     imagen: images/soldado2.png
 
@@ -26,9 +25,10 @@ tipos:
     fps: 10
     imagen: images/juana.png
 
-#  - nombre: animal
-#    fps: 50
-#    imagen: images/animal.png
+  - nombre: animal
+    fps: 20
+    delay: 30
+    imagen: images/animal.png
 
   - nombre: tierra
     imagen: images/tierra.png
@@ -47,14 +47,14 @@ escenario:
       - {x: 25, y: 0, tipo: agua}
       - {x: 22, y: 0, tipo: tierra}
       - {x: 4, y: 10, tipo: agua}
-      - {x: -2, y: 5, tipo: castillo}
+      - {x: 0, y: 5, tipo: castillo}
       - {x: 30, y: 12, tipo: tierra}
       - {x: 4, y: 5, tipo: arbol}
       - {x: 4, y: 6, tipo: arbol}
       - {x: 5, y: 5, tipo: arbol}
       - {x: 15, y: 12, tipo: arbol}
       - {x: 5, y: 29, tipo: castillo}
-#      - {x: 10, y: 14, tipo: animal}
+      - {x: 10, y: 14, tipo: animal}
       - {x: 23, y: 23, tipo: juanita}
     protagonista:
       - tipo: soldado
