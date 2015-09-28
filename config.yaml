@@ -36,6 +36,9 @@ tipos:
   - nombre: agua
     imagen: images/agua.png
 
+  - nombre: juanita
+    imagen: images/soldier.png
+
 escenario:
   - nombre: orleans
     size_x: 50
@@ -52,6 +55,7 @@ escenario:
       - {x: 15, y: 12, tipo: arbol}
       - {x: 5, y: 29, tipo: castillo}
 #      - {x: 10, y: 14, tipo: animal}
+      - {x: 23, y: 23, tipo: juanita}
     protagonista:
       - tipo: soldado
         x: 15
