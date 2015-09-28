@@ -88,11 +88,17 @@ void VentanaJuego::cargarImagenes(vector<InfoEntidad> vectorInfo){
 		Sprite *sprite;
 
 		/* Guardamos una referencia directa al sprite protagonista */
-		if (tipo == this->tipoProtagonista){
+		switch (tipo){
+		case (SOLDADO):
 			this->spritePlayer = new Sprite(DIRECCIONES,IMAGENES_DIFERENTES,imagen);
 			this->spritePlayer->setDelay(vectorInfo[i].delay);
 			this->spritePlayer->setFps(vectorInfo[i].fps);
-		}else{
+			break;
+		case (ANIMAL):
+			sprite = new Sprite(DIRECCIONES, IMAGENES_DIFERENTES,imagen);
+			this->mapSprites->insert(tipo,sprite);
+			break;
+		default:
 			/* Si no, guardamos en sprite en un map de sprites */
 			sprite = new Sprite(vectorInfo[i].ancho,vectorInfo[i].ancho,imagen);
 			this->mapSprites->insert(tipo,sprite);
@@ -135,6 +141,12 @@ void VentanaJuego::cargarPosicionesEntidades(vector<PosEntidad>* posEntidades){
 							posicion.x += ANCHO_PIXEL_PASTO / 4;
 							posicion.w = ANCHO_PIXEL_PASTO / 3;
 							posicion.h = ALTO_PIXEL_PASTO * 3 / 4;
+							break;
+			case ANIMAL :
+							posicion.x += ANCHO_PIXEL_PASTO / 4;
+							posicion.y -= (DISTANCIA_ENTRE_Y);
+							posicion.w = ANCHO_PIXEL_PASTO;
+							posicion.h = 2 * ALTO_PIXEL_PASTO;
 							break;
 	    	default       : break;
 	    }

@@ -56,7 +56,8 @@ void Dibujador::dibujarEntidadesNoMovibles(vector<DataPos>* vectorPosiciones){
 
 		/* Buscamos la imagen de la entidad a traves del tipo */
 		map<TipoEntidad,Sprite*>::iterator itImg = this->mapSprites->find(tipo);
-		Imagen *imagenEntidad = (*itImg).second->getImagen();
+		Sprite* sprite = (*itImg).second;
+		Imagen *imagenEntidad = sprite->getImagen();
 		int tiles_ocupados = this->mapInfoEntidades[tipo].ancho;
 
 		int x = pos.x;
@@ -65,9 +66,20 @@ void Dibujador::dibujarEntidadesNoMovibles(vector<DataPos>* vectorPosiciones){
 		 * eso dependera de cuantos tiles ocupe */
 		for (int j = 0; j < tiles_ocupados; j++){
 			for (int k = 0; k < tiles_ocupados; k++){
-				SDL_Rect rect = itImg->second->getSDLRect(j,k);
-				SDL_RenderCopy(this->renderer,imagenEntidad->getTexture(),&rect,&pos);
-				pos.x += pos.w;
+
+				//Entidades con movimiento:
+				//TODO: Esto hay que hacerlo mas generico.
+				if (tipo == ANIMAL){
+					sprite->efectuarMovimiento();
+					SDL_Rect frame = sprite->getSDLRectActual();
+					SDL_RenderCopy(this->renderer,imagenEntidad->getTexture(),&frame,&pos);
+				}
+				//Entidades sin movimiento:
+				else{
+					SDL_Rect rect = sprite->getSDLRect(j,k);
+					SDL_RenderCopy(this->renderer,imagenEntidad->getTexture(),&rect,&pos);
+					pos.x += pos.w;
+				}
 			}
 			pos.x = x;
 			pos.y += pos.h;

@@ -61,9 +61,9 @@ void Juego::cargarJuego(){
 	//	std::vector<InfoEscenario> vecEscenarios;
 
 	//---------------------------------------------------------------------------------------------!!
-	InfoEscenario infoEsc = parsearConfig();
+	//InfoEscenario infoEsc = parsearConfig();
 	// !!! Para el que no le funciona YAML, comentar la línea de arriba y descomentar la de abajo.
-	//InfoEscenario infoEsc = OdioYAML();
+	InfoEscenario infoEsc = OdioYAML();
 	//---------------------------------------------------------------------------------------------!!
 
 
@@ -238,6 +238,8 @@ InfoEscenario Juego::infoEscenarioDefault() {
 
 	infoEscenario.agregarEntidad(std::make_pair(0,10), CASTILLO);
 
+	infoEscenario.agregarEntidad(std::make_pair(10,14), ANIMAL);
+
 	std::cout<<infoEscenario.getPosicionesEntidades().size()<<std::endl;
 
 	infoEscenario.protagonista = SOLDADO;
@@ -272,6 +274,7 @@ InfoEscenario Juego::OdioYAML() {
 		tipos["castillo"] = CASTILLO;
 		tipos["soldado"] = SOLDADO;
 		tipos["juana_de_arco"] = JUANA_DE_ARCO;
+		tipos["animal"] = ANIMAL;
 
 	InfoEntidad infoArbol;
 	infoArbol.tipo = tipos["arbol"];
@@ -302,12 +305,19 @@ InfoEscenario Juego::OdioYAML() {
 	infoJuana.path = "images/juana.png";
 	infoJuana.fps = 10;
 
+	InfoEntidad infoAnimal;
+	infoAnimal.tipo = tipos["animal"];
+	infoAnimal.path = "images/animal.png";
+	infoAnimal.fps = 50;
+
+
 	this->vectorInfoTiposEntidades.push_back(infoArbol);
 	this->vectorInfoTiposEntidades.push_back(infoTierra);
 	this->vectorInfoTiposEntidades.push_back(infoAgua);
 	this->vectorInfoTiposEntidades.push_back(infoCastillo);
 	this->vectorInfoTiposEntidades.push_back(infoSoldado);
 	this->vectorInfoTiposEntidades.push_back(infoJuana);
+	this->vectorInfoTiposEntidades.push_back(infoAnimal);
 
 	return infoEscenarioDefault();
 }
