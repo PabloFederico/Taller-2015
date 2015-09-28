@@ -14,7 +14,7 @@ Juego::Juego() {
 	this->protagonista = NULL;
 	this->screenWidth = 800;	// Default
 	this->screenHeight = 600;	// Default
-	this->vel_personaje = 1;
+	this->vel_personaje = 50;
 	this->margen_scroll = 30;
 
 	this->cargarJuego();
@@ -61,9 +61,9 @@ void Juego::cargarJuego(){
 	//	std::vector<InfoEscenario> vecEscenarios;
 
 	//---------------------------------------------------------------------------------------------!!
-	//InfoEscenario infoEsc = parsearConfig();
+	InfoEscenario infoEsc = parsearConfig();
 	// !!! Para el que no le funciona YAML, comentar la línea de arriba y descomentar la de abajo.
-	InfoEscenario infoEsc = OdioYAML();
+	//InfoEscenario infoEsc = OdioYAML();
 	//---------------------------------------------------------------------------------------------!!
 
 
@@ -82,6 +82,7 @@ InfoEscenario Juego::parsearConfig() {
 		tipos["castillo"] = CASTILLO;
 		tipos["soldado"] = SOLDADO;
 		tipos["juana_de_arco"] = JUANA_DE_ARCO;
+		tipos["animal"] = ANIMAL;
 
 
 	YAML::Node config;
