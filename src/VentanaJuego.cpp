@@ -143,7 +143,7 @@ void VentanaJuego::cargarPosicionesEntidades(vector<PosEntidad>* posEntidades){
 							posicion.h = ALTO_PIXEL_PASTO * 3 / 4;
 							break;
 			case ANIMAL :
-							posicion.x += ANCHO_PIXEL_PASTO / 4;
+							posicion.x += ANCHO_PIXEL_PASTO / 8;
 							posicion.y -= (DISTANCIA_ENTRE_Y);
 							posicion.w = ANCHO_PIXEL_PASTO;
 							posicion.h = 2 * ALTO_PIXEL_PASTO;
@@ -247,7 +247,8 @@ void VentanaJuego::mostrar(){
 
 	            SDL_RenderPresent(this->renderer);
 
-	            if (mil_fps > (SDL_GetTicks() - frame_act)) SDL_Delay(mil_fps -(SDL_GetTicks() - frame_act));
+	            SDL_Delay(20);
+	            //if (mil_fps > (SDL_GetTicks() - frame_act)) SDL_Delay(mil_fps -(SDL_GetTicks() - frame_act));
 	            //SDL_Delay(1000/this->spritePlayer->getFps());
 
 	            if (event.type == SDL_KEYDOWN){
@@ -388,7 +389,11 @@ void VentanaJuego::procesarClick(SDL_Event event, int MouseX, int MouseY,
                 posicionPlayer.y = int(y_result);
                 posY_player = y_result;
             }
-            this->spritePlayer->efectuarMovimiento();
+            if (this->spritePlayer->currentTime() > (1000/this->mapInfoEntidades[tipoProtagonista].fps)){
+            	this->spritePlayer->efectuarMovimiento();
+            	this->spritePlayer->resetTime();
+            }
+            //this->spritePlayer->efectuarMovimiento();
          }else  Follow = false;
     }else{
     	/* Cuando se deja de mover, se queda en una posición firme */

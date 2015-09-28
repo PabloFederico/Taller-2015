@@ -22,6 +22,8 @@ private:
 	Uint32 segundos;
 	Uint32 ticks;
 
+	int milisegundos;
+
 	SDL_Rect** frames;
 	SDL_Rect frameActual;
 
@@ -48,6 +50,10 @@ public:
 	void setDelay(int delay);
 
 	SDL_Rect getSDLRect(int i, int j);
+
+	void resetTime();
+
+	int currentTime();
 
 	void acomodar();
 

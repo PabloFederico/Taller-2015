@@ -3,7 +3,7 @@ pantalla:
   alto: 700
 
 configuracion:
-  vel_personaje: 90
+  vel_personaje: 50
   margen_scroll: 10
 
 tipos:
@@ -26,18 +26,15 @@ tipos:
     imagen: images/juana.png
 
   - nombre: animal
-    fps: 20
-    delay: 30
-    imagen: images/animal.png
+    fps: 10
+    delay: 10
+    imagen: images/animal1.png
 
   - nombre: tierra
     imagen: images/tierra.png
 
   - nombre: agua
     imagen: images/agua.png
-
-  - nombre: juanita
-    imagen: images/soldier.png
 
 escenario:
   - nombre: orleans
@@ -55,7 +52,6 @@ escenario:
       - {x: 15, y: 12, tipo: arbol}
       - {x: 5, y: 29, tipo: castillo}
       - {x: 10, y: 14, tipo: animal}
-      - {x: 23, y: 23, tipo: juanita}
     protagonista:
       - tipo: soldado
         x: 15
