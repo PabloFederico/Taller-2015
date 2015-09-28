@@ -1,6 +1,6 @@
 pantalla:
-  ancho: 900
-  alto: 700
+  ancho: 1920
+  alto: 1080
 
 configuracion:
   vel_personaje: 90
@@ -26,16 +26,23 @@ tipos:
     fps: 10
     imagen: images/juana.png
 
+#  - nombre: animal
+#    fps: 50
+#    imagen: images/animal.png
+
   - nombre: tierra
     imagen: images/tierra.png
 
   - nombre: agua
     imagen: images/agua.png
 
+  - nombre: juanita
+    imagen: images/soldier.png
+
 escenario:
   - nombre: orleans
-    size_x: 30
-    size_y: 30
+    size_x: 50
+    size_y: 50
     entidades:
       - {x: 25, y: 0, tipo: agua}
       - {x: 22, y: 0, tipo: tierra}
@@ -47,6 +54,8 @@ escenario:
       - {x: 5, y: 5, tipo: arbol}
       - {x: 15, y: 12, tipo: arbol}
       - {x: 5, y: 29, tipo: castillo}
+#      - {x: 10, y: 14, tipo: animal}
+      - {x: 23, y: 23, tipo: juanita}
     protagonista:
       - tipo: soldado
         x: 15

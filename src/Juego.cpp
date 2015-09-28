@@ -14,7 +14,7 @@ Juego::Juego() {
 	this->protagonista = NULL;
 	this->screenWidth = 800;	// Default
 	this->screenHeight = 600;	// Default
-	this->vel_personaje = 1;
+	this->vel_personaje = 50;
 	this->margen_scroll = 30;
 
 	this->cargarJuego();
@@ -61,9 +61,9 @@ void Juego::cargarJuego(){
 	//	std::vector<InfoEscenario> vecEscenarios;
 
 	//---------------------------------------------------------------------------------------------!!
-	//InfoEscenario infoEsc = parsearConfig();
+	InfoEscenario infoEsc = parsearConfig();
 	// !!! Para el que no le funciona YAML, comentar la línea de arriba y descomentar la de abajo.
-	InfoEscenario infoEsc = OdioYAML();
+	//InfoEscenario infoEsc = OdioYAML();
 	//---------------------------------------------------------------------------------------------!!
 
 
@@ -82,6 +82,7 @@ InfoEscenario Juego::parsearConfig() {
 		tipos["castillo"] = CASTILLO;
 		tipos["soldado"] = SOLDADO;
 		tipos["juana_de_arco"] = JUANA_DE_ARCO;
+		tipos["animal"] = ANIMAL;
 
 
 	YAML::Node config;
@@ -120,23 +121,22 @@ InfoEscenario Juego::parsearConfig() {
 			for(std::size_t i = 0; i < config["tipos"].size(); ++i) {
 				YAML::Node unTipo = config["tipos"][i];
 
-				if (tipos[unTipo["nombre"].as<string>()] != 0) {
-					InfoEntidad iE;
-					iE.tipo = tipos[unTipo["nombre"].as<string>()];
-					if ((unTipo["imagen"]) && (access(unTipo["imagen"].as<string>().c_str(), F_OK) != -1))		// Verificación de existencia
-												iE.path = unTipo["imagen"].as<string>();
-					else imprimirAlLog("Error: No se encontró imagen para " + unTipo["nombre"].as<string>());
-					if (unTipo["alto_base"] && unTipo["alto_base"].as<int>() > 0)	iE.alto = unTipo["alto_base"].as<int>();
-					if (unTipo["ancho_base"] && unTipo["ancho_base"].as<int>() > 0) iE.ancho = unTipo["ancho_base"].as<int>();
-					if (unTipo["pixel_ref_x"])										iE.pixel_ref_x = unTipo["pixel_ref_x"].as<int>();
-					if (unTipo["pixel_ref_y"])										iE.pixel_ref_y = unTipo["pixel_ref_y"].as<int>();
-					if (unTipo["fps"] && unTipo["fps"].as<int>() >= 0)				iE.fps = unTipo["fps"].as<int>();
-					if (unTipo["delay"] && unTipo["delay"].as<int>() >= 0) 			iE.delay = unTipo["delay"].as<int>();
+				InfoEntidad iE;
+				if (tipos[unTipo["nombre"].as<string>()] == 0) {
+					tipos[unTipo["nombre"].as<string>()] = OTROS;
+					iE.tipo = OTROS;
+				} else iE.tipo = tipos[unTipo["nombre"].as<string>()];
+				if ((unTipo["imagen"]) && (access(unTipo["imagen"].as<string>().c_str(), F_OK) != -1))		// Verificación de existencia
+											iE.path = unTipo["imagen"].as<string>();
+				else imprimirAlLog("Error: No se encontró imagen para " + unTipo["nombre"].as<string>());
+				if (unTipo["alto_base"] && unTipo["alto_base"].as<int>() > 0)	iE.alto = unTipo["alto_base"].as<int>();
+				if (unTipo["ancho_base"] && unTipo["ancho_base"].as<int>() > 0) iE.ancho = unTipo["ancho_base"].as<int>();
+				if (unTipo["pixel_ref_x"])										iE.pixel_ref_x = unTipo["pixel_ref_x"].as<int>();
+				if (unTipo["pixel_ref_y"])										iE.pixel_ref_y = unTipo["pixel_ref_y"].as<int>();
+				if (unTipo["fps"] && unTipo["fps"].as<int>() >= 0)				iE.fps = unTipo["fps"].as<int>();
+				if (unTipo["delay"] && unTipo["delay"].as<int>() >= 0) 			iE.delay = unTipo["delay"].as<int>();
 
-					this->vectorInfoTiposEntidades.push_back(iE);
-				}
-				else imprimirAlLog("Error: Tipo '" + unTipo["nombre"].as<string>() + "' desconocido");
-				// Se podría sencillamente cambiar a que un tipo desconocido se agregue al map.
+				this->vectorInfoTiposEntidades.push_back(iE);
 			}
 		}
 
@@ -165,7 +165,7 @@ InfoEscenario Juego::parsearConfig() {
 				}
 
 				YAML::Node protag = unEscenario["protagonista"][0];
-				infoEsc.protagonista = SOLDADO;
+				infoEsc.protagonista = SOLDADO;	//hardcodeo
 				if (tipos[protag["tipo"].as<string>()] == 0)
 					imprimirAlLog("Error: Tipo '" + protag["tipo"].as<string>() + "' desconocido");
 				else infoEsc.protagonista = tipos[protag["tipo"].as<string>()];
