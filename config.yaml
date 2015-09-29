@@ -11,7 +11,7 @@ tipos:
     imagen: images/arbol.png
 
   - nombre: castillo
-    alto_base: 3
+    alto_base: 4
     ancho_base: 4
     imagen: images/castillo.png
     pixel_ref_x: 30
@@ -50,7 +50,8 @@ escenario:
       - {x: 5, y: 6, tipo: arbol}
       - {x: 6, y: 5, tipo: arbol}
       - {x: 15, y: 12, tipo: arbol}
-      - {x: 5, y: 29, tipo: castillo}
+      - {x: 5, y: 67, tipo: castillo}
+      - {x: 100, y: 100, tipo: castillo}
       - {x: 10, y: 14, tipo: animal}
     protagonista:
       - tipo: soldado
