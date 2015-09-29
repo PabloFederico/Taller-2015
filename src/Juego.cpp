@@ -171,8 +171,9 @@ InfoEscenario Juego::parsearConfig() {
 				if (tipos[protag["tipo"].as<string>()] == 0)
 					imprimirAlLog("Error: Tipo '" + protag["tipo"].as<string>() + "' desconocido");
 				else infoEsc.protagonista = tipos[protag["tipo"].as<string>()];
-				infoEsc.posX_protagonista = ChequeoDeBorde(infoEsc.size_x, protag["x"].as<int>());
-				infoEsc.posY_protagonista = ChequeoDeBorde(infoEsc.size_y, protag["y"].as<int>());
+				infoEsc.posX_protagonista = ChequeoDeBorde(infoEsc.size_x-1, protag["x"].as<int>());
+				infoEsc.posY_protagonista = ChequeoDeBorde(infoEsc.size_y-1, protag["y"].as<int>());
+				// Asume que protagnista ocupa un único tile
 			//}
 		} else {
 			infoEsc = infoEscenarioDefault();
@@ -208,9 +209,9 @@ InfoEscenario Juego::parsearConfig() {
 /********************************************************************************/
 int Juego::ChequeoDeBorde(int max, int input) {
 	if (input >= 0) {
-		if (input < max)
+		if (input <= max)
 			return input;
-		else return max-1;
+		else return max;
 	} else return 0;
 }
 
