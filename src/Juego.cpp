@@ -159,6 +159,8 @@ InfoEscenario Juego::parsearConfig() {
 						if (it != this->vectorInfoTiposEntidades.end()) {
 							int x = ChequeoDeBorde(infoEsc.size_x-(it->ancho), ent["x"].as<int>());
 							int y = ChequeoDeBorde(infoEsc.size_y-(it->alto), ent["y"].as<int>());
+							if ((x!=ent["x"].as<int>()) || (y!=ent["y"].as<int>()))
+								imprimirAlLog("Coordenadas inválidas para '" + ent["tipo"].as<string>() + "'; reposicionado");
 							infoEsc.agregarEntidad( make_pair(x,y), tipo );
 						} else imprimirAlLog("Error: El tipo '" + ent["tipo"].as<string>() + "' no fue configurado");
 					} else imprimirAlLog("Error: Tipo '" + ent["tipo"].as<string>() + "' desconocido");
@@ -240,6 +242,7 @@ InfoEscenario Juego::infoEscenarioDefault() {
 
 	infoEscenario.agregarEntidad(std::make_pair(10,14), ANIMAL);
 
+	//código de prueba
 	std::cout<<infoEscenario.getPosicionesEntidades().size()<<std::endl;
 
 	infoEscenario.protagonista = SOLDADO;
