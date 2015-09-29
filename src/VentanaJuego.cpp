@@ -96,6 +96,8 @@ void VentanaJuego::cargarImagenes(vector<InfoEntidad> vectorInfo){
 			break;
 		case (ANIMAL):
 			sprite = new Sprite(DIRECCIONES, IMAGENES_DIFERENTES,imagen);
+			sprite->setDelay(vectorInfo[i].delay);
+			sprite->setFps(vectorInfo[i].fps);
 			this->mapSprites->insert(tipo,sprite);
 			break;
 		default:
@@ -134,17 +136,14 @@ void VentanaJuego::cargarPosicionesEntidades(vector<PosEntidad>* posEntidades){
 						    posicion.w = ANCHO_PIXEL_PASTO;
 						    posicion.h = (ALTO_PIXEL_PASTO * this->mapInfoEntidades[CASTILLO].ancho + ALTO_PIXEL_PASTO) / this->mapInfoEntidades[CASTILLO].ancho;
 						    break;
-			case SOLDADO  :	posicion.x += ANCHO_PIXEL_PASTO / 4;
-							posicion.w = ANCHO_PIXEL_PASTO  / 3;
-							posicion.h = ALTO_PIXEL_PASTO * 3 / 4;
-							break;
+			case SOLDADO  :
 			case JUANA_DE_ARCO :
 							posicion.x += ANCHO_PIXEL_PASTO / 4;
 							posicion.w = ANCHO_PIXEL_PASTO / 3;
 							posicion.h = ALTO_PIXEL_PASTO * 3 / 4;
 							break;
 			case ANIMAL :
-							posicion.x += ANCHO_PIXEL_PASTO / 4;
+							posicion.x += ANCHO_PIXEL_PASTO / 8;
 							posicion.y -= (DISTANCIA_ENTRE_Y);
 							posicion.w = ANCHO_PIXEL_PASTO;
 							posicion.h = 2 * ALTO_PIXEL_PASTO;
@@ -248,7 +247,8 @@ void VentanaJuego::mostrar(){
 
 	            SDL_RenderPresent(this->renderer);
 
-	            if (mil_fps > (SDL_GetTicks() - frame_act)) SDL_Delay(mil_fps -(SDL_GetTicks() - frame_act));
+	            SDL_Delay(20);
+	            //if (mil_fps > (SDL_GetTicks() - frame_act)) SDL_Delay(mil_fps -(SDL_GetTicks() - frame_act));
 	            //SDL_Delay(1000/this->spritePlayer->getFps());
 
 	            if (event.type == SDL_KEYDOWN){
@@ -289,8 +289,8 @@ void VentanaJuego::procesarScroll(int MouseX, int MouseY,
 		int cantidad = 0;
 		/* La camara se mueve hacia la izquierda */
 		if (MouseX < MARGEN_SCROLL && MouseX > 0){
-			if (MouseX < MARGEN_SCROLL / 2) cantidad = MARGEN_SCROLL;
-			else cantidad = MARGEN_SCROLL / 4;
+			if (MouseX < MARGEN_SCROLL / 2) cantidad = 2 * MARGEN_SCROLL;
+			else cantidad = MARGEN_SCROLL / 2;
 
 			if ((*this->cero_x) < LIMITE_DESPLAZAMIENTO_EN_X ){
 				*cero_x += cantidad;
@@ -304,8 +304,8 @@ void VentanaJuego::procesarScroll(int MouseX, int MouseY,
 		/* La camara se mueve hacia la derecha */
 		if (MouseX > SCREEN_WIDTH - MARGEN_SCROLL && MouseX < SCREEN_WIDTH){
 			if (MouseX > SCREEN_WIDTH - MARGEN_SCROLL / 2)
-				cantidad = MARGEN_SCROLL;
-			else cantidad = MARGEN_SCROLL / 4;
+				cantidad = 2 * MARGEN_SCROLL;
+			else cantidad = MARGEN_SCROLL / 2;
 
 			if (SCREEN_WIDTH - *this->cero_x < LIMITE_DESPLAZAMIENTO_EN_X + ANCHO_PIXEL_PASTO){
 				*cero_x -= cantidad;
@@ -318,8 +318,8 @@ void VentanaJuego::procesarScroll(int MouseX, int MouseY,
 
 		/* La camara se mueve hacia arriba */
 		if (MouseY < MARGEN_SCROLL && MouseY > 0){
-			if (MouseY < MARGEN_SCROLL / 2) cantidad = MARGEN_SCROLL;
-			else cantidad = MARGEN_SCROLL / 4;
+			if (MouseY < MARGEN_SCROLL / 2) cantidad = 2 * MARGEN_SCROLL;
+			else cantidad = MARGEN_SCROLL / 2;
 
 			if (*this->cero_y < 0){
 				*cero_y += cantidad;
@@ -332,8 +332,8 @@ void VentanaJuego::procesarScroll(int MouseX, int MouseY,
 
 		/* La camara se mueve hacia abajo */
 		if (MouseY > SCREEN_HEIGHT - MARGEN_SCROLL && MouseY < SCREEN_HEIGHT){
-			if (MouseY > SCREEN_HEIGHT - MARGEN_SCROLL / 2) cantidad = MARGEN_SCROLL;
-			else cantidad = MARGEN_SCROLL / 4;
+			if (MouseY > SCREEN_HEIGHT - MARGEN_SCROLL / 2) cantidad = 2 * MARGEN_SCROLL;
+			else cantidad = MARGEN_SCROLL / 2;
 
 			if (abs(*this->cero_y) < 2*LIMITE_DESPLAZAMIENTO_EN_Y - SCREEN_HEIGHT){
 				*cero_y -= cantidad;
@@ -389,7 +389,11 @@ void VentanaJuego::procesarClick(SDL_Event event, int MouseX, int MouseY,
                 posicionPlayer.y = int(y_result);
                 posY_player = y_result;
             }
-            this->spritePlayer->efectuarMovimiento();
+            if (this->spritePlayer->currentTime() > (1000/this->mapInfoEntidades[tipoProtagonista].fps)){
+            	this->spritePlayer->efectuarMovimiento();
+            	this->spritePlayer->resetTime();
+            }
+            //this->spritePlayer->efectuarMovimiento();
          }else  Follow = false;
     }else{
     	/* Cuando se deja de mover, se queda en una posición firme */

@@ -70,7 +70,11 @@ void Dibujador::dibujarEntidadesNoMovibles(vector<DataPos>* vectorPosiciones){
 				//Entidades con movimiento:
 				//TODO: Esto hay que hacerlo mas generico.
 				if (tipo == ANIMAL){
-					sprite->efectuarMovimiento();
+					if (sprite->currentTime() > (1000/this->mapInfoEntidades[tipo].fps)){
+						SDL_Delay(mapInfoEntidades[tipo].delay);
+						sprite->efectuarMovimiento();
+						sprite->resetTime();
+					}
 					SDL_Rect frame = sprite->getSDLRectActual();
 					SDL_RenderCopy(this->renderer,imagenEntidad->getTexture(),&frame,&pos);
 				}

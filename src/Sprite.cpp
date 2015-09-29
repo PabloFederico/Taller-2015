@@ -21,7 +21,8 @@ Sprite::Sprite(int cant_Direcciones, Uint32 cant_Img_Distintas, Imagen* imagen){
 		this->frames[i] = new SDL_Rect[cant_Img_Distintas];
 	}
 	this->fps = 30;
-	this->delay = 100;
+	this->delay = 0;
+	this->milisegundos = SDL_GetTicks();
 
 	this->cargarFrames();
 
@@ -65,7 +66,7 @@ void Sprite::setDireccion(int direccion){
 /********************************************************************************/
 void Sprite::efectuarMovimiento(){
 	if (this->num_sprite < this->cant_Img_Distintas){
-		SDL_Delay(this->delay);
+		//SDL_Delay(this->delay);
 		this->indexSpriteActual++;
 	}
 	else this->indexSpriteActual = 0;
@@ -100,9 +101,20 @@ void Sprite::setDelay(int delay){
 }
 
 /********************************************************************************/
+void Sprite::resetTime(){
+	this->milisegundos = SDL_GetTicks();
+}
+
+/********************************************************************************/
+int Sprite::currentTime(){
+	int currentTime = SDL_GetTicks();
+	return currentTime - this->milisegundos;
+}
+
+/********************************************************************************/
 void Sprite::acomodar(){
 
-	this->frameActual = this->frames[this->direccion][1];
+	this->frameActual = this->frames[this->direccion][this->direccion];
 }
 /********************************************************************************/
 Sprite::~Sprite() {
