@@ -7,16 +7,19 @@
 
 #include "Sprite.h"
 
-Sprite::Sprite(int cant_Direcciones, Uint32 cant_Img_Distintas, Imagen* imagen){
+/********************************************************************************/
+Sprite::Sprite(int cant_Direcciones, Uint32 cant_Img_Distintas, Imagen* imagen, SDL_Rect posicion){
 	this->cant_Direcciones = cant_Direcciones;
 	this->cant_Img_Distintas = cant_Img_Distintas;
 	this->imagen = imagen;
+	this->posicion = posicion;
 	this->frames = new SDL_Rect*[cant_Direcciones];
+	/*
 	this->ticks =SDL_GetTicks(); //Veo cuantos ciclos va
 	this->segundos = ticks/1000 ; // convierto esa cantidad de ticks a segundos (me interesa la parte entera nomas)
 	this->num_sprite = segundos/cant_Img_Distintas; // Quiero un frame por segundo, divido los segs por cant de frames y cuando eso me de  mayor que
 														// cant de img distintas, ahi vuelvo a animar otravez
-
+	*/
 	for (int i = 0; i < cant_Direcciones; i++){
 		this->frames[i] = new SDL_Rect[cant_Img_Distintas];
 	}
@@ -56,6 +59,27 @@ void Sprite::cargarFrames(){
 Imagen* Sprite::getImagen(){
 	return this->imagen;
 }
+
+/********************************************************************************/
+SDL_Rect Sprite::getPosicion(){
+	return this->posicion;
+}
+
+/********************************************************************************/
+void Sprite::setPosX(int x){
+	this->posicion.x = x;
+}
+
+void Sprite::setPosY(int y){
+	this->posicion.y = y;
+}
+
+/********************************************************************************/
+void Sprite::mover(int cant_x, int cant_y){
+	this->posicion.x += cant_x;
+	this->posicion.y += cant_y;
+}
+
 /********************************************************************************/
 void Sprite::setDireccion(int direccion){
 	this->direccion = direccion;
@@ -65,18 +89,18 @@ void Sprite::setDireccion(int direccion){
 
 /********************************************************************************/
 void Sprite::efectuarMovimiento(){
-	if (this->num_sprite < this->cant_Img_Distintas){
+	//if (this->num_sprite < this->cant_Img_Distintas){
+	if (this->indexSpriteActual < this->cant_Img_Distintas){
 		//SDL_Delay(this->delay);
 		this->indexSpriteActual++;
 	}
 	else this->indexSpriteActual = 0;
 
-	this->frameActual = this->frames[this->direccion][this->indexSpriteActual%this->cant_Img_Distintas];
-
+	this->frameActual = this->frames[this->direccion][this->indexSpriteActual % cant_Img_Distintas];
 }
 
 /********************************************************************************/
-SDL_Rect Sprite::getSDLRectActual(){
+SDL_Rect Sprite::getFrameActual(){
 	return this->frameActual;
 }
 
@@ -113,7 +137,6 @@ int Sprite::currentTime(){
 
 /********************************************************************************/
 void Sprite::acomodar(){
-
 	this->frameActual = this->frames[this->direccion][this->direccion];
 }
 /********************************************************************************/

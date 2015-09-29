@@ -25,6 +25,8 @@ public:
 
 	typename std::map<K,V>::iterator end();
 
+	void erase(K);
+
 	virtual ~Map();
 };
 
@@ -53,6 +55,11 @@ typename std::map<K,V>::iterator Map<K,V>::begin(){
 template <class K, class V>
 typename std::map<K,V>::iterator Map<K,V>::end(){
 	return this->mapa->end();
+}
+
+template <class K, class V>
+void Map<K,V>::erase(K key){
+	this->mapa->erase(key);
 }
 
 template <class K, class V>

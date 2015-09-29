@@ -7,29 +7,26 @@
 
 #ifndef DIBUJADOR_H_
 #define DIBUJADOR_H_
-#include "Sprite.h"
-#include "Map.h"
 #include "Escenario.h"
-#include "Structs.h"
+#include "ContenedorDeRecursos.h"
 
 class Dibujador {
 private:
 	SDL_Renderer *renderer;
-	Map<TipoEntidad,Sprite*> *mapSprites;
+	ContenedorDeRecursos *contenedor;
 	map<TipoEntidad,InfoEntidad> mapInfoEntidades;
 	int *cero_x;
 	int *cero_y;
+	SDL_Rect rectRelieve;
 
 public:
-	Dibujador(SDL_Renderer *renderer, Map<TipoEntidad,Sprite*> *mapSprites, int *cero_x, int *cero_y);
-
-	void setMapInfoEntidad(map<TipoEntidad,InfoEntidad> map);
+	Dibujador(SDL_Renderer *renderer, ContenedorDeRecursos *contenedor, int *cero_x, int *cero_y);
 
 	//void dibujarEscenario(Escenario *escenario);
 
 	void dibujarRelieve(int tiles_x, int tiles_y);
-	void dibujarEntidadesNoMovibles(vector<DataPos>* vectorPosiciones);
-	void dibujarProtagonista(SDL_Rect rect, Sprite* sprite);
+	void dibujarEntidades();
+	void dibujarProtagonista(Sprite* sprite);
 
 	virtual ~Dibujador();
 };

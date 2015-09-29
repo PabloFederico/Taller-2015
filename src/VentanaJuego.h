@@ -14,31 +14,25 @@
 #include "Map.h"
 #include "Dibujador.h"
 #include "Structs.h"
+#include "Ventana.h"
+#include "ContenedorDeRecursos.h"
 using namespace std;
 
 
-class VentanaJuego {
+class VentanaJuego : public Ventana {
 private:
 	Juego *juego;
-	int SCREEN_WIDTH;
-	int SCREEN_HEIGHT;
+
 	int MARGEN_SCROLL;
 	int TILES_X;
 	int TILES_Y;
+
 	float velocidad_personaje;
-	SDL_Window *window;
-	SDL_Renderer *renderer;
 
-	map<TipoEntidad,InfoEntidad> mapInfoEntidades;
-
-	/* Es muy general*/
-	Map<TipoEntidad,Sprite*> * mapSprites;
+	ContenedorDeRecursos *contenedor;
 
 	Sprite *spritePlayer;
-	SDL_Rect posicionPlayer;
-	TipoEntidad tipoProtagonista;
-
-	vector<DataPos> *vectorPosiciones;
+	Entidad *protagonista;
 
 	Calculador *calculador;
 	Dibujador *dibujador;
@@ -49,18 +43,12 @@ private:
 	int LIMITE_DESPLAZAMIENTO_EN_X;
 	int LIMITE_DESPLAZAMIENTO_EN_Y;
 
-	/* Inicializa los recursos SDL */
-	bool init();
-
 	/* Carga las imagenes que se van a utilizar en el juego */
 	void cargarImagenes(vector<InfoEntidad> infoEntidades);
 
 	/* Crea SDL_Rect para cada entidad que se encuentre en el escenario y las guarda en un
 	 * vector asociada a un SDL_Texture (imagen) */
 	void cargarPosicionesEntidades(vector<PosEntidad>* posEntidades);
-
-	/* Libera recursos utilizados por SDL*/
-	void close();
 
 	/* Dibuja el escenario*/
 	void dibujar();

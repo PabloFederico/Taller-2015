@@ -18,10 +18,11 @@ private:
 	Imagen* imagen;
 	int fps;
 	int delay;
+	/*
 	Uint32 num_sprite;
 	Uint32 segundos;
 	Uint32 ticks;
-
+	*/
 	int milisegundos;
 
 	SDL_Rect** frames;
@@ -30,10 +31,12 @@ private:
 	int direccion;
 	int indexSpriteActual;
 
+	SDL_Rect posicion;
+
 	void cargarFrames();
 
 public:
-	Sprite(int cant_Direcciones, Uint32 cant_Img_Distintas, Imagen* imagen);
+	Sprite(int cant_Direcciones, Uint32 cant_Img_Distintas, Imagen* imagen, SDL_Rect posicion);
 
 	void setDireccion(int direccion);
 
@@ -41,7 +44,14 @@ public:
 
 	Imagen* getImagen();
 
-	SDL_Rect getSDLRectActual();
+	SDL_Rect getPosicion();
+
+	void setPosX(int x);
+	void setPosY(int y);
+
+	void mover(int cant_x, int cant_y);
+
+	SDL_Rect getFrameActual();
 
 	int getFps();
 

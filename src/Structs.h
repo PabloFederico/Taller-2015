@@ -10,6 +10,7 @@
 #include <SDL2/SDL.h>
 #include <vector>
 #include "Entidad.h"
+#include "Sprite.h"
 
 /* Estructura para guardar el Tipo de Entidad que se encuentra en las
  *  coordenadas x,y */
@@ -72,12 +73,13 @@ struct PosEntidad{
  * poder dibujar sobre el renderer */
 struct DataPos{
 	SDL_Rect posicion;
-	TipoEntidad tipo;
-	DataPos(SDL_Rect pos, TipoEntidad tipo){
+	Entidad *entidad;
+	DataPos(SDL_Rect pos, Entidad *entidad){
 		this->posicion = pos;
-		this->tipo = tipo;
+		this->entidad = entidad;
 	};
 };
+
 
 /* Estructura para guardar información sobre una Entidad*/
 struct InfoEntidad{

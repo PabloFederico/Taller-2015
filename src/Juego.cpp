@@ -201,7 +201,7 @@ InfoEscenario Juego::parsearConfig() {
 		imprimirAlLog("Errores en la configuración de escenario; se utilizará uno predeterminado");
 		return OdioYAML();
 	}
-
+	tipos.clear();
 	return infoEsc;
 }
 
@@ -322,6 +322,7 @@ InfoEscenario Juego::OdioYAML() {
 	this->vectorInfoTiposEntidades.push_back(infoJuana);
 	this->vectorInfoTiposEntidades.push_back(infoAnimal);
 
+	tipos.clear();
 	return infoEscenarioDefault();
 }
 
