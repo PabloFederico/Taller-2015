@@ -117,7 +117,7 @@ void VentanaJuego::mostrar(){
 	    //frame_act = SDL_GetTicks();
 
 
-		while (run && event.type != SDL_QUIT){
+		while ( run ){
 			/*	frame_ant = frame_act;
 				frame_act = SDL_GetTicks();
 				dt = (float) (frame_act - frame_ant)/1000;
@@ -125,6 +125,7 @@ void VentanaJuego::mostrar(){
 				SDL_PollEvent(&event);
 
 				if (event.type == SDL_QUIT) run = false;
+
 				SDL_GetMouseState(&MouseX,&MouseY);
 
 				this->procesarClick(event,MouseX,MouseY,
@@ -295,7 +296,6 @@ void VentanaJuego::procesarClick(SDL_Event event, int MouseX, int MouseY,
             }
             if (this->spritePlayer->currentTime() > (1000/this->spritePlayer->getFps())){
             	this->spritePlayer->efectuarMovimiento();
-            	this->spritePlayer->resetTime();
             }
 
 		}else  Follow = false;

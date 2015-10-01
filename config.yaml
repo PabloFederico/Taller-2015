@@ -21,13 +21,9 @@ tipos:
     fps: 40
     imagen: images/soldado2.png
 
-  - nombre: juana_de_arco
-    fps: 10
-    imagen: images/juana.png
-
   - nombre: animal
     fps: 10
-    delay: 10
+    delay: 5000
     imagen: images/animal1.png
 
   - nombre: tierra
@@ -53,6 +49,8 @@ escenario:
       - {x: 5, y: 67, tipo: castillo}
       - {x: 100, y: 100, tipo: castillo}
       - {x: 10, y: 14, tipo: animal}
+      - {x: 11, y: 14, tipo: animal}
+      - {x: 12, y: 14, tipo: animal}
     protagonista:
       - tipo: soldado
         x: 15

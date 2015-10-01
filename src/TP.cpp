@@ -3,7 +3,8 @@
 #include <SDL2/SDL_image.h>
 
 int main(int arg, char** argv) {
-	if (SDL_Init(SDL_INIT_EVERYTHING) < 0){
+
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_EVENTS) < 0){
 		return -1;
 	}else{
 		Controller *controller = new Controller();

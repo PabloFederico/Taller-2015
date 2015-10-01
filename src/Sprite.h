@@ -18,12 +18,11 @@ private:
 	Imagen* imagen;
 	int fps;
 	int delay;
-	/*
-	Uint32 num_sprite;
-	Uint32 segundos;
-	Uint32 ticks;
-	*/
-	int milisegundos;
+
+	int miliseg_inicial;
+
+	/* Guarda el tiempo que transcurre al finalizar un ciclo del sprite */
+	int tiempoTranscurridoAlFinDeCiclo;
 
 	SDL_Rect** frames;
 	SDL_Rect frameActual;
@@ -34,6 +33,8 @@ private:
 	SDL_Rect posicion;
 
 	void cargarFrames();
+
+	void resetTime();
 
 public:
 	Sprite(int cant_Direcciones, Uint32 cant_Img_Distintas, Imagen* imagen, SDL_Rect posicion);
@@ -60,8 +61,6 @@ public:
 	void setDelay(int delay);
 
 	SDL_Rect getSDLRect(int i, int j);
-
-	void resetTime();
 
 	int currentTime();
 

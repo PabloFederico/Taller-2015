@@ -20,9 +20,11 @@ public:
 		SDL_Texture *texture = NULL;
 		SDL_Surface* surface = IMG_Load(path.c_str());
 
+
 		texture = SDL_CreateTextureFromSurface(renderer,surface);
 		Imagen* imagen = new Imagen(surface->w, surface->h, texture);
 		SDL_FreeSurface(surface);
+		surface = NULL;
 
 		return imagen;
 	};

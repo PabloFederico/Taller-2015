@@ -66,10 +66,8 @@ void Dibujador::dibujarEntidades(){
 				//Entidades con movimiento:
 				//TODO: Esto hay que hacerlo mas generico.
 				if (entidad->esMovible()){
-					if (sprite->currentTime() > (1000/this->mapInfoEntidades[tipo].fps)){
-						SDL_Delay(mapInfoEntidades[tipo].delay);
+					if (sprite->currentTime() > (1000/sprite->getFps())){
 						sprite->efectuarMovimiento();
-						sprite->resetTime();
 					}
 					SDL_Rect frame = sprite->getFrameActual();
 					SDL_RenderCopy(this->renderer,imagenEntidad->getTexture(),&frame,&pos);

@@ -88,6 +88,8 @@ void ContenedorDeRecursos::generarYGuardarSpritesEntidades(vector<PosEntidad> *p
 	    					break;
 	    }
 
+		sprite->setDelay(this->mapInfoEntidades[entidad->getTipo()].delay);
+		sprite->setFps(this->mapInfoEntidades[entidad->getTipo()].fps);
 		this->mapSpritesEntidades->insert(entidad,sprite);
 	}
 }

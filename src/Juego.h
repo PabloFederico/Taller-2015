@@ -20,38 +20,6 @@
 #include <yaml-cpp/yaml.h>
 #include <unistd.h>
 
-/*
-struct DatoPosicion {	// Sin verificación de datos
-	int x, y;
-	std::string tipo;
-
-	DatoPosicion(): x(0), y(0), tipo("") {
-		//if (this->tipo == "") throw bad_nombreTipoEntidad(this->tipo);
-	}
-	DatoPosicion(YAML::Node d):
-		x(d["x"].as<int>()), y(d["y"].as<int>()), tipo(d["tipo"].as<std::string>()) {};
-};
-
-struct DatosEscenario {		// Sin verificación de datos
-	std::string nombre;
-	int size_x, size_y;
-	std::vector<DatoPosicion> entidades;
-	DatoPosicion protagonista;	//// Único protagonista; adaptable. /
-
-	DatosEscenario(YAML::Node unEscenario) {
-		this->nombre = unEscenario["nombre"].as<std::string>();
-		this->size_x = unEscenario["size_x"].as<int>();
-		this->size_y = unEscenario["size_y"].as<int>();
-		for(std::size_t i = 0; i < unEscenario["entidades"].size(); ++i) {
-			DatoPosicion dp(unEscenario["entidades"][i]);
-			this->entidades.push_back(dp);
-		}
-		DatoPosicion protag(unEscenario["protagonista"][0]);
-		this->protagonista = protag;
-	};
-};
-*/
-
 class Juego {
 private:
 	int screenWidth;
