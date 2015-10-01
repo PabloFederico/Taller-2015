@@ -14,8 +14,6 @@ VentanaJuego::VentanaJuego(Juego *juego):Ventana(juego){
 	this->MARGEN_SCROLL = 30;
 	this->TILES_X = 1;
 	this->TILES_Y = 1;
-	this->LIMITE_DESPLAZAMIENTO_EN_X = 10;
-	this->LIMITE_DESPLAZAMIENTO_EN_Y = 10;
 	this->velocidad_personaje = 1.0;
 	this->calculador = NULL;
 	this->dibujador = NULL;
@@ -24,6 +22,8 @@ VentanaJuego::VentanaJuego(Juego *juego):Ventana(juego){
 	this->cero_y = NULL;
 	this->spritePlayer = NULL;
 	this->protagonista = NULL;
+	this->scroll = NULL;
+	this->procesador = NULL;
 	this->juego = juego;
 	this->cargarJuego(juego);
 }
@@ -41,8 +41,8 @@ void VentanaJuego::cargarJuego(Juego *juego){
 	this->TILES_X = juego->getEscenario()->getDimension().first;
 	this->TILES_Y = juego->getEscenario()->getDimension().second;
 
-	this->LIMITE_DESPLAZAMIENTO_EN_X = ANCHO_PIXEL_PASTO * this->TILES_X / 2;
-	this->LIMITE_DESPLAZAMIENTO_EN_Y = ALTO_PIXEL_PASTO * this->TILES_Y / 2;
+	int LIMITE_DESPLAZAMIENTO_EN_X = ANCHO_PIXEL_PASTO * this->TILES_X / 2;
+	int LIMITE_DESPLAZAMIENTO_EN_Y = ALTO_PIXEL_PASTO * this->TILES_Y / 2;
 
 	this->velocidad_personaje = juego->getVelocidad();
 
@@ -53,7 +53,12 @@ void VentanaJuego::cargarJuego(Juego *juego){
 		this->cero_x = new int(centro_x - DISTANCIA_ENTRE_X);
 		this->cero_y = new int(centro_y - LIMITE_DESPLAZAMIENTO_EN_Y);
 
-		this->calculador = new Calculador(this->cero_x, this->cero_y);
+		this->calculador = new Calculador(this->cero_x, this->cero_y, juego->getEscenario()->getDimension());
+
+		this->procesador = new Procesador(this->calculador, velocidad_personaje);
+
+		this->scroll = new Scroll(cero_x,cero_y,SCREEN_WIDTH,SCREEN_HEIGHT,MARGEN_SCROLL);
+		this->scroll->setearLimites(LIMITE_DESPLAZAMIENTO_EN_X,LIMITE_DESPLAZAMIENTO_EN_Y);
 
 		this->contenedor = new ContenedorDeRecursos(this->renderer,this->calculador);
 
@@ -128,17 +133,18 @@ void VentanaJuego::mostrar(){
 
 				SDL_GetMouseState(&MouseX,&MouseY);
 
-				this->procesarClick(event,MouseX,MouseY,
-										  posX_player,posY_player,
-										  x_anterior,y_anterior,
-										  Follow_Point_X,Follow_Point_Y,Follow,dt);
+				this->procesador->procesarClick(event,MouseX,MouseY,spritePlayer,
+						  	  	  	  	  	   posX_player,posY_player,
+											   x_anterior,y_anterior,
+											   Follow_Point_X,Follow_Point_Y,Follow,dt);
 
 				int orig_inicial_x = *this->cero_x;
 				int orig_inicial_y = *this->cero_y;
-				this->procesarScroll(MouseX,MouseY,
-									posX_player,posY_player,
-									x_anterior,y_anterior,
-									Follow_Point_X,Follow_Point_Y);
+
+				this->scroll->procesarScroll(MouseX,MouseY,spritePlayer,
+											 posX_player,posY_player,
+											 x_anterior,y_anterior,
+											 Follow_Point_X,Follow_Point_Y);
 
 				/* Analizamos si hubo algún corrimiento del scroll.
 				 * si corrimiento_x ó corrimiento_y son distintos de cero,
@@ -178,135 +184,6 @@ void VentanaJuego::actualizarPosicionesEntidades(int corrimiento_x, int corrimie
 }
 
 /********************************************************************************/
-void VentanaJuego::procesarScroll(int MouseX, int MouseY,
-								  float &posPlayerX, float &posPlayerY,
-								  int &x_anterior, int &y_anterior,
-								  int &followX, int &followY){
-
-	if (MouseX < MARGEN_SCROLL || MouseX > this->SCREEN_WIDTH-MARGEN_SCROLL || MouseY < MARGEN_SCROLL || MouseY > this->SCREEN_HEIGHT- MARGEN_SCROLL){
-		int cantidad = 0;
-		/* La camara se mueve hacia la izquierda */
-		if (MouseX < MARGEN_SCROLL && MouseX > 0){
-			if (MouseX < MARGEN_SCROLL / 2) cantidad = 2 * MARGEN_SCROLL;
-			else cantidad = MARGEN_SCROLL / 2;
-
-			if ((*this->cero_x) < LIMITE_DESPLAZAMIENTO_EN_X ){
-				*cero_x += cantidad;
-				//this->posicionPlayer.x += cantidad;
-				this->spritePlayer->mover(cantidad,0);
-				posPlayerX += cantidad;
-				x_anterior += cantidad;
-				followX += cantidad;
-			}
-		}
-
-		/* La camara se mueve hacia la derecha */
-		if (MouseX > SCREEN_WIDTH - MARGEN_SCROLL && MouseX < SCREEN_WIDTH){
-			if (MouseX > SCREEN_WIDTH - MARGEN_SCROLL / 2)
-				cantidad = 2 * MARGEN_SCROLL;
-			else cantidad = MARGEN_SCROLL / 2;
-
-			if (SCREEN_WIDTH - *this->cero_x < LIMITE_DESPLAZAMIENTO_EN_X + ANCHO_PIXEL_PASTO){
-				*cero_x -= cantidad;
-				//this->posicionPlayer.x -= cantidad;
-				this->spritePlayer->mover(-cantidad,0);
-				posPlayerX -= cantidad;
-				x_anterior -= cantidad;
-				followX -= cantidad;
-			}
-		}
-
-		/* La camara se mueve hacia arriba */
-		if (MouseY < MARGEN_SCROLL && MouseY > 0){
-			if (MouseY < MARGEN_SCROLL / 2) cantidad = 2 * MARGEN_SCROLL;
-			else cantidad = MARGEN_SCROLL / 2;
-
-			if (*this->cero_y < 0){
-				*cero_y += cantidad;
-				//this->posicionPlayer.y += cantidad;
-				this->spritePlayer->mover(0,cantidad);
-				posPlayerY += cantidad;
-				y_anterior += cantidad;
-				followY += cantidad;
-			}
-		}
-
-		/* La camara se mueve hacia abajo */
-		if (MouseY > SCREEN_HEIGHT - MARGEN_SCROLL && MouseY < SCREEN_HEIGHT){
-			if (MouseY > SCREEN_HEIGHT - MARGEN_SCROLL / 2) cantidad = 2 * MARGEN_SCROLL;
-			else cantidad = MARGEN_SCROLL / 2;
-
-			if (abs(*this->cero_y) < 2*LIMITE_DESPLAZAMIENTO_EN_Y - SCREEN_HEIGHT){
-				*cero_y -= cantidad;
-				//this->posicionPlayer.y -= cantidad;
-				this->spritePlayer->mover(0,-cantidad);
-				posPlayerY -= cantidad;
-				y_anterior -= cantidad;
-				followY -= cantidad;
-			}
-		}
-	}
-}
-/********************************************************************************/
-void VentanaJuego::procesarClick(SDL_Event event, int MouseX, int MouseY,
-												  float &posX_player, float &posY_player,
-												  int &x_anterior, int &y_anterior,
-												  int &Follow_Point_X, int &Follow_Point_Y, bool &Follow, float dt){
-
-	//======Analisis del evento de movimiento======//
-	if (event.type == SDL_MOUSEBUTTONDOWN){
-		if (event.button.button == SDL_BUTTON_LEFT){
-			SDL_Rect posicionPlayer = this->spritePlayer->getPosicion();
-            Follow_Point_X = MouseX - posicionPlayer.w / 2;
-            Follow_Point_Y = MouseY - posicionPlayer.h ;
-
-            /* Validación de click dentro del escenario */
-            if (this->calculador->puntoContenidoEnEscenario(Follow_Point_X+posicionPlayer.w,Follow_Point_Y+posicionPlayer.h,this->TILES_X, this->TILES_Y)){
-                Follow = true;
-                x_anterior = Follow_Point_X;
-                y_anterior = Follow_Point_Y;
-                Direccion direccion = this->calculador->calcularDireccion(Follow_Point_X, Follow_Point_Y, posicionPlayer.x, posicionPlayer.y);
-                this->spritePlayer->setDireccion(direccion);
-            }else {
-            	/* Si el click esta fuera del escenario, su punto destino será
-            	 * el anterior al click (si es que se encontraba en movimiento) */
-            	Follow_Point_X = x_anterior;
-            	Follow_Point_Y = y_anterior;
-            }
-
-		}
-	}
-
-    if (Follow) {
-    	float distance = this->calculador->calcularDistancia(posX_player, posY_player, Follow_Point_X, Follow_Point_Y);
-
-		if (distance > 1){
-            if (posX_player != Follow_Point_X) {
-            	float x_result = (posX_player - ((posX_player - Follow_Point_X) / distance) *(this->velocidad_personaje)  * dt);
-            	//posicionPlayer.x = int(x_result);
-            	this->spritePlayer->setPosX(int(x_result));
-            	posX_player = x_result;
-            }
-
-            if (posY_player != Follow_Point_Y) {
-                float y_result = (posY_player - ((posY_player - Follow_Point_Y) / distance) * (this->velocidad_personaje) * dt);
-                //posicionPlayer.y = int(y_result);
-                this-> spritePlayer->setPosY(int(y_result));
-                posY_player = y_result;
-            }
-            if (this->spritePlayer->currentTime() > (1000/this->spritePlayer->getFps())){
-            	this->spritePlayer->efectuarMovimiento();
-            }
-
-		}else  Follow = false;
-    }else{
-    	/* Cuando se deja de mover, se queda en una posición firme */
-    	 this->spritePlayer->acomodar();
-    }
-    //=======Fin de analisis de evento de movimiento=========//
-}
-
-/********************************************************************************/
 void VentanaJuego::reiniciar(){
 	delete this->juego;
 	this->liberarRecursos();
@@ -320,6 +197,8 @@ void VentanaJuego::liberarRecursos(){
 
 	delete this->calculador;
 
+	delete this->scroll;
+	delete this->procesador;
 	delete this->contenedor;
 
 	delete this->dibujador;

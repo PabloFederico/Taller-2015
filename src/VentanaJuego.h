@@ -15,6 +15,8 @@
 #include "Dibujador.h"
 #include "Structs.h"
 #include "Ventana.h"
+#include "Scroll.h"
+#include "Procesador.h"
 #include "ContenedorDeRecursos.h"
 using namespace std;
 
@@ -34,14 +36,13 @@ private:
 	Sprite *spritePlayer;
 	Entidad *protagonista;
 
+	Scroll *scroll;
 	Calculador *calculador;
 	Dibujador *dibujador;
+	Procesador *procesador;
 
 	int *cero_x;
 	int *cero_y;
-
-	int LIMITE_DESPLAZAMIENTO_EN_X;
-	int LIMITE_DESPLAZAMIENTO_EN_Y;
 
 	/* Carga las imagenes que se van a utilizar en el juego */
 	void cargarImagenes(vector<InfoEntidad> infoEntidades);
@@ -52,17 +53,6 @@ private:
 
 	/* Dibuja el escenario*/
 	void dibujar();
-
-	/* */
-	void procesarScroll(int MouseX, int MouseY,
-						float &posPlayerX, float &posPlayerY,
-						int &x_anterior, int &y_anterior,
-						int &followX, int &followY);
-
-	void procesarClick(SDL_Event event, int MouseX, int MouseY,
-										float &posPlayerX, float &posPlayerY,
-										int &x_anterior, int &y_anterior,
-										int &followX, int &followY, bool &Follow, float dt);
 
 	/* Actualiza las posiciones de las entidades según el movimiento de la cámara*/
 	void actualizarPosicionesEntidades(int corrimiento_x, int corrimiento_y);

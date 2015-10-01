@@ -10,9 +10,11 @@
 #include <stdlib.h>
 #include "Constantes.h"
 
-Calculador::Calculador(int *cero_x, int *cero_y) {
+Calculador::Calculador(int *cero_x, int *cero_y, std::pair<int,int> dim_escenario) {
 	this->cero_x = cero_x;
 	this->cero_y = cero_y;
+	this->tiles_x = dim_escenario.first;
+	this->tiles_y = dim_escenario.second;
 }
 
 std::pair<int,int> Calculador::calcularPosicionRelativa(int x, int y){
@@ -60,7 +62,7 @@ Direccion Calculador::calcularDireccion(int x_dest, int y_dest, int x_orig, int 
 	return direccion;
 }
 
-bool Calculador::puntoContenidoEnEscenario(int x, int y, int tiles_x, int tiles_y){
+bool Calculador::puntoContenidoEnEscenario(int x, int y){
 	bool contenido = false;
 	int x_relativo;
 	int y_relativo;
