@@ -9,6 +9,7 @@
 #define DIBUJADOR_H_
 #include "Escenario.h"
 #include "ContenedorDeRecursos.h"
+#include "CapaNegra.h"
 
 class Dibujador {
 private:
@@ -27,6 +28,7 @@ public:
 	void dibujarRelieve(int tiles_x, int tiles_y);
 	void dibujarEntidades();
 	void dibujarProtagonista(Sprite* sprite);
+	void dibujarCapaNegra(CapaNegra* capa);
 
 	virtual ~Dibujador();
 };

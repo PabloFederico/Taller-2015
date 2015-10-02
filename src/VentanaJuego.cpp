@@ -23,6 +23,7 @@ VentanaJuego::VentanaJuego(Juego *juego):Ventana(juego){
 	this->spritePlayer = NULL;
 	this->protagonista = NULL;
 	this->scroll = NULL;
+	this->capa = NULL;
 	this->procesador = NULL;
 	this->juego = juego;
 	this->cargarJuego(juego);
@@ -60,6 +61,8 @@ void VentanaJuego::cargarJuego(Juego *juego){
 		this->scroll = new Scroll(cero_x,cero_y,SCREEN_WIDTH,SCREEN_HEIGHT,MARGEN_SCROLL);
 		this->scroll->setearLimites(LIMITE_DESPLAZAMIENTO_EN_X,LIMITE_DESPLAZAMIENTO_EN_Y);
 
+		this->capa = new CapaNegra(TILES_X,TILES_Y);
+
 		this->contenedor = new ContenedorDeRecursos(this->renderer,this->calculador);
 
 		/* Las imagenes , los sprites y los SDL_Rect (para cada entidad)
@@ -90,6 +93,7 @@ void VentanaJuego::dibujar(){
 	dibujador->dibujarRelieve(TILES_X,TILES_Y);
 	dibujador->dibujarEntidades();
 	dibujador->dibujarProtagonista(spritePlayer);
+	dibujador->dibujarCapaNegra(capa);
 }
 
 /********************************************************************************/
@@ -138,6 +142,13 @@ void VentanaJuego::mostrar(){
 											   x_anterior,y_anterior,
 											   Follow_Point_X,Follow_Point_Y,Follow,dt);
 
+				/* Actualiza la capa negra */
+				int x = spritePlayer->getPosicion().x;
+				int y = spritePlayer->getPosicion().y;
+				pair<int,int> coord = this->calculador->calcularPosicionInversa(x,y);
+				capa->descubrirDesdePunto(coord.first,coord.second);
+
+				/* Analisis de Scrolling */
 				int orig_inicial_x = *this->cero_x;
 				int orig_inicial_y = *this->cero_y;
 
@@ -198,6 +209,7 @@ void VentanaJuego::liberarRecursos(){
 	delete this->calculador;
 
 	delete this->scroll;
+	delete this->capa;
 	delete this->procesador;
 	delete this->contenedor;
 

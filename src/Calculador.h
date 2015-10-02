@@ -24,6 +24,8 @@ public:
 
 	std::pair<int,int> calcularPosicionRelativa(int x, int y);
 
+	std::pair<int,int> calcularPosicionInversa(int x, int y);
+
 	Direccion calcularDireccion(int x_dest, int y_dest, int x_orig, int y_orig);
 
 	bool puntoContenidoEnEscenario(int x, int y);

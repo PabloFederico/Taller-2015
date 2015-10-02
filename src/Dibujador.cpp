@@ -19,7 +19,7 @@ Dibujador::Dibujador(SDL_Renderer *renderer, ContenedorDeRecursos *contenedor, i
 
 /********************************************************************************/
 void Dibujador::dibujarRelieve(int tiles_x, int tiles_y){
-	Imagen *imagenRelieve = this->contenedor->getImagenTipo(DEFAULT);
+	Imagen *imagenRelieve = this->contenedor->getImagenTipo(PASTO);
 
 	int cero_relativo_x = *this->cero_x;
 	int cero_relativo_y = *this->cero_y;
@@ -95,6 +95,40 @@ void Dibujador::dibujarProtagonista(Sprite* sprite){
 	SDL_Texture* texturePlayer = sprite->getImagen()->getTexture();
 	SDL_Rect frame = sprite->getFrameActual();
 	SDL_RenderCopy(this->renderer,texturePlayer,&frame,&rect);
+}
+
+/********************************************************************************/
+void Dibujador::dibujarCapaNegra(CapaNegra* capa){
+	if (!capa->totalmenteDescubierta()){
+		int tiles_x = capa->getDimension().first;
+		int tiles_y = capa->getDimension().second;
+		Imagen* imagen = this->contenedor->getImagenTipo(DEFAULT);
+
+		int cero_relativo_x = *this->cero_x;
+		int cero_relativo_y = *this->cero_y;
+
+		rectRelieve.w = ANCHO_PIXEL_PASTO;
+		rectRelieve.h = ALTO_PIXEL_PASTO;
+
+		/* Dibujamos la capa negra */
+		for(int j = 0; j < tiles_y; j++){
+
+			rectRelieve.x = cero_relativo_x;
+			rectRelieve.y = cero_relativo_y;
+
+			for(int i = 0; i < tiles_x; i++){
+
+				if (capa->tileOculto(j,i)){
+					SDL_RenderCopy(this->renderer,imagen->getTexture(),NULL,&rectRelieve);
+				}
+
+				rectRelieve.x += DISTANCIA_ENTRE_X;
+				rectRelieve.y += DISTANCIA_ENTRE_Y;
+			}
+			cero_relativo_x -= DISTANCIA_ENTRE_X;
+			cero_relativo_y += DISTANCIA_ENTRE_Y;
+		}
+	}
 }
 
 /********************************************************************************/

@@ -17,6 +17,7 @@
 #include "Ventana.h"
 #include "Scroll.h"
 #include "Procesador.h"
+#include "CapaNegra.h"
 #include "ContenedorDeRecursos.h"
 using namespace std;
 
@@ -37,6 +38,7 @@ private:
 	Entidad *protagonista;
 
 	Scroll *scroll;
+	CapaNegra *capa;
 	Calculador *calculador;
 	Dibujador *dibujador;
 	Procesador *procesador;

@@ -22,7 +22,10 @@ void ContenedorDeRecursos::cargarImagenesEntidades(vector<InfoEntidad> infoEntid
 	Loader loader;
 	/* Primero cargamos la imagen del relieve por default */
 	Imagen *pasto = loader.cargarImagen(this->renderer,"images/pasto.png");
-	this->mapImagenes->insert(DEFAULT,pasto);
+	this->mapImagenes->insert(PASTO,pasto);
+
+	Imagen *capaNegra = loader.cargarImagen(this->renderer,"images/black1.png");
+	this->mapImagenes->insert(DEFAULT,capaNegra);
 
 	for (unsigned i = 0; i < infoEntidades.size(); i++){
 		TipoEntidad tipo = infoEntidades[i].tipo;

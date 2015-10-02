@@ -31,6 +31,32 @@ std::pair<int,int> Calculador::calcularPosicionRelativa(int x, int y){
 	return std::make_pair(x_nuevo,y_nuevo);
 }
 
+std::pair<int,int> Calculador::calcularPosicionInversa(int x, int y){
+	int tileX, tileY;
+	bool salir = false;
+	int x_relativo;
+	int y_relativo;
+	int cero_relativo_x = *this->cero_x;
+	int cero_relativo_y = *this->cero_y;
+	for (int i = 0; i < tiles_x && !salir; i++){
+		x_relativo = cero_relativo_x;
+		y_relativo = cero_relativo_y;
+		for(int j = 0; j < tiles_y && !salir; j++){
+			if (((x > x_relativo) && (x < x_relativo + ANCHO_PIXEL_PASTO)) && ((y > y_relativo) && (y < y_relativo + ALTO_PIXEL_PASTO))){
+				tileX = i;
+				tileY = j;
+				salir = true;
+			}
+			x_relativo += DISTANCIA_ENTRE_X;
+			y_relativo += DISTANCIA_ENTRE_Y;
+		}
+		cero_relativo_x -= DISTANCIA_ENTRE_X;
+		cero_relativo_y += DISTANCIA_ENTRE_Y;
+
+	}
+	return std::make_pair(tileX,tileY);
+}
+
 double Calculador::calcularDistancia(int X1, int Y1, int X2, int Y2){
 	double DifferenceX = X1 - X2;
     double DifferenceY = Y1 - Y2;
