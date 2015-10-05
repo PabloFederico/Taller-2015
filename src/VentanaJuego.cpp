@@ -98,39 +98,25 @@ void VentanaJuego::dibujar(){
 
 /********************************************************************************/
 void VentanaJuego::mostrar(){
-		float dt = 0.03;
-/*
-		Uint32 frame_ant = 0;
-		Uint32 frame_act = 0;
-		Uint32 mil_fps = 1000/this->spritePlayer->getFps();
-*/
+		float dt = 0.04;
+
 		bool run = true;
 		SDL_Event event;
+
 		SDL_Cursor* cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_HAND);
 		if (cursor == NULL) printf("Fallo la creacion del cursor %s",SDL_GetError());
 		SDL_SetCursor(cursor);
+
 		float posX_player = float(this->spritePlayer->getPosicion().x);
 		float posY_player = float(this->spritePlayer->getPosicion().y);
 
 		int MouseX, MouseY;
 
-		/* Indica si el protagonista debe seguir moviendose */
-		bool Follow = false;
-
-	    /* Siguiente punto a donde debería moverse el protagonista */
-	    int Follow_Point_X;
-	    int Follow_Point_Y;
-
 	    int x_anterior;
 	    int y_anterior;
-	    //frame_act = SDL_GetTicks();
-
 
 		while ( run ){
-			/*	frame_ant = frame_act;
-				frame_act = SDL_GetTicks();
-				dt = (float) (frame_act - frame_ant)/1000;
-			*/
+
 				SDL_PollEvent(&event);
 
 				if (event.type == SDL_QUIT) run = false;
@@ -139,12 +125,11 @@ void VentanaJuego::mostrar(){
 
 				this->procesador->procesarClick(event,MouseX,MouseY,spritePlayer,
 						  	  	  	  	  	   posX_player,posY_player,
-											   x_anterior,y_anterior,
-											   Follow_Point_X,Follow_Point_Y,Follow,dt);
+											   x_anterior,y_anterior,dt);
 
 				/* Actualiza la capa negra */
-				int x = spritePlayer->getPosicion().x;
-				int y = spritePlayer->getPosicion().y;
+				int x = spritePlayer->getPosicion().x + spritePlayer->getPosicion().w;
+				int y = spritePlayer->getPosicion().y + spritePlayer->getPosicion().h;
 				pair<int,int> coord = this->calculador->calcularPosicionInversa(x,y);
 				capa->descubrirDesdePunto(coord.first,coord.second);
 
@@ -154,8 +139,7 @@ void VentanaJuego::mostrar(){
 
 				this->scroll->procesarScroll(MouseX,MouseY,spritePlayer,
 											 posX_player,posY_player,
-											 x_anterior,y_anterior,
-											 Follow_Point_X,Follow_Point_Y);
+											 x_anterior,y_anterior);
 
 				/* Analizamos si hubo algún corrimiento del scroll.
 				 * si corrimiento_x ó corrimiento_y son distintos de cero,
@@ -182,7 +166,6 @@ void VentanaJuego::mostrar(){
 	            		posY_player = this->spritePlayer->getPosicion().y;
 	            		x_anterior = posX_player;
 	            		y_anterior = posY_player;
-	            		Follow = false;
 	            	}
 	            }
 

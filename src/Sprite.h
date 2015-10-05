@@ -30,6 +30,8 @@ private:
 	int direccion;
 	int indexSpriteActual;
 
+	bool enMovimiento;
+
 	SDL_Rect posicion;
 
 	void cargarFrames();
@@ -42,6 +44,10 @@ public:
 	void setDireccion(int direccion);
 
 	void efectuarMovimiento();
+
+	bool estaEnMovimiento();
+
+	void activarMovimiento(bool valor);
 
 	Imagen* getImagen();
 

@@ -21,9 +21,7 @@ public:
 
 	void procesarClick(SDL_Event event, int MouseX, int MouseY, Sprite *sprite,
 			  	  	  float &posX_player, float &posY_player,
-					  int &x_anterior, int &y_anterior,
-					  int &Follow_Point_X, int &Follow_Point_Y,
-					  bool &Follow, float dt);
+					  int &x_anterior, int &y_anterior,float dt);
 
 	virtual ~Procesador();
 };

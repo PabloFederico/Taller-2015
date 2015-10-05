@@ -27,7 +27,7 @@ pair<int,int> CapaNegra::getDimension(){
 }
 
 vector<pair<int,int> > CapaNegra::generarPuntos(int x, int y){
-	int cant_quitar = 4;
+	int cant_quitar = 2;
 	vector<pair<int,int> > puntos;
 	int x_relativo;
 	int y_relativo = y - cant_quitar;

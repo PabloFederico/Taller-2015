@@ -74,15 +74,15 @@ void ContenedorDeRecursos::generarYGuardarSpritesEntidades(vector<PosEntidad> *p
 			case SOLDADO  :
 			case JUANA_DE_ARCO :
 							posicion.x += ANCHO_PIXEL_PASTO / 4;
-							posicion.w = ANCHO_PIXEL_PASTO / 3;
+							posicion.w = ANCHO_PIXEL_PASTO / 2;
 							posicion.h = ALTO_PIXEL_PASTO * 3 / 4;
-							sprite = new Sprite(DIRECCIONES,IMAGENES_DIFERENTES,this->getImagenTipo(entidad->getTipo()),posicion);
+							sprite = new Sprite(DIRECCIONES,14,this->getImagenTipo(entidad->getTipo()),posicion);
 							break;
 			case ANIMAL :
 							posicion.x += ANCHO_PIXEL_PASTO / 8;
 							posicion.y -= (DISTANCIA_ENTRE_Y);
-							posicion.w = ANCHO_PIXEL_PASTO;
-							posicion.h = 2 * ALTO_PIXEL_PASTO;
+							posicion.w = ANCHO_PIXEL_PASTO ;
+							posicion.h = 2*ALTO_PIXEL_PASTO;
 							sprite = new Sprite(DIRECCIONES,IMAGENES_DIFERENTES,this->getImagenTipo(ANIMAL),posicion);
 							break;
 	    	default       :

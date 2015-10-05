@@ -14,10 +14,11 @@ Procesador::Procesador(Calculador *calculador, int vel) {
 
 void Procesador::procesarClick(SDL_Event event, int MouseX, int MouseY, Sprite *sprite,
 							   float &posX_player, float &posY_player,
-							   int &x_anterior, int &y_anterior,
-							   int &Follow_Point_X, int &Follow_Point_Y,
-							   bool &Follow, float dt){
+							   int &x_anterior, int &y_anterior,float dt){
 
+
+	int Follow_Point_X = x_anterior;
+	int Follow_Point_Y = y_anterior;
 	//======Analisis del evento de movimiento======//
 	if (event.type == SDL_MOUSEBUTTONDOWN){
 		if (event.button.button == SDL_BUTTON_LEFT){
@@ -27,7 +28,7 @@ void Procesador::procesarClick(SDL_Event event, int MouseX, int MouseY, Sprite *
 
             /* Validación de click dentro del escenario */
             if (this->calculador->puntoContenidoEnEscenario(Follow_Point_X+posicionPlayer.w,Follow_Point_Y+posicionPlayer.h)){
-                Follow = true;
+                sprite->activarMovimiento(true);
                 x_anterior = Follow_Point_X;
                 y_anterior = Follow_Point_Y;
                 Direccion direccion = this->calculador->calcularDireccion(Follow_Point_X, Follow_Point_Y, posicionPlayer.x, posicionPlayer.y);
@@ -42,20 +43,18 @@ void Procesador::procesarClick(SDL_Event event, int MouseX, int MouseY, Sprite *
 		}
 	}
 
-    if (Follow) {
+    if (sprite->estaEnMovimiento()) {
     	float distance = this->calculador->calcularDistancia(posX_player, posY_player, Follow_Point_X, Follow_Point_Y);
 
 		if (distance > 1){
             if (posX_player != Follow_Point_X) {
             	float x_result = (posX_player - ((posX_player - Follow_Point_X) / distance) *(this->velocidad_personaje)  * dt);
-            	//posicionPlayer.x = int(x_result);
             	sprite->setPosX(int(x_result));
             	posX_player = x_result;
             }
 
             if (posY_player != Follow_Point_Y) {
                 float y_result = (posY_player - ((posY_player - Follow_Point_Y) / distance) * (this->velocidad_personaje) * dt);
-                //posicionPlayer.y = int(y_result);
                  sprite->setPosY(int(y_result));
                 posY_player = y_result;
             }
@@ -63,7 +62,7 @@ void Procesador::procesarClick(SDL_Event event, int MouseX, int MouseY, Sprite *
             	sprite->efectuarMovimiento();
             }
 
-		}else  Follow = false;
+		}else  sprite->activarMovimiento(false);
     }else{
     	/* Cuando se deja de mover, se queda en una posición firme */
     	 sprite->acomodar();

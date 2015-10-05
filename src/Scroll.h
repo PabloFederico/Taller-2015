@@ -26,8 +26,7 @@ public:
 
 	void procesarScroll(int mouseX, int mouseY, Sprite* sprite,
 				  float &posPlayerX, float &posPlayerY,
-				  int &x_anterior, int &y_anterior,
-				  int &followX, int &followY);
+				  int &x_anterior, int &y_anterior);
 
 	virtual ~Scroll();
 };
