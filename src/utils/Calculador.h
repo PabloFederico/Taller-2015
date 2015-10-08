@@ -16,36 +16,30 @@
 #include "Direccion.h"
 #include "../utils/Constantes.h"
 #include "../modelo/Exceptions.h"
+#include "../modelo/Escenario.h"
 
 class Calculador {
 private:
-	int *cero_x;
-	int *cero_y;
-	int tiles_x;
-	int tiles_y;
-
 	float seno,coseno,long_diagonal;
 
 public:
-	Calculador(int *cero_x, int *cero_y, std::pair<int,int> dim_escenario);
+	Calculador();
 
-	double calcularDistancia(int X1, int Y1, int X2, int Y2);
+	static double calcularDistanciaEntrePixeles(int X1, int Y1, int X2, int Y2);
 
-	std::pair<int,int> calcularPosicionRelativa(int x, int y);
+	static std::pair<int,int> calcularPosicionRelativa(int x, int y, int *cero_x, int *cero_y, Escenario *escenario);
 
-	std::pair<int,int> calcularPosicionInversa(int x, int y);
+	static std::pair<int,int> calcularPosicionInversa(int x, int y, int *cero_x, int *cero_y, Escenario *escenario);
 
-	Direccion calcularDireccion(int x_dest, int y_dest, int x_orig, int y_orig);
+	static Direccion calcularDireccion(int x_dest, int y_dest, int x_orig, int y_orig);
 
-	bool puntoContenidoEnEscenario(int x, int y);
+	static bool puntoContenidoEnEscenario(int x, int y, int *cero_x, int *cero_y, Escenario *escenario);
 
 	std::pair<int,int> tileParaPixel(int pix_x, int pix_y);
 
 	std::pair<int,int> pixelCentralDeTile(int tile_x, int tile_y);
 
 	std::vector< std::pair<int,int> > obtenerCaminoMin(int inic_x, int inic_y, int dest_x, int dest_y);
-
-	virtual ~Calculador();
 };
 
 #endif /* UTILS_CALCULADOR_H_ */

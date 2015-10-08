@@ -21,4 +21,6 @@
 #define DIRECCIONES       8
 #define IMAGENES_DIFERENTES 8
 
+#define KEY_RESET 'r'
+
 #endif /* UTILS_CONSTANTES_H_ */

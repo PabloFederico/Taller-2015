@@ -7,24 +7,19 @@
 
 #include "../utils/Calculador.h"
 
-Calculador::Calculador(int *cero_x, int *cero_y, std::pair<int,int> dim_escenario) {
-	this->cero_x = cero_x;
-	this->cero_y = cero_y;
-	this->tiles_x = dim_escenario.first;
-	this->tiles_y = dim_escenario.second;
-
+Calculador::Calculador() {
 	float angulo =  atan(DISTANCIA_ENTRE_X / DISTANCIA_ENTRE_Y);
 	this->seno   = 	sin(angulo);
 	this->coseno = 	cos(angulo);
 	this->long_diagonal = sqrt(pow(DISTANCIA_ENTRE_X, 2)+pow(DISTANCIA_ENTRE_Y, 2));
 }
 
-std::pair<int,int> Calculador::calcularPosicionRelativa(int x, int y){
+std::pair<int,int> Calculador::calcularPosicionRelativa(int x, int y, int *cero_x, int *cero_y, Escenario *escenario){
 	int x_nuevo, y_nuevo;
 
 	//Posicionamiento en el eje y relativo
-	x_nuevo = *this->cero_x - y * DISTANCIA_ENTRE_X;
-	y_nuevo = *this->cero_y + y * DISTANCIA_ENTRE_Y;
+	x_nuevo = *cero_x - y * DISTANCIA_ENTRE_X;
+	y_nuevo = *cero_y + y * DISTANCIA_ENTRE_Y;
 
 	//posicionamiento en el eje x relativo
 	x_nuevo = x_nuevo + x * DISTANCIA_ENTRE_X;
@@ -33,13 +28,16 @@ std::pair<int,int> Calculador::calcularPosicionRelativa(int x, int y){
 	return std::make_pair(x_nuevo,y_nuevo);
 }
 
-std::pair<int,int> Calculador::calcularPosicionInversa(int x, int y){
+std::pair<int,int> Calculador::calcularPosicionInversa(int x, int y, int *cero_x, int *cero_y, Escenario *escenario){
+	int tiles_x = escenario->getDimension().first;
+	int tiles_y = escenario->getDimension().second;
+
 	int tileX, tileY;
 	bool salir = false;
 	int x_relativo;
 	int y_relativo;
-	int cero_relativo_x = *this->cero_x;
-	int cero_relativo_y = *this->cero_y;
+	int cero_relativo_x = *cero_x;
+	int cero_relativo_y = *cero_y;
 	for (int i = 0; i < tiles_x && !salir; i++){
 		x_relativo = cero_relativo_x;
 		y_relativo = cero_relativo_y;
@@ -59,7 +57,7 @@ std::pair<int,int> Calculador::calcularPosicionInversa(int x, int y){
 	return std::make_pair(tileX,tileY);
 }
 
-double Calculador::calcularDistancia(int X1, int Y1, int X2, int Y2){
+double Calculador::calcularDistanciaEntrePixeles(int X1, int Y1, int X2, int Y2){
 	double DifferenceX = X1 - X2;
     double DifferenceY = Y1 - Y2;
     double distance = floor(sqrt((DifferenceX * DifferenceX) + (DifferenceY * DifferenceY)));
@@ -90,12 +88,15 @@ Direccion Calculador::calcularDireccion(int x_dest, int y_dest, int x_orig, int 
 	return direccion;
 }
 
-bool Calculador::puntoContenidoEnEscenario(int x, int y){
+bool Calculador::puntoContenidoEnEscenario(int x, int y, int *cero_x, int *cero_y, Escenario *escenario){
+	int tiles_x = escenario->getDimension().first;
+	int tiles_y = escenario->getDimension().second;
+
 	bool contenido = false;
 	int x_relativo;
 	int y_relativo;
-	int cero_relativo_x = *this->cero_x;
-	int cero_relativo_y = *this->cero_y;
+	int cero_relativo_x = *cero_x;
+	int cero_relativo_y = *cero_y;
 	for (int i = 0; i < tiles_x; i++){
 		x_relativo = cero_relativo_x;
 		y_relativo = cero_relativo_y;
@@ -117,14 +118,14 @@ bool Calculador::puntoContenidoEnEscenario(int x, int y){
 std::pair<int,int> Calculador::tileParaPixel(int pix_x, int pix_y) {
 	int tile_x = floor( (pix_x*this->coseno + pix_y*this->seno) / this->long_diagonal );
 	int tile_y = floor( (pix_y*this->coseno - pix_x*this->seno) / this->long_diagonal );
-	if (tile_x < 0 || tile_y < 0 || tile_x >= this->tiles_x || tile_y >= this->tiles_y)
-		throw FueraDeEscenario();
+	//if (tile_x < 0 || tile_y < 0 || tile_x >= this->tiles_x || tile_y >= this->tiles_y)
+	//	throw FueraDeEscenario();
 	return std::pair<int,int>(tile_x,tile_y);
 }
 
 std::pair<int,int> Calculador::pixelCentralDeTile(int tile_x, int tile_y) {
-	if (tile_x < 0 || tile_y < 0 || tile_x >= this->tiles_x || tile_y >= this->tiles_y)
-		throw FueraDeEscenario();
+	//if (tile_x < 0 || tile_y < 0 || tile_x >= this->tiles_x || tile_y >= this->tiles_y)
+	//	throw FueraDeEscenario();
 	int pix_x = ((tile_x+0.5)*this->coseno - (tile_y+0.5)*this->seno) * this->long_diagonal;
 	int pix_y = ((tile_y+0.5)*this->coseno + (tile_x+0.5)*this->seno) * this->long_diagonal;
 	return std::pair<int,int>(pix_x,pix_y);
@@ -237,7 +238,4 @@ std::vector< std::pair<int,int> > Calculador::obtenerCaminoMin(int inic_x, int i
 
 
 
-Calculador::~Calculador() {
-	// TODO Auto-generated destructor stub
-}
 

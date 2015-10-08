@@ -13,6 +13,12 @@ Sprite::Sprite(int cant_Direcciones, Uint32 cant_Img_Distintas, Imagen* imagen, 
 	this->cant_Img_Distintas = cant_Img_Distintas;
 	this->imagen = imagen;
 	this->posicion = posicion;
+
+	this->regPos.posX_player =(float)posicion.x;
+	this->regPos.posY_player =(float)posicion.y;
+	this->regPos.x_anterior = posicion.x;
+	this->regPos.y_anterior = posicion.y;
+
 	this->frames = new SDL_Rect*[cant_Direcciones];
 
 	for (int i = 0; i < cant_Direcciones; i++){
@@ -76,6 +82,10 @@ void Sprite::setPosY(int y){
 void Sprite::mover(int cant_x, int cant_y){
 	this->posicion.x += cant_x;
 	this->posicion.y += cant_y;
+	regPos.x_anterior += cant_x;
+	regPos.y_anterior += cant_y;
+	regPos.posX_player += cant_x;
+	regPos.posY_player += cant_y;
 }
 
 /********************************************************************************/
@@ -147,6 +157,24 @@ void Sprite::resetTime(){
 int Sprite::currentTime(){
 	int currentTime = SDL_GetTicks();
 	return currentTime - this->miliseg_inicial;
+}
+
+/********************************************************************************/
+bool Sprite::checkColision(Sprite* otro){
+	int x1 = this->posicion.x + this->posicion.w / 3;
+	int y1 = this->posicion.y;
+	int w1 = this->posicion.w / 3;
+	int h1 = this->posicion.h;
+
+	int x2 = otro->posicion.x + otro->posicion.w / 3;
+	int y2 = otro->posicion.y;
+	int w2 = otro->posicion.w / 3;
+	int h2 = otro->posicion.h;
+
+	if (((x1 + w1) > x2) && ((x2 + w2) > x1) && ((y1 + h1) > y2) && ((y2 + h2) > y1)){
+		return true;
+	}
+	return false;
 }
 
 /********************************************************************************/

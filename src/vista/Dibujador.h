@@ -21,9 +21,10 @@ private:
 	SDL_Rect rectRelieve;
 
 public:
-	Dibujador(SDL_Renderer *renderer, ContenedorDeRecursos *contenedor, int *cero_x, int *cero_y);
+	Dibujador(SDL_Renderer *renderer);
+	void setOrigen(int *cero_x, int *cero_y);
 
-	//void dibujarEscenario(Escenario *escenario);
+	void setContenedorDeRecursos(ContenedorDeRecursos* container);
 
 	void dibujarRelieve(int tiles_x, int tiles_y);
 	void dibujarEntidades();

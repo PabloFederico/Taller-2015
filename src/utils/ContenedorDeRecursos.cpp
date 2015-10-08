@@ -7,12 +7,12 @@
 
 #include "../utils/ContenedorDeRecursos.h"
 #include "../utils/Constantes.h"
+#include "../utils/Calculador.h"
 #include "../utils/Loader.h"
 
 /********************************************************************************/
-ContenedorDeRecursos::ContenedorDeRecursos(SDL_Renderer *renderer, Calculador *calculador) {
+ContenedorDeRecursos::ContenedorDeRecursos(SDL_Renderer *renderer) {
 	this->renderer = renderer;
-	this->calculador = calculador;
 	this->mapSpritesEntidades = new Map<Entidad*, Sprite*>();
 	this->mapImagenes = new Map<TipoEntidad, Imagen*>();
 }
@@ -41,12 +41,15 @@ void ContenedorDeRecursos::cargarImagenesEntidades(vector<InfoEntidad> infoEntid
 }
 
 /********************************************************************************/
-void ContenedorDeRecursos::generarYGuardarSpritesEntidades(vector<PosEntidad> *posEntidades){
+void ContenedorDeRecursos::generarYGuardarSpritesEntidades(vector<PosEntidad> *posEntidades, pair<int*,int*> ceros, Escenario* escenario){
+	int *cero_x = ceros.first;
+	int *cero_y = ceros.second;
+
 	for (unsigned i = 0; i < posEntidades->size(); i++){
 		int tile_x = (*posEntidades)[i].x;
 		int tile_y = (*posEntidades)[i].y;
 		Entidad* entidad = (*posEntidades)[i].entidad;
-		pair<int,int> coordenada = this->calculador->calcularPosicionRelativa(tile_x,tile_y);
+		pair<int,int> coordenada = Calculador::calcularPosicionRelativa(tile_x,tile_y,cero_x,cero_y,escenario);
 
 		SDL_Rect posicion;
     	/* Cargamos por default los siguientes valores para TIERRA ó AGUA */
@@ -84,6 +87,7 @@ void ContenedorDeRecursos::generarYGuardarSpritesEntidades(vector<PosEntidad> *p
 							posicion.w = ANCHO_PIXEL_PASTO ;
 							posicion.h = 2*ALTO_PIXEL_PASTO;
 							sprite = new Sprite(DIRECCIONES,IMAGENES_DIFERENTES,this->getImagenTipo(ANIMAL),posicion);
+							sprite->activarMovimiento(true);
 							break;
 	    	default       :
 	    					/* AGUA ó TIERRA */
@@ -118,7 +122,7 @@ Map<Entidad*, Sprite*>* ContenedorDeRecursos::getMapaSpritesEntidades(){
 Sprite* ContenedorDeRecursos::getSpriteDeEntidad(Entidad *entidad){
 	map<Entidad*, Sprite* >::iterator it = this->mapSpritesEntidades->find(entidad);
 	Sprite *sprite = it->second;
-	this->mapSpritesEntidades->erase(entidad);
+	//this->mapSpritesEntidades->erase(entidad);
 	return sprite;
 }
 /********************************************************************************/

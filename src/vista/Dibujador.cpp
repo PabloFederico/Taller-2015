@@ -6,16 +6,24 @@
  */
 
 #include "../vista/Dibujador.h"
-
 #include "../utils/Constantes.h"
 
 /********************************************************************************/
-Dibujador::Dibujador(SDL_Renderer *renderer, ContenedorDeRecursos *contenedor, int *cero_x, int *cero_y) {
+Dibujador::Dibujador(SDL_Renderer *renderer) {
 	this->renderer = renderer;
 	this->contenedor = contenedor;
-	this->mapInfoEntidades = contenedor->getInfoEntidades();
 	this->cero_x = cero_x;
 	this->cero_y = cero_y;
+}
+
+void Dibujador::setOrigen(int *cero_x, int *cero_y){
+	this->cero_x = cero_x;
+	this->cero_y = cero_y;
+}
+
+void Dibujador::setContenedorDeRecursos(ContenedorDeRecursos* container){
+	this->contenedor = container;
+	this->mapInfoEntidades = container->getInfoEntidades();
 }
 
 /********************************************************************************/
@@ -66,7 +74,7 @@ void Dibujador::dibujarEntidades(){
 
 				//Entidades con movimiento:
 				//TODO: Esto hay que hacerlo mas generico.
-				if (entidad->esMovible()){
+				if (entidad->esMovible() && sprite->estaEnMovimiento()){
 					if (sprite->currentTime() > (1000/sprite->getFps())){
 						sprite->efectuarMovimiento();
 					}

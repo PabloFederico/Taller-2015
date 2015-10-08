@@ -9,15 +9,34 @@
 
 Controller::Controller() {
 	this->juego = new Juego();
-	this->ventana = new VentanaJuego(this->juego);
+	this->controladorMouse = new ControladorMouse(juego);
+	this->controladorCamara = new ControladorCamara(juego);
 }
 
-void Controller::iniciarJuego(){
-	this->ventana->mostrar();
+Juego* Controller::getJuego(){
+	return this->juego;
+}
+
+void Controller::procesarEvento(SDL_Event &event){
+	int x,y;
+	SDL_GetMouseState(&x,&y);
+	controladorMouse->procesarEvento(event,x,y);
+	controladorCamara->procesarPosicionMouse(x,y);
+}
+
+void Controller::agregarCamara(Camara *cam){
+	this->controladorCamara->setCamara(cam);
+}
+
+void Controller::reiniciarJuego(){
+	this->juego->reiniciar();
+	delete this->controladorCamara;
+	delete this->controladorMouse;
+	this->controladorMouse = new ControladorMouse(juego);
+	this->controladorCamara = new ControladorCamara(juego);
 }
 
 Controller::~Controller() {
-	//delete this->juego;
-	delete this->ventana;
+	delete this->juego;
 }
 

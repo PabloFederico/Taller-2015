@@ -64,7 +64,7 @@ bool CapaNegra::totalmenteDescubierta(){
 }
 
 bool CapaNegra::tileOculto(int x, int y){
-	return this->tiles[x][y];
+	return (this->tiles[x][y] == true);
 }
 
 CapaNegra::~CapaNegra() {

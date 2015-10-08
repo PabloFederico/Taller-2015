@@ -11,7 +11,6 @@
 #include <vector>
 
 #include "../modelo/Entidad.h"
-#include "../vista/Sprite.h"
 
 /* Estructura para guardar el Tipo de Entidad que se encuentra en las
  *  coordenadas x,y */
@@ -102,6 +101,19 @@ struct InfoEntidad{
 		fps = 10;
 		delay = 0;
 	};
+};
+
+struct RegistroPosicion{
+	int x_anterior;
+	int y_anterior;
+	float posX_player;
+	float posY_player;
+	RegistroPosicion(){
+		x_anterior = 0;
+		y_anterior = 0;
+		posX_player = 0;
+		posY_player = 0;
+	}
 };
 
 

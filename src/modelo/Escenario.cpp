@@ -9,6 +9,8 @@
 Escenario::Escenario(InfoEscenario info){
 	this->size_x = info.size_x;
 	this->size_y = info.size_y;
+	this->capa = new CapaNegra(size_x,size_y);
+
 	this->posicionesEntidades = new vector<PosEntidad>();
 
 	vector<PosTipoEntidad> posEntidades = info.getPosicionesEntidades();
@@ -49,6 +51,10 @@ void Escenario::agregarEntidad(pair<int,int> pos, Entidad* entidad){
 	this->posicionesEntidades->push_back(posEntidad);
 }
 
+CapaNegra* Escenario::getCapa(){
+	return this->capa;
+}
+
 /********************************************************************************/
 Escenario::~Escenario() {
 	for (unsigned i = 0; i < posicionesEntidades->size(); i++){
@@ -57,5 +63,7 @@ Escenario::~Escenario() {
 	}
 	this->posicionesEntidades->clear();
 	delete this->posicionesEntidades;
+
+	delete this->capa;
 }
 

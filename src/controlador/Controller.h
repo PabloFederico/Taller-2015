@@ -7,17 +7,28 @@
 
 #ifndef CONTROLADOR_CONTROLLER_H_
 #define CONTROLADOR_CONTROLLER_H_
+#include <SDL2/SDL.h>
 #include "../modelo/Juego.h"
-#include "../vista/VentanaJuego.h"
+#include "ControladorMouse.h"
+#include "ControladorCamara.h"
 
 class Controller {
 private:
 	Juego *juego;
-	VentanaJuego *ventana;
+	ControladorMouse *controladorMouse;
+	ControladorCamara *controladorCamara;
 
 public:
 	Controller();
+	Juego* getJuego();
+
 	void iniciarJuego();
+
+	void procesarEvento(SDL_Event &event);
+
+	void agregarCamara(Camara *cam);
+
+	void reiniciarJuego();
 	virtual ~Controller();
 };
 

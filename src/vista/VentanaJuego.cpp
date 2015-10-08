@@ -6,101 +6,77 @@
  */
 
 #include "../vista/VentanaJuego.h"
-
 #include <SDL2/SDL_image.h>
 #include "../utils/Constantes.h"
-#include "../utils/Loader.h"
+#include "../vista/Camara.h"
 
-VentanaJuego::VentanaJuego(Juego *juego):Ventana(juego){
-	this->MARGEN_SCROLL = 30;
-	this->TILES_X = 1;
-	this->TILES_Y = 1;
-	this->velocidad_personaje = 1.0;
-	this->calculador = NULL;
+VentanaJuego::VentanaJuego(Controller *controlador):Ventana(controlador){
 	this->dibujador = NULL;
-	this->contenedor = NULL;
-	this->cero_x = NULL;
-	this->cero_y = NULL;
-	this->spritePlayer = NULL;
-	this->protagonista = NULL;
-	this->scroll = NULL;
-	this->capa = NULL;
-	this->procesador = NULL;
-	this->juego = juego;
-	this->cargarJuego(juego);
+	this->cargarJuego(controlador->getJuego());
 }
 
 /********************************************************************************/
 void VentanaJuego::cargarJuego(Juego *juego){
-	/*pair<int,int> dimensionVentana = juego->dimensionVentana();
-	this->SCREEN_WIDTH = dimensionVentana.first;
-	this->SCREEN_HEIGHT = dimensionVentana.second;
-	*/
-	this->MARGEN_SCROLL = juego->getMargenScroll();
+	int TILES_X = juego->getEscenario()->getDimension().first;
+	int TILES_Y = juego->getEscenario()->getDimension().second;
 
-	this->protagonista = juego->getProtagonista();
-
-	this->TILES_X = juego->getEscenario()->getDimension().first;
-	this->TILES_Y = juego->getEscenario()->getDimension().second;
-
-	int LIMITE_DESPLAZAMIENTO_EN_X = DISTANCIA_ENTRE_X * this->TILES_X;
-	int LIMITE_DESPLAZAMIENTO_EN_Y = DISTANCIA_ENTRE_Y * this->TILES_Y;
-
-	this->velocidad_personaje = juego->getVelocidad();
+	int LIMITE_DESPLAZAMIENTO_EN_X = DISTANCIA_ENTRE_X * TILES_X;
+	int LIMITE_DESPLAZAMIENTO_EN_Y = DISTANCIA_ENTRE_Y * TILES_Y;
 
 	if (init()){
 		/* El (0,0) relativo del mapa respecto a la ventana principal */
 		int centro_x = SCREEN_WIDTH / 2;
 		int centro_y = SCREEN_HEIGHT / 2;
-		this->cero_x = new int(centro_x - DISTANCIA_ENTRE_X);
-		this->cero_y = new int(centro_y - LIMITE_DESPLAZAMIENTO_EN_Y);
+		int *cero_x = new int(centro_x - DISTANCIA_ENTRE_X);
+		int *cero_y = new int(centro_y - LIMITE_DESPLAZAMIENTO_EN_Y);
 
-		this->calculador = new Calculador(this->cero_x, this->cero_y, juego->getEscenario()->getDimension());
+		juego->setCeros(cero_x,cero_y);
 
-		this->procesador = new Procesador(this->calculador, velocidad_personaje);
+		Camara* camara = new Camara(cero_x,cero_y);
+		camara->setDimension(SCREEN_WIDTH,SCREEN_HEIGHT);
+		camara->setMargenScrolling(juego->getMargenScroll());
+		camara->setLimites(LIMITE_DESPLAZAMIENTO_EN_X,LIMITE_DESPLAZAMIENTO_EN_Y);
 
-		this->scroll = new Scroll(cero_x,cero_y,SCREEN_WIDTH,SCREEN_HEIGHT,MARGEN_SCROLL);
-		this->scroll->setearLimites(LIMITE_DESPLAZAMIENTO_EN_X,LIMITE_DESPLAZAMIENTO_EN_Y);
+		this->controlador->agregarCamara(camara);
 
-		this->capa = new CapaNegra(TILES_X,TILES_Y);
-
-		this->contenedor = new ContenedorDeRecursos(this->renderer,this->calculador);
+		this->dibujador = new Dibujador(renderer);
+		this->dibujador->setOrigen(cero_x,cero_y);
 
 		/* Las imagenes , los sprites y los SDL_Rect (para cada entidad)
 		 * se cargar en el contenedor */
-		this->cargarImagenes(juego->getInfoTiposEntidades());
-		this->cargarPosicionesEntidades(juego->getEscenario()->getVectorEntidades());
 
-		this->dibujador = new Dibujador(renderer,contenedor,cero_x,cero_y);
+		this->cargarImagenesYSprites(juego);
 	}
 }
 
-/********************************************************************************/
-void VentanaJuego::cargarImagenes(vector<InfoEntidad> vectorInfo){
-	this->contenedor->cargarImagenesEntidades(vectorInfo);
-}
 
 /********************************************************************************/
-void VentanaJuego::cargarPosicionesEntidades(vector<PosEntidad>* posEntidades){
-	this->contenedor->generarYGuardarSpritesEntidades(posEntidades);
-	Sprite *sprite = this->contenedor->getSpriteDeEntidad(this->protagonista);
-	this->spritePlayer = sprite;
+void VentanaJuego::cargarImagenesYSprites(Juego* juego){
+	ContenedorDeRecursos * contenedor = new ContenedorDeRecursos(renderer);
+	contenedor->cargarImagenesEntidades(juego->getInfoTiposEntidades());
+
+	vector<PosEntidad>* posEntidades = juego->getEscenario()->getVectorEntidades();
+	contenedor->generarYGuardarSpritesEntidades(posEntidades,juego->getCeros(),juego->getEscenario());
+
+	this->controlador->getJuego()->cargarRecursos(contenedor);
+	this->dibujador->setContenedorDeRecursos(contenedor);
 }
 
 /********************************************************************************/
 void VentanaJuego::dibujar(){
 	SDL_RenderClear(this->renderer);
 
-	dibujador->dibujarRelieve(TILES_X,TILES_Y);
+	int ancho = controlador->getJuego()->getEscenario()->getDimension().first;
+	int largo = controlador->getJuego()->getEscenario()->getDimension().second;
+	CapaNegra* capa = controlador->getJuego()->getEscenario()->getCapa();
+
+	dibujador->dibujarRelieve(ancho,largo);
 	dibujador->dibujarEntidades();
-	dibujador->dibujarProtagonista(spritePlayer);
 	dibujador->dibujarCapaNegra(capa);
 }
 
 /********************************************************************************/
 void VentanaJuego::mostrar(){
-		float dt = 0.05;
-
 		bool run = true;
 		SDL_Event event;
 
@@ -108,50 +84,13 @@ void VentanaJuego::mostrar(){
 		if (cursor == NULL) printf("Fallo la creacion del cursor %s",SDL_GetError());
 		SDL_SetCursor(cursor);
 
-		float posX_player = float(this->spritePlayer->getPosicion().x);
-		float posY_player = float(this->spritePlayer->getPosicion().y);
-
-		int MouseX, MouseY;
-
-	    int x_anterior;
-	    int y_anterior;
-
 		while ( run ){
 
 				SDL_PollEvent(&event);
 
 				if (event.type == SDL_QUIT) run = false;
 
-				SDL_GetMouseState(&MouseX,&MouseY);
-
-				this->procesador->procesarClick(event,MouseX,MouseY,spritePlayer,
-						  	  	  	  	  	   posX_player,posY_player,
-											   x_anterior,y_anterior,dt);
-
-				/* Actualiza la capa negra */
-				int x = spritePlayer->getPosicion().x + spritePlayer->getPosicion().w;
-				int y = spritePlayer->getPosicion().y + spritePlayer->getPosicion().h;
-				pair<int,int> coord = this->calculador->calcularPosicionInversa(x,y);
-				capa->descubrirDesdePunto(coord.first,coord.second);
-
-				/* Analisis de Scrolling */
-				int orig_inicial_x = *this->cero_x;
-				int orig_inicial_y = *this->cero_y;
-
-				this->scroll->procesarScroll(MouseX,MouseY,spritePlayer,
-											 posX_player,posY_player,
-											 x_anterior,y_anterior);
-
-				/* Analizamos si hubo algún corrimiento del scroll.
-				 * si corrimiento_x ó corrimiento_y son distintos de cero,
-				 * entonces hubo un corrimiento. */
-				int corrimiento_x = *this->cero_x - orig_inicial_x;
-				int corrimiento_y = *this->cero_y - orig_inicial_y;
-
-				if (corrimiento_x != 0 || corrimiento_y != 0){
-					this->actualizarPosicionesEntidades(corrimiento_x, corrimiento_y);
-				}
-
+				controlador->procesarEvento(event);
 
 	            /* Actualiza el renderer */
 	            this->dibujar();
@@ -161,12 +100,8 @@ void VentanaJuego::mostrar(){
 	            SDL_Delay(15);
 
 	            if (event.type == SDL_KEYDOWN){
-	            	if (event.key.keysym.sym == 'r'){
+	            	if (event.key.keysym.sym == KEY_RESET){
 	            		this->reiniciar();
-	            		posX_player = this->spritePlayer->getPosicion().x;
-	            		posY_player = this->spritePlayer->getPosicion().y;
-	            		x_anterior = posX_player;
-	            		y_anterior = posY_player;
 	            	}
 	            }
 
@@ -174,34 +109,15 @@ void VentanaJuego::mostrar(){
 }
 
 /********************************************************************************/
-void VentanaJuego::actualizarPosicionesEntidades(int corrimiento_x, int corrimiento_y){
-	this->contenedor->actualizarPosicionesEntidades(corrimiento_x, corrimiento_y);
-}
-
-/********************************************************************************/
 void VentanaJuego::reiniciar(){
-	delete this->juego;
+	this->controlador->reiniciarJuego();
 	this->liberarRecursos();
-	this->juego = new Juego();
-	this->cargarJuego(this->juego);
+	this->cargarJuego(controlador->getJuego());
 }
 
 /********************************************************************************/
 void VentanaJuego::liberarRecursos(){
-	delete this->spritePlayer;
-
-	delete this->calculador;
-
-	delete this->scroll;
-	delete this->capa;
-	delete this->procesador;
-	delete this->contenedor;
-
 	delete this->dibujador;
-
-	delete this->cero_x;
-	delete this->cero_y;
-
 	this->close();
 }
 
@@ -209,5 +125,4 @@ void VentanaJuego::liberarRecursos(){
 /********************************************************************************/
 VentanaJuego::~VentanaJuego() {
 	this->liberarRecursos();
-	delete this->juego;
 }
