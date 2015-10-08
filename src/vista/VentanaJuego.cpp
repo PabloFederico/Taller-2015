@@ -43,8 +43,8 @@ void VentanaJuego::cargarJuego(Juego *juego){
 	this->TILES_X = juego->getEscenario()->getDimension().first;
 	this->TILES_Y = juego->getEscenario()->getDimension().second;
 
-	int LIMITE_DESPLAZAMIENTO_EN_X = ANCHO_PIXEL_PASTO * this->TILES_X / 2;
-	int LIMITE_DESPLAZAMIENTO_EN_Y = ALTO_PIXEL_PASTO * this->TILES_Y / 2;
+	int LIMITE_DESPLAZAMIENTO_EN_X = DISTANCIA_ENTRE_X * this->TILES_X;
+	int LIMITE_DESPLAZAMIENTO_EN_Y = DISTANCIA_ENTRE_Y * this->TILES_Y;
 
 	this->velocidad_personaje = juego->getVelocidad();
 

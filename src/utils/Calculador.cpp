@@ -7,19 +7,16 @@
 
 #include "../utils/Calculador.h"
 
-#include <math.h>
-#include <stdlib.h>
-#include <vector>
-#include <algorithm>
-
-#include "../utils/Constantes.h"
-#include "../modelo/Exceptions.h"
-
 Calculador::Calculador(int *cero_x, int *cero_y, std::pair<int,int> dim_escenario) {
 	this->cero_x = cero_x;
 	this->cero_y = cero_y;
 	this->tiles_x = dim_escenario.first;
 	this->tiles_y = dim_escenario.second;
+
+	float angulo =  atan(DISTANCIA_ENTRE_X / DISTANCIA_ENTRE_Y);
+	this->seno   = 	sin(angulo);
+	this->coseno = 	cos(angulo);
+	this->long_diagonal = sqrt(pow(DISTANCIA_ENTRE_X, 2)+pow(DISTANCIA_ENTRE_Y, 2));
 }
 
 std::pair<int,int> Calculador::calcularPosicionRelativa(int x, int y){
@@ -116,6 +113,23 @@ bool Calculador::puntoContenidoEnEscenario(int x, int y){
 	return contenido;
 }
 
+// Calculado con el (0;0) en la esquina superior del tile (0;0).
+std::pair<int,int> Calculador::tileParaPixel(int pix_x, int pix_y) {
+	int tile_x = floor( (pix_x*this->coseno + pix_y*this->seno) / this->long_diagonal );
+	int tile_y = floor( (pix_y*this->coseno - pix_x*this->seno) / this->long_diagonal );
+	if (tile_x < 0 || tile_y < 0 || tile_x >= this->tiles_x || tile_y >= this->tiles_y)
+		throw FueraDeEscenario();
+	return std::pair<int,int>(tile_x,tile_y);
+}
+
+std::pair<int,int> Calculador::pixelCentralDeTile(int tile_x, int tile_y) {
+	if (tile_x < 0 || tile_y < 0 || tile_x >= this->tiles_x || tile_y >= this->tiles_y)
+		throw FueraDeEscenario();
+	int pix_x = ((tile_x+0.5)*this->coseno - (tile_y+0.5)*this->seno) * this->long_diagonal;
+	int pix_y = ((tile_y+0.5)*this->coseno + (tile_x+0.5)*this->seno) * this->long_diagonal;
+	return std::pair<int,int>(pix_x,pix_y);
+}
+
 
 
 int distEuclidiana(int x0, int y0, int x1, int y1) {
@@ -148,15 +162,19 @@ struct Nodo {
 	}
 };
 
-// PRE: Chequeo de destino ocupable. POST: camino posee pares de posiciones que debe recorrer secuencialmente.
-std::vector< std::pair<int,int> > obtenerCaminoMin(int inic_x, int inic_y, int dest_x, int dest_y) {
-	std::pair<int,int> pos_tile_destino = 	std::pair<int,int>(dest_x,dest_y);//calcularTileParaPos(dest_x,dest_y);
-	std::pair<int,int> pos_tile_inicial = 	std::pair<int,int>(inic_x,inic_y);//calcularTileParaPos(inic_x,inic_y);
-	Nodo tile_inicial(pos_tile_inicial.first, pos_tile_inicial.second, NULL, pos_tile_destino.first, pos_tile_destino.second);
-
-	std::vector<Nodo> visitados,vecinos;
+// PRE: Chequeo de destino ocupable; posiciones en píxeles. POST: camino posee pares de posiciones que debe recorrer secuencialmente.
+std::vector< std::pair<int,int> > Calculador::obtenerCaminoMin(int inic_x, int inic_y, int dest_x, int dest_y) {
 	std::vector< std::pair<int,int> > camino;
+	std::pair<int,int> pos_tile_inicial, pos_tile_destino;
+	try {
+		pos_tile_inicial = tileParaPixel(inic_x,inic_y);
+		pos_tile_destino = tileParaPixel(dest_x,dest_y);
+	} catch ( FueraDeEscenario &e ) {
+		return camino;
+	}
 
+	std::vector<Nodo> visitados, vecinos;
+	Nodo tile_inicial(pos_tile_inicial.first, pos_tile_inicial.second, NULL, pos_tile_destino.first, pos_tile_destino.second);
 	vecinos.push_back(tile_inicial);
 	std::vector<Nodo>::iterator pActualIt;
 	Nodo *pActual;
@@ -194,7 +212,7 @@ std::vector< std::pair<int,int> > obtenerCaminoMin(int inic_x, int inic_y, int d
 		}
 	} catch ( DestinoEncontrado &e ) {
 		while (pActual->x != tile_inicial.x || pActual->y != tile_inicial.y) {
-				camino.push_back( std::pair<int,int>(/*pixelCentralDeTile*/(pActual->x), /*pixelCentralDeTile*/(pActual->y)) );
+				camino.push_back( std::pair<int,int>(pixelCentralDeTile(pActual->x,pActual->y)) );
 				pActual = pActual->padre;
 			}
 			std::reverse(camino.begin(), camino.end());
@@ -209,8 +227,6 @@ std::vector< std::pair<int,int> > obtenerCaminoMin(int inic_x, int inic_y, int d
 	}
 
 	//-------pruebas--------
-	Nodo *pAux = NULL;
-	delete pAux;
 	//inserting at end() ?
 	//erase() ?
 	//----------------------

@@ -15,6 +15,6 @@ const char* bad_nombreTipoEntidad::what() const throw()
 	return "Tipo de entidad mal especificado.";
 }
 
-
-
 DestinoEncontrado::DestinoEncontrado() {}
+
+FueraDeEscenario::FueraDeEscenario() {}

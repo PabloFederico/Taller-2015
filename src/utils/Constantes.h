@@ -12,11 +12,11 @@
  *  corresponda, salvo las cantidades de direcciones e imagenes que son
  *  independientes de las demás */
 
-#define ANCHO_PIXEL_PASTO 60
-#define ALTO_PIXEL_PASTO  30
+#define ANCHO_PIXEL_PASTO	60
+#define ALTO_PIXEL_PASTO	30
 
-#define DISTANCIA_ENTRE_X 30
-#define DISTANCIA_ENTRE_Y 15
+#define DISTANCIA_ENTRE_X	0.5*ANCHO_PIXEL_PASTO
+#define DISTANCIA_ENTRE_Y	0.5*ALTO_PIXEL_PASTO
 
 #define DIRECCIONES       8
 #define IMAGENES_DIFERENTES 8
