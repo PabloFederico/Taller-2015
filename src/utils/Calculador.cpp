@@ -9,8 +9,11 @@
 
 #include <math.h>
 #include <stdlib.h>
+#include <vector>
+#include <algorithm>
 
 #include "../utils/Constantes.h"
+#include "../modelo/Exceptions.h"
 
 Calculador::Calculador(int *cero_x, int *cero_y, std::pair<int,int> dim_escenario) {
 	this->cero_x = cero_x;
@@ -62,7 +65,7 @@ std::pair<int,int> Calculador::calcularPosicionInversa(int x, int y){
 double Calculador::calcularDistancia(int X1, int Y1, int X2, int Y2){
 	double DifferenceX = X1 - X2;
     double DifferenceY = Y1 - Y2;
-    double distance = floor(sqrt((DifferenceX * DifferenceX) + (DifferenceY * DifferenceY)))	;
+    double distance = floor(sqrt((DifferenceX * DifferenceX) + (DifferenceY * DifferenceY)));
     return distance;
 }
 
@@ -112,6 +115,117 @@ bool Calculador::puntoContenidoEnEscenario(int x, int y){
 	}
 	return contenido;
 }
+
+
+
+int distEuclidiana(int x0, int y0, int x1, int y1) {
+	return sqrt( pow(x1-x0,2) + pow(y1-y0,2) );
+}
+
+struct Nodo {
+	int x,y;
+	Nodo *padre;
+	int g,h;
+	Nodo(int posX, int posY, Nodo *nodoPadre, int dest_x, int dest_y):
+			x(posX), y(posY), padre(nodoPadre) {
+		this->h = 10*distEuclidiana(posX, posY, dest_x, dest_y);
+		if (padre != NULL)
+			this->g = nodoPadre->g + 10*distEuclidiana(nodoPadre->x, nodoPadre->y, x, y);
+		else this->g = 0;
+	}
+	bool guardarMenorG(Nodo *nuevoPadre) {
+		int nuevaG = nuevoPadre->g + 10*distEuclidiana(nuevoPadre->x, nuevoPadre->y, x, y);
+		if (nuevaG < this->g) {
+			this->g = nuevaG;
+			padre = nuevoPadre;
+			return true;
+		}
+		return false;
+	}
+	int f() { return g+h; }
+	bool operator< (const Nodo & right) {
+		return (this->f() < (right.g+right.h));
+	}
+};
+
+// Previo chequeo de destino ocupable
+std::vector< std::pair<int,int> > obtenerCaminoMin(int inic_x, int inic_y, int dest_x, int dest_y) {
+	std::pair<int,int> pos_tile_destino = 	std::pair<int,int>(dest_x,dest_y);//calcularTileParaPos(dest_x,dest_y);
+	std::pair<int,int> pos_tile_inicial = 	std::pair<int,int>(inic_x,inic_y);//calcularTileParaPos(inic_x,inic_y);
+	Nodo tile_inicial(pos_tile_inicial.first, pos_tile_inicial.second, NULL, pos_tile_destino.first, pos_tile_destino.second);
+
+	std::vector<Nodo> visitados,vecinos;
+	std::vector< std::pair<int,int> > camino;
+	vecinos.push_back(tile_inicial);
+	std::vector<Nodo>::iterator pActualIt;
+	Nodo *pActual;
+
+	try {
+		while (!vecinos.empty()) {
+			pActualIt = vecinos.begin();
+			pActual = (Nodo*)&*pActualIt;
+			for (int y = pActual->y-1; y <= pActual->y+1; y++) {
+				for (int x = pActual->x-1; x <= pActual->x+1; x++) {
+					if ((x != pActual->padre->x || y != pActual->padre->y)
+							&& (x != pActual->x || y != pActual->y) /*&& tileEsOcupable(x, y)*/)	{ //con verificación de bordes
+						if (x == pos_tile_destino.first && y == pos_tile_destino.second)
+							throw DestinoEncontrado();
+
+						std::vector<Nodo>::iterator it;
+						for (it = vecinos.begin(); it < vecinos.end(); ++it)
+							if (it->x == x && it->y == y)
+								break;
+						if (it == vecinos.end()) {
+							Nodo pVecino(x, y, pActual, pos_tile_destino.first, pos_tile_destino.second);
+							it = std::lower_bound(vecinos.begin(), vecinos.end(), pVecino);
+							vecinos.insert(it, pVecino);
+						} else if (it->guardarMenorG(pActual)) {
+							Nodo pVecino = *it;
+							vecinos.erase(it);	//esto seguro está mal, borrando el Nodo; en ese caso simplemente crear un nuevo pVecino = Nodo(...)
+							it = std::lower_bound(vecinos.begin(), vecinos.end(), pVecino);
+							vecinos.insert(it, pVecino);
+						}
+					}
+				}
+			}
+			visitados.push_back(*pActual);
+			vecinos.erase(pActualIt); //cuidado
+		}
+	} catch ( DestinoEncontrado &e ) {
+		while (pActual->x != tile_inicial.x || pActual->y != tile_inicial.y) {
+				camino.push_back( std::pair<int,int>(/*pixelCentralDeTile*/(pActual->x), /*pixelCentralDeTile*/(pActual->y)) );
+				pActual = pActual->padre;
+			}
+			std::reverse(camino.begin(), camino.end());
+			camino.push_back(std::pair<int,int>(dest_x, dest_y));
+	}
+	// recorrer vecinos y visitados, borrando pNodos
+	//Nodo *pAux =
+	//delete pAux;
+	//falta limpieza de vectores y nodos
+
+	return camino;
+	// Con return: for pos in camino: moverse a pos; (Con manejo de colisiones.)
+
+
+	//-------pruebas
+	Nodo *pAux = NULL;
+	delete pAux;
+
+	//inserting at end() ?
+
+	//erase() ?
+}
+
+
+
+		//			:)
+
+
+
+
+
+
 
 
 Calculador::~Calculador() {

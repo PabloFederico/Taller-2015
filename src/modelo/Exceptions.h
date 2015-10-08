@@ -18,4 +18,12 @@ public:
 	const char* what() const throw();
 };
 
+
+class DestinoEncontrado: public std::exception
+{
+public:
+	DestinoEncontrado();
+};
+
+
 #endif /* MODELO_EXCEPTIONS_H_ */
