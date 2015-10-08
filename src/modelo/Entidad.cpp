@@ -14,10 +14,15 @@ Entidad::Entidad(TipoEntidad tipo) {
 		case SOLDADO:
 		case JUANA_DE_ARCO:
 		case ANIMAL:
-					movible = true;
-					break;
-		default :	movible = false;
-				  	break;
+				movible = true;
+				break;
+		case CASTILLO:
+				ocupador = true;
+				break;
+		default:
+				movible = false;
+				ocupador = false;
+				break;
 	}
 
 }
@@ -29,6 +34,10 @@ TipoEntidad Entidad::getTipo(){
 
 bool Entidad::esMovible(){
 	return this->movible;
+}
+
+bool Entidad::ocupaSuTile() {
+	return this->ocupador;
 }
 
 Entidad::~Entidad() {

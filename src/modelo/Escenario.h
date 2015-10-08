@@ -41,6 +41,8 @@ public:
 
 	Entidad* getProtagonista();
 
+	bool tileEsOcupable(int x, int y);
+
 	CapaNegra* getCapa();
 
 	virtual ~Escenario();

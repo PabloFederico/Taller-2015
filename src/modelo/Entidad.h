@@ -16,7 +16,7 @@ class Entidad {
 private:
 	//std::string tipo;
 	TipoEntidad tipo;
-	bool movible;
+	bool movible,ocupador;
 
 public:
 	//Entidad(std::string tipo);
@@ -27,6 +27,8 @@ public:
 	TipoEntidad getTipo();
 
 	bool esMovible();
+
+	bool ocupaSuTile();
 
 	virtual ~Entidad();
 };

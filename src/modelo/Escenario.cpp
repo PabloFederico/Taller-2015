@@ -13,11 +13,11 @@ Escenario::Escenario(InfoEscenario info){
 
 	this->posicionesEntidades = new vector<PosEntidad>();
 
-	vector<PosTipoEntidad> posEntidades = info.getPosicionesEntidades();
-	for (unsigned i = 0; i < posEntidades.size(); i++){
-		int x = posEntidades[i].x;
-		int y = posEntidades[i].y;
-		TipoEntidad tipo = posEntidades[i].tipo;
+	vector<PosTipoEntidad> vecPosTipoEntidades = info.getPosicionesEntidades();
+	for (unsigned i = 0; i < vecPosTipoEntidades.size(); i++){
+		int x = vecPosTipoEntidades[i].x;
+		int y = vecPosTipoEntidades[i].y;
+		TipoEntidad tipo = vecPosTipoEntidades[i].tipo;
 		Entidad *entidad = new Entidad(tipo);
 		pair<int,int> pos(x,y);
 		this->agregarEntidad(pos,entidad);
@@ -51,6 +51,21 @@ void Escenario::agregarEntidad(pair<int,int> pos, Entidad* entidad){
 	this->posicionesEntidades->push_back(posEntidad);
 }
 
+/********************************************************************************/
+// Verifica que (x;y) corresponden a una posición en el escenario que no esté ocupado por Castillo. 	EXTENDER/GENERALIZAR
+bool Escenario::tileEsOcupable(int x, int y) {
+	if (x < 0 || y < 0 || x >= this->size_x || y >= this->size_y)
+		return false;
+
+	std::vector<PosEntidad>::iterator it;
+	for (it = this->posicionesEntidades->begin(); it < this->posicionesEntidades->end(); ++it) {
+		if (it->x == x && it->y == y && it->entidad->ocupaSuTile())
+			return false;
+	}
+	return true;
+}
+
+/********************************************************************************/
 CapaNegra* Escenario::getCapa(){
 	return this->capa;
 }

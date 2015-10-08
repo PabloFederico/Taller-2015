@@ -62,6 +62,7 @@ struct PosEntidad{
 	int x;
 	int y;
 	Entidad* entidad;
+
 	PosEntidad(int x, int y, Entidad* ente){
 		this->x = x;
 		this->y = y;

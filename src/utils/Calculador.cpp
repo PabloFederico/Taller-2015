@@ -164,7 +164,7 @@ struct Nodo {
 };
 
 // PRE: Chequeo de destino ocupable; posiciones en píxeles. POST: camino posee pares de posiciones que debe recorrer secuencialmente.
-std::vector< std::pair<int,int> > Calculador::obtenerCaminoMin(int inic_x, int inic_y, int dest_x, int dest_y) {
+std::vector< std::pair<int,int> > Calculador::obtenerCaminoMin(Escenario *esc, int inic_x, int inic_y, int dest_x, int dest_y) {
 	std::vector< std::pair<int,int> > camino;
 	std::pair<int,int> pos_tile_inicial, pos_tile_destino;
 	try {
@@ -187,7 +187,7 @@ std::vector< std::pair<int,int> > Calculador::obtenerCaminoMin(int inic_x, int i
 			for (int y = pActual->y-1; y <= pActual->y+1; y++) {
 				for (int x = pActual->x-1; x <= pActual->x+1; x++) {
 					if ((x != pActual->padre->x || y != pActual->padre->y)
-							&& (x != pActual->x || y != pActual->y) /*&& tileEsOcupable(x, y)*/)	{ //con verificación de bordes
+							&& (x != pActual->x || y != pActual->y) && esc->tileEsOcupable(x, y)) {
 						if (x == pos_tile_destino.first && y == pos_tile_destino.second)
 							throw DestinoEncontrado();
 

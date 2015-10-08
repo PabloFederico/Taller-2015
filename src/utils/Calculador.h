@@ -39,7 +39,7 @@ public:
 
 	std::pair<int,int> pixelCentralDeTile(int tile_x, int tile_y);
 
-	std::vector< std::pair<int,int> > obtenerCaminoMin(int inic_x, int inic_y, int dest_x, int dest_y);
+	std::vector< std::pair<int,int> > obtenerCaminoMin(Escenario *esc, int inic_x, int inic_y, int dest_x, int dest_y);
 };
 
 #endif /* UTILS_CALCULADOR_H_ */
