@@ -148,7 +148,7 @@ struct Nodo {
 	}
 };
 
-// Previo chequeo de destino ocupable
+// PRE: Chequeo de destino ocupable. POST: camino posee pares de posiciones que debe recorrer secuencialmente.
 std::vector< std::pair<int,int> > obtenerCaminoMin(int inic_x, int inic_y, int dest_x, int dest_y) {
 	std::pair<int,int> pos_tile_destino = 	std::pair<int,int>(dest_x,dest_y);//calcularTileParaPos(dest_x,dest_y);
 	std::pair<int,int> pos_tile_inicial = 	std::pair<int,int>(inic_x,inic_y);//calcularTileParaPos(inic_x,inic_y);
@@ -156,6 +156,7 @@ std::vector< std::pair<int,int> > obtenerCaminoMin(int inic_x, int inic_y, int d
 
 	std::vector<Nodo> visitados,vecinos;
 	std::vector< std::pair<int,int> > camino;
+
 	vecinos.push_back(tile_inicial);
 	std::vector<Nodo>::iterator pActualIt;
 	Nodo *pActual;
@@ -189,7 +190,7 @@ std::vector< std::pair<int,int> > obtenerCaminoMin(int inic_x, int inic_y, int d
 				}
 			}
 			visitados.push_back(*pActual);
-			vecinos.erase(pActualIt); //cuidado
+			vecinos.erase(pActualIt); //cuidado; revisar
 		}
 	} catch ( DestinoEncontrado &e ) {
 		while (pActual->x != tile_inicial.x || pActual->y != tile_inicial.y) {
@@ -199,32 +200,24 @@ std::vector< std::pair<int,int> > obtenerCaminoMin(int inic_x, int inic_y, int d
 			std::reverse(camino.begin(), camino.end());
 			camino.push_back(std::pair<int,int>(dest_x, dest_y));
 	}
-	// recorrer vecinos y visitados, borrando pNodos
-	//Nodo *pAux =
-	//delete pAux;
-	//falta limpieza de vectores y nodos
+
+	for (pActualIt = visitados.begin(); pActualIt < vecinos.end(); ++pActualIt) {
+		if (pActualIt == visitados.end())
+			pActualIt = vecinos.begin();
+		Nodo *nodoAux = (Nodo*)&*pActualIt;
+		delete nodoAux;
+	}
+
+	//-------pruebas--------
+	Nodo *pAux = NULL;
+	delete pAux;
+	//inserting at end() ?
+	//erase() ?
+	//----------------------
 
 	return camino;
 	// Con return: for pos in camino: moverse a pos; (Con manejo de colisiones.)
-
-
-	//-------pruebas
-	Nodo *pAux = NULL;
-	delete pAux;
-
-	//inserting at end() ?
-
-	//erase() ?
 }
-
-
-
-		//			:)
-
-
-
-
-
 
 
 
