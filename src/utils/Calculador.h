@@ -10,28 +10,22 @@
 #include <map>
 
 #include "Direccion.h"
+#include "../modelo/Escenario.h"
 
 class Calculador {
-private:
-	int *cero_x;
-	int *cero_y;
-	int tiles_x;
-	int tiles_y;
 
 public:
-	Calculador(int *cero_x, int *cero_y, std::pair<int,int> dim_escenario);
 
-	double calcularDistancia(int X1, int Y1, int X2, int Y2);
+	static double calcularDistanciaEntrePixeles(int X1, int Y1, int X2, int Y2);
 
-	std::pair<int,int> calcularPosicionRelativa(int x, int y);
+	static std::pair<int,int> calcularPosicionRelativa(int x, int y, int *cero_x, int *cero_y, Escenario *escenario);
 
-	std::pair<int,int> calcularPosicionInversa(int x, int y);
+	static std::pair<int,int> calcularPosicionInversa(int x, int y, int *cero_x, int *cero_y, Escenario *escenario);
 
-	Direccion calcularDireccion(int x_dest, int y_dest, int x_orig, int y_orig);
+	static Direccion calcularDireccion(int x_dest, int y_dest, int x_orig, int y_orig);
 
-	bool puntoContenidoEnEscenario(int x, int y);
+	static bool puntoContenidoEnEscenario(int x, int y, int *cero_x, int *cero_y, Escenario *escenario);
 
-	virtual ~Calculador();
 };
 
 #endif /* UTILS_CALCULADOR_H_ */

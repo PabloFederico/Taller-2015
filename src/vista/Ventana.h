@@ -8,11 +8,11 @@
 #ifndef VISTA_VENTANA_H_
 #define VISTA_VENTANA_H_
 #include <SDL2/SDL.h>
-
-#include "../modelo/Juego.h"
+#include "../controlador/Controller.h"
 
 class Ventana {
 protected:
+	Controller *controlador;
 	SDL_Window *window;
 	SDL_Renderer *renderer;
 	int SCREEN_WIDTH;
@@ -22,7 +22,7 @@ protected:
 	void close();
 
 public:
-	Ventana(Juego *juego);
+	Ventana(Controller *controlador);
 	virtual ~Ventana();
 };
 

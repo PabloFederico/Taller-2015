@@ -9,7 +9,7 @@
 #define VISTA_SPRITE_H_
 #include <SDL2/SDL.h>
 #include <vector>
-
+#include "../utils/Structs.h"
 #include "Imagen.h"
 
 class Sprite {
@@ -38,6 +38,8 @@ private:
 	void cargarFrames();
 
 	void resetTime();
+public:
+	RegistroPosicion regPos;
 
 public:
 	Sprite(int cant_Direcciones, Uint32 cant_Img_Distintas, Imagen* imagen, SDL_Rect posicion);
@@ -70,6 +72,8 @@ public:
 	SDL_Rect getSDLRect(int i, int j);
 
 	int currentTime();
+
+	bool checkColision(Sprite* otro);
 
 	void acomodar();
 

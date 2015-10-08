@@ -18,7 +18,7 @@ tipos:
     pixel_ref_y: 40
 
   - nombre: soldado
-    fps: 40
+    fps: 60
     imagen: images/chabon000.png
 
   - nombre: animal

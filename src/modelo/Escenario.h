@@ -11,12 +11,15 @@
 
 #include "../utils/Structs.h"
 #include "../modelo/Entidad.h"
+#include "../vista/CapaNegra.h"
 using namespace std;
 
 class Escenario {
 private:
 	int size_x;
 	int size_y;
+
+	CapaNegra *capa;
 
 	vector<PosEntidad>* posicionesEntidades;
 
@@ -37,6 +40,8 @@ public:
 	vector<PosEntidad>* getVectorEntidades();
 
 	Entidad* getProtagonista();
+
+	CapaNegra* getCapa();
 
 	virtual ~Escenario();
 };

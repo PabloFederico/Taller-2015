@@ -10,12 +10,13 @@
 #include <stdio.h>
 #include "../utils/Constantes.h"
 
-Ventana::Ventana(Juego *juego) {
-	pair<int,int> dimensionVentana = juego->dimensionVentana();
+Ventana::Ventana(Controller *controlador) {
+	pair<int,int> dimensionVentana = controlador->getJuego()->dimensionVentana();
 	this->SCREEN_WIDTH = dimensionVentana.first;
 	this->SCREEN_HEIGHT = dimensionVentana.second;
 	this->window = NULL;
 	this->renderer = NULL;
+	this->controlador = controlador;
 }
 
 /********************************************************************************/

@@ -16,13 +16,17 @@
 #include "../utils/Map.h"
 #include "../modelo/Castillo.h"
 #include "../modelo/ConfigDefault.h"
+#include "../utils/ContenedorDeRecursos.h"
 #include "../modelo/Entidad.h"
 #include "../modelo/Escenario.h"
 #include "../modelo/Exceptions.h"
-#include "../vista/VistaEntidad.h"
+#include "../vista/Sprite.h"
 
 class Juego {
 private:
+	int *cero_x;
+	int *cero_y;
+
 	int screenWidth;
 	int screenHeight;
 	
@@ -38,6 +42,8 @@ private:
 	 * de un archivo de configuración */
 	void cargarJuego();
 
+	void cargarImagenes();
+
 
 	int ChequeoDeBorde(int max, int input);
 
@@ -47,6 +53,8 @@ private:
 
 	//de prueba		!!!
 	InfoEscenario OdioYAML();
+
+	ContenedorDeRecursos *contenedor;
 
 public:
 	Juego();
@@ -61,6 +69,18 @@ public:
 	Entidad* getProtagonista();
 
 	int getMargenScroll();
+
+	void cargarRecursos(ContenedorDeRecursos *container);
+
+	Sprite* getSpritePlayer();
+
+	void setCeros(int *x, int *y);
+
+	std::pair<int*,int*> getCeros();
+
+	void reiniciar();
+
+	void actualizarPosicionesEntidades(int cant_x, int cant_y);
 
 	virtual ~Juego();
 };

@@ -9,23 +9,22 @@
 #define UTILS_CONTENEDORDERECURSOS_H_
 #include <vector>
 #include <SDL2/SDL.h>
-
-#include "../utils/Calculador.h"
+#include "../modelo/Escenario.h"
 #include "../utils/Enumerados.h"
 #include "../utils/Map.h"
+#include "../vista/Sprite.h"
 #include "../utils/Structs.h"
 using namespace std;
 
 class ContenedorDeRecursos {
 private:
 	SDL_Renderer *renderer;
-	Calculador *calculador;
 	Map<TipoEntidad, Imagen*> *mapImagenes;
 	Map<Entidad*, Sprite*> *mapSpritesEntidades;
 	map<TipoEntidad, InfoEntidad> mapInfoEntidades;
 
 public:
-	ContenedorDeRecursos(SDL_Renderer *renderer, Calculador *calculador);
+	ContenedorDeRecursos(SDL_Renderer *renderer);
 
 	void cargarImagenesEntidades(vector<InfoEntidad> infoEntidades);
 
@@ -37,7 +36,7 @@ public:
 
 	Sprite* getSpriteDeEntidad(Entidad *entidad);
 
-	void generarYGuardarSpritesEntidades(vector<PosEntidad> *posEntidades);
+	void generarYGuardarSpritesEntidades(vector<PosEntidad> *posEntidades, pair<int*,int*> ceros, Escenario* escenario);
 
 	void actualizarPosicionesEntidades(int corrimiento_x, int corrimiento_y);
 

@@ -6,11 +6,13 @@
  */
 
 #include "../modelo/Juego.h"
-
 #include <iostream>
 
 
 Juego::Juego() {
+	this->cero_x = NULL;
+	this->cero_y = NULL;
+	this->contenedor = NULL;
 	this->escenario = NULL;
 	this->protagonista = NULL;
 	this->screenWidth = 800;	// Default
@@ -333,3 +335,29 @@ int Juego::getVelocidad(){
 	return this->vel_personaje;
 }
 
+void Juego::cargarRecursos(ContenedorDeRecursos *container){
+	this->contenedor = container;
+}
+
+Sprite* Juego::getSpritePlayer(){
+	return this->contenedor->getSpriteDeEntidad(protagonista);
+}
+
+void Juego::setCeros(int *x, int *y){
+	this->cero_x = x;
+	this->cero_y = y;
+}
+
+std::pair<int*,int*> Juego::getCeros(){
+	return std::make_pair(cero_x,cero_y);
+}
+
+void Juego::reiniciar(){
+	delete this->escenario;
+	delete this->contenedor;
+	cargarJuego();
+}
+
+void Juego::actualizarPosicionesEntidades(int cant_x, int cant_y){
+	this->contenedor->actualizarPosicionesEntidades(cant_x,cant_y);
+}
