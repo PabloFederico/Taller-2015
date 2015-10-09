@@ -361,3 +361,7 @@ void Juego::reiniciar(){
 void Juego::actualizarPosicionesEntidades(int cant_x, int cant_y){
 	this->contenedor->actualizarPosicionesEntidades(cant_x,cant_y);
 }
+
+Map<Entidad*, Sprite*>* Juego::getSpritesEntidades(){
+	return this->contenedor->getMapaSpritesEntidades();
+}

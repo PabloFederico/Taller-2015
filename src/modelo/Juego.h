@@ -72,6 +72,8 @@ public:
 
 	void cargarRecursos(ContenedorDeRecursos *container);
 
+	Map<Entidad*, Sprite*>* getSpritesEntidades();
+
 	Sprite* getSpritePlayer();
 
 	void setCeros(int *x, int *y);

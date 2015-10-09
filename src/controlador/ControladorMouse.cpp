@@ -7,6 +7,7 @@
 
 #include "ControladorMouse.h"
 #include "../utils/Calculador.h"
+#include "../modelo/DetectorDeColisiones.h"
 
 ControladorMouse::ControladorMouse(Juego *juego) {
 	this->juego = juego;
@@ -68,6 +69,9 @@ void ControladorMouse::procesarEvento(SDL_Event &event, int MouseX, int MouseY){
             if (sprite->currentTime() > (1000/sprite->getFps())){
             	sprite->efectuarMovimiento();
             }
+
+            bool hayColision = DetectorDeColisiones::verificarColisiones(sprite,juego->getSpritesEntidades());
+            if (hayColision) sprite->activarMovimiento(false);
 
 		}else  sprite->activarMovimiento(false);
 

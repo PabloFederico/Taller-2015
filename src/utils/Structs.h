@@ -117,5 +117,29 @@ struct RegistroPosicion{
 	}
 };
 
+struct Rectangulo{
+	int x_ini;
+	int width;
+	int y_ini;
+	int height;
+	Rectangulo(int x1, int width, int y1, int height){
+		x_ini = x1;
+		this->width = width;
+		y_ini = y1;
+		this->height = height;
+	}
+
+	bool existeColision(Rectangulo rect){
+		if ( ((x_ini + width) > rect.x_ini)     &&
+			 ((rect.x_ini + rect.width) > x_ini) &&
+			 ((y_ini + height) > rect.y_ini)    &&
+			 ((rect.y_ini + rect.height) > y_ini) ){
+
+			return true;
+		}
+		return false;
+	}
+};
+
 
 #endif /* UTILS_STRUCTS_H_ */
