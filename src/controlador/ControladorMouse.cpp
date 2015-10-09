@@ -19,6 +19,12 @@ void ControladorMouse::procesarEvento(SDL_Event &event, int MouseX, int MouseY){
 	int x = sprite->getPosicion().x + sprite->getPosicion().w;
 	int y = sprite->getPosicion().y + sprite->getPosicion().h;
 	pair<int,int> coord = Calculador::calcularPosicionInversa(x,y,juego->getCeros().first,juego->getCeros().second,juego->getEscenario());
+	//código de prueba
+	std::cout << *juego->getCeros().first << ";" << *juego->getCeros().second << std::endl;
+	Calculador *calc = new Calculador();
+	std::pair<int,int> coord2 = calc->tileParaPixel(MouseX-*juego->getCeros().first-DISTANCIA_ENTRE_X,MouseY-*juego->getCeros().second);
+	std::cout << MouseX-*juego->getCeros().first-DISTANCIA_ENTRE_X << ";" << MouseY-*juego->getCeros().second << ": v" << coord.first  << ";" << coord.second << " | n" << coord2.first << ";" << coord2.second << std::endl << std::endl;
+	///
 
     juego->getEscenario()->getCapa()->descubrirDesdePunto(coord.first,coord.second);
 

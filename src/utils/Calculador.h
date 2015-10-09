@@ -19,12 +19,8 @@
 #include "../modelo/Escenario.h"
 
 class Calculador {
-private:
-	float seno,coseno,long_diagonal;
 
 public:
-	Calculador();
-
 	static double calcularDistanciaEntrePixeles(int X1, int Y1, int X2, int Y2);
 
 	static std::pair<int,int> calcularPosicionRelativa(int x, int y, int *cero_x, int *cero_y, Escenario *escenario);

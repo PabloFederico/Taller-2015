@@ -7,12 +7,7 @@
 
 #include "../utils/Calculador.h"
 
-Calculador::Calculador() {
-	float angulo =  atan(DISTANCIA_ENTRE_X / DISTANCIA_ENTRE_Y);
-	this->seno   = 	sin(angulo);
-	this->coseno = 	cos(angulo);
-	this->long_diagonal = sqrt(pow(DISTANCIA_ENTRE_X, 2)+pow(DISTANCIA_ENTRE_Y, 2));
-}
+#include <iostream>
 
 std::pair<int,int> Calculador::calcularPosicionRelativa(int x, int y, int *cero_x, int *cero_y, Escenario *escenario){
 	int x_nuevo, y_nuevo;
@@ -116,8 +111,12 @@ bool Calculador::puntoContenidoEnEscenario(int x, int y, int *cero_x, int *cero_
 
 // Calculado con el (0;0) en la esquina superior del tile (0;0).
 std::pair<int,int> Calculador::tileParaPixel(int pix_x, int pix_y) {
-	int tile_x = floor( (pix_x*this->coseno + pix_y*this->seno) / this->long_diagonal );
-	int tile_y = floor( (pix_y*this->coseno - pix_x*this->seno) / this->long_diagonal );
+	int px = pix_x;
+	int py = pix_y * (ANCHO_PIXEL_PASTO / ALTO_PIXEL_PASTO);
+
+	int tile_x = floor( (px+py) / ANCHO_PIXEL_PASTO );
+	int tile_y = floor( (py-px) / ANCHO_PIXEL_PASTO );
+
 	//if (tile_x < 0 || tile_y < 0 || tile_x >= this->tiles_x || tile_y >= this->tiles_y)
 	//	throw FueraDeEscenario();
 	return std::pair<int,int>(tile_x,tile_y);
@@ -126,8 +125,8 @@ std::pair<int,int> Calculador::tileParaPixel(int pix_x, int pix_y) {
 std::pair<int,int> Calculador::pixelCentralDeTile(int tile_x, int tile_y) {
 	//if (tile_x < 0 || tile_y < 0 || tile_x >= this->tiles_x || tile_y >= this->tiles_y)
 	//	throw FueraDeEscenario();
-	int pix_x = ((tile_x+0.5)*this->coseno - (tile_y+0.5)*this->seno) * this->long_diagonal;
-	int pix_y = ((tile_y+0.5)*this->coseno + (tile_x+0.5)*this->seno) * this->long_diagonal;
+	int pix_x =  (tile_x-tile_y)  * DISTANCIA_ENTRE_X;
+	int pix_y = (tile_x+tile_y+1) * DISTANCIA_ENTRE_Y;
 	return std::pair<int,int>(pix_x,pix_y);
 }
 
