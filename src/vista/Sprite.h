@@ -35,6 +35,8 @@ private:
 
 	SDL_Rect posicion;
 
+	vector<Rectangulo> rectangulos;
+
 	void cargarFrames();
 
 	void resetTime();
@@ -74,6 +76,8 @@ public:
 	int currentTime();
 
 	bool checkColision(Sprite* otro);
+
+	void agregarRectangulo(Rectangulo rectangulo);
 
 	void acomodar();
 

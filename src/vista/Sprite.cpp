@@ -71,11 +71,19 @@ SDL_Rect Sprite::getPosicion(){
 
 /********************************************************************************/
 void Sprite::setPosX(int x){
+	int diferencia = rectangulos[0].x_ini - posicion.x;
 	this->posicion.x = x;
+	for (unsigned i = 0; i < rectangulos.size(); i++){
+		rectangulos[i].x_ini = x + diferencia;
+	}
 }
 
 void Sprite::setPosY(int y){
+	int diferencia = rectangulos[0].y_ini - posicion.y;
 	this->posicion.y = y;
+	for (unsigned i = 0; i < rectangulos.size(); i++){
+		rectangulos[i].y_ini = y + diferencia;
+	}
 }
 
 /********************************************************************************/
@@ -86,6 +94,10 @@ void Sprite::mover(int cant_x, int cant_y){
 	regPos.y_anterior += cant_y;
 	regPos.posX_player += cant_x;
 	regPos.posY_player += cant_y;
+	for (unsigned i = 0; i < rectangulos.size(); i++){
+		rectangulos[i].x_ini += cant_x;
+		rectangulos[i].y_ini += cant_y;
+	}
 }
 
 /********************************************************************************/
@@ -160,21 +172,23 @@ int Sprite::currentTime(){
 }
 
 /********************************************************************************/
+void Sprite::agregarRectangulo(Rectangulo rectangulo){
+	this->rectangulos.push_back(rectangulo);
+}
+
+/********************************************************************************/
 bool Sprite::checkColision(Sprite* otro){
-	int x1 = this->posicion.x + this->posicion.w / 3;
-	int y1 = this->posicion.y;
-	int w1 = this->posicion.w / 3;
-	int h1 = this->posicion.h;
-
-	int x2 = otro->posicion.x + otro->posicion.w / 3;
-	int y2 = otro->posicion.y;
-	int w2 = otro->posicion.w / 3;
-	int h2 = otro->posicion.h;
-
-	if (((x1 + w1) > x2) && ((x2 + w2) > x1) && ((y1 + h1) > y2) && ((y2 + h2) > y1)){
-		return true;
+	bool colision = false;
+	/* Para cada rectángulo que conforma el sprite */
+	for (unsigned i = 0; i < rectangulos.size() && !colision ; i++){
+		/* Para cada rectángulo que conforma el sprite con el que se quiere comprobar la colisión */
+		for (unsigned j = 0; j < otro->rectangulos.size() && ! colision; j++){
+			if (rectangulos[i].existeColision(otro->rectangulos[j])){
+				colision = true;
+			}
+		}
 	}
-	return false;
+	return colision;
 }
 
 /********************************************************************************/
