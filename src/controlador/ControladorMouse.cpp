@@ -21,9 +21,13 @@ void ControladorMouse::procesarEvento(SDL_Event &event, int MouseX, int MouseY){
 	pair<int,int> coord = Calculador::calcularPosicionInversa(x,y,juego->getCeros().first,juego->getCeros().second,juego->getEscenario());
 	//código de prueba
 	std::cout << *juego->getCeros().first << ";" << *juego->getCeros().second << std::endl;
-	Calculador *calc = new Calculador();
-	std::pair<int,int> coord2 = calc->tileParaPixel(MouseX-*juego->getCeros().first-DISTANCIA_ENTRE_X,MouseY-*juego->getCeros().second);
-	std::cout << MouseX-*juego->getCeros().first-DISTANCIA_ENTRE_X << ";" << MouseY-*juego->getCeros().second << ": v" << coord.first  << ";" << coord.second << " | n" << coord2.first << ";" << coord2.second << std::endl << std::endl;
+	try {
+		std::pair<int,int> coord2 = Calculador::tileParaPixel(MouseX, MouseY, *juego->getCeros().first+DISTANCIA_ENTRE_X, *juego->getCeros().second);
+		std::cout << MouseX-(*juego->getCeros().first+DISTANCIA_ENTRE_X) << ";" << MouseY-*juego->getCeros().second << ": v" << coord.first  << ";" << coord.second << " | n" << coord2.first << ";" << coord2.second << std::endl;
+		std::pair<int,int> coord3 = Calculador::pixelCentralDeTile(coord2.first,coord2.second);
+		std::cout << coord3.first << ";" << coord3.second << endl;
+	} catch ( FueraDeEscenario &e ) {}
+	std::cout << std::endl;
 	///
 
     juego->getEscenario()->getCapa()->descubrirDesdePunto(coord.first,coord.second);

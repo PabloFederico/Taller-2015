@@ -109,23 +109,23 @@ bool Calculador::puntoContenidoEnEscenario(int x, int y, int *cero_x, int *cero_
 	return contenido;
 }
 
-// Calculado con el (0;0) en la esquina superior del tile (0;0).
-std::pair<int,int> Calculador::tileParaPixel(int pix_x, int pix_y) {
-	int px = pix_x;
-	int py = pix_y * (ANCHO_PIXEL_PASTO / ALTO_PIXEL_PASTO);
+// Calculado con el píxel (0;0) en la esquina superior del tile (0;0).
+std::pair<int,int> Calculador::tileParaPixel(int pix_x, int pix_y, int cero_x, int cero_y) {
+	int px =  pix_x - cero_x;
+	int py = (pix_y - cero_y) * (ANCHO_PIXEL_PASTO / ALTO_PIXEL_PASTO);
 
 	int tile_x = floor( (px+py) / ANCHO_PIXEL_PASTO );
 	int tile_y = floor( (py-px) / ANCHO_PIXEL_PASTO );
 
-	//if (tile_x < 0 || tile_y < 0 || tile_x >= this->tiles_x || tile_y >= this->tiles_y)
-	//	throw FueraDeEscenario();
+	if (tile_x < 0 || tile_y < 0 )//|| tile_x >= this->tiles_x || tile_y >= this->tiles_y)
+		throw FueraDeEscenario();
 	return std::pair<int,int>(tile_x,tile_y);
 }
 
 std::pair<int,int> Calculador::pixelCentralDeTile(int tile_x, int tile_y) {
-	//if (tile_x < 0 || tile_y < 0 || tile_x >= this->tiles_x || tile_y >= this->tiles_y)
-	//	throw FueraDeEscenario();
-	int pix_x =  (tile_x-tile_y)  * DISTANCIA_ENTRE_X;
+	if (tile_x < 0 || tile_y < 0)// || tile_x >= this->tiles_x || tile_y >= this->tiles_y)
+		throw FueraDeEscenario();
+	int pix_x = (tile_x-tile_y)   * DISTANCIA_ENTRE_X;
 	int pix_y = (tile_x+tile_y+1) * DISTANCIA_ENTRE_Y;
 	return std::pair<int,int>(pix_x,pix_y);
 }
@@ -163,12 +163,12 @@ struct Nodo {
 };
 
 // PRE: Chequeo de destino ocupable; posiciones en píxeles. POST: camino posee pares de posiciones que debe recorrer secuencialmente.
-std::vector< std::pair<int,int> > Calculador::obtenerCaminoMin(Escenario *esc, int inic_x, int inic_y, int dest_x, int dest_y) {
+std::vector< std::pair<int,int> > Calculador::obtenerCaminoMin(Escenario *esc, int inic_x, int inic_y, int dest_x, int dest_y, int cero_x, int cero_y) {
 	std::vector< std::pair<int,int> > camino;
 	std::pair<int,int> pos_tile_inicial, pos_tile_destino;
 	try {
-		pos_tile_inicial = tileParaPixel(inic_x,inic_y);
-		pos_tile_destino = tileParaPixel(dest_x,dest_y);
+		pos_tile_inicial = tileParaPixel(inic_x,inic_y,cero_x,cero_y);
+		pos_tile_destino = tileParaPixel(dest_x,dest_y,cero_x,cero_y);
 	} catch ( FueraDeEscenario &e ) {
 		return camino;
 	}

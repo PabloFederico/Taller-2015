@@ -27,7 +27,7 @@ void VentanaJuego::cargarJuego(Juego *juego){
 		/* El (0,0) relativo del mapa respecto a la ventana principal */
 		int centro_x = SCREEN_WIDTH / 2;
 		int centro_y = SCREEN_HEIGHT / 2;
-		int *cero_x = new int(centro_x - DISTANCIA_ENTRE_X);
+		int *cero_x = new int(centro_x);
 		int *cero_y = new int(centro_y - LIMITE_DESPLAZAMIENTO_EN_Y);
 
 		juego->setCeros(cero_x,cero_y);

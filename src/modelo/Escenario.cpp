@@ -57,8 +57,7 @@ bool Escenario::tileEsOcupable(int x, int y) {
 	if (x < 0 || y < 0 || x >= this->size_x || y >= this->size_y)
 		return false;
 
-	std::vector<PosEntidad>::iterator it;
-	for (it = this->posicionesEntidades->begin(); it < this->posicionesEntidades->end(); ++it) {
+	for (std::vector<PosEntidad>::iterator it = this->posicionesEntidades->begin(); it < this->posicionesEntidades->end(); ++it) {
 		if (it->x == x && it->y == y && it->entidad->ocupaSuTile())
 			return false;
 	}
