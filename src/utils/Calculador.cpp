@@ -9,21 +9,21 @@
 
 #include <iostream>
 
-std::pair<int,int> Calculador::calcularPosicionRelativa(int x, int y, int *cero_x, int *cero_y, Escenario *escenario){
+Coordenada Calculador::calcularPosicionRelativa(Coordenada coord_tile, Coordenada coord_ceros_pixel, Escenario *escenario){
 	int x_nuevo, y_nuevo;
 
 	//Posicionamiento en el eje y relativo
-	x_nuevo = *cero_x - y * DISTANCIA_ENTRE_X;
-	y_nuevo = *cero_y + y * DISTANCIA_ENTRE_Y;
+	x_nuevo = coord_ceros_pixel.x - coord_tile.y * DISTANCIA_ENTRE_X;
+	y_nuevo = coord_ceros_pixel.y + coord_tile.y * DISTANCIA_ENTRE_Y;
 
 	//posicionamiento en el eje x relativo
-	x_nuevo = x_nuevo + x * DISTANCIA_ENTRE_X;
-	y_nuevo = y_nuevo + x * DISTANCIA_ENTRE_Y;
+	x_nuevo = x_nuevo + coord_tile.x * DISTANCIA_ENTRE_X;
+	y_nuevo = y_nuevo + coord_tile.x * DISTANCIA_ENTRE_Y;
 
-	return std::make_pair(x_nuevo,y_nuevo);
+	return Coordenada(x_nuevo,y_nuevo);
 }
 
-std::pair<int,int> Calculador::calcularPosicionInversa(int x, int y, int *cero_x, int *cero_y, Escenario *escenario){
+Coordenada Calculador::calcularPosicionInversa(Coordenada coord_pixel, Coordenada coord_ceros_pixel, Escenario *escenario){
 	int tiles_x = escenario->getDimension().first;
 	int tiles_y = escenario->getDimension().second;
 
@@ -31,13 +31,13 @@ std::pair<int,int> Calculador::calcularPosicionInversa(int x, int y, int *cero_x
 	bool salir = false;
 	int x_relativo;
 	int y_relativo;
-	int cero_relativo_x = *cero_x;
-	int cero_relativo_y = *cero_y;
+	int cero_relativo_x = coord_ceros_pixel.x;
+	int cero_relativo_y = coord_ceros_pixel.y;
 	for (int i = 0; i < tiles_x && !salir; i++){
 		x_relativo = cero_relativo_x;
 		y_relativo = cero_relativo_y;
 		for(int j = 0; j < tiles_y && !salir; j++){
-			if (((x > x_relativo) && (x < x_relativo + ANCHO_PIXEL_PASTO)) && ((y > y_relativo) && (y < y_relativo + ALTO_PIXEL_PASTO))){
+			if (((coord_pixel.x > x_relativo) && (coord_pixel.x < x_relativo + ANCHO_PIXEL_PASTO)) && ((coord_pixel.y > y_relativo) && (coord_pixel.y < y_relativo + ALTO_PIXEL_PASTO))){
 				tileX = i;
 				tileY = j;
 				salir = true;
@@ -49,20 +49,20 @@ std::pair<int,int> Calculador::calcularPosicionInversa(int x, int y, int *cero_x
 		cero_relativo_y += DISTANCIA_ENTRE_Y;
 
 	}
-	return std::make_pair(tileX,tileY);
+	return Coordenada(tileX,tileY);
 }
 
-double Calculador::calcularDistanciaEntrePixeles(int X1, int Y1, int X2, int Y2){
-	double DifferenceX = X1 - X2;
-    double DifferenceY = Y1 - Y2;
+double Calculador::calcularDistanciaEntrePixeles(Coordenada pixel1, Coordenada pixel2){
+	double DifferenceX = pixel1.x - pixel2.x;
+    double DifferenceY = pixel1.y - pixel2.y;
     double distance = floor(sqrt((DifferenceX * DifferenceX) + (DifferenceY * DifferenceY)));
     return distance;
 }
 
-Direccion Calculador::calcularDireccion(int x_dest, int y_dest, int x_orig, int y_orig){
+Direccion Calculador::calcularDireccion(Coordenada coord_pixel_dest, Coordenada coord_pixel_orig){
 	Direccion direccion;
-	int x_result = x_dest - x_orig;
-	int y_result = y_dest - y_orig;
+	int x_result = coord_pixel_dest.x - coord_pixel_orig.x; //x_dest - x_orig;
+	int y_result = coord_pixel_dest.y - coord_pixel_orig.y;//y_dest - y_orig;
 
 	if (abs(x_result) < 30){
 		if (y_result < 0) direccion = NORTE;
@@ -83,20 +83,20 @@ Direccion Calculador::calcularDireccion(int x_dest, int y_dest, int x_orig, int 
 	return direccion;
 }
 
-bool Calculador::puntoContenidoEnEscenario(int x, int y, int *cero_x, int *cero_y, Escenario *escenario){
+bool Calculador::puntoContenidoEnEscenario(Coordenada coord_pixel, Coordenada coord_ceros_pixel, Escenario *escenario){
 	int tiles_x = escenario->getDimension().first;
 	int tiles_y = escenario->getDimension().second;
 
 	bool contenido = false;
 	int x_relativo;
 	int y_relativo;
-	int cero_relativo_x = *cero_x;
-	int cero_relativo_y = *cero_y;
+	int cero_relativo_x = coord_ceros_pixel.x;
+	int cero_relativo_y = coord_ceros_pixel.y;
 	for (int i = 0; i < tiles_x; i++){
 		x_relativo = cero_relativo_x;
 		y_relativo = cero_relativo_y;
 		for(int j = 0; j < tiles_y; j++){
-			if (((x > x_relativo) && (x < x_relativo + ANCHO_PIXEL_PASTO)) && ((y > y_relativo) && (y < y_relativo + ALTO_PIXEL_PASTO))){
+			if (((coord_pixel.x > x_relativo) && (coord_pixel.x < x_relativo + ANCHO_PIXEL_PASTO)) && ((coord_pixel.y > y_relativo) && (coord_pixel.y < y_relativo + ALTO_PIXEL_PASTO))){
 				return true;
 			}
 			x_relativo += DISTANCIA_ENTRE_X;
@@ -110,24 +110,24 @@ bool Calculador::puntoContenidoEnEscenario(int x, int y, int *cero_x, int *cero_
 }
 
 // Calculado con el píxel (0;0) en la esquina superior del tile (0;0).
-std::pair<int,int> Calculador::tileParaPixel(int pix_x, int pix_y, int cero_x, int cero_y) {
-	int px =  pix_x - cero_x;
-	int py = (pix_y - cero_y) * (ANCHO_PIXEL_PASTO / ALTO_PIXEL_PASTO);
+Coordenada Calculador::tileParaPixel(Coordenada coord_pixel, Coordenada coord_ceros_pixel) {
+	int px =  coord_pixel.x - coord_ceros_pixel.x;
+	int py = (coord_pixel.y - coord_ceros_pixel.y) * (ANCHO_PIXEL_PASTO / ALTO_PIXEL_PASTO);
 
 	int tile_x = floor( (px+py) / ANCHO_PIXEL_PASTO );
 	int tile_y = floor( (py-px) / ANCHO_PIXEL_PASTO );
 
 	if (tile_x < 0 || tile_y < 0 )//|| tile_x >= this->tiles_x || tile_y >= this->tiles_y)
 		throw FueraDeEscenario();
-	return std::pair<int,int>(tile_x,tile_y);
+	return Coordenada(tile_x,tile_y);
 }
 
-std::pair<int,int> Calculador::pixelCentralDeTile(int tile_x, int tile_y) {
-	if (tile_x < 0 || tile_y < 0)// || tile_x >= this->tiles_x || tile_y >= this->tiles_y)
+Coordenada Calculador::pixelCentralDeTile(Coordenada coord_tile) {
+	if (coord_tile.x < 0 || coord_tile.y < 0)// || tile_x >= this->tiles_x || tile_y >= this->tiles_y)
 		throw FueraDeEscenario();
-	int pix_x = (tile_x-tile_y)   * DISTANCIA_ENTRE_X;
-	int pix_y = (tile_x+tile_y+1) * DISTANCIA_ENTRE_Y;
-	return std::pair<int,int>(pix_x,pix_y);
+	int pix_x = (coord_tile.x - coord_tile.y)   * DISTANCIA_ENTRE_X;
+	int pix_y = (coord_tile.x + coord_tile.y + 1) * DISTANCIA_ENTRE_Y;
+	return Coordenada(pix_x,pix_y);
 }
 
 
@@ -163,18 +163,19 @@ struct Nodo {
 };
 
 // PRE: Chequeo de destino ocupable; posiciones en píxeles. POST: camino posee pares de posiciones que debe recorrer secuencialmente.
-std::vector< std::pair<int,int> > Calculador::obtenerCaminoMin(Escenario *esc, int inic_x, int inic_y, int dest_x, int dest_y, int cero_x, int cero_y) {
-	std::vector< std::pair<int,int> > camino;
-	std::pair<int,int> pos_tile_inicial, pos_tile_destino;
+//std::vector< Coordenada > Calculador::obtenerCaminoMin(Escenario *esc, int inic_x, int inic_y, int dest_x, int dest_y, int cero_x, int cero_y) {
+std::vector< Coordenada > Calculador::obtenerCaminoMin(Escenario *esc, Coordenada coord_pixel_orig, Coordenada coord_pixel_dest, Coordenada coord_ceros_pixel){
+	std::vector< Coordenada > camino;
+	Coordenada pos_tile_inicial, pos_tile_destino;
 	try {
-		pos_tile_inicial = tileParaPixel(inic_x,inic_y,cero_x,cero_y);
-		pos_tile_destino = tileParaPixel(dest_x,dest_y,cero_x,cero_y);
+		pos_tile_inicial = tileParaPixel(coord_pixel_orig,coord_ceros_pixel);
+		pos_tile_destino = tileParaPixel(coord_pixel_dest,coord_ceros_pixel);
 	} catch ( FueraDeEscenario &e ) {
 		return camino;
 	}
 
 	std::vector<Nodo> visitados, vecinos;
-	Nodo tile_inicial(pos_tile_inicial.first, pos_tile_inicial.second, NULL, pos_tile_destino.first, pos_tile_destino.second);
+	Nodo tile_inicial(pos_tile_inicial.x, pos_tile_inicial.y, NULL, pos_tile_destino.x, pos_tile_destino.y);
 	vecinos.push_back(tile_inicial);
 	std::vector<Nodo>::iterator pActualIt;
 	Nodo *pActual;
@@ -187,7 +188,7 @@ std::vector< std::pair<int,int> > Calculador::obtenerCaminoMin(Escenario *esc, i
 				for (int x = pActual->x-1; x <= pActual->x+1; x++) {
 					if ((x != pActual->padre->x || y != pActual->padre->y)
 							&& (x != pActual->x || y != pActual->y) && esc->tileEsOcupable(x, y)) {
-						if (x == pos_tile_destino.first && y == pos_tile_destino.second)
+						if (x == pos_tile_destino.x && y == pos_tile_destino.y)
 							throw DestinoEncontrado();
 
 						std::vector<Nodo>::iterator it;
@@ -195,7 +196,7 @@ std::vector< std::pair<int,int> > Calculador::obtenerCaminoMin(Escenario *esc, i
 							if (it->x == x && it->y == y)
 								break;
 						if (it == vecinos.end()) {
-							Nodo pVecino(x, y, pActual, pos_tile_destino.first, pos_tile_destino.second);
+							Nodo pVecino(x, y, pActual, pos_tile_destino.x, pos_tile_destino.y);
 							it = std::lower_bound(vecinos.begin(), vecinos.end(), pVecino);
 							vecinos.insert(it, pVecino);
 						} else if (it->guardarMenorG(pActual)) {
@@ -212,11 +213,12 @@ std::vector< std::pair<int,int> > Calculador::obtenerCaminoMin(Escenario *esc, i
 		}
 	} catch ( DestinoEncontrado &e ) {
 		while (pActual->x != tile_inicial.x || pActual->y != tile_inicial.y) {
-				camino.push_back( std::pair<int,int>(pixelCentralDeTile(pActual->x,pActual->y)) );
+				Coordenada coord_tile(pActual->x,pActual->y);
+				camino.push_back(pixelCentralDeTile(coord_tile));
 				pActual = pActual->padre;
 			}
 			std::reverse(camino.begin(), camino.end());
-			camino.push_back(std::pair<int,int>(dest_x, dest_y));
+			camino.push_back(coord_pixel_dest);
 	}
 
 	for (pActualIt = visitados.begin(); pActualIt < vecinos.end(); ++pActualIt) {

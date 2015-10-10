@@ -41,20 +41,19 @@ void ContenedorDeRecursos::cargarImagenesEntidades(vector<InfoEntidad> infoEntid
 }
 
 /********************************************************************************/
-void ContenedorDeRecursos::generarYGuardarSpritesEntidades(vector<PosEntidad> *posEntidades, pair<int*,int*> ceros, Escenario* escenario){
-	int *cero_x = ceros.first;
-	int *cero_y = ceros.second;
+void ContenedorDeRecursos::generarYGuardarSpritesEntidades(vector<PosEntidad> *posEntidades, Coordenada coord_ceros, Escenario* escenario){
 
 	for (unsigned i = 0; i < posEntidades->size(); i++){
 		int tile_x = (*posEntidades)[i].x;
 		int tile_y = (*posEntidades)[i].y;
+		Coordenada coord_tile(tile_x, tile_y);
 		Entidad* entidad = (*posEntidades)[i].entidad;
-		pair<int,int> coordenada = Calculador::calcularPosicionRelativa(tile_x,tile_y,cero_x,cero_y,escenario);
+		Coordenada coordenada = Calculador::calcularPosicionRelativa(coord_tile,coord_ceros,escenario);
 
 		SDL_Rect posicion;
     	/* Cargamos por default los siguientes valores para TIERRA ó AGUA */
-		posicion.x = coordenada.first;
-		posicion.y = coordenada.second;
+		posicion.x = coordenada.x;
+		posicion.y = coordenada.y;
 		posicion.w = ANCHO_PIXEL_PASTO;
 		posicion.h = ALTO_PIXEL_PASTO;
 

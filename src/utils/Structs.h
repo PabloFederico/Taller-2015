@@ -141,5 +141,19 @@ struct Rectangulo{
 	}
 };
 
+struct Coordenada{
+	int x;
+	int y;
+	Coordenada(int x, int y){
+		this->x = x;
+		this->y = y;
+	}
+
+	Coordenada(){
+		this->x = 0;
+		this->y = 0;
+	}
+};
+
 
 #endif /* UTILS_STRUCTS_H_ */
