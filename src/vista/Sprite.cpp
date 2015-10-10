@@ -151,9 +151,9 @@ int Sprite::getFps(){
 }
 
 /********************************************************************************/
-SDL_Rect Sprite::getSDLRect(int i, int j){
-	return this->frames[i][j];
-}
+//SDL_Rect Sprite::getSDLRect(int i, int j){
+//	return this->frames[i][j];
+//}
 
 /********************************************************************************/
 void Sprite::setDelay(int delay){
