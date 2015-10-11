@@ -15,14 +15,12 @@ Entidad::Entidad(TipoEntidad tipo) {
 		case JUANA_DE_ARCO:
 		case ANIMAL:
 				movible = true;
-				ocupador = true;
 				break;
 		case CASTILLO:
-				ocupador = true;
 				break;
 		default:
 				movible = false;
-				ocupador = false;
+				ocupador = true;
 				break;
 	}
 

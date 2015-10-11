@@ -21,21 +21,21 @@
 class Calculador {
 
 public:
-	static double calcularDistanciaEntrePixeles(int X1, int Y1, int X2, int Y2);
+	static double calcularDistanciaEntrePixeles(Coordenada coord_pixel1, Coordenada coord_pixel2);
 
-	static std::pair<int,int> calcularPosicionRelativa(int x, int y, int *cero_x, int *cero_y, Escenario *escenario);
+	static Coordenada calcularPosicionRelativa(Coordenada coord_tile, Coordenada coord_ceros_pixel, Escenario *escenario);
 
-	static std::pair<int,int> calcularPosicionInversa(int x, int y, int *cero_x, int *cero_y, Escenario *escenario);
+	static Coordenada calcularPosicionInversa(Coordenada coord_pixel, Coordenada coord_ceros_pixel, Escenario *escenario);
 
-	static Direccion calcularDireccion(int x_dest, int y_dest, int x_orig, int y_orig);
+	static Direccion calcularDireccion(Coordenada coord_pixel_dest, Coordenada coord_pixel_orig);
 
-	static bool puntoContenidoEnEscenario(int x, int y, int *cero_x, int *cero_y, Escenario *escenario);
+	static bool puntoContenidoEnEscenario(Coordenada coord_pixel, Coordenada coord_ceros_pixel, Escenario *escenario);
 
-	static std::pair<int,int> tileParaPixel(int pix_x, int pix_y, int cero_x, int cero_y);
+	static Coordenada tileParaPixel(Coordenada coord_pixel, Coordenada coord_ceros);
 
-	static std::pair<int,int> pixelCentralDeTile(int tile_x, int tile_y, int cero_x, int cero_y);
+	static Coordenada pixelCentralDeTile(Coordenada coord_tile, Coordenada coord_ceros);
 
-	static std::vector< std::pair<int,int> > obtenerCaminoMin(Escenario *esc, int inic_x, int inic_y, int dest_x, int dest_y, int cero_x, int cero_y);
+	static std::vector<Coordenada> obtenerCaminoMin(Escenario *esc, Coordenada coord_tile_orig, Coordenada coord_tile_dest, Coordenada coord_ceros);
 };
 
 #endif /* UTILS_CALCULADOR_H_ */

@@ -19,9 +19,12 @@ void ControladorMouse::procesarEvento(SDL_Event &event, int MouseX, int MouseY){
 	/* Actualiza la capa negra */
 	int x = sprite->getPosicion().x + sprite->getPosicion().w;
 	int y = sprite->getPosicion().y + sprite->getPosicion().h;
-	pair<int,int> coord = Calculador::calcularPosicionInversa(x,y,juego->getCeros().first,juego->getCeros().second,juego->getEscenario());
+	Coordenada coord_pixel_sprite(x,y);
+	Coordenada coord_pixel_ceros(*juego->getCeros().first, *juego->getCeros().second);
 
-    juego->getEscenario()->getCapa()->descubrirDesdePunto(coord.first,coord.second);
+	Coordenada coord = Calculador::calcularPosicionInversa(coord_pixel_sprite,coord_pixel_ceros,juego->getEscenario());
+
+    juego->getEscenario()->getCapa()->descubrirDesdePunto(coord.x,coord.y);
 
 
 	int Follow_Point_X = sprite->regPos.x_anterior;
@@ -42,11 +45,11 @@ void ControladorMouse::procesarEvento(SDL_Event &event, int MouseX, int MouseY){
         		//std::cout << MouseX-(*juego->getCeros().first+DISTANCIA_ENTRE_X) << ";" << MouseY-*juego->getCeros().second << ": v" << coord.first  << ";" << coord.second << " | n" << coord2.first << ";" << coord2.second << std::endl;
 			//	cout << "["<<coord2.first<<";"<<coord2.second<<"|"<<coord3.first<<";"<<coord3.second<<"] " << "cm: ";
 
-        		vector<pair<int,int> > vec = Calculador::obtenerCaminoMin(this->juego->getEscenario(), posicionPlayer.x, posicionPlayer.y, MouseX, MouseY, *juego->getCeros().first+DISTANCIA_ENTRE_X, *juego->getCeros().second);
-				for (vector<pair<int,int> >::iterator it = vec.begin(); it < vec.end(); ++it) {
+        		vector<Coordenada> vec = Calculador::obtenerCaminoMin(this->juego->getEscenario(), Coordenada(posicionPlayer.x, posicionPlayer.y), Coordenada(MouseX, MouseY), Coordenada(*juego->getCeros().first+DISTANCIA_ENTRE_X, *juego->getCeros().second));
+				for (vector<Coordenada>::iterator it = vec.begin(); it < vec.end(); ++it) {
 					try {
-						pair<int,int> tile = Calculador::tileParaPixel(it->first, it->second, *juego->getCeros().first+DISTANCIA_ENTRE_X, *juego->getCeros().second);
-						cout << tile.first << ";" << tile.second << " ";
+						Coordenada tile = Calculador::tileParaPixel(*it, Coordenada(*juego->getCeros().first+DISTANCIA_ENTRE_X, *juego->getCeros().second));
+						cout << tile.x << ";" << tile.y << " ";
 					} catch ( FueraDeEscenario &e ) { cout << "Fuera de escenario "; }
 				}
 				cout << endl;
@@ -54,13 +57,16 @@ void ControladorMouse::procesarEvento(SDL_Event &event, int MouseX, int MouseY){
         	////
 
 
-			/* Validación de click dentro del escenario */
-            pair<int*,int*> ceros = this->juego->getCeros();
-            if (Calculador::puntoContenidoEnEscenario(Follow_Point_X+posicionPlayer.w,Follow_Point_Y+posicionPlayer.h, ceros.first, ceros.second, juego->getEscenario())){
+            /* Validación de click dentro del escenario */
+           // pair<int*,int*> ceros = this->juego->getCeros();
+            Coordenada c_pixel(Follow_Point_X + posicionPlayer.w, Follow_Point_Y+posicionPlayer.h);
+            Coordenada c_pixel_ceros(*juego->getCeros().first, *juego->getCeros().second);
+
+            if (Calculador::puntoContenidoEnEscenario(c_pixel, c_pixel_ceros, juego->getEscenario())){
                 sprite->activarMovimiento(true);
                 sprite->regPos.x_anterior = Follow_Point_X;
                 sprite->regPos.y_anterior = Follow_Point_Y;
-                Direccion direccion = Calculador::calcularDireccion(Follow_Point_X, Follow_Point_Y, posicionPlayer.x, posicionPlayer.y);
+                Direccion direccion = Calculador::calcularDireccion(Coordenada(Follow_Point_X, Follow_Point_Y), Coordenada(posicionPlayer.x, posicionPlayer.y));
                 sprite->setDireccion(direccion);
             }else {
             	/* Si el click esta fuera del escenario, su punto destino será
@@ -73,7 +79,7 @@ void ControladorMouse::procesarEvento(SDL_Event &event, int MouseX, int MouseY){
 	}
 
     if (sprite->estaEnMovimiento()) {
-    	float distance = Calculador::calcularDistanciaEntrePixeles(sprite->regPos.posX_player, sprite->regPos.posY_player, Follow_Point_X, Follow_Point_Y);
+    	float distance = Calculador::calcularDistanciaEntrePixeles(Coordenada(sprite->regPos.posX_player, sprite->regPos.posY_player), Coordenada(Follow_Point_X, Follow_Point_Y));
 
 		if (distance > 1.0){
             if (sprite->regPos.posX_player != Follow_Point_X) {

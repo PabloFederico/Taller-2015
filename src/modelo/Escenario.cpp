@@ -53,12 +53,12 @@ void Escenario::agregarEntidad(pair<int,int> pos, Entidad* entidad){
 
 /********************************************************************************/
 // Verifica que (x;y) corresponden a una posición en el escenario que no esté ocupado por Castillo. 	EXTENDER/GENERALIZAR
-bool Escenario::tileEsOcupable(int x, int y) {
-	if (x < 0 || y < 0 || x >= this->size_x || y >= this->size_y)
+bool Escenario::tileEsOcupable(Coordenada c) {
+	if (c.x < 0 || c.y < 0 || c.x >= this->size_x || c.y >= this->size_y)
 		return false;
 
 	for (std::vector<PosEntidad>::iterator it = this->posicionesEntidades->begin(); it < this->posicionesEntidades->end(); ++it) {
-		if (it->x == x && it->y == y && it->entidad->ocupaSuTile())
+		if (it->x == c.x && it->y == c.y && it->entidad->ocupaSuTile())
 			return false;
 	}
 	return true;

@@ -71,7 +71,7 @@ public:
 
 	void setDelay(int delay);
 
-	SDL_Rect getSDLRect(int i, int j);
+	//SDL_Rect getSDLRect(int i, int j);
 
 	int currentTime();
 
