@@ -35,7 +35,7 @@ public:
 
 	static Coordenada pixelCentralDeTile(Coordenada coord_tile);
 
-	std::vector< Coordenada > obtenerCaminoMin(Escenario *esc, Coordenada coord_tile_orig, Coordenada coord_tile_dest, Coordenada coord_ceros_pixel);
+	static std::vector< Coordenada > obtenerCaminoMin(Escenario *esc, Coordenada coord_pixel_orig, Coordenada coord_pixel_dest, Coordenada coord_ceros_pixel);
 };
 
 #endif /* UTILS_CALCULADOR_H_ */

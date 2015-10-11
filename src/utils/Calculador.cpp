@@ -83,19 +83,18 @@ Direccion Calculador::calcularDireccion(Coordenada coord_pixel_dest, Coordenada 
 	return direccion;
 }
 
-bool Calculador::puntoContenidoEnEscenario(Coordenada coord_pixel, Coordenada coord_ceros_pixel, Escenario *escenario){
-	int tiles_x = escenario->getDimension().first;
-	int tiles_y = escenario->getDimension().second;
+bool Calculador::puntoContenidoEnEscenario(Coordenada coord_pixel,Coordenada coord_ceros_pixel, Escenario *escenario){
+	int size_x = escenario->getDimension().first;
+	int size_y = escenario->getDimension().second;
 
-	bool contenido = false;
 	int x_relativo;
 	int y_relativo;
 	int cero_relativo_x = coord_ceros_pixel.x;
 	int cero_relativo_y = coord_ceros_pixel.y;
-	for (int i = 0; i < tiles_x; i++){
+	for (int i = 0; i < size_x; i++){
 		x_relativo = cero_relativo_x;
 		y_relativo = cero_relativo_y;
-		for(int j = 0; j < tiles_y; j++){
+		for(int j = 0; j < size_y; j++){
 			if (((coord_pixel.x > x_relativo) && (coord_pixel.x < x_relativo + ANCHO_PIXEL_PASTO)) && ((coord_pixel.y > y_relativo) && (coord_pixel.y < y_relativo + ALTO_PIXEL_PASTO))){
 				return true;
 			}
@@ -106,7 +105,7 @@ bool Calculador::puntoContenidoEnEscenario(Coordenada coord_pixel, Coordenada co
 		cero_relativo_y += DISTANCIA_ENTRE_Y;
 
 	}
-	return contenido;
+	return false;
 }
 
 // Calculado con el píxel (0;0) en la esquina superior del tile (0;0).
@@ -117,7 +116,7 @@ Coordenada Calculador::tileParaPixel(Coordenada coord_pixel, Coordenada coord_ce
 	int tile_x = floor( (px+py) / ANCHO_PIXEL_PASTO );
 	int tile_y = floor( (py-px) / ANCHO_PIXEL_PASTO );
 
-	if (tile_x < 0 || tile_y < 0 )//|| tile_x >= this->tiles_x || tile_y >= this->tiles_y)
+	if (tile_x < 0 || tile_y < 0)//|| tile_x >= this->tiles_x || tile_y >= this->tiles_y)
 		throw FueraDeEscenario();
 	return Coordenada(tile_x,tile_y);
 }

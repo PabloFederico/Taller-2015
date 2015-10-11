@@ -128,7 +128,7 @@ void Dibujador::dibujarCapaNegra(CapaNegra* capa){
 
 			for(int i = 0; i < tiles_x; i++){
 
-				if (capa->tileOculto(j,i)){
+				if (capa->tileOculto(i,j)){
 					SDL_RenderCopy(this->renderer,imagen->getTexture(),NULL,&rectRelieve);
 				}
 
