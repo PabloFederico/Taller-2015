@@ -109,7 +109,7 @@ bool Calculador::puntoContenidoEnEscenario(int x, int y, int *cero_x, int *cero_
 	return contenido;
 }
 
-// Calculado con el píxel (0;0) en la esquina superior del tile (0;0).
+// Calculado con el píxel (0;0) en la esquina superior del tile (0;0). Atrapar FueraDeEscenario.
 std::pair<int,int> Calculador::tileParaPixel(int pix_x, int pix_y, int cero_x, int cero_y) {
 	int px =  pix_x - cero_x;
 	int py = (pix_y - cero_y) * (ANCHO_PIXEL_PASTO / ALTO_PIXEL_PASTO);
@@ -122,17 +122,18 @@ std::pair<int,int> Calculador::tileParaPixel(int pix_x, int pix_y, int cero_x, i
 	return std::pair<int,int>(tile_x,tile_y);
 }
 
-std::pair<int,int> Calculador::pixelCentralDeTile(int tile_x, int tile_y) {
+// Atrapar FueraDeEscenario.
+std::pair<int,int> Calculador::pixelCentralDeTile(int tile_x, int tile_y, int cero_x, int cero_y) {
 	if (tile_x < 0 || tile_y < 0)// || tile_x >= this->tiles_x || tile_y >= this->tiles_y)
 		throw FueraDeEscenario();
 	int pix_x = (tile_x-tile_y)   * DISTANCIA_ENTRE_X;
 	int pix_y = (tile_x+tile_y+1) * DISTANCIA_ENTRE_Y;
-	return std::pair<int,int>(pix_x,pix_y);
+	return std::pair<int,int>(pix_x+cero_x, pix_y+cero_y);
 }
 
 
 
-int distEuclidiana(int x0, int y0, int x1, int y1) {
+float distEuclidiana(int x0, int y0, int x1, int y1) {
 	return sqrt( pow(x1-x0,2) + pow(y1-y0,2) );
 }
 
@@ -143,7 +144,7 @@ struct Nodo {
 	Nodo(int posX, int posY, Nodo *nodoPadre, int dest_x, int dest_y):
 			x(posX), y(posY), padre(nodoPadre) {
 		this->h = 10*distEuclidiana(posX, posY, dest_x, dest_y);
-		if (padre != NULL)
+		if (nodoPadre != NULL)
 			this->g = nodoPadre->g + 10*distEuclidiana(nodoPadre->x, nodoPadre->y, x, y);
 		else this->g = 0;
 	}
@@ -151,15 +152,32 @@ struct Nodo {
 		int nuevaG = nuevoPadre->g + 10*distEuclidiana(nuevoPadre->x, nuevoPadre->y, x, y);
 		if (nuevaG < this->g) {
 			this->g = nuevaG;
-			padre = nuevoPadre;
+			this->padre = nuevoPadre;
 			return true;
 		}
 		return false;
 	}
-	int f() { return g+h; }
-	bool operator< (const Nodo & right) {
-		return (this->f() < (right.g+right.h));
+	int f() const { return g+h; }
+	bool operator< (const Nodo & r) const {
+		return (this->f() < r.f());
 	}
+	bool esTile(const Nodo* r) {
+		return (this->x == r->x && this->y == r->y);
+	}
+	bool esTile(int x, int y) const {
+		return (this->x == x && this->y == y);
+	}
+	struct CmpPointersF {
+		bool operator()(const Nodo* l, const Nodo* r) {
+			return (*l < *r);
+		}
+	};
+	struct CmpPointerXY {
+	  explicit CmpPointerXY(std::pair<int,int> p): x(p.first), y(p.second) { }
+	  inline bool operator()(const Nodo* l) const { return (*l).esTile(x,y); }
+	private:
+	  int x,y;
+	};
 };
 
 // PRE: Chequeo de destino ocupable; posiciones en píxeles. POST: camino posee pares de posiciones que debe recorrer secuencialmente.
@@ -173,63 +191,57 @@ std::vector< std::pair<int,int> > Calculador::obtenerCaminoMin(Escenario *esc, i
 		return camino;
 	}
 
-	std::vector<Nodo> visitados, vecinos;
-	Nodo tile_inicial(pos_tile_inicial.first, pos_tile_inicial.second, NULL, pos_tile_destino.first, pos_tile_destino.second);
+	std::vector<Nodo*> visitados, vecinos;
+	Nodo *tile_inicial = new Nodo(pos_tile_inicial.first, pos_tile_inicial.second, NULL, pos_tile_destino.first, pos_tile_destino.second);
 	vecinos.push_back(tile_inicial);
-	std::vector<Nodo>::iterator pActualIt;
+	std::vector<Nodo*>::iterator it, pActualIt;
 	Nodo *pActual;
 
 	try {
 		while (!vecinos.empty()) {
 			pActualIt = vecinos.begin();
-			pActual = (Nodo*)&*pActualIt;
+			pActual = (*pActualIt);
 			for (int y = pActual->y-1; y <= pActual->y+1; y++) {
 				for (int x = pActual->x-1; x <= pActual->x+1; x++) {
-					if ((x != pActual->padre->x || y != pActual->padre->y)
-							&& (x != pActual->x || y != pActual->y) && esc->tileEsOcupable(x, y)) {
+					if ( (!pActual->padre || !pActual->padre->esTile(x,y)) && (!pActual->esTile(x,y)) && esc->tileEsOcupable(x,y) ) {
 						if (x == pos_tile_destino.first && y == pos_tile_destino.second)
 							throw DestinoEncontrado();
 
-						std::vector<Nodo>::iterator it;
-						for (it = vecinos.begin(); it < vecinos.end(); ++it)
-							if (it->x == x && it->y == y)
-								break;
+						it = std::find_if(vecinos.begin(), vecinos.end(), Nodo::CmpPointerXY(std::pair<int,int>(x,y)));
 						if (it == vecinos.end()) {
-							Nodo pVecino(x, y, pActual, pos_tile_destino.first, pos_tile_destino.second);
-							it = std::lower_bound(vecinos.begin(), vecinos.end(), pVecino);
-							vecinos.insert(it, pVecino);
-						} else if (it->guardarMenorG(pActual)) {
-							Nodo pVecino = *it;
-							vecinos.erase(it);	//esto seguro está mal, borrando el Nodo; en ese caso simplemente crear un nuevo pVecino = Nodo(...)
-							it = std::lower_bound(vecinos.begin(), vecinos.end(), pVecino);
-							vecinos.insert(it, pVecino);
+							Nodo *pVecino = new Nodo(x, y, pActual, pos_tile_destino.first, pos_tile_destino.second);
+							std::vector<Nodo*>::iterator itV = std::lower_bound(vecinos.begin(), vecinos.end(), pVecino, Nodo::CmpPointersF());
+							vecinos.insert(itV, pVecino);
+						} else if ((*it)->guardarMenorG(pActual)) {
+							Nodo *ppVecino = *it; //danger; comprobar con ppVecino si se borra en la siguiente l'inea
+							vecinos.erase(it);
+							it = std::lower_bound(vecinos.begin(), vecinos.end(), ppVecino, Nodo::CmpPointersF());
+							vecinos.insert(it, ppVecino);
 						}
 					}
 				}
 			}
-			visitados.push_back(*pActual);
-			vecinos.erase(pActualIt); //cuidado; revisar
+			visitados.push_back(pActual);
+			pActualIt = std::find_if(vecinos.begin(), vecinos.end(), Nodo::CmpPointerXY(std::pair<int,int>(pActual->x,pActual->y)));
+			vecinos.erase(pActualIt);
 		}
-	} catch ( DestinoEncontrado &e ) {
-		while (pActual->x != tile_inicial.x || pActual->y != tile_inicial.y) {
-				camino.push_back( std::pair<int,int>(pixelCentralDeTile(pActual->x,pActual->y)) );
+	} catch ( DestinoEncontrado &e ) {	// pActual tiene ahora el último tile del camino, NO el destino.
+		while (!pActual->esTile(tile_inicial)) {
+				camino.push_back( pixelCentralDeTile(pActual->x,pActual->y,cero_x,cero_y) );
 				pActual = pActual->padre;
 			}
 			std::reverse(camino.begin(), camino.end());
-			camino.push_back(std::pair<int,int>(dest_x, dest_y));
+			camino.push_back( std::pair<int,int>(dest_x, dest_y) );
 	}
 
 	for (pActualIt = visitados.begin(); pActualIt < vecinos.end(); ++pActualIt) {
 		if (pActualIt == visitados.end())
 			pActualIt = vecinos.begin();
-		Nodo *nodoAux = (Nodo*)&*pActualIt;
+		Nodo *nodoAux = *pActualIt;
 		delete nodoAux;
 	}
-
-	//-------pruebas--------
-	//inserting at end() ?
-	//erase() ?
-	//----------------------
+	visitados.clear();
+	vecinos.clear();
 
 	return camino;
 	// Con return: for pos in camino: moverse a pos; (Con manejo de colisiones.)

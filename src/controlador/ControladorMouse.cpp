@@ -20,16 +20,6 @@ void ControladorMouse::procesarEvento(SDL_Event &event, int MouseX, int MouseY){
 	int x = sprite->getPosicion().x + sprite->getPosicion().w;
 	int y = sprite->getPosicion().y + sprite->getPosicion().h;
 	pair<int,int> coord = Calculador::calcularPosicionInversa(x,y,juego->getCeros().first,juego->getCeros().second,juego->getEscenario());
-	//código de prueba
-	std::cout << *juego->getCeros().first << ";" << *juego->getCeros().second << std::endl;
-	try {
-		std::pair<int,int> coord2 = Calculador::tileParaPixel(MouseX, MouseY, *juego->getCeros().first+DISTANCIA_ENTRE_X, *juego->getCeros().second);
-		std::cout << MouseX-(*juego->getCeros().first+DISTANCIA_ENTRE_X) << ";" << MouseY-*juego->getCeros().second << ": v" << coord.first  << ";" << coord.second << " | n" << coord2.first << ";" << coord2.second << std::endl;
-		std::pair<int,int> coord3 = Calculador::pixelCentralDeTile(coord2.first,coord2.second);
-		std::cout << coord3.first << ";" << coord3.second << endl;
-	} catch ( FueraDeEscenario &e ) {}
-	std::cout << std::endl;
-	///
 
     juego->getEscenario()->getCapa()->descubrirDesdePunto(coord.first,coord.second);
 
@@ -43,7 +33,28 @@ void ControladorMouse::procesarEvento(SDL_Event &event, int MouseX, int MouseY){
             Follow_Point_X = MouseX - posicionPlayer.w / 2;
             Follow_Point_Y = MouseY - posicionPlayer.h ;
 
-            /* Validación de click dentro del escenario */
+
+			////código de prueba
+        	std::pair<int,int> coord2, coord3;
+        	try {
+        	//	std::pair<int,int> coord3 = Calculador::tileParaPixel(MouseX, MouseY, *juego->getCeros().first+DISTANCIA_ENTRE_X, *juego->getCeros().second);
+        	//	std::pair<int,int> coord2 = Calculador::tileParaPixel(posicionPlayer.x, posicionPlayer.y, *juego->getCeros().first+DISTANCIA_ENTRE_X, *juego->getCeros().second);
+        		//std::cout << MouseX-(*juego->getCeros().first+DISTANCIA_ENTRE_X) << ";" << MouseY-*juego->getCeros().second << ": v" << coord.first  << ";" << coord.second << " | n" << coord2.first << ";" << coord2.second << std::endl;
+			//	cout << "["<<coord2.first<<";"<<coord2.second<<"|"<<coord3.first<<";"<<coord3.second<<"] " << "cm: ";
+
+        		vector<pair<int,int> > vec = Calculador::obtenerCaminoMin(this->juego->getEscenario(), posicionPlayer.x, posicionPlayer.y, MouseX, MouseY, *juego->getCeros().first+DISTANCIA_ENTRE_X, *juego->getCeros().second);
+				for (vector<pair<int,int> >::iterator it = vec.begin(); it < vec.end(); ++it) {
+					try {
+						pair<int,int> tile = Calculador::tileParaPixel(it->first, it->second, *juego->getCeros().first+DISTANCIA_ENTRE_X, *juego->getCeros().second);
+						cout << tile.first << ";" << tile.second << " ";
+					} catch ( FueraDeEscenario &e ) { cout << "Fuera de escenario "; }
+				}
+				cout << endl;
+			} catch ( FueraDeEscenario &e ) {}
+        	////
+
+
+			/* Validación de click dentro del escenario */
             pair<int*,int*> ceros = this->juego->getCeros();
             if (Calculador::puntoContenidoEnEscenario(Follow_Point_X+posicionPlayer.w,Follow_Point_Y+posicionPlayer.h, ceros.first, ceros.second, juego->getEscenario())){
                 sprite->activarMovimiento(true);

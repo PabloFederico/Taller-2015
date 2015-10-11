@@ -33,9 +33,9 @@ public:
 
 	static std::pair<int,int> tileParaPixel(int pix_x, int pix_y, int cero_x, int cero_y);
 
-	static std::pair<int,int> pixelCentralDeTile(int tile_x, int tile_y);
+	static std::pair<int,int> pixelCentralDeTile(int tile_x, int tile_y, int cero_x, int cero_y);
 
-	std::vector< std::pair<int,int> > obtenerCaminoMin(Escenario *esc, int inic_x, int inic_y, int dest_x, int dest_y, int cero_x, int cero_y);
+	static std::vector< std::pair<int,int> > obtenerCaminoMin(Escenario *esc, int inic_x, int inic_y, int dest_x, int dest_y, int cero_x, int cero_y);
 };
 
 #endif /* UTILS_CALCULADOR_H_ */
