@@ -11,12 +11,17 @@
 Entidad::Entidad(TipoEntidad tipo) {
 	this->tipo = tipo;
 	switch (tipo) {
+		case PASTO:
+		case TIERRA:
+		case AGUA:
+				movible = false;
+				ocupador = false;
+				break;
 		case SOLDADO:
 		case JUANA_DE_ARCO:
 		case ANIMAL:
 				movible = true;
-				break;
-		case CASTILLO:
+				ocupador = true;
 				break;
 		default:
 				movible = false;

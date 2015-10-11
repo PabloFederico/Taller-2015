@@ -184,8 +184,10 @@ std::vector<Coordenada> Calculador::obtenerCaminoMin(Escenario *esc, Coordenada 
 	std::vector< Coordenada > camino;
 	Coordenada pos_tile_inicial, pos_tile_destino;
 	try {
-		pos_tile_inicial = tileParaPixel(coord_pixel_orig, coord_ceros);
 		pos_tile_destino = tileParaPixel(coord_pixel_dest, coord_ceros);
+		if (!esc->tileEsOcupable(pos_tile_destino))
+			return camino;
+		pos_tile_inicial = tileParaPixel(coord_pixel_orig, coord_ceros);
 	} catch ( FueraDeEscenario &e ) {
 		return camino;
 	}
