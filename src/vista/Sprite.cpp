@@ -98,6 +98,11 @@ void Sprite::mover(int cant_x, int cant_y){
 		rectangulos[i].x_ini += cant_x;
 		rectangulos[i].y_ini += cant_y;
 	}
+
+	for(unsigned i = 0; i < caminoARecorrer.size(); i++){
+		caminoARecorrer[i].x += cant_x;
+		caminoARecorrer[i].y += cant_y;
+	}
 }
 
 /********************************************************************************/
@@ -189,6 +194,37 @@ bool Sprite::checkColision(Sprite* otro){
 		}
 	}
 	return colision;
+}
+
+/********************************************************************************/
+void Sprite::setearNuevoCamino(vector<Coordenada> nuevoCamino){
+	this->caminoARecorrer.clear();
+	this->caminoARecorrer = nuevoCamino;
+	/*
+	for(unsigned i = 0; i < caminoARecorrer.size()-1; i++){
+		if (nuevoCamino[i].x != nuevoCamino[i+1].x &&
+			nuevoCamino[i].y != nuevoCamino[i+1].y &&
+			nuevoCamino[i].x != nuevoCamino[i].y   &&
+			nuevoCamino[i+1].y != nuevoCamino[i+1].y){
+			caminoARecorrer.push_back(nuevoCamino[i]);
+		}
+	}
+	*/
+}
+
+/********************************************************************************/
+vector<Coordenada> Sprite::getCaminoARecorrer(){
+	return this->caminoARecorrer;
+}
+
+/********************************************************************************/
+void Sprite::quitarPrimeraCoordenada(){
+	this->caminoARecorrer.erase(this->caminoARecorrer.begin());
+}
+
+/********************************************************************************/
+bool Sprite::quedaCaminoPorRecorrer(){
+	return (caminoARecorrer.size() > 0);
 }
 
 /********************************************************************************/

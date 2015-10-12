@@ -68,7 +68,7 @@ Direccion Calculador::calcularDireccion(Coordenada coord_pixel_dest, Coordenada 
 		if (y_result < 0) direccion = NORTE;
 		else direccion = SUR;
 	}
-	else if (abs(y_result) < 30){
+	else if (abs(y_result) < 15){
 			if (x_result < 0) direccion = OESTE;
 				else direccion = ESTE;
 	}
@@ -83,10 +83,15 @@ Direccion Calculador::calcularDireccion(Coordenada coord_pixel_dest, Coordenada 
 	return direccion;
 }
 
-bool Calculador::puntoContenidoEnEscenario(Coordenada coord_pixel,Coordenada coord_ceros_pixel, Escenario *escenario){
+bool Calculador::puntoContenidoEnEscenario(Coordenada coord_tile, Escenario *escenario){
 	int size_x = escenario->getDimension().first;
 	int size_y = escenario->getDimension().second;
 
+	if ( coord_tile.x >= 0  &&  coord_tile.x < size_x  && coord_tile.y >= 0  &&  coord_tile.y < size_y )
+		return true;
+
+	return false;
+/*
 	int x_relativo;
 	int y_relativo;
 	int cero_relativo_x = coord_ceros_pixel.x;
@@ -106,13 +111,13 @@ bool Calculador::puntoContenidoEnEscenario(Coordenada coord_pixel,Coordenada coo
 
 	}
 	return false;
+	*/
 }
 
-// Calculado con el píxel (0;0) en la esquina superior del tile (0;0).
-Coordenada Calculador::tileParaPixel(Coordenada coord_pixel, Coordenada coord_ceros_pixel) {
-	int px =  coord_pixel.x - coord_ceros_pixel.x;
-	int py = (coord_pixel.y - coord_ceros_pixel.y) * (ANCHO_PIXEL_PASTO / ALTO_PIXEL_PASTO);
-
+// Calculado con el píxel (0;0) en la esquina superior del tile (0;0). Atrapar FueraDeEscenario.
+Coordenada Calculador::tileParaPixel(Coordenada coord_pixel, Coordenada coord_ceros) {
+	int px =  coord_pixel.x - coord_ceros.x;
+	int py = (coord_pixel.y - coord_ceros.y) * (ANCHO_PIXEL_PASTO / ALTO_PIXEL_PASTO);
 	int tile_x = floor( (px+py) / ANCHO_PIXEL_PASTO );
 	int tile_y = floor( (py-px) / ANCHO_PIXEL_PASTO );
 
@@ -121,99 +126,113 @@ Coordenada Calculador::tileParaPixel(Coordenada coord_pixel, Coordenada coord_ce
 	return Coordenada(tile_x,tile_y);
 }
 
-Coordenada Calculador::pixelCentralDeTile(Coordenada coord_tile) {
+// Atrapar FueraDeEscenario.
+Coordenada Calculador::pixelCentralDeTile(Coordenada coord_tile, Coordenada coord_ceros) {
 	if (coord_tile.x < 0 || coord_tile.y < 0)// || tile_x >= this->tiles_x || tile_y >= this->tiles_y)
 		throw FueraDeEscenario();
-	int pix_x = (coord_tile.x - coord_tile.y)   * DISTANCIA_ENTRE_X;
-	int pix_y = (coord_tile.x + coord_tile.y + 1) * DISTANCIA_ENTRE_Y;
-	return Coordenada(pix_x,pix_y);
+	int pix_x = coord_ceros.x + (coord_tile.x - coord_tile.y)	  * DISTANCIA_ENTRE_X;
+	int pix_y = coord_ceros.y + (coord_tile.x + coord_tile.y + 1) * DISTANCIA_ENTRE_Y;
+	return Coordenada(pix_x, pix_y);
 }
 
 
 
-int distEuclidiana(int x0, int y0, int x1, int y1) {
-	return sqrt( pow(x1-x0,2) + pow(y1-y0,2) );
+float distEuclidiana(Coordenada a, Coordenada z) {
+	return sqrt( pow(z.x-a.x,2) + pow(z.y-a.y,2) );
 }
 
 struct Nodo {
-	int x,y;
+	Coordenada pos;
 	Nodo *padre;
 	int g,h;
-	Nodo(int posX, int posY, Nodo *nodoPadre, int dest_x, int dest_y):
-			x(posX), y(posY), padre(nodoPadre) {
-		this->h = 10*distEuclidiana(posX, posY, dest_x, dest_y);
-		if (padre != NULL)
-			this->g = nodoPadre->g + 10*distEuclidiana(nodoPadre->x, nodoPadre->y, x, y);
+	Nodo(Coordenada coord, Nodo *nodoPadre, Coordenada pos_dest): pos(coord), padre(nodoPadre) {
+		this->h = 10*distEuclidiana(this->pos, pos_dest);
+		if (nodoPadre != NULL)
+			this->g = nodoPadre->g + 10*distEuclidiana(nodoPadre->pos, this->pos);
 		else this->g = 0;
 	}
 	bool guardarMenorG(Nodo *nuevoPadre) {
-		int nuevaG = nuevoPadre->g + 10*distEuclidiana(nuevoPadre->x, nuevoPadre->y, x, y);
+		int nuevaG = nuevoPadre->g + 10*distEuclidiana(nuevoPadre->pos, this->pos);
 		if (nuevaG < this->g) {
 			this->g = nuevaG;
-			padre = nuevoPadre;
+			this->padre = nuevoPadre;
 			return true;
 		}
 		return false;
 	}
-	int f() { return g+h; }
-	bool operator< (const Nodo & right) {
-		return (this->f() < (right.g+right.h));
+	int f() const { return g+h; }
+	bool operator< (const Nodo & r) const {
+		return (this->f() < r.f());
 	}
+	bool esTile(const Nodo* r) {
+		return (this->pos == r->pos);
+	}
+	bool esTile(Coordenada coord) const {
+		return (this->pos == coord);
+	}
+	struct CmpPointersF {
+		bool operator()(const Nodo* l, const Nodo* r) {
+			return (*l < *r);
+		}
+	};
+	struct CmpPointerXY {
+	  explicit CmpPointerXY(Coordenada c): coord(c) { }
+	  inline bool operator()(const Nodo* l) const { return (*l).esTile(coord); }
+	private:
+	  Coordenada coord;
+	};
 };
 
 // PRE: Chequeo de destino ocupable; posiciones en píxeles. POST: camino posee pares de posiciones que debe recorrer secuencialmente.
 //std::vector< Coordenada > Calculador::obtenerCaminoMin(Escenario *esc, int inic_x, int inic_y, int dest_x, int dest_y, int cero_x, int cero_y) {
-std::vector< Coordenada > Calculador::obtenerCaminoMin(Escenario *esc, Coordenada coord_pixel_orig, Coordenada coord_pixel_dest, Coordenada coord_ceros_pixel){
+std::vector<Coordenada> Calculador::obtenerCaminoMin(Escenario *esc, Coordenada coord_pixel_orig, Coordenada coord_pixel_dest, Coordenada coord_ceros) {
 	std::vector< Coordenada > camino;
 	Coordenada pos_tile_inicial, pos_tile_destino;
 	try {
-		pos_tile_inicial = tileParaPixel(coord_pixel_orig,coord_ceros_pixel);
-		pos_tile_destino = tileParaPixel(coord_pixel_dest,coord_ceros_pixel);
+		pos_tile_inicial = tileParaPixel(coord_pixel_orig, coord_ceros);
+		pos_tile_destino = tileParaPixel(coord_pixel_dest, coord_ceros);
 	} catch ( FueraDeEscenario &e ) {
 		return camino;
 	}
 
-	std::vector<Nodo> visitados, vecinos;
-	Nodo tile_inicial(pos_tile_inicial.x, pos_tile_inicial.y, NULL, pos_tile_destino.x, pos_tile_destino.y);
+	std::vector<Nodo*> visitados, vecinos;
+	Nodo *tile_inicial = new Nodo(pos_tile_inicial, NULL, pos_tile_destino);
 	vecinos.push_back(tile_inicial);
-	std::vector<Nodo>::iterator pActualIt;
+	std::vector<Nodo*>::iterator it, pActualIt;
 	Nodo *pActual;
 
 	try {
 		while (!vecinos.empty()) {
 			pActualIt = vecinos.begin();
-			pActual = (Nodo*)&*pActualIt;
-			for (int y = pActual->y-1; y <= pActual->y+1; y++) {
-				for (int x = pActual->x-1; x <= pActual->x+1; x++) {
-					if ((x != pActual->padre->x || y != pActual->padre->y)
-							&& (x != pActual->x || y != pActual->y) && esc->tileEsOcupable(x, y)) {
-						if (x == pos_tile_destino.x && y == pos_tile_destino.y)
+			pActual = (*pActualIt);
+			Coordenada c;
+			for (c.y = pActual->pos.y-1; c.y <= pActual->pos.y+1; c.y++) {
+				for (c.x = pActual->pos.x-1; c.x <= pActual->pos.x+1; c.x++) {
+					if ( (!pActual->padre || !pActual->padre->esTile(c)) && (!pActual->esTile(c)) && esc->tileEsOcupable(c) ) {
+						if (c == pos_tile_destino)
 							throw DestinoEncontrado();
 
-						std::vector<Nodo>::iterator it;
-						for (it = vecinos.begin(); it < vecinos.end(); ++it)
-							if (it->x == x && it->y == y)
-								break;
+						it = std::find_if(vecinos.begin(), vecinos.end(), Nodo::CmpPointerXY(c));
 						if (it == vecinos.end()) {
-							Nodo pVecino(x, y, pActual, pos_tile_destino.x, pos_tile_destino.y);
-							it = std::lower_bound(vecinos.begin(), vecinos.end(), pVecino);
-							vecinos.insert(it, pVecino);
-						} else if (it->guardarMenorG(pActual)) {
-							Nodo pVecino = *it;
-							vecinos.erase(it);	//esto seguro está mal, borrando el Nodo; en ese caso simplemente crear un nuevo pVecino = Nodo(...)
-							it = std::lower_bound(vecinos.begin(), vecinos.end(), pVecino);
-							vecinos.insert(it, pVecino);
+							Nodo *pVecino = new Nodo(c, pActual, pos_tile_destino);
+							std::vector<Nodo*>::iterator itV = std::lower_bound(vecinos.begin(), vecinos.end(), pVecino, Nodo::CmpPointersF());
+							vecinos.insert(itV, pVecino);
+						} else if ((*it)->guardarMenorG(pActual)) {	//re-chequear
+							Nodo *ppVecino = *it; //comprobar con ppVecino si se borra en la siguiente l'inea
+							vecinos.erase(it);
+							it = std::lower_bound(vecinos.begin(), vecinos.end(), ppVecino, Nodo::CmpPointersF());
+							vecinos.insert(it, ppVecino);
 						}
 					}
 				}
 			}
-			visitados.push_back(*pActual);
-			vecinos.erase(pActualIt); //cuidado; revisar
+			visitados.push_back(pActual);
+			pActualIt = std::find_if(vecinos.begin(), vecinos.end(), Nodo::CmpPointerXY(pActual->pos));
+			vecinos.erase(pActualIt);
 		}
-	} catch ( DestinoEncontrado &e ) {
-		while (pActual->x != tile_inicial.x || pActual->y != tile_inicial.y) {
-				Coordenada coord_tile(pActual->x,pActual->y);
-				camino.push_back(pixelCentralDeTile(coord_tile));
+	} catch ( DestinoEncontrado &e ) {	// pActual tiene ahora el último tile del camino, NO el destino.
+		while (!pActual->esTile(tile_inicial)) {
+				camino.push_back( pixelCentralDeTile(pActual->pos, coord_ceros) );
 				pActual = pActual->padre;
 			}
 			std::reverse(camino.begin(), camino.end());
@@ -223,19 +242,12 @@ std::vector< Coordenada > Calculador::obtenerCaminoMin(Escenario *esc, Coordenad
 	for (pActualIt = visitados.begin(); pActualIt < vecinos.end(); ++pActualIt) {
 		if (pActualIt == visitados.end())
 			pActualIt = vecinos.begin();
-		Nodo *nodoAux = (Nodo*)&*pActualIt;
+		Nodo *nodoAux = *pActualIt;
 		delete nodoAux;
 	}
-
-	//-------pruebas--------
-	//inserting at end() ?
-	//erase() ?
-	//----------------------
+	visitados.clear();
+	vecinos.clear();
 
 	return camino;
 	// Con return: for pos in camino: moverse a pos; (Con manejo de colisiones.)
 }
-
-
-
-

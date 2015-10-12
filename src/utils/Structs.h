@@ -153,6 +153,10 @@ struct Coordenada{
 		this->x = 0;
 		this->y = 0;
 	}
+
+	bool operator==(const Coordenada & c) const {
+		return (this->x == c.x && this->y == c.y);
+	}
 };
 
 

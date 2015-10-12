@@ -41,7 +41,7 @@ public:
 
 	Entidad* getProtagonista();
 
-	bool tileEsOcupable(int x, int y);
+	bool tileEsOcupable(Coordenada c);
 
 	CapaNegra* getCapa();
 

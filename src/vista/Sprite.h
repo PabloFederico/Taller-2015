@@ -37,6 +37,8 @@ private:
 
 	vector<Rectangulo> rectangulos;
 
+	vector<Coordenada> caminoARecorrer;
+
 	void cargarFrames();
 
 	void resetTime();
@@ -78,6 +80,14 @@ public:
 	bool checkColision(Sprite* otro);
 
 	void agregarRectangulo(Rectangulo rectangulo);
+
+	void setearNuevoCamino(vector<Coordenada> nuevoCamino);
+
+	vector<Coordenada> getCaminoARecorrer();
+
+	void quitarPrimeraCoordenada();
+
+	bool quedaCaminoPorRecorrer();
 
 	void acomodar();
 

@@ -18,7 +18,7 @@ tipos:
     pixel_ref_y: 40
 
   - nombre: soldado
-    fps: 60
+    fps: 40
     imagen: images/chabon000.png
 
   - nombre: animal
@@ -41,9 +41,16 @@ escenario:
     size_x: 50
     size_y: 50
     entidades:
-      - {x: 25, y: 0, tipo: agua}
+      - {x: 10, y: 10, tipo: agua}
+      - {x: 10, y: 11, tipo: agua}
+      - {x: 10, y: 12, tipo: agua}
+      - {x: 11, y: 10, tipo: agua}
+      - {x: 11, y: 11, tipo: agua}
+      - {x: 11, y: 12, tipo: agua}
+      - {x: 12, y: 10, tipo: agua}
+      - {x: 12, y: 11, tipo: agua}
+      - {x: 12, y: 12, tipo: agua}
       - {x: 22, y: 0, tipo: tierra}
-      - {x: 4, y: 10, tipo: agua}
       - {x: 0, y: 5, tipo: castillo}
       - {x: 30, y: 12, tipo: tierra}
       - {x: 5, y: 5, tipo: arbol}
@@ -52,7 +59,8 @@ escenario:
       - {x: 5, y: 6, tipo: arbol}
       - {x: 6, y: 6, tipo: arbol}
       - {x: 7, y: 6, tipo: arbol}
-      - {x: 15, y: 12, tipo: arbol}
+      - {x: 1, y: 0, tipo: arbol}
+      - {x: 1, y: 1, tipo: arbol}
       - {x: 5, y: 67, tipo: castillo}
       - {x: 100, y: 100, tipo: castillo}
       - {x: 10, y: 14, tipo: animal}

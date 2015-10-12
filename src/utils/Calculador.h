@@ -29,13 +29,15 @@ public:
 
 	static Direccion calcularDireccion(Coordenada coord_pixel_dest, Coordenada coord_pixel_orig);
 
-	static bool puntoContenidoEnEscenario(Coordenada coord_pixel, Coordenada coord_ceros_pixel, Escenario *escenario);
+	//static bool puntoContenidoEnEscenario(Coordenada coord_pixel, Coordenada coord_ceros_pixel, Escenario *escenario);
+	static bool puntoContenidoEnEscenario(Coordenada coord_tile, Escenario *escenario);
 
-	static Coordenada tileParaPixel(Coordenada coord_pixel, Coordenada coord_ceros_pixel);
+	static Coordenada tileParaPixel(Coordenada coord_pixel, Coordenada coord_ceros);
 
-	static Coordenada pixelCentralDeTile(Coordenada coord_tile);
+	static Coordenada pixelCentralDeTile(Coordenada coord_tile, Coordenada coord_ceros);
 
 	static std::vector< Coordenada > obtenerCaminoMin(Escenario *esc, Coordenada coord_pixel_orig, Coordenada coord_pixel_dest, Coordenada coord_ceros_pixel);
+
 };
 
 #endif /* UTILS_CALCULADOR_H_ */

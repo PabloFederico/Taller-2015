@@ -8,7 +8,6 @@
 #ifndef MODELO_JUEGO_H_
 #define MODELO_JUEGO_H_
 #include <stdio.h>
-#include <ctime>
 #include <map>
 #include <yaml-cpp/yaml.h>
 #include <unistd.h>

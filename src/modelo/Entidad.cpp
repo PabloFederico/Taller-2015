@@ -17,11 +17,10 @@ Entidad::Entidad(TipoEntidad tipo) {
 				movible = true;
 				break;
 		case CASTILLO:
-				ocupador = true;
 				break;
 		default:
 				movible = false;
-				ocupador = false;
+				ocupador = true;
 				break;
 	}
 
