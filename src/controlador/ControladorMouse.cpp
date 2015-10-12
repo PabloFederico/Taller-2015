@@ -23,7 +23,6 @@ void ControladorMouse::procesarEvento(SDL_Event &event, int MouseX, int MouseY){
 	Coordenada coord_pixel_sprite(x,y);
 	Coordenada coord_pixel_ceros(*juego->getCeros().first + DISTANCIA_ENTRE_X, *juego->getCeros().second);
 
-
 	try {
 		Coordenada coord_tile_sprite = Calculador::tileParaPixel(coord_pixel_sprite,coord_pixel_ceros);
 		juego->getEscenario()->getCapa()->descubrirDesdePunto(coord_tile_sprite.x, coord_tile_sprite.y);
@@ -36,6 +35,7 @@ void ControladorMouse::procesarEvento(SDL_Event &event, int MouseX, int MouseY){
 		if (event.button.button == SDL_BUTTON_LEFT){
 			bool clicValido;
 			Escenario *escenario = juego->getEscenario();
+
 
 			try{
 				Coordenada c_tile_clic = Calculador::tileParaPixel(Coordenada(MouseX,MouseY), coord_pixel_ceros);
