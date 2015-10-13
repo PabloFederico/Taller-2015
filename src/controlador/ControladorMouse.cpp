@@ -67,8 +67,8 @@ void ControladorMouse::procesarEvento(SDL_Event &event, int MouseX, int MouseY){
 					 Coordenada c_prox_punto = vec[0];
 					 c_prox_punto.x -= sprite->getPosicion().w / 2;
 					 c_prox_punto.y -= sprite->getPosicion().h / 2;
-					 Direccion direccion = Calculador::calcularDireccion(c_prox_punto, coord_pixel_sprite);
 
+					 Direccion direccion = Calculador::calcularDireccion(c_prox_punto, coord_pixel_sprite);
 					 sprite->setDireccion(direccion);
 					 sprite->activarMovimiento(true);
 		             sprite->setearNuevoCamino(vec);
@@ -119,6 +119,7 @@ void ControladorMouse::procesarEvento(SDL_Event &event, int MouseX, int MouseY){
 				 Coordenada c_prox_punto = sprite->getCaminoARecorrer()[0];
 				 c_prox_punto.x -= sprite->getPosicion().w / 2;
 				 c_prox_punto.y -= sprite->getPosicion().h / 2;
+
 				 Direccion direccion = Calculador::calcularDireccion(c_prox_punto, coord_pixel_sprite);
 			     sprite->setDireccion(direccion);
 			 }

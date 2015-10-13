@@ -107,9 +107,11 @@ void Sprite::mover(int cant_x, int cant_y){
 
 /********************************************************************************/
 void Sprite::setDireccion(int direccion){
-	this->direccion = direccion;
-	this->indexSpriteActual = 0;
-	this->frameActual = this->frames[direccion][0];
+	if (this->direccion != direccion){
+		this->direccion = direccion;
+		this->indexSpriteActual = 0;
+		this->frameActual = this->frames[direccion][0];
+	}
 }
 
 /********************************************************************************/
