@@ -49,10 +49,11 @@ void ControladorMouse::procesarEvento(SDL_Event &event, int MouseX, int MouseY){
 	            int Follow_Point_Y = MouseY - posicionPlayer.h;
 
 				////código de prueba
-
 	            vector<Coordenada> vec;
 	        	try {
-	        		 vec = Calculador::obtenerCaminoMin(escenario, coord_pixel_sprite, Coordenada(Follow_Point_X, Follow_Point_Y), coord_pixel_ceros);
+	        		Coordenada coord_tile_sprite = Calculador::tileParaPixel(coord_pixel_sprite, coord_pixel_ceros);
+	        		cout << coord_tile_sprite.x << ";" << coord_tile_sprite.y << " ";
+	        		vec = Calculador::obtenerCaminoMin(escenario, coord_pixel_sprite, Coordenada(Follow_Point_X, Follow_Point_Y), coord_pixel_ceros);
 					for (vector<Coordenada>::iterator it = vec.begin(); it < vec.end(); ++it) {
 						try {
 							Coordenada tile = Calculador::tileParaPixel(*it, Coordenada(*juego->getCeros().first+DISTANCIA_ENTRE_X, *juego->getCeros().second));
@@ -62,6 +63,7 @@ void ControladorMouse::procesarEvento(SDL_Event &event, int MouseX, int MouseY){
 					cout << endl;
 				} catch ( FueraDeEscenario &e ) {}
 	        	////
+
 				/* Activamos el movimiento del sprite y seteamos el nuevo camino que debe recorrer. */
 				 if (vec.size() > 0){
 					 Coordenada c_prox_punto = vec[0];

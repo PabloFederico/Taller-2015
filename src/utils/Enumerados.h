@@ -8,7 +8,7 @@
 #ifndef UTILS_ENUMERADOS_H_
 #define UTILS_ENUMERADOS_H_
 
-enum TipoEntidad  { DEFAULT , PASTO, TIERRA , AGUA , ARBOL , CASTILLO, SOLDADO, JUANA_DE_ARCO, ANIMAL, OTROS };
+enum TipoEntidad  { OTROS , PASTO, TIERRA , AGUA , ARBOL , CASTILLO, SOLDADO, JUANA_DE_ARCO, ANIMAL, DEFAULT };
 
 /* Tipos de Errores:
  * * INFO = Error Informátivo

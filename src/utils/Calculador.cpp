@@ -175,6 +175,14 @@ struct Nodo {
 			return (*l < *r);
 		}
 	};
+	struct CmpNodoVsPointerF {
+		bool operator()(const Nodo* l, const Nodo r) {
+			return (l->f() < r.f());
+		}
+		bool operator()(const Nodo l, const Nodo* r) {
+			return (l.f() < r->f());
+		}
+	};
 	struct CmpPointerXY {
 	  explicit CmpPointerXY(Coordenada c): coord(c) { }
 	  inline bool operator()(const Nodo* l) const { return (*l).esTile(coord); }
@@ -194,6 +202,10 @@ std::vector<Coordenada> Calculador::obtenerCaminoMin(Escenario *esc, Coordenada 
 
 		if (!esc->tileEsOcupable(pos_tile_destino))
 			return camino;
+		else if (pos_tile_inicial == pos_tile_destino) {
+			camino.push_back(coord_pixel_dest);
+			return camino;
+		}
 	} catch ( FueraDeEscenario &e ) {
 		return camino;
 	}
@@ -217,9 +229,11 @@ std::vector<Coordenada> Calculador::obtenerCaminoMin(Escenario *esc, Coordenada 
 
 						it = std::find_if(vecinos.begin(), vecinos.end(), Nodo::CmpPointerXY(c));
 						if (it == vecinos.end()) {
-							Nodo *pVecino = new Nodo(c, pActual, pos_tile_destino);
-							std::vector<Nodo*>::iterator itV = std::lower_bound(vecinos.begin(), vecinos.end(), pVecino, Nodo::CmpPointersF());
-							vecinos.insert(itV, pVecino);
+							//Nodo *pVecino = new Nodo(c, pActual, pos_tile_destino);
+							//std::vector<Nodo*>::iterator itV = std::lower_bound(vecinos.begin(), vecinos.end(), pVecino, Nodo::CmpPointersF());
+							//vecinos.insert(itV, pVecino);
+							std::vector<Nodo*>::iterator itV = std::lower_bound(vecinos.begin(), vecinos.end(), Nodo(c, pActual, pos_tile_destino), Nodo::CmpNodoVsPointerF());
+							vecinos.insert(itV, new Nodo(c, pActual, pos_tile_destino));
 						} else if ((*it)->guardarMenorG(pActual)) {	//re-chequear
 							Nodo *ppVecino = *it; //comprobar con ppVecino si se borra en la siguiente l'inea
 							vecinos.erase(it);
@@ -245,8 +259,7 @@ std::vector<Coordenada> Calculador::obtenerCaminoMin(Escenario *esc, Coordenada 
 	for (pActualIt = visitados.begin(); pActualIt < vecinos.end(); ++pActualIt) {
 		if (pActualIt == visitados.end())
 			pActualIt = vecinos.begin();
-		Nodo *nodoAux = *pActualIt;
-		delete nodoAux;
+		delete *pActualIt;
 	}
 	visitados.clear();
 	vecinos.clear();
