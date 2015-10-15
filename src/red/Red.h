@@ -7,8 +7,8 @@
 
 #ifndef RED_RED_H_
 #define RED_RED_H_
-#include "red/Constantes.h"
-#include "red/Socket.h"
+#include "../utils/Constantes.h"
+#include "../red/Socket.h"
 
 class Red {
 public:
