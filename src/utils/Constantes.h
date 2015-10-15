@@ -21,6 +21,12 @@
 #define DIRECCIONES       8
 #define IMAGENES_DIFERENTES 8
 
+#define PUERTO_SERVIDOR  4050
+#define IP_SERVIDOR      "127.0.0.4.1"
+
+#define MAX_CONEXIONES     5
+#define MAX_BYTES_LECTURA 100000
+
 #define KEY_RESET 'r'
 
 #endif /* UTILS_CONSTANTES_H_ */
