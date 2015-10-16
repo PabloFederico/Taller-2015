@@ -18,7 +18,6 @@ Escenario::Escenario(InfoEscenario infoEsc, EntidadFactory *fabrica): fabricaDeE
 		int x = vecPosTipoEntidades[i].x;
 		int y = vecPosTipoEntidades[i].y;
 		TipoEntidad tipo = vecPosTipoEntidades[i].tipo;
-		//Entidad *entidad = new Entidad(tipo);
 		Entidad *entidad = this->fabricaDeEntidades->nuevaEntidad(tipo);
 		Coordenada pos(x,y);
 		this->agregarEntidad(pos,entidad);
@@ -26,10 +25,11 @@ Escenario::Escenario(InfoEscenario infoEsc, EntidadFactory *fabrica): fabricaDeE
 
 	infoEsc.getPosicionesEntidades().clear();
 
-	//this->protagonista = new Entidad(infoEsc.protagonista);
 	this->protagonista = this->fabricaDeEntidades->nuevaEntidad(infoEsc.protagonista);
 	Coordenada pos(infoEsc.posX_protagonista, infoEsc.posY_protagonista);
-	this->agregarEntidad(pos, this->protagonista);
+	//this->agregarEntidad(pos, this->protagonista);
+	PosEntidad posEntidad(pos.x, pos.y, this->protagonista);
+	this->posicionesEntidades->push_back(posEntidad);
 }
 
 /********************************************************************************/

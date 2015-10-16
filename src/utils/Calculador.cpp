@@ -118,8 +118,8 @@ bool Calculador::puntoContenidoEnEscenario(Coordenada coord_tile, Escenario *esc
 Coordenada Calculador::tileParaPixel(Coordenada coord_pixel, Coordenada coord_ceros) {
 	int px =  coord_pixel.x - coord_ceros.x;
 	int py = (coord_pixel.y - coord_ceros.y) * (ANCHO_PIXEL_PASTO / ALTO_PIXEL_PASTO);
-	int tile_x = floor( (px+py) / ANCHO_PIXEL_PASTO );
-	int tile_y = floor( (py-px) / ANCHO_PIXEL_PASTO );
+	int tile_x = floor( 1.0*(px+py) / ANCHO_PIXEL_PASTO );
+	int tile_y = floor( 1.0*(py-px) / ANCHO_PIXEL_PASTO );
 
 	if (tile_x < 0 || tile_y < 0)//|| tile_x >= this->tiles_x || tile_y >= this->tiles_y)
 		throw FueraDeEscenario();
