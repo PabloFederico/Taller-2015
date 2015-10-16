@@ -9,6 +9,10 @@
 #define RED_RED_H_
 #include "../utils/Constantes.h"
 #include "../red/Socket.h"
+#include <string.h>
+#include <stdlib.h>
+#include <string>
+using namespace std;
 
 class Red {
 public:

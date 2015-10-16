@@ -22,10 +22,10 @@
 #define IMAGENES_DIFERENTES 8
 
 #define PUERTO_SERVIDOR  4050
-#define IP_SERVIDOR      "127.0.0.4.1"
+#define IP_SERVIDOR      "192.168.43.142" /* Creo que acá van a tener que cambiar su IP */
 
 #define MAX_CONEXIONES     5
-#define MAX_BYTES_LECTURA 100000
+#define MAX_BYTES_LECTURA 2000
 
 #define KEY_RESET 'r'
 
