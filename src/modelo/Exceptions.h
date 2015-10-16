@@ -30,4 +30,10 @@ public:
 	FueraDeEscenario();
 };
 
+class TileEstaOcupado: public std::exception
+{
+public:
+	TileEstaOcupado();
+};
+
 #endif /* MODELO_EXCEPTIONS_H_ */

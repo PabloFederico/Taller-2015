@@ -17,6 +17,7 @@ private:
 	//std::string tipo;
 	TipoEntidad tipo;
 	bool movible,ocupador;
+	int ancho,alto;
 
 public:
 	//Entidad(std::string tipo);
@@ -29,6 +30,10 @@ public:
 	bool esMovible();
 
 	bool ocupaSuTile();
+
+	void setTam(int ancho, int alto);
+
+	std::pair<int,int> getTam();
 
 	virtual ~Entidad();
 };

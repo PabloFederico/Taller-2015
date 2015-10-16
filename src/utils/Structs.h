@@ -68,6 +68,11 @@ struct PosEntidad{
 		this->y = y;
 		this->entidad = ente;
 	};
+
+	bool operator==(const PosEntidad &r) const {
+		return (this->x == r.x && this->y == r.y
+				  && this->entidad == r.entidad);
+	}
 };
 
 /* Estructura para guardar el Tipo de Entidad asociado a un SDL_Rect para
@@ -102,6 +107,9 @@ struct InfoEntidad{
 		fps = 10;
 		delay = 0;
 	};
+	bool operator==(TipoEntidad tipo) const {
+		return (this->tipo == tipo);
+	}
 };
 
 struct RegistroPosicion{
@@ -156,6 +164,10 @@ struct Coordenada{
 
 	bool operator==(const Coordenada & c) const {
 		return (this->x == c.x && this->y == c.y);
+	}
+
+	bool operator<(const Coordenada & c) const {
+		return (this->x < c.x || this->y < c.y);	//Adivino que esto está bien
 	}
 };
 

@@ -15,6 +15,7 @@ Juego::Juego() {
 	this->cero_y = NULL;
 	this->contenedor = NULL;
 	this->escenario = NULL;
+	this->fabricaDeEntidades = NULL;
 	this->protagonista = NULL;
 	this->screenWidth = 800;	// Default
 	this->screenHeight = 600;	// Default
@@ -54,10 +55,9 @@ void Juego::cargarJuego(){
 	//InfoEscenario infoEsc = OdioYAML();
 	//---------------------------------------------------------------------------------------------!!
 
-
 	// Acá me imagino la posibilidad de un selector de escenarios.
-
-	this->escenario = new Escenario(infoEsc);
+	this->fabricaDeEntidades = new EntidadFactory(this->vectorInfoTiposEntidades);
+	this->escenario = new Escenario(infoEsc, this->fabricaDeEntidades);
 	this->protagonista = this->escenario->getProtagonista();
 }
 
@@ -118,7 +118,7 @@ InfoEscenario Juego::parsearConfig() {
 				} else iE.tipo = tipos[unTipo["nombre"].as<string>()];
 
 				if ((unTipo["imagen"]) && (access(unTipo["imagen"].as<string>().c_str(), F_OK) != -1))		// Verificación de existencia
-											iE.path = unTipo["imagen"].as<string>();
+					iE.path = unTipo["imagen"].as<string>();
 				else Log::imprimirALog(ERR,"Error: No se encontró imagen para " + unTipo["nombre"].as<string>());
 
 				if (unTipo["alto_base"] && unTipo["alto_base"].as<int>() > 0)	iE.alto = unTipo["alto_base"].as<int>();

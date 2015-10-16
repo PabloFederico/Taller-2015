@@ -130,8 +130,8 @@ Coordenada Calculador::tileParaPixel(Coordenada coord_pixel, Coordenada coord_ce
 Coordenada Calculador::pixelCentralDeTile(Coordenada coord_tile, Coordenada coord_ceros) {
 	if (coord_tile.x < 0 || coord_tile.y < 0)// || tile_x >= this->tiles_x || tile_y >= this->tiles_y)
 		throw FueraDeEscenario();
-	int pix_x = coord_ceros.x + (coord_tile.x - coord_tile.y)	  * DISTANCIA_ENTRE_X;
-	int pix_y = coord_ceros.y + (coord_tile.x + coord_tile.y + 1) * DISTANCIA_ENTRE_Y;
+	int pix_x = coord_ceros.x + 	(coord_tile.x - coord_tile.y) * DISTANCIA_ENTRE_X;
+	int pix_y = coord_ceros.y + (1 + coord_tile.x + coord_tile.y) * DISTANCIA_ENTRE_Y;
 	return Coordenada(pix_x, pix_y);
 }
 

@@ -8,8 +8,12 @@
 #ifndef MODELO_ESCENARIO_H_
 #define MODELO_ESCENARIO_H_
 #include <vector>
+#include <map>
+#include <algorithm>
 
+#include "../modelo/Exceptions.h"
 #include "../utils/Structs.h"
+#include "../modelo/EntidadFactory.h"
 #include "../modelo/Entidad.h"
 #include "../vista/CapaNegra.h"
 using namespace std;
@@ -23,14 +27,19 @@ private:
 
 	vector<PosEntidad>* posicionesEntidades;
 
+	map<Coordenada,bool> estadoOcupadoDeTiles;
+
+	EntidadFactory* fabricaDeEntidades;
+
 	Entidad* protagonista;
 
+	void quitarEntidad(Coordenada pos, Entidad* entidad);
+
 	/* Agrega una entidad en una posición indicada como parámetro */
-	void agregarEntidad(pair<int,int> pos, Entidad* entidad);
+	void agregarEntidad(Coordenada pos, Entidad* entidad);
 
 public:
-	//Escenario(int ancho, int largo);
-	Escenario(InfoEscenario info);
+	Escenario(InfoEscenario info, EntidadFactory* fabrica);
 
 	/* Devuelve las dimensiones del escenario en un par (x,y) */
 	pair<int,int> getDimension();
@@ -42,6 +51,10 @@ public:
 	Entidad* getProtagonista();
 
 	bool tileEsOcupable(Coordenada c);
+
+	void ocuparTile(Coordenada c);
+
+	void desocuparTile(Coordenada c);
 
 	CapaNegra* getCapa();
 

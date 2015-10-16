@@ -20,5 +20,4 @@
 void crearConfigDefault ();
 
 
-
 #endif /* MODELO_CONFIGDEFAULT_H_ */

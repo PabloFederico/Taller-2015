@@ -30,6 +30,7 @@ private:
 	int screenHeight;
 	
 	vector<InfoEntidad> vectorInfoTiposEntidades;
+	EntidadFactory *fabricaDeEntidades;
 	
 	Escenario *escenario;
 	Entidad *protagonista;
