@@ -20,3 +20,8 @@ DestinoEncontrado::DestinoEncontrado() {}
 FueraDeEscenario::FueraDeEscenario() {}
 
 TileEstaOcupado::TileEstaOcupado() {}
+
+CaminoVacio::CaminoVacio() {}
+
+NoSeRecibio::NoSeRecibio() {}
+

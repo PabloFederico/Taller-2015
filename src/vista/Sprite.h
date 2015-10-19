@@ -9,6 +9,7 @@
 #define VISTA_SPRITE_H_
 #include <SDL2/SDL.h>
 #include <vector>
+#include "../utils/Calculador.h"
 #include "../utils/Structs.h"
 #include "Imagen.h"
 
@@ -81,7 +82,9 @@ public:
 
 	void agregarRectangulo(Rectangulo rectangulo);
 
-	void setearNuevoCamino(vector<Coordenada> nuevoCamino);
+	Coordenada coordPixelSprite();
+
+	void setearNuevoCamino(Camino nuevoCamino);
 
 	vector<Coordenada> getCaminoARecorrer();
 
@@ -90,6 +93,8 @@ public:
 	bool quedaCaminoPorRecorrer();
 
 	void acomodar();
+
+	void update(int vel_personaje);
 
 	virtual ~Sprite();
 };

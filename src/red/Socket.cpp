@@ -6,6 +6,7 @@
  */
 
 #include "../red/Socket.h"
+#include <sys/fcntl.h>
 
 Socket::Socket() {
 	descriptor = socket(AF_INET,SOCK_STREAM,0);

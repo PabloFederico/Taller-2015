@@ -36,4 +36,16 @@ public:
 	TileEstaOcupado();
 };
 
+class CaminoVacio: public std::exception
+{
+public:
+	CaminoVacio();
+};
+
+class NoSeRecibio: public std::exception
+{
+public:
+	NoSeRecibio();
+};
+
 #endif /* MODELO_EXCEPTIONS_H_ */

@@ -8,6 +8,7 @@
 #ifndef MODELO_LOG_H_
 #define MODELO_LOG_H_
 #include <ctime>
+#include <fstream>
 #include "../utils/Enumerados.h"
 
 class Log {
@@ -21,7 +22,7 @@ public:
 		strftime(buffer,80,"%Y-%m-%d %I:%M:%S",timeinfo);
 		std::string timestamp(buffer);
 
-		std::ofstream fLog("TP.log", std::ofstream::app);
+		ofstream fLog("TP.log", std::ofstream::app);
 		fLog << "[" << timestamp << "]    " <<tipo<<"    "<< output << std::endl;
 		fLog.close();
 		std::cerr <<output <<std::endl;

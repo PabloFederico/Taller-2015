@@ -9,6 +9,9 @@
 #define UTILS_STRUCTS_H_
 #include <SDL2/SDL.h>
 #include <vector>
+#include <sstream>
+#include <algorithm>
+#include "../modelo/Exceptions.h"
 
 #include "../modelo/Entidad.h"
 
@@ -150,8 +153,7 @@ struct Rectangulo{
 };
 
 struct Coordenada{
-	int x;
-	int y;
+	int x,y;
 	Coordenada(int x, int y){
 		this->x = x;
 		this->y = y;
@@ -168,6 +170,71 @@ struct Coordenada{
 
 	bool operator<(const Coordenada & c) const {
 		return (this->x < c.x || this->y < c.y);	//Adivino que esto está bien
+	}
+
+	// "x;y"
+	std::string enc() {
+		ostringstream Encode;
+		Encode << x << ";" << y;
+		return Encode.str();
+	}
+	static Coordenada dec(std::string s) {
+		std::stringstream ss(s);
+		int x,y;
+		ss >> x;
+		ss.ignore();
+		ss >> y;
+		return Coordenada(x,y);
+	}
+};
+
+
+struct Camino {
+	std::vector<Coordenada> v;
+	Camino() {}
+	void agregar(Coordenada c) {
+		v.push_back(c);
+	}
+	void invertir() {
+		std::reverse(v.begin(), v.end());
+	}
+	std::size_t size() { return v.size(); }
+	Coordenada sacarProximaCoordenada() {
+		if (v.empty())
+			throw CaminoVacio();
+		Coordenada c = v[0];
+		v.erase(v.begin());
+		return c;
+	}
+	Coordenada operator[](int k) { return v[k]; }
+
+	// "c1|c2|c3|...|cn\n"
+	std::string enc() {
+		ostringstream Encode;
+		//Encode << "[";
+		for (std::vector<Coordenada>::iterator it = v.begin(); it < v.end(); ++it) {
+			if (it != v.begin())
+				Encode << "|";
+			Encode << it->enc().c_str();
+		}
+		//Encode << "]";
+		Encode << '\n';
+		return Encode.str();
+	}
+	static Camino dec(std::string s) {
+		stringstream ss(s);
+		char cs[13];
+		Camino cam;
+		while (!ss.eof() && ss.peek() != '\n') {
+			ss.get(cs, 11, '|');
+			cam.agregar(Coordenada::dec(cs));
+			ss.ignore();
+		}
+		return cam;
+	}
+
+	~Camino() {
+		v.clear();
 	}
 };
 

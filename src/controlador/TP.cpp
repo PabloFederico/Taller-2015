@@ -6,13 +6,18 @@
 #include "../red/Client.h"
 #include "../red/Server.h"
 
-int main(int arg, char** argv) {
+int main(int argc, char** argv) {
 
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0){
 		return -1;
 	}else{
-		//Server::ejecutar();
-		//Client::ejecutar();
+		if (argc > 1) {
+			if (argv[1][0] == 's')
+				Server::ejecutar();
+			else if (argv[1][0] == 'c')
+				Client::ejecutar();
+		}
+
 		Controller *controller = new Controller();
 		VentanaJuego *ventana = new VentanaJuego(controller);
 		ventana->mostrar();

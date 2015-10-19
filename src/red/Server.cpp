@@ -6,19 +6,16 @@
  */
 
 #include "../red/Server.h"
-#include "../red/SocketServidor.h"
-#include "../red/Red.h"
-#include <iostream>
-#include <stdlib.h>
+
 
 void Server::ejecutar(){
 	/* código que debería ejecutar el servidor */
-	std::cout << "soy el servidor"<<std::endl;
+	std::cout << "======= SERVIDOR ======="<<std::endl;
 
 	SocketServidor* socket = new SocketServidor();
 
 	if (socket->creadoCorrectamente() < 0){
-		std::cout << "ERROR: No se puedo crear socket."<<std::endl;
+		std::cout << "ERROR: No se pudo crear socket."<<std::endl;
 		exit(EXIT_FAILURE);
 	}
 
@@ -46,7 +43,7 @@ void Server::ejecutar(){
 		std::cout << "ERROR: recv failed."<<std::endl;
 	}else{
 		std::cout << "Information received."<<std::endl;
-		std::cout << "Cliente dice: "<< info <<std::endl;
+		std::cout << "Cliente dice: "<< info << std::endl;
 	}
 
 	string msg = "Hola, todavía no puedes jugar.";
@@ -62,3 +59,85 @@ void Server::ejecutar(){
 	delete socket;
 }
 
+
+void Server::iniciar(){
+	Server::finalizar();
+	/* código que debería ejecutar el servidor */
+	std::cout << "======= SERVIDOR =======" << std::endl;
+
+	socket = new SocketServidor();
+
+	if (this->socket->creadoCorrectamente() < 0){
+		std::cout << "ERROR: No se pudo crear socket."<<std::endl;
+		exit(EXIT_FAILURE);
+	}
+
+	/* bind() */
+	if (Red::enlazarSocket(this->socket) < 0){
+		std::cout << "ERROR: bind failed."<<std::endl;
+		exit(EXIT_FAILURE);
+	}
+
+	/* listen() */
+	Red::escucharConexiones(this->socket->getDescriptor(),MAX_CONEXIONES);
+	std::cout << "waiting for incoming connections..."<<std::endl;
+
+	/* accept() */
+	int new_descriptor = Red::aceptarClientes(this->socket);
+
+	if (new_descriptor < 0){
+		std::cout << "ERROR: accept failed."<<std::endl;
+	}
+	this->lastDescriptor = new_descriptor;
+	std::cout << "Connection accepted."<<std::endl;
+}
+
+void Server::enviar(Camino cam) {
+	/* código que debería ejecutar el servidor */
+	std::cout << "======= SERVIDOR =======" << std::endl;
+
+	SocketServidor* socket = new SocketServidor();
+
+	if (socket->creadoCorrectamente() < 0){
+		std::cout << "ERROR: No se pudo crear socket."<<std::endl;
+		exit(EXIT_FAILURE);
+	}
+
+	/* bind() */
+	if (Red::enlazarSocket(socket) < 0){
+		std::cout << "ERROR: bind failed."<<std::endl;
+		exit(EXIT_FAILURE);
+	}
+
+	/* listen() */
+	Red::escucharConexiones(socket->getDescriptor(),MAX_CONEXIONES);
+	std::cout << "waiting for incoming connections..."<<std::endl;
+
+	/* accept() */
+	int new_descriptor = Red::aceptarClientes(socket);
+
+	if (new_descriptor < 0){
+		std::cout << "ERROR: accept failed."<<std::endl;
+	}
+	std::cout << "Connection accepted."<<std::endl;
+
+	//----------------
+
+	if (Red::enviarInformacion(new_descriptor, cam.enc()) < 0) {
+		Log::imprimirALog(ERR, "ERROR: send failed.");
+		std::cout << "ERROR: send failed." << std::endl;
+	} else
+		std::cout << "Message sent";
+
+	//----------------
+
+	socket->cerrarSocket();
+	delete socket;
+	std::cout << "====== /SERVIDOR/ ======" << std::endl;
+}
+
+void Server::finalizar() {
+	socket->cerrarSocket();
+	delete socket;
+	std::cout << "====== /SERVIDOR/ ======" << std::endl;
+}
