@@ -6,19 +6,24 @@
  */
 
 #include "../red/Server.h"
-#include "../red/SocketServidor.h"
-#include "../red/Red.h"
-#include <iostream>
-#include <stdlib.h>
 
+
+Server::Server() {
+	if (!iniciar()) {
+		throw ConnectionProblem();
+	}
+}
+
+
+///código original
 void Server::ejecutar(){
 	/* código que debería ejecutar el servidor */
-	std::cout << "soy el servidor"<<std::endl;
+	std::cout << "======= SERVIDOR ======="<<std::endl;
 
 	SocketServidor* socket = new SocketServidor();
 
 	if (socket->creadoCorrectamente() < 0){
-		std::cout << "ERROR: No se puedo crear socket."<<std::endl;
+		std::cout << "ERROR: No se pudo crear socket."<<std::endl;
 		exit(EXIT_FAILURE);
 	}
 
@@ -46,7 +51,7 @@ void Server::ejecutar(){
 		std::cout << "ERROR: recv failed."<<std::endl;
 	}else{
 		std::cout << "Information received."<<std::endl;
-		std::cout << "Cliente dice: "<< info <<std::endl;
+		std::cout << "Cliente dice: "<< info << std::endl;
 	}
 
 	string msg = "Hola, todavía no puedes jugar.";
@@ -58,7 +63,55 @@ void Server::ejecutar(){
 		std::cout << "Message send."<<std::endl;
 	}
 
-	socket->cerrarSocket();
+	socket->cerrarSocket(new_descriptor);
 	delete socket;
 }
 
+
+
+bool Server::iniciar() {
+	//this->Connection::finalizar();
+	/* código que debería ejecutar el servidor */
+	std::cout << "======= SERVIDOR =======" << std::endl;
+
+	this->socket = new SocketServidor();
+
+	if (this->socket->creadoCorrectamente() < 0) {
+		std::cout << "ERROR: No se pudo crear socket."<<std::endl;
+		return false;
+	}
+
+	/* bind() */
+	if (Red::enlazarSocket(this->socket) < 0) {
+		std::cout << "ERROR: bind failed."<<std::endl;
+		return false;
+	}
+
+	/* listen() */
+	Red::escucharConexiones(this->socket->getDescriptor(),MAX_CONEXIONES);
+	std::cout << "waiting for incoming connections..."<<std::endl;
+
+	/* accept() */
+	int new_descriptor = Red::aceptarClientes(this->socket);
+
+	if (new_descriptor < 0){
+		std::cout << "ERROR: accept failed."<<std::endl;
+		return false;
+	}
+	fcntl(new_descriptor, F_SETFL, O_NONBLOCK); // non-blocking mode
+
+	this->lastDescriptor = new_descriptor;
+	std::cout << "Connected."<<std::endl;
+	return true;
+}
+
+
+void Server::finalizar() {
+	int fd = this->socket->getDescriptor();
+	Connection::finalizar();
+	this->socket->cerrarSocket(fd);
+}
+
+Server::~Server() {
+	std::cout << "====== /SERVIDOR/ ======" << std::endl;
+}

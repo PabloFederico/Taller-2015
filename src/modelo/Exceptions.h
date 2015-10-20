@@ -30,4 +30,28 @@ public:
 	FueraDeEscenario();
 };
 
+class TileEstaOcupado: public std::exception
+{
+public:
+	TileEstaOcupado();
+};
+
+class CaminoVacio: public std::exception
+{
+public:
+	CaminoVacio();
+};
+
+class NoSeRecibio: public std::exception
+{
+public:
+	NoSeRecibio();
+};
+
+class ConnectionProblem: public std::exception
+{
+public:
+	ConnectionProblem();
+};
+
 #endif /* MODELO_EXCEPTIONS_H_ */

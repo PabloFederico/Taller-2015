@@ -8,9 +8,20 @@
 #ifndef RED_SERVER_H_
 #define RED_SERVER_H_
 
-class Server {
+#include "Connection.h"
+
+
+class Server: public Connection {
+private:
+	SocketServidor* socket;
+
 public:
 	static void ejecutar();
+
+	Server();
+	bool iniciar();
+	void finalizar();
+	~Server();
 };
 
 #endif /* RED_SERVER_H_ */

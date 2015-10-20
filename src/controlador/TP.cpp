@@ -3,12 +3,24 @@
 #include "../controlador/Controller.h"
 #include "../vista/VentanaJuego.h"
 
-int main(int arg, char** argv) {
+#include "../red/Connection.h"
+
+int main(int argc, char** argv) {
 
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0){
 		return -1;
 	}else{
-		Controller *controller = new Controller();
+		Connection* lan = NULL;
+		if (argc > 1) {
+			try {
+				if (argv[1][0] == 's')
+					lan = new Server();
+				else if (argv[1][0] == 'c')
+					lan = new Client();
+			} catch ( ConnectionProblem &e ) { lan = NULL; }
+		}
+
+		Controller *controller = new Controller(lan);
 		VentanaJuego *ventana = new VentanaJuego(controller);
 		ventana->mostrar();
 		delete ventana;

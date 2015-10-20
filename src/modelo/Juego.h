@@ -19,6 +19,9 @@
 #include "../modelo/Entidad.h"
 #include "../modelo/Escenario.h"
 #include "../modelo/Exceptions.h"
+#include "../red/Connection.h"
+#include "../red/Server.h"
+#include "../red/Client.h"
 #include "../vista/Sprite.h"
 
 class Juego {
@@ -30,9 +33,12 @@ private:
 	int screenHeight;
 	
 	vector<InfoEntidad> vectorInfoTiposEntidades;
+	EntidadFactory *fabricaDeEntidades;
 	
 	Escenario *escenario;
 	Entidad *protagonista;
+
+	Connection* connection;
 
 	int vel_personaje;
 	int margen_scroll;
@@ -56,7 +62,7 @@ private:
 	ContenedorDeRecursos *contenedor;
 
 public:
-	Juego();
+	Juego(Connection* lan);
 	int getVelocidad();
 	pair<int,int> dimensionVentana();
 
@@ -64,6 +70,9 @@ public:
 
 	vector<InfoEntidad> getInfoTiposEntidades();
 	//map<std::string,VistaEntidad*>* getMapEntidades();
+
+	Camino recibirCamino(); //cambiar nombre por uno mejor
+	void enviar(Camino cam);
 
 	Entidad* getProtagonista();
 

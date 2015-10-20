@@ -8,9 +8,20 @@
 #ifndef RED_CLIENT_H_
 #define RED_CLIENT_H_
 
-class Client {
+#include "Connection.h"
+
+
+class Client: public Connection {
+private:
+	SocketCliente* socket;
+
 public:
 	static void ejecutar();
+
+	Client();
+	bool iniciar();
+	void finalizar();
+	~Client();
 };
 
 #endif /* RED_CLIENT_H_ */

@@ -9,6 +9,8 @@
 
 //Entidad::Entidad(std::string tipo) {
 Entidad::Entidad(TipoEntidad tipo) {
+	this->ancho = 1;
+	this->alto = 1;
 	this->tipo = tipo;
 	switch (tipo) {
 		case PASTO:
@@ -28,12 +30,20 @@ Entidad::Entidad(TipoEntidad tipo) {
 				ocupador = true;
 				break;
 	}
-
 }
 
 //std::string Entidad::getTipo(){
 TipoEntidad Entidad::getTipo(){
 	return this->tipo;
+}
+
+void Entidad::setTam(int ancho, int alto) {
+	this->ancho = ancho;
+	this->alto  = alto;
+}
+
+pair<int,int> Entidad::getTam() {
+	return std::pair<int,int>(this->ancho, this->alto);
 }
 
 bool Entidad::esMovible(){

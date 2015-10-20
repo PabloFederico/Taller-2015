@@ -9,6 +9,9 @@
 #include "../utils/Calculador.h"
 #include "../modelo/DetectorDeColisiones.h"
 
+#include "../red/Server.h"
+#include "../red/Connection.h"
+
 ControladorMouse::ControladorMouse(Juego *juego) {
 	this->juego = juego;
 }
@@ -49,94 +52,44 @@ void ControladorMouse::procesarEvento(SDL_Event &event, int MouseX, int MouseY){
 	            int Follow_Point_Y = MouseY - posicionPlayer.h;
 
 				////código de prueba
-	            vector<Coordenada> vec;
+	            Camino camino;
 	        	try {
-	        		Coordenada coord_tile_sprite = Calculador::tileParaPixel(coord_pixel_sprite, coord_pixel_ceros);
-	        		cout << coord_tile_sprite.x << ";" << coord_tile_sprite.y << " ";
-	        		vec = Calculador::obtenerCaminoMin(escenario, coord_pixel_sprite, Coordenada(Follow_Point_X, Follow_Point_Y), coord_pixel_ceros);
-					for (vector<Coordenada>::iterator it = vec.begin(); it < vec.end(); ++it) {
-						try {
-							Coordenada tile = Calculador::tileParaPixel(*it, Coordenada(*juego->getCeros().first+DISTANCIA_ENTRE_X, *juego->getCeros().second));
-							cout << tile.x << ";" << tile.y << " ";
-						} catch ( FueraDeEscenario &e ) { cout << "Fuera de escenario "; }
-					}
-					cout << endl;
+	        		//cout << MouseX << ";" << MouseY << "/" << Follow_Point_X << ";" << Follow_Point_Y << endl;
+ 	        		//Coordenada coord_tile_sprite = Calculador::tileParaPixel(coord_pixel_sprite, coord_pixel_ceros);
+	        		//cout << coord_tile_sprite.x << ";" << coord_tile_sprite.y << " ";
+	        		camino = Calculador::obtenerCaminoMin(escenario, coord_pixel_sprite, Coordenada(Follow_Point_X, Follow_Point_Y), coord_pixel_ceros);
+					//for (vector<Coordenada>::iterator it = vec.begin(); it < vec.end(); ++it) {
+					//	try {
+					//		Coordenada tile = Calculador::tileParaPixel(*it, coord_pixel_ceros);
+					//		cout << tile.x << ";" << tile.y << " ";
+					//	} catch ( FueraDeEscenario &e ) { cout << "Fuera de escenario "; }
+					//}
+					//cout << endl;
 				} catch ( FueraDeEscenario &e ) {}
 	        	////
 
 				/* Activamos el movimiento del sprite y seteamos el nuevo camino que debe recorrer. */
-				 if (vec.size() > 0){
-					 Coordenada c_prox_punto = vec[0];
-					 c_prox_punto.x -= sprite->getPosicion().w / 2;
-					 c_prox_punto.y -= sprite->getPosicion().h / 2;
+				if (camino.size() > 0) {
 
-					 Direccion direccion = Calculador::calcularDireccion(c_prox_punto, coord_pixel_sprite);
-					 sprite->setDireccion(direccion);
-					 sprite->activarMovimiento(true);
-		             sprite->setearNuevoCamino(vec);
+					///solo de prueba, los encodeados tendrían q tener por lo menos una letra al comienzo especificando el tipo [ej.: M(ovimiento)].
+					// asumo servidor
+					juego->enviar(camino);
+					///
+
+					sprite->setearNuevoCamino(camino, coord_pixel_ceros);
 				 }
 
 			}
 		}
 	} /* Fin if SDL_MOUSEBUTTONDOWN */
 
+	try {
+		Camino camino = juego->recibirCamino();
+		sprite->setearNuevoCamino(camino, coord_pixel_ceros);
+	} catch ( NoSeRecibio &e ) {}
 
-	if (sprite->quedaCaminoPorRecorrer()){
-		/*	- calcular distancia al sig punto
-		 *  - si es mayor a 1, seguir moviendo la posicion
-		 *    sino cambiar al siguiente punto del camino (analizando la dirección)
-		 *  - si ya no quedan camino a recorrer, cambiar estado de activar movimiento y acomodar
-		 * */
-		Coordenada c_prox_pixel = sprite->getCaminoARecorrer()[0];
+	sprite->update(juego->getVelocidad());
 
-		/* Esta condición es para que el chabon se ubique en el centro del tile,
-		 * pero no se aplica para el último punto destino. */
-		if (sprite->getCaminoARecorrer().size() > 1){
-			c_prox_pixel.x -= sprite->getPosicion().w / 2;
-			c_prox_pixel.y -= sprite->getPosicion().h / 2;
-		}
-
-		float distancia = Calculador::calcularDistanciaEntrePixeles(Coordenada(sprite->regPos.posX_player, sprite->regPos.posY_player), c_prox_pixel);
-
-		if (distancia > 1){
-
-            if (sprite->regPos.posX_player != c_prox_pixel.x) {
-            	float x_result = (sprite->regPos.posX_player - ((sprite->regPos.posX_player - c_prox_pixel.x) / distancia) *(juego->getVelocidad())  * 0.05);
-            	sprite->setPosX(int(x_result));
-            	sprite->regPos.posX_player = x_result;
-            }
-
-            if (sprite->regPos.posY_player != c_prox_pixel.y) {
-                float y_result = (sprite->regPos.posY_player - ((sprite->regPos.posY_player - c_prox_pixel.y) / distancia) * (juego->getVelocidad()) * 0.05);
-                sprite->setPosY(int(y_result));
-                sprite->regPos.posY_player = y_result;
-            }
-
-		}else{
-			/* cambiar a la próxima coordenada */
-			 sprite->quitarPrimeraCoordenada();
-
-			 /* Seteamos la dirección para el siguiente punto. */
-			 if (sprite->getCaminoARecorrer().size() > 0){
-				 Coordenada c_prox_punto = sprite->getCaminoARecorrer()[0];
-				 c_prox_punto.x -= sprite->getPosicion().w / 2;
-				 c_prox_punto.y -= sprite->getPosicion().h / 2;
-
-				 Direccion direccion = Calculador::calcularDireccion(c_prox_punto, coord_pixel_sprite);
-			     sprite->setDireccion(direccion);
-			 }
-
-		}
-
-	}else{
-		/* Cuando se deja de mover, se debería quedar en una posición
-		 * firme correspondiente a su dirección. */
-		 sprite->activarMovimiento(false);
-		 sprite->acomodar();
-	}
-
-           // bool hayColision = DetectorDeColisiones::verificarColisiones(sprite,juego->getSpritesEntidades());
-           // if (hayColision) sprite->activarMovimiento(false);
 }
 
 ControladorMouse::~ControladorMouse() {

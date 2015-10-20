@@ -24,8 +24,9 @@ sockaddr_in Socket::getInfoDir(){
 }
 
 
-void Socket::cerrarSocket(){
-	close(descriptor);
+void Socket::cerrarSocket(int fd) {
+	shutdown(fd, 2);
+	close(fd);
 }
 
 Socket::~Socket() {

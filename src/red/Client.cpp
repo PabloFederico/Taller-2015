@@ -6,11 +6,16 @@
  */
 
 #include "../red/Client.h"
-#include "../red/SocketCliente.h"
-#include "../red/Red.h"
-#include <iostream>
-#include <stdlib.h>
 
+
+Client::Client() {
+	if (!iniciar()) {
+		throw ConnectionProblem();
+	}
+}
+
+
+//código original
 void Client::ejecutar(){
 	/* código que debería ejecutar el cliente */
 	std::cout << "======= CLIENTE ======="<<std::endl;
@@ -36,7 +41,7 @@ void Client::ejecutar(){
 		std::cout << "ERROR: send failed."<<std::endl;
 		exit(EXIT_FAILURE);
 	}
-	std::cout << "Message send."<<std::endl;
+	std::cout << "Message sent."<<std::endl;
 
 	char info[MAX_BYTES_LECTURA];
 	/* Recibiendo datos del servidor */
@@ -44,10 +49,40 @@ void Client::ejecutar(){
 		std::cout << "ERROR: recv failed."<<std::endl;
 	}else{
 		std::cout << "Information received."<<std::endl;
-		std::cout <<"Servidor dice: "<< info <<std::endl;
+		std::cout <<"Servidor dice: " << info << std::endl;
 	}
 
-	socket->cerrarSocket();
+	socket->cerrarSocket(socket->getDescriptor());
 	delete socket;
+}
+
+
+
+bool Client::iniciar() {
+	//this->Connection::finalizar();
+	/* código que debería ejecutar el cliente */
+	std::cout << "======= CLIENTE =======" << std::endl;
+
+	this->socket = new SocketCliente();
+
+	if (this->socket->creadoCorrectamente() < 0) {
+		std::cout << "ERROR: No se puede crear socket."<<std::endl;
+		return false;
+	}
+
+	/* connect() */
+	if (Red::crearConexion(this->socket) < 0) {
+		std::cout << "ERROR: connect failed."<<std::endl;
+		return false;
+	}
+	fcntl(this->socket->getDescriptor(), F_SETFL, O_NONBLOCK); // non-blocking mode
+
+	this->lastDescriptor = this->socket->getDescriptor();
+	std::cout << "Connected."<<std::endl;
+	return true;
+}
+
+Client::~Client() {
+	std::cout << "====== /CLIENTE/ ======" << std::endl;
 }
 

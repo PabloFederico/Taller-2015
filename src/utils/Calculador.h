@@ -11,12 +11,12 @@
 #include <math.h>
 #include <stdlib.h>
 #include <vector>
-#include <algorithm>
 
 #include "Direccion.h"
 #include "../utils/Constantes.h"
 #include "../modelo/Exceptions.h"
 #include "../modelo/Escenario.h"
+
 
 class Calculador {
 
@@ -36,7 +36,7 @@ public:
 
 	static Coordenada pixelCentralDeTile(Coordenada coord_tile, Coordenada coord_ceros);
 
-	static std::vector< Coordenada > obtenerCaminoMin(Escenario *esc, Coordenada coord_pixel_orig, Coordenada coord_pixel_dest, Coordenada coord_ceros_pixel);
+	static Camino obtenerCaminoMin(Escenario *esc, Coordenada coord_pixel_orig, Coordenada coord_pixel_dest, Coordenada coord_ceros_pixel);
 
 };
 

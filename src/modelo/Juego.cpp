@@ -10,16 +10,20 @@
 #include <iostream>
 
 
-Juego::Juego() {
+Juego::Juego(Connection* lan = NULL) {
 	this->cero_x = NULL;
 	this->cero_y = NULL;
 	this->contenedor = NULL;
 	this->escenario = NULL;
+	this->fabricaDeEntidades = NULL;
 	this->protagonista = NULL;
 	this->screenWidth = 800;	// Default
 	this->screenHeight = 600;	// Default
 	this->vel_personaje = 50;
 	this->margen_scroll = 30;
+
+	//Juego en red, comentar para apagar
+	this->connection = lan;
 
 	this->cargarJuego();
 }
@@ -48,16 +52,17 @@ void Juego::cargarJuego(){
 	this->margen_scroll = 50;
 	//	std::vector<InfoEscenario> vecEscenarios;
 
+	//if EsCliente, receive Escenario; !!!
+
 	//---------------------------------------------------------------------------------------------!!
 	InfoEscenario infoEsc = parsearConfig();
 	// !!! Para el que no le funciona YAML, comentar la línea de arriba y descomentar la de abajo.
 	//InfoEscenario infoEsc = OdioYAML();
 	//---------------------------------------------------------------------------------------------!!
 
-
 	// Acá me imagino la posibilidad de un selector de escenarios.
-
-	this->escenario = new Escenario(infoEsc);
+	this->fabricaDeEntidades = new EntidadFactory(this->vectorInfoTiposEntidades);
+	this->escenario = new Escenario(infoEsc, this->fabricaDeEntidades);
 	this->protagonista = this->escenario->getProtagonista();
 }
 
@@ -118,7 +123,7 @@ InfoEscenario Juego::parsearConfig() {
 				} else iE.tipo = tipos[unTipo["nombre"].as<string>()];
 
 				if ((unTipo["imagen"]) && (access(unTipo["imagen"].as<string>().c_str(), F_OK) != -1))		// Verificación de existencia
-											iE.path = unTipo["imagen"].as<string>();
+					iE.path = unTipo["imagen"].as<string>();
 				else Log::imprimirALog(ERR,"Error: No se encontró imagen para " + unTipo["nombre"].as<string>());
 
 				if (unTipo["alto_base"] && unTipo["alto_base"].as<int>() > 0)	iE.alto = unTipo["alto_base"].as<int>();
@@ -246,6 +251,7 @@ InfoEscenario Juego::infoEscenarioDefault() {
 
 	return infoEscenario;
 }
+
 /********************************************************************************/
 pair<int,int> Juego::dimensionVentana(){
 	return make_pair(this->screenWidth,this->screenHeight);
@@ -259,6 +265,7 @@ int Juego::getMargenScroll(){
 /********************************************************************************/
 Juego::~Juego() {
 	delete this->escenario;
+	delete this->connection;
 }
 
 
@@ -319,6 +326,19 @@ InfoEscenario Juego::OdioYAML() {
 
 	tipos.clear();
 	return infoEscenarioDefault();
+}
+
+/***************************************************/
+Camino Juego::recibirCamino() {
+	if (this->connection == NULL)
+		throw NoSeRecibio();
+	return this->connection->recibirCamino();
+}
+
+/***************************************************/
+void Juego::enviar(Camino cam) {
+	if (this->connection != NULL)
+		this->connection->enviar(cam);
 }
 
 /***************************************************/
