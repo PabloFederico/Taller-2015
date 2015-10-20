@@ -201,12 +201,14 @@ Camino Calculador::obtenerCaminoMin(Escenario *esc, Coordenada coord_pixel_orig,
 		pos_tile_inicial = tileParaPixel(coord_pixel_orig, coord_ceros);
 		pos_tile_destino = tileParaPixel(coord_pixel_dest, coord_ceros);
 
-		if (!esc->tileEsOcupable(pos_tile_destino))
+		if ((!esc->tileEsOcupable(pos_tile_destino)) || (pos_tile_inicial == pos_tile_destino))
+			return camino;
+		/*if (!esc->tileEsOcupable(pos_tile_destino))
 			return camino;
 		else if (pos_tile_inicial == pos_tile_destino) {
 			camino.agregar(coord_pixel_dest);
 			return camino;
-		}
+		}*/
 	} catch ( FueraDeEscenario &e ) {
 		return camino;
 	}

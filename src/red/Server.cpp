@@ -9,7 +9,9 @@
 
 
 Server::Server() {
-	iniciar();//recibir res, tirar error
+	if (!iniciar()) {
+		throw ConnectionProblem();
+	}
 }
 
 
@@ -103,6 +105,12 @@ bool Server::iniciar() {
 	return true;
 }
 
+
+void Server::finalizar() {
+	int fd = this->socket->getDescriptor();
+	Connection::finalizar();
+	this->socket->cerrarSocket(fd);
+}
 
 Server::~Server() {
 	std::cout << "====== /SERVIDOR/ ======" << std::endl;

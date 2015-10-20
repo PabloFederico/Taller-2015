@@ -12,10 +12,12 @@ int main(int argc, char** argv) {
 	}else{
 		Connection* lan = NULL;
 		if (argc > 1) {
-			if (argv[1][0] == 's')
-				lan = new Server();
-			else if (argv[1][0] == 'c')
-				lan = new Client();
+			try {
+				if (argv[1][0] == 's')
+					lan = new Server();
+				else if (argv[1][0] == 'c')
+					lan = new Client();
+			} catch ( ConnectionProblem &e ) { lan = NULL; }
 		}
 
 		Controller *controller = new Controller(lan);

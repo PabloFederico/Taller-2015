@@ -48,4 +48,10 @@ public:
 	NoSeRecibio();
 };
 
+class ConnectionProblem: public std::exception
+{
+public:
+	ConnectionProblem();
+};
+
 #endif /* MODELO_EXCEPTIONS_H_ */

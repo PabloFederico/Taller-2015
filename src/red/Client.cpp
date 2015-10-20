@@ -9,7 +9,9 @@
 
 
 Client::Client() {
-	iniciar();//recibir res, tirar error
+	if (!iniciar()) {
+		throw ConnectionProblem();
+	}
 }
 
 

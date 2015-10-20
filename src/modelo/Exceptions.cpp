@@ -25,3 +25,5 @@ CaminoVacio::CaminoVacio() {}
 
 NoSeRecibio::NoSeRecibio() {}
 
+ConnectionProblem::ConnectionProblem() {}
+
