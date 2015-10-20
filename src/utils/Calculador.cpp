@@ -252,7 +252,7 @@ Camino Calculador::obtenerCaminoMin(Escenario *esc, Coordenada coord_pixel_orig,
 				}
 			}
 			if (encontrado) {
-				pActual = &nodoFinal;
+				pActual = nodoFinal.padre;
 				throw DestinoEncontrado();
 			}
 			visitados.push_back(pActual);
