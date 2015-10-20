@@ -6,7 +6,6 @@
  */
 
 #include "../red/Socket.h"
-#include <sys/fcntl.h>
 
 Socket::Socket() {
 	descriptor = socket(AF_INET,SOCK_STREAM,0);
@@ -25,8 +24,9 @@ sockaddr_in Socket::getInfoDir(){
 }
 
 
-void Socket::cerrarSocket(){
-	close(descriptor);
+void Socket::cerrarSocket(int fd) {
+	shutdown(fd, 2);
+	close(fd);
 }
 
 Socket::~Socket() {

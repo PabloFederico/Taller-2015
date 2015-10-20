@@ -9,6 +9,7 @@
 #define CONTROLADOR_CONTROLLER_H_
 #include <SDL2/SDL.h>
 #include "../modelo/Juego.h"
+#include "../red/Connection.h"
 #include "ControladorMouse.h"
 #include "ControladorCamara.h"
 
@@ -19,7 +20,7 @@ private:
 	ControladorCamara *controladorCamara;
 
 public:
-	Controller();
+	Controller(Connection* lan);
 	Juego* getJuego();
 
 	void iniciarJuego();

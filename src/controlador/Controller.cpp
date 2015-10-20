@@ -7,8 +7,9 @@
 
 #include "../controlador/Controller.h"
 
-Controller::Controller() {
-	this->juego = new Juego();
+
+Controller::Controller(Connection* lan = NULL) {
+	this->juego = new Juego(lan);
 	this->controladorMouse = new ControladorMouse(juego);
 	this->controladorCamara = new ControladorCamara(juego);
 }

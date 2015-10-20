@@ -12,7 +12,7 @@
 #include <sstream>
 #include <algorithm>
 #include "../modelo/Exceptions.h"
-
+#include "../utils/Constantes.h"
 #include "../modelo/Entidad.h"
 
 /* Estructura para guardar el Tipo de Entidad que se encuentra en las
@@ -191,6 +191,7 @@ struct Coordenada{
 
 struct Camino {
 	std::vector<Coordenada> v;
+
 	Camino() {}
 	void agregar(Coordenada c) {
 		v.push_back(c);
@@ -206,9 +207,16 @@ struct Camino {
 		v.erase(v.begin());
 		return c;
 	}
+	void convertirTilesAPixeles(Coordenada coord_ceros) {
+		std::vector<Coordenada> vAux;
+		for(std::vector<Coordenada>::iterator it = v.begin(); it < v.end(); ++it)
+			vAux.push_back( pixelCentralDeTile(*it, coord_ceros) );
+		v.clear();
+		v = vAux;
+	}
 	Coordenada operator[](int k) { return v[k]; }
 
-	// "c1|c2|c3|...|cn\n"
+	// "c1|c2|c3|...|cn"
 	std::string enc() {
 		ostringstream Encode;
 		//Encode << "[";
@@ -218,19 +226,28 @@ struct Camino {
 			Encode << it->enc().c_str();
 		}
 		//Encode << "]";
-		Encode << '\n';
+		//Encode << '\n';
 		return Encode.str();
 	}
 	static Camino dec(std::string s) {
 		stringstream ss(s);
 		char cs[13];
 		Camino cam;
-		while (!ss.eof() && ss.peek() != '\n') {
+		while (!ss.eof()) {
 			ss.get(cs, 11, '|');
 			cam.agregar(Coordenada::dec(cs));
 			ss.ignore();
 		}
 		return cam;
+	}
+
+	//Copipeisteado de Calculador.cpp para evitar redundancia. Atrapar FueraDeEscenario.
+	static Coordenada pixelCentralDeTile(Coordenada coord_tile, Coordenada coord_ceros) {
+		if (coord_tile.x < 0 || coord_tile.y < 0)// || tile_x >= this->tiles_x || tile_y >= this->tiles_y)
+			throw FueraDeEscenario();
+		int pix_x = coord_ceros.x + 	(coord_tile.x - coord_tile.y) * DISTANCIA_ENTRE_X;
+		int pix_y = coord_ceros.y + (1 + coord_tile.x + coord_tile.y) * DISTANCIA_ENTRE_Y;
+		return Coordenada(pix_x, pix_y);
 	}
 
 	~Camino() {

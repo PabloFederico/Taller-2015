@@ -84,7 +84,7 @@ public:
 
 	Coordenada coordPixelSprite();
 
-	void setearNuevoCamino(Camino nuevoCamino);
+	void setearNuevoCamino(Camino nuevoCamino, Coordenada coord_ceros);
 
 	vector<Coordenada> getCaminoARecorrer();
 

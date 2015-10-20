@@ -206,8 +206,9 @@ Coordenada Sprite::coordPixelSprite() {
 }
 
 /********************************************************************************/
-void Sprite::setearNuevoCamino(Camino nuevoCamino){
+void Sprite::setearNuevoCamino(Camino nuevoCamino, Coordenada coord_ceros){
 	this->caminoARecorrer.clear();
+	nuevoCamino.convertirTilesAPixeles(coord_ceros);
 
 	Coordenada c_prox_punto = nuevoCamino[0];
 	c_prox_punto.x -= this->getPosicion().w / 2;

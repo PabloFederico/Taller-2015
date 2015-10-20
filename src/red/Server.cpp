@@ -8,6 +8,12 @@
 #include "../red/Server.h"
 
 
+Server::Server() {
+	iniciar();//recibir res, tirar error
+}
+
+
+///código original
 void Server::ejecutar(){
 	/* código que debería ejecutar el servidor */
 	std::cout << "======= SERVIDOR ======="<<std::endl;
@@ -55,27 +61,28 @@ void Server::ejecutar(){
 		std::cout << "Message send."<<std::endl;
 	}
 
-	socket->cerrarSocket();
+	socket->cerrarSocket(new_descriptor);
 	delete socket;
 }
 
 
-void Server::iniciar(){
-	Server::finalizar();
+
+bool Server::iniciar() {
+	//this->Connection::finalizar();
 	/* código que debería ejecutar el servidor */
 	std::cout << "======= SERVIDOR =======" << std::endl;
 
-	socket = new SocketServidor();
+	this->socket = new SocketServidor();
 
-	if (this->socket->creadoCorrectamente() < 0){
+	if (this->socket->creadoCorrectamente() < 0) {
 		std::cout << "ERROR: No se pudo crear socket."<<std::endl;
-		exit(EXIT_FAILURE);
+		return false;
 	}
 
 	/* bind() */
-	if (Red::enlazarSocket(this->socket) < 0){
+	if (Red::enlazarSocket(this->socket) < 0) {
 		std::cout << "ERROR: bind failed."<<std::endl;
-		exit(EXIT_FAILURE);
+		return false;
 	}
 
 	/* listen() */
@@ -87,57 +94,16 @@ void Server::iniciar(){
 
 	if (new_descriptor < 0){
 		std::cout << "ERROR: accept failed."<<std::endl;
+		return false;
 	}
+	fcntl(new_descriptor, F_SETFL, O_NONBLOCK); // non-blocking mode
+
 	this->lastDescriptor = new_descriptor;
-	std::cout << "Connection accepted."<<std::endl;
+	std::cout << "Connected."<<std::endl;
+	return true;
 }
 
-void Server::enviar(Camino cam) {
-	/* código que debería ejecutar el servidor */
-	std::cout << "======= SERVIDOR =======" << std::endl;
 
-	SocketServidor* socket = new SocketServidor();
-
-	if (socket->creadoCorrectamente() < 0){
-		std::cout << "ERROR: No se pudo crear socket."<<std::endl;
-		exit(EXIT_FAILURE);
-	}
-
-	/* bind() */
-	if (Red::enlazarSocket(socket) < 0){
-		std::cout << "ERROR: bind failed."<<std::endl;
-		exit(EXIT_FAILURE);
-	}
-
-	/* listen() */
-	Red::escucharConexiones(socket->getDescriptor(),MAX_CONEXIONES);
-	std::cout << "waiting for incoming connections..."<<std::endl;
-
-	/* accept() */
-	int new_descriptor = Red::aceptarClientes(socket);
-
-	if (new_descriptor < 0){
-		std::cout << "ERROR: accept failed."<<std::endl;
-	}
-	std::cout << "Connection accepted."<<std::endl;
-
-	//----------------
-
-	if (Red::enviarInformacion(new_descriptor, cam.enc()) < 0) {
-		Log::imprimirALog(ERR, "ERROR: send failed.");
-		std::cout << "ERROR: send failed." << std::endl;
-	} else
-		std::cout << "Message sent";
-
-	//----------------
-
-	socket->cerrarSocket();
-	delete socket;
-	std::cout << "====== /SERVIDOR/ ======" << std::endl;
-}
-
-void Server::finalizar() {
-	socket->cerrarSocket();
-	delete socket;
+Server::~Server() {
 	std::cout << "====== /SERVIDOR/ ======" << std::endl;
 }

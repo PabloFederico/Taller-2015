@@ -8,26 +8,20 @@
 #ifndef RED_CLIENT_H_
 #define RED_CLIENT_H_
 
-#include <iostream>
-#include <stdlib.h>
+#include "Connection.h"
 
-#include "../red/SocketCliente.h"
-#include "../red/Red.h"
-#include "../utils/Structs.h"
 
-class Client {
+class Client: public Connection {
 private:
 	SocketCliente* socket;
 
 public:
 	static void ejecutar();
 
-	void iniciar();
-
-	static Camino recibir(); //prueba con iniciar incluido
-	//enviar de cada tipo
-
+	Client();
+	bool iniciar();
 	void finalizar();
+	~Client();
 };
 
 #endif /* RED_CLIENT_H_ */

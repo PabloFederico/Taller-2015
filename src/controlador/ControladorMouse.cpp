@@ -10,7 +10,7 @@
 #include "../modelo/DetectorDeColisiones.h"
 
 #include "../red/Server.h"
-#include "../red/Client.h"
+#include "../red/Connection.h"
 
 ControladorMouse::ControladorMouse(Juego *juego) {
 	this->juego = juego;
@@ -70,11 +70,13 @@ void ControladorMouse::procesarEvento(SDL_Event &event, int MouseX, int MouseY){
 
 				/* Activamos el movimiento del sprite y seteamos el nuevo camino que debe recorrer. */
 				if (camino.size() > 0) {
+
 					///solo de prueba, los encodeados tendrían q tener por lo menos una letra al comienzo especificando el tipo [ej.: M(ovimiento)].
 					// asumo servidor
-					//Server::enviar(camino);
+					juego->enviar(camino);
 					///
-		            sprite->setearNuevoCamino(camino);
+
+					sprite->setearNuevoCamino(camino, coord_pixel_ceros);
 				 }
 
 			}
@@ -82,8 +84,8 @@ void ControladorMouse::procesarEvento(SDL_Event &event, int MouseX, int MouseY){
 	} /* Fin if SDL_MOUSEBUTTONDOWN */
 
 	try {
-		Camino camino = Client::recibir();
-		sprite->setearNuevoCamino(camino);
+		Camino camino = juego->recibirCamino();
+		sprite->setearNuevoCamino(camino, coord_pixel_ceros);
 	} catch ( NoSeRecibio &e ) {}
 
 	sprite->update(juego->getVelocidad());

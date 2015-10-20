@@ -8,27 +8,20 @@
 #ifndef RED_SERVER_H_
 #define RED_SERVER_H_
 
-#include <iostream>
-#include <stdlib.h>
+#include "Connection.h"
 
-#include "../red/SocketServidor.h"
-#include "../red/Red.h"
-#include "../utils/Structs.h"
-#include "../modelo/Log.h"
 
-class Server {
+class Server: public Connection {
 private:
 	SocketServidor* socket;
-	int lastDescriptor;
+
 public:
 	static void ejecutar();
-	void iniciar();
 
-	static void enviar(Camino cam); //prueba con iniciar incluido
-	//enviar de cada tipo
-
+	Server();
+	bool iniciar();
 	void finalizar();
-
+	~Server();
 };
 
 #endif /* RED_SERVER_H_ */

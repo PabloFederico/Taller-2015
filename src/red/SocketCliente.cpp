@@ -7,8 +7,6 @@
 
 #include "../red/SocketCliente.h"
 
-#include "../utils/Constantes.h"
-
 SocketCliente::SocketCliente():Socket() {
 	if (descriptor > -1){
 		infoDir.sin_family = AF_INET;

@@ -192,7 +192,7 @@ struct Nodo {
 	};
 };
 
-// PRE: Chequeo de destino ocupable; posiciones en píxeles. POST: camino posee pares de posiciones que debe recorrer secuencialmente.
+// PRE: Chequeo de destino ocupable; posiciones en píxeles. POST: camino posee pares de posiciones EN TILES que debe recorrer secuencialmente.
 //std::vector< Coordenada > Calculador::obtenerCaminoMin(Escenario *esc, int inic_x, int inic_y, int dest_x, int dest_y, int cero_x, int cero_y) {
 Camino Calculador::obtenerCaminoMin(Escenario *esc, Coordenada coord_pixel_orig, Coordenada coord_pixel_dest, Coordenada coord_ceros) {
 	Camino camino;
@@ -259,11 +259,13 @@ Camino Calculador::obtenerCaminoMin(Escenario *esc, Coordenada coord_pixel_orig,
 		}
 	} catch ( DestinoEncontrado &e ) {	// pActual tiene ahora el último tile del camino, NO el destino.
 		while (!pActual->esTile(tile_inicial)) {
-				camino.agregar( pixelCentralDeTile(pActual->pos, coord_ceros) );
+				//camino.agregar( pixelCentralDeTile(pActual->pos, coord_ceros) );
+				camino.agregar( pActual->pos );
 				pActual = pActual->padre;
 			}
 			camino.invertir();
-			camino.agregar(coord_pixel_dest);
+			//camino.agregar(coord_pixel_dest);
+			camino.agregar( pos_tile_destino );
 	}
 
 	for (pActualIt = visitados.begin(); pActualIt < vecinos.end(); ++pActualIt) {
@@ -275,5 +277,5 @@ Camino Calculador::obtenerCaminoMin(Escenario *esc, Coordenada coord_pixel_orig,
 	vecinos.clear();
 
 	return camino;
-	// Con return: for pos in camino: moverse a pos; (Con manejo de colisiones.)
+	// CAMBIADO A CAMINO DE TILES
 }

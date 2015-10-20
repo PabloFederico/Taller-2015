@@ -10,7 +10,7 @@
 #include <iostream>
 
 
-Juego::Juego() {
+Juego::Juego(Connection* lan = NULL) {
 	this->cero_x = NULL;
 	this->cero_y = NULL;
 	this->contenedor = NULL;
@@ -21,6 +21,9 @@ Juego::Juego() {
 	this->screenHeight = 600;	// Default
 	this->vel_personaje = 50;
 	this->margen_scroll = 30;
+
+	//Juego en red, comentar para apagar
+	this->connection = lan;
 
 	this->cargarJuego();
 }
@@ -48,6 +51,8 @@ void Juego::cargarJuego(){
 	this->vel_personaje = 30;
 	this->margen_scroll = 50;
 	//	std::vector<InfoEscenario> vecEscenarios;
+
+	//if EsCliente, receive Escenario; !!!
 
 	//---------------------------------------------------------------------------------------------!!
 	InfoEscenario infoEsc = parsearConfig();
@@ -246,6 +251,7 @@ InfoEscenario Juego::infoEscenarioDefault() {
 
 	return infoEscenario;
 }
+
 /********************************************************************************/
 pair<int,int> Juego::dimensionVentana(){
 	return make_pair(this->screenWidth,this->screenHeight);
@@ -259,6 +265,7 @@ int Juego::getMargenScroll(){
 /********************************************************************************/
 Juego::~Juego() {
 	delete this->escenario;
+	delete this->connection;
 }
 
 
@@ -319,6 +326,19 @@ InfoEscenario Juego::OdioYAML() {
 
 	tipos.clear();
 	return infoEscenarioDefault();
+}
+
+/***************************************************/
+Camino Juego::recibirCamino() {
+	if (this->connection == NULL)
+		throw NoSeRecibio();
+	return this->connection->recibirCamino();
+}
+
+/***************************************************/
+void Juego::enviar(Camino cam) {
+	if (this->connection != NULL)
+		this->connection->enviar(cam);
 }
 
 /***************************************************/

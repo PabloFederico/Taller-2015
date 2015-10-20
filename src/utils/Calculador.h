@@ -17,6 +17,7 @@
 #include "../modelo/Exceptions.h"
 #include "../modelo/Escenario.h"
 
+
 class Calculador {
 
 public:

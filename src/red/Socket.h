@@ -11,7 +11,11 @@
 #include <sys/types.h>
 #include <netdb.h>
 #include <arpa/inet.h>
+#include <sys/fcntl.h>
 #include <unistd.h>
+
+#include "../utils/Constantes.h"
+
 
 class Socket {
 protected:
@@ -27,7 +31,7 @@ public:
 
 	sockaddr_in getInfoDir();
 
-	void cerrarSocket();
+	void cerrarSocket(int fd);
 
 	virtual ~Socket();
 };
