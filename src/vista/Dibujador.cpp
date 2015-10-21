@@ -161,15 +161,22 @@ void Dibujador::dibujarBarraEstado(BarraEstado* barraEstado){
 
 	Imagen *imagen;
 	SDL_Rect rect_barra;
-	/* Dibujamos el fondo */
+	/* Dibujamos el fondo (Para la info de los recursos económicos) */
 	rect_barra.x = 0;
 	rect_barra.y = height_window - dim.second;
-	rect_barra.w = dim.first * 0.3;
+	rect_barra.w = dim.first * 0.1;
 	rect_barra.h = dim.second;
 	imagen = this->contenedor->getImagenUtilTipo(BARRA_FONDO);
 	SDL_RenderCopy(renderer,imagen->getTexture(),NULL,&rect_barra);
 
-	/* Dibujamos el descriptor */
+	/* Dibujamos el fondo (Para la info de los elementos seleccionados) */
+	rect_barra.x += rect_barra.w;
+	rect_barra.w = dim.first * 0.2;
+	rect_barra.h = dim.second;
+	imagen = this->contenedor->getImagenUtilTipo(BARRA_FONDO);
+	SDL_RenderCopy(renderer,imagen->getTexture(),NULL,&rect_barra);
+
+	/* Dibujamos el descriptor (Para la descripción de los elementos seleccionados) */
 	rect_barra.x += rect_barra.w;
 	rect_barra.w = 0.4 * dim.first;
 	imagen = this->contenedor->getImagenUtilTipo(BARRA_DESCRIPCION);
