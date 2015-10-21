@@ -14,6 +14,7 @@ Juego::Juego(Connection* lan = NULL) {
 	this->cero_x = NULL;
 	this->cero_y = NULL;
 	this->contenedor = NULL;
+	this->barraEstado = NULL;
 	this->escenario = NULL;
 	this->fabricaDeEntidades = NULL;
 	this->protagonista = NULL;
@@ -64,6 +65,7 @@ void Juego::cargarJuego(){
 	this->fabricaDeEntidades = new EntidadFactory(this->vectorInfoTiposEntidades);
 	this->escenario = new Escenario(infoEsc, this->fabricaDeEntidades);
 	this->protagonista = this->escenario->getProtagonista();
+	this->barraEstado = new BarraEstado(this->screenWidth, 150);
 }
 
 /********************************************************************************/
@@ -346,8 +348,10 @@ int Juego::getVelocidad(){
 	return this->vel_personaje;
 }
 
-void Juego::cargarRecursos(ContenedorDeRecursos *container){
+void Juego::agregarContenedorDeRecursos(ContenedorDeRecursos *container){
 	this->contenedor = container;
+	this->contenedor->cargarImagenesUtil();
+	this->contenedor->cargarImagenesRecursos();
 }
 
 Sprite* Juego::getSpritePlayer(){
@@ -366,6 +370,7 @@ std::pair<int*,int*> Juego::getCeros(){
 void Juego::reiniciar(){
 	delete this->escenario;
 	delete this->contenedor;
+	delete this->barraEstado;
 	cargarJuego();
 }
 
@@ -375,4 +380,15 @@ void Juego::actualizarPosicionesEntidades(int cant_x, int cant_y){
 
 Map<Entidad*, Sprite*>* Juego::getSpritesEntidades(){
 	return this->contenedor->getMapaSpritesEntidades();
+}
+
+void Juego::generarRecursosAleatoriosParaElEscenario(){
+	/* Generar algunos recursos (madera, oro, comida, etc)
+	 * y asignarles algunas posiciones en el escenario
+	 * (posiciones libres)
+	 * */
+}
+
+BarraEstado* Juego::getBarraEstado(){
+	return barraEstado;
 }

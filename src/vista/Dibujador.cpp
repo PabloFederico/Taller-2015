@@ -152,6 +152,38 @@ void Dibujador::dibujarEscenario(Escenario *escenario){
 */
 
 /********************************************************************************/
+void Dibujador::dibujarBarraEstado(BarraEstado* barraEstado){
+	int width_window;
+	int height_window;
+	SDL_GetRendererOutputSize(renderer,&width_window,&height_window);
+
+	std::pair<int,int> dim = barraEstado->getDimension();
+
+	Imagen *imagen;
+	SDL_Rect rect_barra;
+	/* Dibujamos el fondo */
+	rect_barra.x = 0;
+	rect_barra.y = height_window - dim.second;
+	rect_barra.w = dim.first * 0.3;
+	rect_barra.h = dim.second;
+	imagen = this->contenedor->getImagenUtilTipo(BARRA_FONDO);
+	SDL_RenderCopy(renderer,imagen->getTexture(),NULL,&rect_barra);
+
+	/* Dibujamos el descriptor */
+	rect_barra.x += rect_barra.w;
+	rect_barra.w = 0.4 * dim.first;
+	imagen = this->contenedor->getImagenUtilTipo(BARRA_DESCRIPCION);
+	SDL_RenderCopy(renderer,imagen->getTexture(),NULL,&rect_barra);
+
+	/* Dibujamos el minimapa */
+	rect_barra.x += rect_barra.w;
+	rect_barra.w = dim.first * 0.3;
+	imagen = this->contenedor->getImagenUtilTipo(BARRA_FONDO);
+	SDL_RenderCopy(renderer,imagen->getTexture(),NULL,&rect_barra);
+
+}
+
+/********************************************************************************/
 Dibujador::~Dibujador() {
 	this->mapInfoEntidades.clear();
 }

@@ -7,6 +7,7 @@
 
 #ifndef VISTA_DIBUJADOR_H_
 #define VISTA_DIBUJADOR_H_
+#include "../modelo/BarraEstado.h"
 #include "../utils/ContenedorDeRecursos.h"
 #include "../modelo/Escenario.h"
 #include "../vista/CapaNegra.h"
@@ -30,6 +31,7 @@ public:
 	void dibujarEntidades();
 	void dibujarProtagonista(Sprite* sprite);
 	void dibujarCapaNegra(CapaNegra* capa);
+	void dibujarBarraEstado(BarraEstado* barraEstado);
 
 	virtual ~Dibujador();
 };

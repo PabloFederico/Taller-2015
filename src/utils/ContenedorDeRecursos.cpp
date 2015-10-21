@@ -15,16 +15,17 @@ ContenedorDeRecursos::ContenedorDeRecursos(SDL_Renderer *renderer) {
 	this->renderer = renderer;
 	this->mapSpritesEntidades = new Map<Entidad*, Sprite*>();
 	this->mapImagenes = new Map<TipoEntidad, Imagen*>();
+	mapImagenesUtil = new Map<TipoImagenUtil, Imagen*>();
+	mapImagenesRecursos = new Map<TipoRecurso, Imagen*>();
 }
 
 /********************************************************************************/
 void ContenedorDeRecursos::cargarImagenesEntidades(vector<InfoEntidad> infoEntidades){
-	Loader loader;
 	/* Primero cargamos la imagen del relieve por default */
-	Imagen *pasto = loader.cargarImagen(this->renderer,"images/pasto.png");
+	Imagen *pasto = Loader::cargarImagen(this->renderer,"images/pasto.png");
 	this->mapImagenes->insert(PASTO,pasto);
 
-	Imagen *capaNegra = loader.cargarImagen(this->renderer,"images/black1.png");
+	Imagen *capaNegra = Loader::cargarImagen(this->renderer,"images/black1.png");
 	this->mapImagenes->insert(DEFAULT,capaNegra);
 
 	for (unsigned i = 0; i < infoEntidades.size(); i++){
@@ -34,7 +35,7 @@ void ContenedorDeRecursos::cargarImagenesEntidades(vector<InfoEntidad> infoEntid
 		/* Nos guardamos la información de las entidades */
 		this->mapInfoEntidades[tipo] = infoEntidades[i];
 
-		Imagen *imagen = loader.cargarImagen(this->renderer,path);
+		Imagen *imagen = Loader::cargarImagen(this->renderer,path);
 
 		this->mapImagenes->insert(tipo,imagen);
 	}
@@ -167,6 +168,39 @@ void ContenedorDeRecursos::actualizarPosicionesEntidades(int corrimiento_x, int 
 }
 
 /********************************************************************************/
+void ContenedorDeRecursos::cargarImagenesUtil(){
+	Imagen *imagen = Loader::cargarImagen(this->renderer,"images/barra_fondo.png");
+	this->mapImagenesUtil->insert(BARRA_FONDO,imagen);
+
+	imagen = Loader::cargarImagen(this->renderer,"images/barra_descripcion.png");
+	this->mapImagenesUtil->insert(BARRA_DESCRIPCION,imagen);
+
+	imagen = Loader::cargarImagen(this->renderer,"images/selector_tile.png");
+	this->mapImagenesUtil->insert(SELECT_TILE,imagen);
+}
+
+
+/********************************************************************************/
+void ContenedorDeRecursos::cargarImagenesRecursos(){
+
+}
+
+/********************************************************************************/
+Imagen* ContenedorDeRecursos::getImagenUtilTipo(TipoImagenUtil tipo){
+	map<TipoImagenUtil,Imagen* >::iterator p = this->mapImagenesUtil->find(tipo);
+	Imagen* imagen = (*p).second;
+	return imagen;
+}
+
+/********************************************************************************/
+Imagen* ContenedorDeRecursos::getImagenRecursoTipo(TipoRecurso tipo){
+	map<TipoRecurso,Imagen* >::iterator p = this->mapImagenesRecursos->find(tipo);
+	Imagen* imagen = (*p).second;
+	return imagen;
+}
+
+
+/********************************************************************************/
 ContenedorDeRecursos::~ContenedorDeRecursos() {
 	this->mapInfoEntidades.clear();
 
@@ -178,10 +212,26 @@ ContenedorDeRecursos::~ContenedorDeRecursos() {
 	}
 	delete this->mapImagenes;
 
-	map<Entidad*, Sprite* >::iterator ittt = this->mapSpritesEntidades->begin();
-	while (ittt != this->mapSpritesEntidades->end()){
-		Sprite *sprite = ittt->second;
+	map<TipoImagenUtil, Imagen* >::iterator itt = this->mapImagenesUtil->begin();
+	while (itt != this->mapImagenesUtil->end()){
+		Imagen *imagen = itt->second;
+		itt++;
+		delete imagen;
+	}
+	delete this->mapImagenesUtil;
+
+	map<TipoRecurso, Imagen* >::iterator ittt = this->mapImagenesRecursos->begin();
+	while (ittt != this->mapImagenesRecursos->end()){
+		Imagen *imagen = ittt->second;
 		ittt++;
+		delete imagen;
+	}
+	delete this->mapImagenesRecursos;
+
+	map<Entidad*, Sprite* >::iterator itttt = this->mapSpritesEntidades->begin();
+	while (itttt != this->mapSpritesEntidades->end()){
+		Sprite *sprite = itttt->second;
+		itttt++;
 		delete sprite;
 	}
 	delete this->mapSpritesEntidades;

@@ -13,7 +13,7 @@
 
 class Log {
 public:
-	static void imprimirALog(TipoError tipo, std::string output){
+	static void imprimirALog(TipoLog tipo, std::string output){
 		time_t rawtime;
 		struct tm * timeinfo;
 		char buffer[80];
@@ -23,7 +23,7 @@ public:
 		std::string timestamp(buffer);
 
 		ofstream fLog("TP.log", std::ofstream::app);
-		fLog << "[" << timestamp << "]    " <<tipo<<"    "<< output << std::endl;
+		fLog << "[" << timestamp << "]    " <<LogToString(tipo)<<"    "<< output << std::endl;
 		fLog.close();
 		std::cerr <<output <<std::endl;
 	};

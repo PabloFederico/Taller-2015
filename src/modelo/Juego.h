@@ -17,6 +17,7 @@
 #include "../modelo/ConfigDefault.h"
 #include "../utils/ContenedorDeRecursos.h"
 #include "../modelo/Entidad.h"
+#include "../modelo/BarraEstado.h"
 #include "../modelo/Escenario.h"
 #include "../modelo/Exceptions.h"
 #include "../red/Connection.h"
@@ -61,6 +62,8 @@ private:
 
 	ContenedorDeRecursos *contenedor;
 
+	BarraEstado *barraEstado;
+
 public:
 	Juego(Connection* lan);
 	int getVelocidad();
@@ -78,7 +81,7 @@ public:
 
 	int getMargenScroll();
 
-	void cargarRecursos(ContenedorDeRecursos *container);
+	void agregarContenedorDeRecursos(ContenedorDeRecursos *container);
 
 	Map<Entidad*, Sprite*>* getSpritesEntidades();
 
@@ -91,6 +94,11 @@ public:
 	void reiniciar();
 
 	void actualizarPosicionesEntidades(int cant_x, int cant_y);
+
+	/* El nombre del método lo dice \TODO\ */
+	void generarRecursosAleatoriosParaElEscenario();
+
+	BarraEstado* getBarraEstado();
 
 	virtual ~Juego();
 };

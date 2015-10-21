@@ -15,9 +15,7 @@
 
 class Loader {
 public:
-	Loader(){};
-
-	Imagen* cargarImagen(SDL_Renderer* renderer, std::string path){
+	static Imagen* cargarImagen(SDL_Renderer* renderer, std::string path){
 		SDL_Texture *texture = NULL;
 		SDL_Surface* surface = IMG_Load(path.c_str());
 
@@ -29,8 +27,6 @@ public:
 
 		return imagen;
 	};
-
-	virtual ~Loader(){};
 };
 
 #endif /* UTILS_LOADER_H_ */

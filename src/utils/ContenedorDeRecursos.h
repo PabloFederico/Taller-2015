@@ -23,6 +23,9 @@ private:
 	Map<Entidad*, Sprite*> *mapSpritesEntidades;
 	map<TipoEntidad, InfoEntidad> mapInfoEntidades;
 
+	Map<TipoImagenUtil, Imagen*> *mapImagenesUtil; /* para las imagenes de barra de estado */
+	Map<TipoRecurso, Imagen*> *mapImagenesRecursos; /* para madera, oro, comida, etc*/
+
 public:
 	ContenedorDeRecursos(SDL_Renderer *renderer);
 
@@ -39,6 +42,14 @@ public:
 	void generarYGuardarSpritesEntidades(vector<PosEntidad> *posEntidades,Coordenada coord_ceros, Escenario* escenario);
 
 	void actualizarPosicionesEntidades(int corrimiento_x, int corrimiento_y);
+
+	void cargarImagenesUtil();
+
+	Imagen* getImagenUtilTipo(TipoImagenUtil tipo);
+
+	void cargarImagenesRecursos();
+
+	Imagen* getImagenRecursoTipo(TipoRecurso tipo);
 
 	virtual ~ContenedorDeRecursos();
 };

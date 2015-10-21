@@ -33,7 +33,7 @@ void VentanaJuego::cargarJuego(Juego *juego){
 		juego->setCeros(cero_x,cero_y);
 
 		Camara* camara = new Camara(cero_x,cero_y);
-		camara->setDimension(SCREEN_WIDTH,SCREEN_HEIGHT);
+		camara->setDimension(SCREEN_WIDTH,SCREEN_HEIGHT - controlador->getJuego()->getBarraEstado()->getDimension().second);
 		camara->setMargenScrolling(juego->getMargenScroll());
 		camara->setLimites(LIMITE_DESPLAZAMIENTO_EN_X,LIMITE_DESPLAZAMIENTO_EN_Y);
 
@@ -60,7 +60,7 @@ void VentanaJuego::cargarImagenesYSprites(Juego* juego){
 	Coordenada coord_ceros(*juego->getCeros().first, *juego->getCeros().second);
 	contenedor->generarYGuardarSpritesEntidades(posEntidades,coord_ceros,juego->getEscenario());
 
-	this->controlador->getJuego()->cargarRecursos(contenedor);
+	this->controlador->getJuego()->agregarContenedorDeRecursos(contenedor);
 	this->dibujador->setContenedorDeRecursos(contenedor);
 }
 
@@ -75,6 +75,7 @@ void VentanaJuego::dibujar(){
 	dibujador->dibujarRelieve(ancho,largo);
 	dibujador->dibujarEntidades();
 	dibujador->dibujarCapaNegra(capa);
+	dibujador->dibujarBarraEstado(controlador->getJuego()->getBarraEstado());
 }
 
 /********************************************************************************/
