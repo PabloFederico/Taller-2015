@@ -64,7 +64,7 @@ void ContenedorDeRecursos::generarYGuardarSpritesEntidades(vector<PosEntidad> *p
 			case ARBOL 	  : {posicion.y -= (1.5 * DISTANCIA_ENTRE_Y);
 							posicion.w = ANCHO_PIXEL_PASTO;
 							posicion.h = 2 * ALTO_PIXEL_PASTO;
-							sprite = new Sprite(1,1,this->getImagenTipo(ARBOL),posicion);
+							sprite = new Sprite(1,1,this->getImagenTipo(ARBOL),posicion,escenario,coord_ceros);
 
 							int x_ini = posicion.x;
 							int y_ini = posicion.y;
@@ -81,7 +81,7 @@ void ContenedorDeRecursos::generarYGuardarSpritesEntidades(vector<PosEntidad> *p
 						    //sprite = new Sprite(mapInfoEntidades[CASTILLO].ancho,mapInfoEntidades[CASTILLO].ancho,this->getImagenTipo(CASTILLO),posicion);
 						    posicion.w = ANCHO_PIXEL_PASTO * this->mapInfoEntidades[CASTILLO].ancho;
 						    posicion.h = ALTO_PIXEL_PASTO * this->mapInfoEntidades[CASTILLO].ancho + (ALTO_PIXEL_PASTO -  DISTANCIA_ENTRE_Y / 4);
-						    sprite = new Sprite(1,1,this->getImagenTipo(CASTILLO),posicion);
+						    sprite = new Sprite(1,1,this->getImagenTipo(CASTILLO),posicion,escenario,coord_ceros);
 
 						    int x_ini = posicion.x;
 						    int y_ini = posicion.y;
@@ -94,7 +94,7 @@ void ContenedorDeRecursos::generarYGuardarSpritesEntidades(vector<PosEntidad> *p
 							posicion.x += ANCHO_PIXEL_PASTO / 4;
 							posicion.w = ANCHO_PIXEL_PASTO / 2;
 							posicion.h = ALTO_PIXEL_PASTO * 3 / 4;
-							sprite = new Sprite(DIRECCIONES,14,this->getImagenTipo(entidad->getTipo()),posicion);
+							sprite = new Sprite(DIRECCIONES,14,this->getImagenTipo(entidad->getTipo()),posicion,escenario,coord_ceros);
 
 							int x_ini = posicion.x;
 							int y_ini = posicion.y;
@@ -107,7 +107,7 @@ void ContenedorDeRecursos::generarYGuardarSpritesEntidades(vector<PosEntidad> *p
 							posicion.y -= (DISTANCIA_ENTRE_Y);
 							posicion.w = ANCHO_PIXEL_PASTO ;
 							posicion.h = 2*ALTO_PIXEL_PASTO;
-							sprite = new Sprite(DIRECCIONES,IMAGENES_DIFERENTES,this->getImagenTipo(ANIMAL),posicion);
+							sprite = new Sprite(DIRECCIONES,IMAGENES_DIFERENTES,this->getImagenTipo(ANIMAL),posicion,escenario,coord_ceros);
 							sprite->activarMovimiento(true);
 
 							int x_ini = posicion.x;
@@ -118,7 +118,7 @@ void ContenedorDeRecursos::generarYGuardarSpritesEntidades(vector<PosEntidad> *p
 							break;
 	    	default       :
 	    					/* AGUA ó TIERRA */
-	    					{sprite = new Sprite(1,1,this->getImagenTipo(entidad->getTipo()),posicion);
+	    					{sprite = new Sprite(1,1,this->getImagenTipo(entidad->getTipo()),posicion,escenario,coord_ceros);
 	    					int x_ini = posicion.x;
 	    					int y_ini = posicion.y;
 	    					Rectangulo rect1(x_ini, ANCHO_PIXEL_PASTO, y_ini, ALTO_PIXEL_PASTO);
