@@ -88,7 +88,8 @@ void ControladorMouse::procesarEvento(SDL_Event &event, int MouseX, int MouseY){
 		sprite->setearNuevoCamino(camino, coord_pixel_ceros);
 	} catch ( NoSeRecibio &e ) {}
 
-	sprite->update(juego->getVelocidad());
+	if (sprite->estaEnMovimiento())		//verificar que esta optimización no rompa nada
+		sprite->update(juego->getVelocidad());
 
 }
 

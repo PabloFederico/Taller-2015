@@ -8,7 +8,8 @@
 #include "../vista/Sprite.h"
 
 /********************************************************************************/
-Sprite::Sprite(int cant_Direcciones, Uint32 cant_Img_Distintas, Imagen* imagen, SDL_Rect posicion){
+Sprite::Sprite(int cant_Direcciones, Uint32 cant_Img_Distintas, Imagen* imagen,
+				SDL_Rect posicion, Escenario* escen, Coordenada c_ceros){
 	this->cant_Direcciones = cant_Direcciones;
 	this->cant_Img_Distintas = cant_Img_Distintas;
 	this->imagen = imagen;
@@ -18,6 +19,8 @@ Sprite::Sprite(int cant_Direcciones, Uint32 cant_Img_Distintas, Imagen* imagen, 
 	this->regPos.posY_player =(float)posicion.y;
 	this->regPos.x_anterior = posicion.x;
 	this->regPos.y_anterior = posicion.y;
+	this->escenario = escen;
+	this->coord_ceros = c_ceros;
 
 	this->frames = new SDL_Rect*[cant_Direcciones];
 
@@ -210,7 +213,11 @@ void Sprite::setearNuevoCamino(Camino nuevoCamino, Coordenada coord_ceros){
 	this->caminoARecorrer.clear();
 	nuevoCamino.convertirTilesAPixeles(coord_ceros);
 
+	Coordenada c_tile_actual = Calculador::tileParaPixel(Coordenada(getPosicion().x,getPosicion().y), this->coord_ceros);
 	Coordenada c_prox_punto = nuevoCamino[0];
+	this->coord_ceros = coord_ceros;
+	escenario->ocuparTile(Calculador::tileParaPixel(c_prox_punto, coord_ceros));
+	escenario->desocuparTile(c_tile_actual);	//Debería desocuparse la posición actual.. dónde está??
 	c_prox_punto.x -= this->getPosicion().w / 2;
 	c_prox_punto.y -= this->getPosicion().h / 2;
 
@@ -247,6 +254,29 @@ bool Sprite::quedaCaminoPorRecorrer(){
 }
 
 /********************************************************************************/
+void Sprite::revisarCamino(Coordenada c_ult_punto, Coordenada c_prox_punto) {
+	Coordenada  c_ult_tile = Calculador::tileParaPixel( c_ult_punto, coord_ceros);
+	Coordenada c_prox_tile = Calculador::tileParaPixel(c_prox_punto, coord_ceros);
+
+	if (!(this->escenario->tileEsOcupable(c_prox_tile))) {
+		Coordenada c_destino = getCaminoARecorrer().back();
+		if (c_prox_tile == c_destino) {	// El tile ahora ocupado es el de destino, quedarme donde estoy.
+			setearNuevoCamino(Camino(), coord_ceros);
+			return;
+		} else {	// Siguiente tile del camino ocupado; crear nuevo camino para esquivarlo.
+			Coordenada c_pix_destino = Calculador::pixelCentralDeTile(c_destino, coord_ceros);
+			setearNuevoCamino(Calculador::obtenerCaminoMin(escenario, c_ult_punto, c_pix_destino, coord_ceros), coord_ceros);
+			c_prox_tile = Calculador::tileParaPixel(getCaminoARecorrer()[0], coord_ceros);
+			escenario->ocuparTile(c_prox_tile);
+		}
+	}
+	try {
+		escenario->ocuparTile(c_prox_tile);
+		escenario->desocuparTile(c_ult_tile);
+	} catch ( TileEstaOcupado &e ) {}
+}
+
+/********************************************************************************/
 void Sprite::acomodar(){
 	this->frameActual = this->frames[this->direccion][cant_Direcciones-1];
 }
@@ -254,7 +284,7 @@ void Sprite::acomodar(){
 
 /********************************************************************************/
 void Sprite::update(int vel_personaje) {
-	if (this->quedaCaminoPorRecorrer()){
+	if (this->quedaCaminoPorRecorrer()) {
 
 		/*	- calcular distancia al sig punto
 		 *  - si es mayor a 1, seguir moviendo la posicion
@@ -288,17 +318,20 @@ void Sprite::update(int vel_personaje) {
 
 		}else{
 			/* cambiar a la próxima coordenada */
-			 this->quitarPrimeraCoordenada();
+			Coordenada c_ult_punto = this->getCaminoARecorrer()[0];
+			this->quitarPrimeraCoordenada();
+			this->escenario->desocuparTile(c_ult_punto);
 
-			 /* Seteamos la dirección para el siguiente punto. */
-			 if (this->getCaminoARecorrer().size() > 0){
-				 Coordenada c_prox_punto = this->getCaminoARecorrer()[0];
-				 c_prox_punto.x -= this->getPosicion().w / 2;
-				 c_prox_punto.y -= this->getPosicion().h / 2;
+			/* Seteamos la dirección para el siguiente punto. */
+			if (this->getCaminoARecorrer().size() > 0){
+				Coordenada c_prox_punto = this->getCaminoARecorrer()[0];
+				this->revisarCamino(c_ult_punto, c_prox_punto);
+				c_prox_punto.x -= this->getPosicion().w / 2;
+				c_prox_punto.y -= this->getPosicion().h / 2;
 
-				 Direccion direccion = Calculador::calcularDireccion(c_prox_punto, coordPixelSprite());
-			     this->setDireccion(direccion);
-			 }
+				Direccion direccion = Calculador::calcularDireccion(c_prox_punto, coordPixelSprite());
+				this->setDireccion(direccion);
+			}
 
 		}
 

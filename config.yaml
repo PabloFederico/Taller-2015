@@ -61,8 +61,7 @@ escenario:
       - {x: 7, y: 6, tipo: arbol}
       - {x: 1, y: 0, tipo: arbol}
       - {x: 1, y: 1, tipo: arbol}
-      - {x: 5, y: 67, tipo: castillo}
-      - {x: 100, y: 100, tipo: castillo}
+      - {x: 40, y: 40, tipo: castillo}
       - {x: 10, y: 14, tipo: animal}
       - {x: 11, y: 14, tipo: animal}
       - {x: 12, y: 14, tipo: animal}

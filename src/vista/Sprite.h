@@ -40,6 +40,9 @@ private:
 
 	vector<Coordenada> caminoARecorrer;
 
+	Escenario *escenario;
+	Coordenada coord_ceros;
+
 	void cargarFrames();
 
 	void resetTime();
@@ -47,7 +50,7 @@ public:
 	RegistroPosicion regPos;
 
 public:
-	Sprite(int cant_Direcciones, Uint32 cant_Img_Distintas, Imagen* imagen, SDL_Rect posicion);
+	Sprite(int cant_Direcciones, Uint32 cant_Img_Distintas, Imagen* imagen, SDL_Rect posicion, Escenario* escen, Coordenada c_ceros);
 
 	void setDireccion(int direccion);
 
@@ -91,6 +94,8 @@ public:
 	void quitarPrimeraCoordenada();
 
 	bool quedaCaminoPorRecorrer();
+
+	void revisarCamino(Coordenada c_ult_punto, Coordenada c_prox_punto);
 
 	void acomodar();
 
