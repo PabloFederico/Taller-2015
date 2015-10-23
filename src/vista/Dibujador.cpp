@@ -7,6 +7,7 @@
 
 #include "../vista/Dibujador.h"
 #include "../utils/Constantes.h"
+#include "../utils/Loader.h"
 
 /********************************************************************************/
 Dibujador::Dibujador(SDL_Renderer *renderer) {
@@ -142,17 +143,13 @@ void Dibujador::dibujarCapaNegra(CapaNegra* capa){
 }
 
 /********************************************************************************/
-/*
-void Dibujador::dibujarEscenario(Escenario *escenario){
-	SDL_RenderClear(this->renderer);
+void Dibujador::dibujarBarraEstado(Escenario* esc, BarraEstado* barraEstado, TTF_Font* fuenteTexto){
+	//TTF_SetFontOutline(fuenteTexto,60);
+	for (unsigned i = 0; i < imagenesBasura.size(); i++){
+		delete imagenesBasura[i];
+	}
+	imagenesBasura.clear();
 
-	pair<int,int> dimension = escenario->getDimension();
-	dibujarRelieve(dimension.first, dimension.second);
-}
-*/
-
-/********************************************************************************/
-void Dibujador::dibujarBarraEstado(BarraEstado* barraEstado){
 	int width_window;
 	int height_window;
 	SDL_GetRendererOutputSize(renderer,&width_window,&height_window);
@@ -161,17 +158,11 @@ void Dibujador::dibujarBarraEstado(BarraEstado* barraEstado){
 
 	Imagen *imagen;
 	SDL_Rect rect_barra;
+
 	/* Dibujamos el fondo (Para la info de los recursos económicos) */
 	rect_barra.x = 0;
 	rect_barra.y = height_window - dim.second;
-	rect_barra.w = dim.first * 0.1;
-	rect_barra.h = dim.second;
-	imagen = this->contenedor->getImagenUtilTipo(BARRA_FONDO);
-	SDL_RenderCopy(renderer,imagen->getTexture(),NULL,&rect_barra);
-
-	/* Dibujamos el fondo (Para la info de los elementos seleccionados) */
-	rect_barra.x += rect_barra.w;
-	rect_barra.w = dim.first * 0.2;
+	rect_barra.w = dim.first * 0.3;
 	rect_barra.h = dim.second;
 	imagen = this->contenedor->getImagenUtilTipo(BARRA_FONDO);
 	SDL_RenderCopy(renderer,imagen->getTexture(),NULL,&rect_barra);
@@ -182,16 +173,76 @@ void Dibujador::dibujarBarraEstado(BarraEstado* barraEstado){
 	imagen = this->contenedor->getImagenUtilTipo(BARRA_DESCRIPCION);
 	SDL_RenderCopy(renderer,imagen->getTexture(),NULL,&rect_barra);
 
-	/* Dibujamos el minimapa */
+	/* Dibujamos el fondo del minimapa */
 	rect_barra.x += rect_barra.w;
 	rect_barra.w = dim.first * 0.3;
 	imagen = this->contenedor->getImagenUtilTipo(BARRA_FONDO);
 	SDL_RenderCopy(renderer,imagen->getTexture(),NULL,&rect_barra);
+
+	/********************************************************************************/
+	/* Dibujamos los recursos economicos con su respectivos valores */
+	Imagen* imagen_barra_negra = contenedor->getImagenUtilTipo(BARRA_NEGRA);
+	SDL_Rect rect_barra_negra;
+	rect_barra_negra.x = 0;
+	rect_barra_negra.y = rect_barra.y + 3;
+	rect_barra_negra.w = 60;
+	rect_barra_negra.h = 15;
+
+	SDL_Rect rect_recurso;
+	rect_recurso.x = 5;
+	rect_recurso.y = rect_barra.y + 4;
+	rect_recurso.w = 10;
+	rect_recurso.h = 10;
+
+	SDL_Rect rect_num;
+	rect_num.x = rect_barra_negra.w - 10;
+	rect_num.y = rect_barra.y + 6;
+	rect_num.w = 10;
+	rect_num.h = 10;
+
+	map<TipoRecurso, int> mapRecursosEconomicos = barraEstado->getRecursosEconomicos();
+
+	for (int i = MADERA; i <= COMIDA; i++){
+		int cantidad = mapRecursosEconomicos[(TipoRecurso)i];
+		ostringstream convert;
+		convert << cantidad;
+		std::string cant_string = convert.str();
+		Imagen* image_recurso = contenedor->getImagenRecursoTipo((TipoRecurso)i);
+		Imagen* image_num = Loader::cargarTextoConFondo(renderer,fuenteTexto,cant_string,SDL_Color{255,255,255});
+		imagenesBasura.push_back(image_num);
+		SDL_RenderCopy(renderer, imagen_barra_negra->getTexture(), NULL, &rect_barra_negra);
+		SDL_RenderCopy(renderer, image_recurso->getTexture(), NULL, &rect_recurso);
+		SDL_RenderCopy(renderer, image_num->getTexture(), NULL, &rect_num);
+		rect_barra_negra.x += rect_barra_negra.w + 15;
+		rect_recurso.x = rect_barra_negra.x + 5;
+		rect_num.x = rect_barra_negra.x + rect_barra_negra.w - 10;
+	}
+
+	/********************************************************************************/
+	/* Dibujamos el minimapa */
+	Imagen* image_relieve = contenedor->getImagenTipo(PASTO);
+	rect_barra.x += 20;
+	rect_barra.y += 25;
+	rect_barra.w = dim.first * 0.25;
+	rect_barra.h = dim.second * 0.8;
+	SDL_RenderCopy(renderer, image_relieve->getTexture(), NULL, &rect_barra);
+
+	Imagen* image_icono = contenedor->getImagenUtilTipo(ICONO_ROJO);
+	SDL_Rect rect_icono;
+	rect_icono.x = rect_barra.x + rect_barra.w / 2;
+	rect_icono.y = rect_barra.y + rect_barra.h / 2;
+	rect_icono.w = 3;
+	rect_icono.h = 3;
+	SDL_RenderCopy(renderer, image_icono->getTexture(), NULL, &rect_icono);
 
 }
 
 /********************************************************************************/
 Dibujador::~Dibujador() {
 	this->mapInfoEntidades.clear();
+	for (unsigned i = 0; i < imagenesBasura.size(); i++){
+		delete imagenesBasura[i];
+	}
+	imagenesBasura.clear();
 }
 

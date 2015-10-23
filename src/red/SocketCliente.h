@@ -12,6 +12,7 @@
 class SocketCliente: public Socket {
 public:
 	SocketCliente();
+	SocketCliente(std::string string_IP);
 	virtual ~SocketCliente();
 };
 

@@ -175,14 +175,48 @@ void ContenedorDeRecursos::cargarImagenesUtil(){
 	imagen = Loader::cargarImagen(this->renderer,"images/barra_descripcion.png");
 	this->mapImagenesUtil->insert(BARRA_DESCRIPCION,imagen);
 
+	imagen = Loader::cargarImagen(this->renderer,"images/barra_negra.png");
+	this->mapImagenesUtil->insert(BARRA_NEGRA,imagen);
+
 	imagen = Loader::cargarImagen(this->renderer,"images/selector_tile.png");
 	this->mapImagenesUtil->insert(SELECT_TILE,imagen);
+
+	imagen = Loader::cargarImagen(this->renderer,"images/icono_rojo_1.png");
+	this->mapImagenesUtil->insert(ICONO_ROJO,imagen);
+
+	imagen = Loader::cargarImagen(this->renderer,"images/icono_azul_1.png");
+	this->mapImagenesUtil->insert(ICONO_AZUL,imagen);
+
+	imagen = Loader::cargarImagen(this->renderer,"images/icono_amarillo_1.png");
+	this->mapImagenesUtil->insert(ICONO_AMARILLO,imagen);
+
+	imagen = Loader::cargarImagen(this->renderer,"images/icono_naranja_1.png");
+	this->mapImagenesUtil->insert(ICONO_NARANJA,imagen);
+
+	imagen = Loader::cargarImagen(this->renderer,"images/icono_verde_1.png");
+	this->mapImagenesUtil->insert(ICONO_VERDE,imagen);
+
+	imagen = Loader::cargarImagen(this->renderer,"images/icono_rosa_1.png");
+	this->mapImagenesUtil->insert(ICONO_ROSA,imagen);
+
+	imagen = Loader::cargarImagen(this->renderer,"images/icono_blanco_1.png");
+	this->mapImagenesUtil->insert(ICONO_BLANCO,imagen);
+
+	imagen = Loader::cargarImagen(this->renderer,"images/icono_gris_1.png");
+	this->mapImagenesUtil->insert(ICONO_GRIS,imagen);
 }
 
 
 /********************************************************************************/
 void ContenedorDeRecursos::cargarImagenesRecursos(){
+	Imagen *imagen = Loader::cargarImagen(this->renderer,"images/moneda_1.png");
+	this->mapImagenesRecursos->insert(ORO,imagen);
 
+	imagen = Loader::cargarImagen(this->renderer,"images/madera_1.png");
+	this->mapImagenesRecursos->insert(MADERA,imagen);
+
+	imagen = Loader::cargarImagen(this->renderer,"images/comida_1.png");
+	this->mapImagenesRecursos->insert(COMIDA,imagen);
 }
 
 /********************************************************************************/

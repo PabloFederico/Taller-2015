@@ -21,6 +21,7 @@ private:
 
 public:
 	Controller(Connection* lan);
+
 	Juego* getJuego();
 
 	void iniciarJuego();
@@ -30,6 +31,9 @@ public:
 	void agregarCamara(Camara *cam);
 
 	void reiniciarJuego();
+
+	int verificarConexion(std::string string_IP);
+
 	virtual ~Controller();
 };
 

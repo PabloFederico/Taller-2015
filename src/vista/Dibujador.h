@@ -11,6 +11,7 @@
 #include "../utils/ContenedorDeRecursos.h"
 #include "../modelo/Escenario.h"
 #include "../vista/CapaNegra.h"
+#include <SDL2/SDL_ttf.h>
 
 class Dibujador {
 private:
@@ -20,6 +21,7 @@ private:
 	int *cero_x;
 	int *cero_y;
 	SDL_Rect rectRelieve;
+	vector<Imagen*> imagenesBasura;
 
 public:
 	Dibujador(SDL_Renderer *renderer);
@@ -31,7 +33,7 @@ public:
 	void dibujarEntidades();
 	void dibujarProtagonista(Sprite* sprite);
 	void dibujarCapaNegra(CapaNegra* capa);
-	void dibujarBarraEstado(BarraEstado* barraEstado);
+	void dibujarBarraEstado(Escenario* esc, BarraEstado* barraEstado, TTF_Font *fuenteTexto);
 
 	virtual ~Dibujador();
 };

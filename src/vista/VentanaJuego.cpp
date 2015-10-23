@@ -70,12 +70,15 @@ void VentanaJuego::dibujar(){
 
 	int ancho = controlador->getJuego()->getEscenario()->getDimension().first;
 	int largo = controlador->getJuego()->getEscenario()->getDimension().second;
-	CapaNegra* capa = controlador->getJuego()->getEscenario()->getCapa();
+	Escenario* escenario = controlador->getJuego()->getEscenario();
+	CapaNegra* capa = escenario->getCapa();
+	BarraEstado* barraEstado = controlador->getJuego()->getBarraEstado();
 
 	dibujador->dibujarRelieve(ancho,largo);
 	dibujador->dibujarEntidades();
 	dibujador->dibujarCapaNegra(capa);
-	dibujador->dibujarBarraEstado(controlador->getJuego()->getBarraEstado());
+	dibujador->dibujarBarraEstado(escenario, barraEstado, fuenteTexto);
+	SDL_RenderPresent(this->renderer);
 }
 
 /********************************************************************************/
@@ -97,8 +100,6 @@ void VentanaJuego::mostrar(){
 
 	            /* Actualiza el renderer */
 	            this->dibujar();
-
-	            SDL_RenderPresent(this->renderer);
 
 	            SDL_Delay(15);
 
