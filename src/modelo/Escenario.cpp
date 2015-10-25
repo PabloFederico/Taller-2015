@@ -5,11 +5,12 @@
  *      Author: pgfederi
  */
 #include "../modelo/Escenario.h"
+//#include "../modelo/Log.h"
 
 Escenario::Escenario(InfoEscenario infoEsc, EntidadFactory *fabrica): fabricaDeEntidades(fabrica) {
 	this->size_x = infoEsc.size_x;
 	this->size_y = infoEsc.size_y;
-/*
+
 	this->matriz_tiles = new Tile**[size_x];
 	for (int i = 0; i < size_x; i++){
 		this->matriz_tiles[i] = new Tile*[size_y];
@@ -18,7 +19,7 @@ Escenario::Escenario(InfoEscenario infoEsc, EntidadFactory *fabrica): fabricaDeE
 			this->matriz_tiles[i][j] = new Tile();
 		}
 	}
-*/
+
 	this->capa = new CapaFog(size_x,size_y);
 
 	this->posicionesEntidades = new vector<PosEntidad>();
@@ -37,9 +38,10 @@ Escenario::Escenario(InfoEscenario infoEsc, EntidadFactory *fabrica): fabricaDeE
 
 	this->protagonista = this->fabricaDeEntidades->nuevaEntidad(infoEsc.protagonista);
 	Coordenada pos(infoEsc.posX_protagonista, infoEsc.posY_protagonista);
-	//this->agregarEntidad(pos, this->protagonista);
-	PosEntidad posEntidad(pos.x, pos.y, this->protagonista);
-	this->posicionesEntidades->push_back(posEntidad);
+	this->agregarEntidad(pos, this->protagonista);
+	this->c_protagonista = pos;
+	//PosEntidad posEntidad(pos.x, pos.y, this->protagonista);
+	//this->posicionesEntidades->push_back(posEntidad);
 }
 
 /********************************************************************************/
@@ -58,7 +60,27 @@ vector<PosEntidad>* Escenario::getVectorEntidades(){
 }
 
 /********************************************************************************/
+void Escenario::actualizarPosicionProtagonista(Coordenada c){
+	/* Si las coordenadas no son iguales, actualizar la coordenada del protagonista */
+	if (!(c_protagonista == c)){
+		Tile* tile = getTile(c_protagonista.x, c_protagonista.y);
+		vector<Entidad*> entidades = tile->getEntidades();
+		vector<Entidad*>::iterator it = find(entidades.begin(), entidades.end(), protagonista);
+		if (it != entidades.end())
+			entidades.erase(it);
+		/* agregamos al protagonista a su nuevo tile */
+		tile = getTile(c.x, c.y);
+		tile->agregarEntidad(protagonista);
+		c_protagonista = c;
+	}
+}
+/********************************************************************************/
+Tile* Escenario::getTile(int x, int y){
+	return this->matriz_tiles[x][y];
+}
+/********************************************************************************/
 void Escenario::agregarEntidad(Coordenada pos, Entidad* entidad){
+/*
 	try {
 		if (entidad->ocupaSuTile()) {
 			pair<int,int> dim = entidad->getTam();
@@ -72,9 +94,27 @@ void Escenario::agregarEntidad(Coordenada pos, Entidad* entidad){
 		}
 		PosEntidad posEntidad(pos.x, pos.y, entidad);
 		this->posicionesEntidades->push_back(posEntidad);
-
-		//this->matriz_tiles[pos.x][pos.y]->agregarEntidad(entidad);
-	} catch ( TileEstaOcupado &e ) {} // TODO: Alguna devolución de que no se pudo insertar?
+*/
+	try {
+		pair<int,int> dim = entidad->getTam();
+		for (int j = 0; j < dim.second; j++)
+			for (int i = 0; i < dim.first; i++){
+				// pregunta si es tile esta vacio
+				Tile* tile = matriz_tiles[pos.x+i][pos.y+j];
+				if (!tile->estaLibre())
+					throw TileEstaOcupado();
+			}
+		for (int j = 0; j < dim.second; j++){
+			for (int i = 0; i < dim.first; i++){
+				Tile* tile = this->matriz_tiles[pos.x+i][pos.y+j];
+				tile->agregarEntidad(entidad);
+			}
+		}
+		PosEntidad posEntidad(pos.x, pos.y, entidad);
+		this->posicionesEntidades->push_back(posEntidad);
+	} catch ( TileEstaOcupado &e ) {
+		//Log::imprimirALog(ERR,"Se intento agregar una entidad en un tile ocupado");
+	} // TODO: Alguna devolución de que no se pudo insertar?
 
 
 }
@@ -128,13 +168,22 @@ CapaFog* Escenario::getCapa() {
 
 /********************************************************************************/
 Escenario::~Escenario() {
-	for (unsigned i = 0; i < posicionesEntidades->size(); i++){
+/*	for (unsigned i = 0; i < posicionesEntidades->size(); i++){
 		Entidad* entidad = (*posicionesEntidades)[i].entidad;
 		delete entidad; // meter en quitarEntidad y reemplazar acá?
 	}
+	*/
 	this->posicionesEntidades->clear();
 	delete this->posicionesEntidades;
 
 	delete this->capa;
+
+	for (int i = 0; i < size_x; i++){
+		for (int j = 0; j < size_y; j++){
+			delete matriz_tiles[i][j];
+		}
+		delete[] matriz_tiles[i];
+	}
+	delete[] matriz_tiles;
 }
 

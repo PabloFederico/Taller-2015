@@ -79,8 +79,11 @@ void Dibujador::dibujarEntidades(){
 					if (sprite->currentTime() > (1000/sprite->getFps())){
 						sprite->efectuarMovimiento();
 					}
-					SDL_Rect frame = sprite->getFrameActual();
-					SDL_RenderCopy(this->renderer,imagenEntidad->getTexture(),&frame,&pos);
+					Coordenada c = Calculador::tileParaPixel(Coordenada(pos.x+pos.w/2,pos.y+pos.h),Coordenada(*cero_x,*cero_y));
+					if (sprite->estaEnZonaDespejada(c.x, c.y)){
+						SDL_Rect frame = sprite->getFrameActual();
+						SDL_RenderCopy(this->renderer,imagenEntidad->getTexture(),&frame,&pos);
+					}
 				}
 				//Entidades sin movimiento:
 				else{
@@ -148,8 +151,66 @@ void Dibujador::dibujarCapaNegra(CapaFog* capa){
 }
 
 /********************************************************************************/
+void Dibujador::dibujarEscenario(Escenario* esc){
+	pair<int,int> dimension = esc->getDimension();
+	CapaFog* capaFog = esc->getCapa();
+	Imagen *imagenRelieve = this->contenedor->getImagenTipo(PASTO);
+	Imagen *imagenGris = this->contenedor->getImagenUtilTipo(CAPA_GRIS);
+
+	int cero_relativo_x = *this->cero_x;
+	int cero_relativo_y = *this->cero_y;
+
+	rectRelieve.w = ANCHO_PIXEL_PASTO;
+	rectRelieve.h = ALTO_PIXEL_PASTO;
+
+	/* Recorremos tile por tile */
+	for (int j = 0; j < dimension.second; j++){
+		rectRelieve.x = cero_relativo_x;
+		rectRelieve.y = cero_relativo_y;
+		for (int i = 0; i < dimension.first; i++){
+
+			/* Solo dibujamos para las zonas visibles (GRISES ó COLOR) */
+			if (capaFog->getEstadoTile(i,j) != ESTADO_NEGRO){
+				SDL_RenderCopy(renderer,imagenRelieve->getTexture(),NULL,&rectRelieve);
+				Tile* tile = esc->getTile(i,j);
+				vector<Entidad*> entidades = tile->getEntidades();
+				for (unsigned k = 0; k < entidades.size(); k++){
+					Entidad* entidad = entidades[k];
+					Sprite* sprite = this->contenedor->getSpriteDeEntidad(entidad);
+					SDL_Rect pos = sprite->getPosicion();
+					//Entidades con movimiento:
+					if (entidad->esMovible() && sprite->estaEnMovimiento()){
+						if (sprite->currentTime() > (1000/sprite->getFps())){
+							sprite->efectuarMovimiento();
+						}
+						/* Si la entidad esta dentro del campo de visón, lo dibujamos */
+						if (capaFog->getEstadoTile(i,j) == ESTADO_COLOR){
+							SDL_Rect frame = sprite->getFrameActual();
+							SDL_RenderCopy(this->renderer,sprite->getImagen()->getTexture(),&frame,&pos);
+						}
+					}
+					//Entidades sin movimiento:
+					else{
+						SDL_Rect rect = sprite->getFrameActual();
+						//SDL_Rect rect = sprite->getSDLRect(j,k);
+						SDL_RenderCopy(this->renderer,sprite->getImagen()->getTexture(),&rect,&pos);
+						//pos.x += pos.w;
+					}
+				}
+			}
+			if (capaFog->getEstadoTile(i,j) == ESTADO_GRIS){
+				SDL_RenderCopy(renderer,imagenGris->getTexture(),NULL,&rectRelieve);
+			}
+			rectRelieve.x += DISTANCIA_ENTRE_X;
+			rectRelieve.y += DISTANCIA_ENTRE_Y;
+		}
+		cero_relativo_x -= DISTANCIA_ENTRE_X;
+		cero_relativo_y += DISTANCIA_ENTRE_Y;
+	}
+}
+
+/********************************************************************************/
 void Dibujador::dibujarBarraEstado(Escenario* esc, BarraEstado* barraEstado, TTF_Font* fuenteTexto){
-	//TTF_SetFontOutline(fuenteTexto,60);
 	for (unsigned i = 0; i < imagenesBasura.size(); i++){
 		delete imagenesBasura[i];
 	}

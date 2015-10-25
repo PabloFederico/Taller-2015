@@ -17,7 +17,9 @@ private:
 public:
 	Tile();
 
-	bool estaVacio(int x, int y);
+	bool estaLibre();
+
+	vector<Entidad*> getEntidades();
 
 	void agregarEntidad(Entidad* entidad);
 

@@ -36,6 +36,8 @@ private:
 
 	Entidad* protagonista;
 
+	Coordenada c_protagonista;
+
 	void quitarEntidad(Coordenada pos, Entidad* entidad);
 
 	/* Agrega una entidad en una posición indicada como parámetro */
@@ -58,6 +60,10 @@ public:
 	void ocuparTile(Coordenada c);
 
 	void desocuparTile(Coordenada c);
+
+	Tile* getTile(int x, int y);
+
+	void actualizarPosicionProtagonista(Coordenada c);
 
 	CapaFog* getCapa();
 

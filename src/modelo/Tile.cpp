@@ -11,11 +11,15 @@ Tile::Tile() {
 
 }
 
-bool Tile::estaVacio(int x, int y){
+bool Tile::estaLibre(){
 	if (entidades.size() == 0) return true;
 	if (entidades.size() == 1 && entidades[0]->getTipo() == TIERRA) return true;
 
 	return false;
+}
+
+vector<Entidad*> Tile::getEntidades(){
+	return entidades;
 }
 
 void Tile::agregarEntidad(Entidad* entidad){
