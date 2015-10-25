@@ -77,8 +77,6 @@ public:
 
 	void setDelay(int delay);
 
-	//SDL_Rect getSDLRect(int i, int j);
-
 	int currentTime();
 
 	bool checkColision(Sprite* otro);
@@ -96,8 +94,6 @@ public:
 	bool quedaCaminoPorRecorrer();
 
 	void revisarCamino(Coordenada c_ult_punto, Coordenada c_prox_punto);
-
-	bool estaEnZonaDespejada(int x, int y);
 
 	void acomodar();
 

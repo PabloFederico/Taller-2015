@@ -23,6 +23,8 @@ private:
 	SDL_Rect rectRelieve;
 	vector<Imagen*> imagenesBasura;
 
+	void dibujarMiniMapa(Escenario* esc, SDL_Rect rect);
+
 public:
 	Dibujador(SDL_Renderer *renderer);
 	void setOrigen(int *cero_x, int *cero_y);

@@ -6,6 +6,7 @@
  */
 
 #include "Tile.h"
+#include <algorithm>
 
 Tile::Tile() {
 
@@ -24,6 +25,12 @@ vector<Entidad*> Tile::getEntidades(){
 
 void Tile::agregarEntidad(Entidad* entidad){
 	entidades.push_back(entidad);
+}
+
+void Tile::eliminarEntidad(Entidad* entidad){
+	vector<Entidad*>::iterator it = find(entidades.begin(), entidades.end(), entidad);
+	if (it != entidades.end())
+		entidades.erase(it);
 }
 
 Tile::~Tile() {

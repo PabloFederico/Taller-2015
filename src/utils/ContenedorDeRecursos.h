@@ -24,7 +24,6 @@ private:
 	map<TipoEntidad, InfoEntidad> mapInfoEntidades;
 
 	Map<TipoImagenUtil, Imagen*> *mapImagenesUtil; /* para las imagenes de barra de estado */
-	Map<TipoRecurso, Imagen*> *mapImagenesRecursos; /* para madera, oro, comida, etc*/
 
 public:
 	ContenedorDeRecursos(SDL_Renderer *renderer);
@@ -48,8 +47,6 @@ public:
 	Imagen* getImagenUtilTipo(TipoImagenUtil tipo);
 
 	void cargarImagenesRecursos();
-
-	Imagen* getImagenRecursoTipo(TipoRecurso tipo);
 
 	virtual ~ContenedorDeRecursos();
 };

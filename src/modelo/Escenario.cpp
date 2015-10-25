@@ -64,10 +64,7 @@ void Escenario::actualizarPosicionProtagonista(Coordenada c){
 	/* Si las coordenadas no son iguales, actualizar la coordenada del protagonista */
 	if (!(c_protagonista == c)){
 		Tile* tile = getTile(c_protagonista.x, c_protagonista.y);
-		vector<Entidad*> entidades = tile->getEntidades();
-		vector<Entidad*>::iterator it = find(entidades.begin(), entidades.end(), protagonista);
-		if (it != entidades.end())
-			entidades.erase(it);
+		tile->eliminarEntidad(protagonista);
 		/* agregamos al protagonista a su nuevo tile */
 		tile = getTile(c.x, c.y);
 		tile->agregarEntidad(protagonista);

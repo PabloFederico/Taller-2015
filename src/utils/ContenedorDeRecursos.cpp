@@ -16,7 +16,6 @@ ContenedorDeRecursos::ContenedorDeRecursos(SDL_Renderer *renderer) {
 	this->mapSpritesEntidades = new Map<Entidad*, Sprite*>();
 	this->mapImagenes = new Map<TipoEntidad, Imagen*>();
 	mapImagenesUtil = new Map<TipoImagenUtil, Imagen*>();
-	mapImagenesRecursos = new Map<TipoRecurso, Imagen*>();
 }
 
 /********************************************************************************/
@@ -191,7 +190,7 @@ void ContenedorDeRecursos::cargarImagenesUtil(){
 	imagen = Loader::cargarImagen(this->renderer,"images/icono_naranja_1.png");
 	this->mapImagenesUtil->insert(ICONO_NARANJA,imagen);
 
-	imagen = Loader::cargarImagen(this->renderer,"images/icono_verde_1.png");
+	imagen = Loader::cargarImagen(this->renderer,"images/icono_verde_2.png");
 	this->mapImagenesUtil->insert(ICONO_VERDE,imagen);
 
 	imagen = Loader::cargarImagen(this->renderer,"images/icono_rosa_1.png");
@@ -214,13 +213,13 @@ void ContenedorDeRecursos::cargarImagenesUtil(){
 /********************************************************************************/
 void ContenedorDeRecursos::cargarImagenesRecursos(){
 	Imagen *imagen = Loader::cargarImagen(this->renderer,"images/moneda_1.png");
-	this->mapImagenesRecursos->insert(ORO,imagen);
+	this->mapImagenes->insert(ORO,imagen);
 
 	imagen = Loader::cargarImagen(this->renderer,"images/madera_1.png");
-	this->mapImagenesRecursos->insert(MADERA,imagen);
+	this->mapImagenes->insert(MADERA,imagen);
 
 	imagen = Loader::cargarImagen(this->renderer,"images/comida_1.png");
-	this->mapImagenesRecursos->insert(COMIDA,imagen);
+	this->mapImagenes->insert(COMIDA,imagen);
 }
 
 /********************************************************************************/
@@ -229,14 +228,6 @@ Imagen* ContenedorDeRecursos::getImagenUtilTipo(TipoImagenUtil tipo){
 	Imagen* imagen = (*p).second;
 	return imagen;
 }
-
-/********************************************************************************/
-Imagen* ContenedorDeRecursos::getImagenRecursoTipo(TipoRecurso tipo){
-	map<TipoRecurso,Imagen* >::iterator p = this->mapImagenesRecursos->find(tipo);
-	Imagen* imagen = (*p).second;
-	return imagen;
-}
-
 
 /********************************************************************************/
 ContenedorDeRecursos::~ContenedorDeRecursos() {
@@ -257,14 +248,6 @@ ContenedorDeRecursos::~ContenedorDeRecursos() {
 		delete imagen;
 	}
 	delete this->mapImagenesUtil;
-
-	map<TipoRecurso, Imagen* >::iterator ittt = this->mapImagenesRecursos->begin();
-	while (ittt != this->mapImagenesRecursos->end()){
-		Imagen *imagen = ittt->second;
-		ittt++;
-		delete imagen;
-	}
-	delete this->mapImagenesRecursos;
 
 	map<Entidad*, Sprite* >::iterator itttt = this->mapSpritesEntidades->begin();
 	while (itttt != this->mapSpritesEntidades->end()){

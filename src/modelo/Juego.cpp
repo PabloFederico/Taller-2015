@@ -268,6 +268,7 @@ int Juego::getMargenScroll(){
 Juego::~Juego() {
 	delete this->escenario;
 	delete this->connection;
+	delete this->barraEstado;
 }
 
 

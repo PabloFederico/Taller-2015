@@ -19,11 +19,11 @@ std::pair<int, int> BarraEstado::getDimension(){
 	return std::make_pair(width,height);
 }
 
-void BarraEstado::agregarRecursoEconomico(TipoRecurso tipo){
+void BarraEstado::agregarRecursoEconomico(TipoEntidad tipo){
 	mapRecursosEconomicos[tipo]++;
 }
 
-std::map<TipoRecurso, int> BarraEstado::getRecursosEconomicos(){
+std::map<TipoEntidad, int> BarraEstado::getRecursosEconomicos(){
 	return mapRecursosEconomicos;
 }
 

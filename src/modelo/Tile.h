@@ -23,6 +23,8 @@ public:
 
 	void agregarEntidad(Entidad* entidad);
 
+	void eliminarEntidad(Entidad* entidad);
+
 	virtual ~Tile();
 };
 

@@ -45,5 +45,7 @@ int Controller::verificarConexion(std::string string_IP){
 
 Controller::~Controller() {
 	delete this->juego;
+	delete this->controladorCamara;
+	delete this->controladorMouse;
 }
 

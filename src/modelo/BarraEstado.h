@@ -14,16 +14,16 @@ class BarraEstado {
 private:
 	int height;
 	int width;
-	std::map<TipoRecurso, int> mapRecursosEconomicos;
+	std::map<TipoEntidad, int> mapRecursosEconomicos;
 
 public:
 	BarraEstado(int ancho, int alto);
 
-	void agregarRecursoEconomico(TipoRecurso tipo);
+	void agregarRecursoEconomico(TipoEntidad tipo);
 
 	std::pair<int,int> getDimension();
 
-	std::map<TipoRecurso, int> getRecursosEconomicos();
+	std::map<TipoEntidad, int> getRecursosEconomicos();
 
 	virtual ~BarraEstado();
 };

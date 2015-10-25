@@ -161,11 +161,6 @@ int Sprite::getFps(){
 }
 
 /********************************************************************************/
-//SDL_Rect Sprite::getSDLRect(int i, int j){
-//	return this->frames[i][j];
-//}
-
-/********************************************************************************/
 void Sprite::setDelay(int delay){
 	this->delay = delay;
 }
@@ -344,13 +339,6 @@ void Sprite::update(int vel_personaje) {
 
            // bool hayColision = DetectorDeColisiones::verificarColisiones(this,juego->getSpritesEntidades());
            // if (hayColision) this->activarMovimiento(false);
-}
-
-/********************************************************************************/
-bool Sprite::estaEnZonaDespejada(int x, int y){
-	EstadoCapa estadoCapa = escenario->getCapa()->getEstadoTile(x,y);
-	if (estadoCapa == ESTADO_COLOR) return true;
-	return false;
 }
 
 /********************************************************************************/

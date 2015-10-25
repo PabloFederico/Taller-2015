@@ -28,6 +28,7 @@ void Dibujador::setContenedorDeRecursos(ContenedorDeRecursos* container){
 }
 
 /********************************************************************************/
+/*
 void Dibujador::dibujarRelieve(int tiles_x, int tiles_y){
 	Imagen *imagenRelieve = this->contenedor->getImagenTipo(PASTO);
 
@@ -37,7 +38,7 @@ void Dibujador::dibujarRelieve(int tiles_x, int tiles_y){
 	rectRelieve.w = ANCHO_PIXEL_PASTO;
 	rectRelieve.h = ALTO_PIXEL_PASTO;
 
-	/* Dibujamos el relieve por Default */
+	// Dibujamos el relieve por Default
 	for(int j = 0; j < tiles_y; j++){
 
 		rectRelieve.x = cero_relativo_x;
@@ -53,8 +54,9 @@ void Dibujador::dibujarRelieve(int tiles_x, int tiles_y){
 		cero_relativo_y += DISTANCIA_ENTRE_Y;
 	}
 }
-
+*/
 /********************************************************************************/
+/*
 void Dibujador::dibujarEntidades(){
 	map<Entidad*,Sprite* >::iterator it = this->contenedor->getMapaSpritesEntidades()->begin();
 	while (it != contenedor->getMapaSpritesEntidades()->end()){
@@ -79,11 +81,11 @@ void Dibujador::dibujarEntidades(){
 					if (sprite->currentTime() > (1000/sprite->getFps())){
 						sprite->efectuarMovimiento();
 					}
-					Coordenada c = Calculador::tileParaPixel(Coordenada(pos.x+pos.w/2,pos.y+pos.h),Coordenada(*cero_x,*cero_y));
-					if (sprite->estaEnZonaDespejada(c.x, c.y)){
+					//Coordenada c = Calculador::tileParaPixel(Coordenada(pos.x+pos.w/2,pos.y+pos.h),Coordenada(*cero_x,*cero_y));
+					//if (sprite->estaEnZonaDespejada(c.x, c.y)){
 						SDL_Rect frame = sprite->getFrameActual();
 						SDL_RenderCopy(this->renderer,imagenEntidad->getTexture(),&frame,&pos);
-					}
+					//}
 				}
 				//Entidades sin movimiento:
 				else{
@@ -98,20 +100,22 @@ void Dibujador::dibujarEntidades(){
 		//}
 
 		it++;
-	} /* Fin While */
+	} // Fin While
 }
-
+*/
 /********************************************************************************/
+/*
 void Dibujador::dibujarProtagonista(Sprite* sprite){
-	/* Dibujamos al player */
+	// Dibujamos al player
 	SDL_Rect rect = sprite->getPosicion();
 
 	SDL_Texture* texturePlayer = sprite->getImagen()->getTexture();
 	SDL_Rect frame = sprite->getFrameActual();
 	SDL_RenderCopy(this->renderer,texturePlayer,&frame,&rect);
 }
-
+*/
 /********************************************************************************/
+/*
 void Dibujador::dibujarCapaNegra(CapaFog* capa){
 		int tiles_x = capa->getDimension().first;
 		int tiles_y = capa->getDimension().second;
@@ -124,7 +128,7 @@ void Dibujador::dibujarCapaNegra(CapaFog* capa){
 		rectRelieve.w = ANCHO_PIXEL_PASTO;
 		rectRelieve.h = ALTO_PIXEL_PASTO;
 
-		/* Dibujamos la capa negra */
+		// Dibujamos la capa negra
 		for(int j = 0; j < tiles_y; j++){
 
 			rectRelieve.x = cero_relativo_x;
@@ -149,7 +153,7 @@ void Dibujador::dibujarCapaNegra(CapaFog* capa){
 			cero_relativo_y += DISTANCIA_ENTRE_Y;
 		}
 }
-
+*/
 /********************************************************************************/
 void Dibujador::dibujarEscenario(Escenario* esc){
 	pair<int,int> dimension = esc->getDimension();
@@ -192,9 +196,7 @@ void Dibujador::dibujarEscenario(Escenario* esc){
 					//Entidades sin movimiento:
 					else{
 						SDL_Rect rect = sprite->getFrameActual();
-						//SDL_Rect rect = sprite->getSDLRect(j,k);
 						SDL_RenderCopy(this->renderer,sprite->getImagen()->getTexture(),&rect,&pos);
-						//pos.x += pos.w;
 					}
 				}
 			}
@@ -266,14 +268,14 @@ void Dibujador::dibujarBarraEstado(Escenario* esc, BarraEstado* barraEstado, TTF
 	rect_num.w = 10;
 	rect_num.h = 10;
 
-	map<TipoRecurso, int> mapRecursosEconomicos = barraEstado->getRecursosEconomicos();
+	map<TipoEntidad, int> mapRecursosEconomicos = barraEstado->getRecursosEconomicos();
 
-	for (int i = MADERA; i <= COMIDA; i++){
-		int cantidad = mapRecursosEconomicos[(TipoRecurso)i];
+	for (int i = MADERA; i <= ORO; i++){
+		int cantidad = mapRecursosEconomicos[(TipoEntidad)i];
 		ostringstream convert;
 		convert << cantidad;
 		std::string cant_string = convert.str();
-		Imagen* image_recurso = contenedor->getImagenRecursoTipo((TipoRecurso)i);
+		Imagen* image_recurso = contenedor->getImagenTipo((TipoEntidad)i);
 		Imagen* image_num = Loader::cargarTextoConFondo(renderer,fuenteTexto,cant_string,SDL_Color{255,255,255});
 		imagenesBasura.push_back(image_num);
 		SDL_RenderCopy(renderer, imagen_barra_negra->getTexture(), NULL, &rect_barra_negra);
@@ -286,21 +288,96 @@ void Dibujador::dibujarBarraEstado(Escenario* esc, BarraEstado* barraEstado, TTF
 
 	/********************************************************************************/
 	/* Dibujamos el minimapa */
-	Imagen* image_relieve = contenedor->getImagenTipo(PASTO);
 	rect_barra.x += 20;
 	rect_barra.y += 25;
 	rect_barra.w = dim.first * 0.25;
 	rect_barra.h = dim.second * 0.8;
-	SDL_RenderCopy(renderer, image_relieve->getTexture(), NULL, &rect_barra);
+	this->dibujarMiniMapa(esc,rect_barra);
+}
 
-	Imagen* image_icono = contenedor->getImagenUtilTipo(ICONO_ROJO);
-	SDL_Rect rect_icono;
-	rect_icono.x = rect_barra.x + rect_barra.w / 2;
-	rect_icono.y = rect_barra.y + rect_barra.h / 2;
-	rect_icono.w = 3;
-	rect_icono.h = 3;
-	SDL_RenderCopy(renderer, image_icono->getTexture(), NULL, &rect_icono);
+/********************************************************************************/
+void Dibujador::dibujarMiniMapa(Escenario* esc, SDL_Rect rect){
+	Imagen *imagenRelieve = contenedor->getImagenTipo(PASTO);
+	Imagen* imagenNegra = contenedor->getImagenUtilTipo(CAPA_NEGRA);
 
+	SDL_RenderCopy(renderer,imagenNegra->getTexture(),NULL,&rect);
+
+	pair<int,int> dimension = esc->getDimension();
+	int ANCHO = rect.w / dimension.first;
+	int ALTO = rect.h / dimension.second;
+
+	CapaFog* capaFog = esc->getCapa();
+
+
+	int cero_relativo_x = rect.x + rect.w / 2 - ANCHO / 2;
+	int cero_relativo_y = rect.y;
+
+	rectRelieve.w = ANCHO;
+	rectRelieve.h = ALTO;
+
+	/* Recorremos tile por tile */
+	for (int j = 0; j < dimension.second; j++){
+		rectRelieve.x = cero_relativo_x;
+		rectRelieve.y = cero_relativo_y;
+		for (int i = 0; i < dimension.first; i++){
+
+			/* Solo dibujamos para las zonas visibles (GRISES ó COLOR) */
+
+			if (capaFog->getEstadoTile(i,j) != ESTADO_NEGRO){
+				SDL_RenderCopy(renderer,imagenRelieve->getTexture(),NULL,&rectRelieve);
+				Tile* tile = esc->getTile(i,j);
+				vector<Entidad*> entidades = tile->getEntidades();
+				SDL_Rect rect_aux = rectRelieve;
+				rect_aux.w = 3;
+				rect_aux.h = 3;
+				Imagen* image;
+				for (unsigned k = 0; k < entidades.size(); k++){
+					Entidad* entidad = entidades[k];
+					switch (entidad->getTipo()){
+						case SOLDADO:
+						case JUANA_DE_ARCO:
+								image = contenedor->getImagenUtilTipo(ICONO_ROJO);
+								break;
+						case ANIMAL:
+								image = contenedor->getImagenUtilTipo(ICONO_BLANCO);
+								break;
+						case CASTILLO:
+								image = contenedor->getImagenUtilTipo(ICONO_VIOLETA);
+								rect_aux = rectRelieve;
+								break;
+						case ARBOL:
+								image = contenedor->getImagenUtilTipo(ICONO_VERDE);
+								break;
+						case AGUA:
+								image = contenedor->getImagenTipo(AGUA);
+								rect_aux = rectRelieve;
+								break;
+						case TIERRA:
+								image = contenedor->getImagenTipo(TIERRA);
+								rect_aux = rectRelieve;
+								break;
+						case MADERA:
+								image = contenedor->getImagenUtilTipo(ICONO_NARANJA);
+								break;
+						case COMIDA:
+								image = contenedor->getImagenUtilTipo(ICONO_ROSA);
+								break;
+						case ORO:
+								image = contenedor->getImagenUtilTipo(ICONO_AMARILLO);
+								break;
+						default : break;
+ 					}
+
+					SDL_RenderCopy(this->renderer,image->getTexture(),NULL,&rect_aux);
+
+				}
+			}
+			rectRelieve.x += 0.5 * ANCHO;
+			rectRelieve.y += 0.5 * ALTO;
+		}
+		cero_relativo_x -= 0.5 * ANCHO;
+		cero_relativo_y += 0.5 * ALTO;
+	}
 }
 
 /********************************************************************************/
