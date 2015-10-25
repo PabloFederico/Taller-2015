@@ -13,6 +13,9 @@
 VentanaJuego::VentanaJuego(Controller *controlador):Ventana(controlador){
 	this->dibujador = NULL;
 	this->cargarJuego(controlador->getJuego());
+
+	///
+	esc = NULL;
 }
 
 /********************************************************************************/
@@ -116,8 +119,8 @@ void VentanaJuego::mostrar(Server* server = NULL){
 	            //if (server)
 	            //	server->correr();
 
-	            ///para pruebas
-	            this->dibujador->repintarOcupado(this->esc);
+	            ///para pruebas, no funciona!
+	            //this->dibujador->repintarOcupado(this->esc);
 
 		} /* Fin del while*/
 }

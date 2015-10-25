@@ -74,12 +74,13 @@ void Dibujador::dibujarEntidades(){
 			//for (int k = 0; k < tiles_ocupados; k++){
 
 				//Entidades con movimiento:
-				//TODO: Esto hay que hacerlo mas generico.
 				if (entidad->esMovible() && sprite->estaEnMovimiento()){
 					if (sprite->currentTime() > (1000/sprite->getFps())){
 						sprite->efectuarMovimiento();
 					}
+					// NO ATRAPA FUERADEESCENARIO
 					Coordenada c = Calculador::tileParaPixel(Coordenada(pos.x+pos.w/2,pos.y+pos.h),Coordenada(*cero_x,*cero_y));
+					//
 					if (sprite->estaEnZonaDespejada(c.x, c.y)){
 						SDL_Rect frame = sprite->getFrameActual();
 						SDL_RenderCopy(this->renderer,imagenEntidad->getTexture(),&frame,&pos);

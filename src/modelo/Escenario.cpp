@@ -68,6 +68,7 @@ void Escenario::actualizarPosicionProtagonista(Coordenada c){
 		vector<Entidad*>::iterator it = find(entidades.begin(), entidades.end(), protagonista);
 		if (it != entidades.end())
 			entidades.erase(it);
+
 		/* agregamos al protagonista a su nuevo tile */
 		tile = getTile(c.x, c.y);
 		tile->agregarEntidad(protagonista);
@@ -99,7 +100,7 @@ void Escenario::agregarEntidad(Coordenada pos, Entidad* entidad){
 		pair<int,int> dim = entidad->getTam();
 		for (int j = 0; j < dim.second; j++)
 			for (int i = 0; i < dim.first; i++){
-				// pregunta si es tile esta vacio
+				// pregunta si ese tile está vacío
 				Tile* tile = matriz_tiles[pos.x+i][pos.y+j];
 				if (!tile->estaLibre())
 					throw TileEstaOcupado();
@@ -121,15 +122,22 @@ void Escenario::agregarEntidad(Coordenada pos, Entidad* entidad){
 
 /********************************************************************************/
 void Escenario::quitarEntidad(Coordenada pos, Entidad* entidad) {
+	// La quita del vector posicionesEntidades.
 	PosEntidad pE(pos.x, pos.y, entidad);
 	std::vector<PosEntidad>::iterator it = std::find(this->posicionesEntidades->begin(), this->posicionesEntidades->end(), pE);
 	if (it != this->posicionesEntidades->end()) {
 		this->posicionesEntidades->erase(it);
 
+		// La quita de los Tile que ocupaba.
 		pair<int,int> dim = entidad->getTam();
 		for (int j = 0; j < dim.second; j++)
-			for (int i = 0; i < dim.first; i++)
-				desocuparTile(Coordenada(pos.x + i, pos.y + j));
+			for (int i = 0; i < dim.first; i++) {
+				Tile* tile = getTile(pos.x+i, pos.y+j);
+				vector<Entidad*> entidades = tile->getEntidades();
+				vector<Entidad*>::iterator it2 = find(entidades.begin(), entidades.end(), entidad);
+				if (it2 != entidades.end())
+					entidades.erase(it2);
+			}
 	} //else entidad no estaba en el vector posicionesEntidades... Algo TODO?
 }
 
@@ -138,16 +146,10 @@ void Escenario::quitarEntidad(Coordenada pos, Entidad* entidad) {
 bool Escenario::tileEsOcupable(Coordenada c) {
 	if (c.x < 0 || c.y < 0 || c.x >= this->size_x || c.y >= this->size_y)
 		return false;
-
-	return (!this->estadoOcupadoDeTiles[c]);
-//	for (std::vector<PosEntidad>::iterator it = this->posicionesEntidades->begin(); it < this->posicionesEntidades->end(); ++it) {
-//		if (it->x == c.x && it->y == c.y && it->entidad->ocupaSuTile())
-//			return false;
-//	}
-//	return true;
+	return (this->matriz_tiles[c.x][c.y]->estaLibre());
 }
 
-/********************************************************************************/
+/********************************************************************************
 void Escenario::ocuparTile(Coordenada c) {
 	bool* oc = &this->estadoOcupadoDeTiles[c];
 	if (*oc == true)
@@ -155,13 +157,13 @@ void Escenario::ocuparTile(Coordenada c) {
 	*oc = true;
 }
 
-/********************************************************************************/
+********************************************************************************
 // No avisa si no estaba ocupado.
 void Escenario::desocuparTile(Coordenada c) {
 	this->estadoOcupadoDeTiles[c] = false;
 }
 
-/********************************************************************************/
+********************************************************************************/
 CapaFog* Escenario::getCapa() {
 	return this->capa;
 }

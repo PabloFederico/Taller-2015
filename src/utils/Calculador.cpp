@@ -52,7 +52,7 @@ Coordenada Calculador::calcularPosicionInversa(Coordenada coord_pixel, Coordenad
 	return Coordenada(tileX,tileY);
 }
 
-double Calculador::calcularDistanciaEntrePixeles(Coordenada pixel1, Coordenada pixel2){
+double Calculador::calcularDistanciaEntrePixeles(Coordenada pixel1, Coordenada pixel2){	// ESTO TIENE FLOOR, POR QUÉ DOUBLE?
 	double DifferenceX = pixel1.x - pixel2.x;
     double DifferenceY = pixel1.y - pixel2.y;
     double distance = floor(sqrt((DifferenceX * DifferenceX) + (DifferenceY * DifferenceY)));
@@ -226,28 +226,30 @@ Camino Calculador::obtenerCaminoMin(Escenario *esc, Coordenada coord_pixel_orig,
 			Coordenada c;
 			pActualIt = vecinos.begin();
 			pActual = (*pActualIt);
+
 			for (c.y = pActual->pos.y-1; c.y <= pActual->pos.y+1; c.y++) {
 				for (c.x = pActual->pos.x-1; c.x <= pActual->pos.x+1; c.x++) {
 					if ( (!pActual->padre || !pActual->padre->esTile(c)) && (!pActual->esTile(c)) && esc->tileEsOcupable(c) ) {
+
 						if (c == pos_tile_destino) {
 							Nodo nodoAux(c, pActual, pos_tile_destino);
 							if ((!encontrado) || nodoAux.f() < nodoFinal.f())
 								nodoFinal = nodoAux;
 							encontrado = true;
-						}
-						//if (c == pos_tile_destino)
-						//	throw DestinoEncontrado();
 
-						it = std::find_if(vecinos.begin(), vecinos.end(), Nodo::CmpPointerXY(c));
-						if (it == vecinos.end()) {
-							std::vector<Nodo*>::iterator itV = std::lower_bound(vecinos.begin(), vecinos.end(), Nodo(c, pActual, pos_tile_destino), Nodo::CmpNodoVsPointerF());
-							vecinos.insert(itV, new Nodo(c, pActual, pos_tile_destino));
-						} else if ((*it)->guardarMenorG(pActual)) {
-							Nodo *ppVecino = *it; //comprobar con ppVecino si se borra en la siguiente l'inea
-							vecinos.erase(it);
-							it = std::lower_bound(vecinos.begin(), vecinos.end(), ppVecino, Nodo::CmpPointersF());
-							vecinos.insert(it, ppVecino);
+						} else if (std::find_if(visitados.begin(), visitados.end(), Nodo::CmpPointerXY(c)) == visitados.end()) {
+							it = std::find_if(vecinos.begin(), vecinos.end(), Nodo::CmpPointerXY(c));
+							if (it == vecinos.end()) {
+								std::vector<Nodo*>::iterator itV = std::lower_bound(vecinos.begin(), vecinos.end(), Nodo(c, pActual, pos_tile_destino), Nodo::CmpNodoVsPointerF());
+								vecinos.insert(itV, new Nodo(c, pActual, pos_tile_destino));
+							} else if ((*it)->guardarMenorG(pActual)) {
+								Nodo *ppVecino = *it;
+								vecinos.erase(it);
+								it = std::lower_bound(vecinos.begin(), vecinos.end(), ppVecino, Nodo::CmpPointersF());
+								vecinos.insert(it, ppVecino);
+							}
 						}
+
 					}
 				}
 			}
@@ -270,11 +272,10 @@ Camino Calculador::obtenerCaminoMin(Escenario *esc, Coordenada coord_pixel_orig,
 			camino.agregar( pos_tile_destino );
 	}
 
-	for (pActualIt = visitados.begin(); pActualIt < vecinos.end(); ++pActualIt) {
-		if (pActualIt == visitados.end())
-			pActualIt = vecinos.begin();
+	for (pActualIt = visitados.begin(); pActualIt < visitados.end(); ++pActualIt)
 		delete *pActualIt;
-	}
+	for (pActualIt =   vecinos.begin(); pActualIt <   vecinos.end(); ++pActualIt)
+		delete *pActualIt;
 	visitados.clear();
 	vecinos.clear();
 

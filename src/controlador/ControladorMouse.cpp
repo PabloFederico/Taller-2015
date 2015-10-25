@@ -20,10 +20,7 @@ void ControladorMouse::procesarEvento(SDL_Event &event, int MouseX, int MouseY){
 	Sprite *sprite = juego->getSpritePlayer();
 
 	/********** Actualización de la capa negra ***********/
-	int x = sprite->getPosicion().x + sprite->getPosicion().w / 2;
-	int y = sprite->getPosicion().y + sprite->getPosicion().h ;
-
-	Coordenada coord_pixel_sprite(x,y);
+	Coordenada coord_pixel_sprite = sprite->getPosPies();
 	Coordenada coord_pixel_ceros(*juego->getCeros().first + DISTANCIA_ENTRE_X, *juego->getCeros().second);
 
 	try {
@@ -52,34 +49,25 @@ void ControladorMouse::procesarEvento(SDL_Event &event, int MouseX, int MouseY){
 	            int Follow_Point_X = MouseX - posicionPlayer.w / 2;
 	            int Follow_Point_Y = MouseY - posicionPlayer.h;
 
-				////código de prueba
-	            Camino camino;
-	        	try {
-	        		//cout << MouseX << ";" << MouseY << "/" << Follow_Point_X << ";" << Follow_Point_Y << endl;
- 	        		//Coordenada coord_tile_sprite = Calculador::tileParaPixel(coord_pixel_sprite, coord_pixel_ceros);
-	        		//cout << coord_tile_sprite.x << ";" << coord_tile_sprite.y << " ";
-	        		camino = Calculador::obtenerCaminoMin(escenario, coord_pixel_sprite, Coordenada(Follow_Point_X, Follow_Point_Y), coord_pixel_ceros);
-					//for (vector<Coordenada>::iterator it = vec.begin(); it < vec.end(); ++it) {
-					//	try {
-					//		Coordenada tile = Calculador::tileParaPixel(*it, coord_pixel_ceros);
-					//		cout << tile.x << ";" << tile.y << " ";
-					//	} catch ( FueraDeEscenario &e ) { cout << "Fuera de escenario "; }
-					//}
-					//cout << endl;
+	            ///pruebas
+	            //Coordenada mouse = Calculador::tileParaPixel(Coordenada(MouseX,MouseY),coord_pixel_ceros);
+	            //Coordenada follow = Calculador::tileParaPixel(Coordenada(Follow_Point_X,Follow_Point_Y), coord_pixel_ceros);
+	            //std::cout << "mouse: "<<mouse.x<<";"<<mouse.y<<'\t'<<"follow: "<<follow.x<<";"<<follow.y<<std::endl;
+
+	            try {
+	        		//camino = Calculador::obtenerCaminoMin(escenario, coord_pixel_sprite, Coordenada(Follow_Point_X, Follow_Point_Y), coord_pixel_ceros);
+	        		Camino camino = Calculador::obtenerCaminoMin(escenario, coord_pixel_sprite, Coordenada(MouseX, MouseY), coord_pixel_ceros);
+
+					/* Activamos el movimiento del sprite y seteamos el nuevo camino que debe recorrer. */
+					if (camino.size() > 0) {
+						///solo de prueba, los encodeados tendrían q tener por lo menos una letra al comienzo especificando el tipo [ej.: M(ovimiento)].
+						// asumo servidor
+						juego->enviar(camino);
+						///
+
+						sprite->setearNuevoCamino(camino, coord_pixel_ceros);
+					}
 				} catch ( FueraDeEscenario &e ) {}
-	        	////
-
-				/* Activamos el movimiento del sprite y seteamos el nuevo camino que debe recorrer. */
-				if (camino.size() > 0) {
-
-					///solo de prueba, los encodeados tendrían q tener por lo menos una letra al comienzo especificando el tipo [ej.: M(ovimiento)].
-					// asumo servidor
-					juego->enviar(camino);
-					///
-
-					sprite->setearNuevoCamino(camino, coord_pixel_ceros);
-				 }
-
 			}
 		}
 	} /* Fin if SDL_MOUSEBUTTONDOWN */
