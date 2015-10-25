@@ -5,32 +5,32 @@
  *      Author: emanuel
  */
 
-#ifndef VISTA_CAPANEGRA_H_
-#define VISTA_CAPANEGRA_H_
+#ifndef VISTA_CAPAFOG_H_
+#define VISTA_CAPAFOG_H_
 #include <vector>
+#include "../utils/Enumerados.h"
 using namespace std;
 
-class CapaNegra {
+class CapaFog {
 private:
-	bool **tiles;
+	EstadoCapa **tiles;
 	int tiles_x;
 	int tiles_y;
-	int tilesOcultos;
 
 	vector<pair<int,int> > generarPuntos(int x, int y);
 
+	void actualizarCapaGris();
+
 public:
-	CapaNegra(int tiles_x, int tiles_y);
+	CapaFog(int tiles_x, int tiles_y);
 
 	pair<int,int> getDimension();
 
 	void descubrirDesdePunto(int x, int y);
 
-	bool tileOculto(int x, int y);
+	EstadoCapa getEstadoTile(int x, int y);
 
-	bool totalmenteDescubierta();
-
-	virtual ~CapaNegra();
+	virtual ~CapaFog();
 };
 
-#endif /* VISTA_CAPANEGRA_H_ */
+#endif /* VISTA_CAPAFOG_H_ */

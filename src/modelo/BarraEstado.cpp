@@ -10,7 +10,9 @@
 BarraEstado::BarraEstado(int ancho, int alto) {
 	this->height = alto;
 	this->width = ancho;
-	mapRecursosEconomicos.clear();
+	mapRecursosEconomicos[ORO] = 0;
+	mapRecursosEconomicos[MADERA] = 0;
+	mapRecursosEconomicos[COMIDA] = 0;
 }
 
 std::pair<int, int> BarraEstado::getDimension(){

@@ -2,6 +2,7 @@
 #include <SDL2/SDL_image.h>
 #include "../controlador/Controller.h"
 #include "../vista/VentanaJuego.h"
+#include "../vista/VentanaConexion.h"
 
 #include "../red/Connection.h"
 
@@ -10,6 +11,7 @@ int main(int argc, char** argv) {
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0){
 		return -1;
 	}else{
+		TTF_Init();
 		Connection* lan = NULL;//
 		Server* server = NULL;
 		if (argc > 1) {
@@ -25,11 +27,13 @@ int main(int argc, char** argv) {
 
 		Controller *controller = new Controller(lan);
 		VentanaJuego *ventana = new VentanaJuego(controller);
+		//VentanaConexion *ventana = new VentanaConexion(controller);
 		ventana->mostrar(server);
 		delete ventana;
 		delete controller;
 		SDL_Quit();
 		IMG_Quit();
+		TTF_Quit();
 	}
 
 	return 0;

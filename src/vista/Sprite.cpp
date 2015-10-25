@@ -351,6 +351,12 @@ void Sprite::update(int vel_personaje) {
            // if (hayColision) this->activarMovimiento(false);
 }
 
+/********************************************************************************/
+bool Sprite::estaEnZonaDespejada(int x, int y){
+	EstadoCapa estadoCapa = escenario->getCapa()->getEstadoTile(x,y);
+	if (estadoCapa == ESTADO_COLOR) return true;
+	return false;
+}
 
 /********************************************************************************/
 Sprite::~Sprite() {

@@ -37,6 +37,12 @@ void Controller::reiniciarJuego(){
 	this->controladorCamara = new ControladorCamara(juego);
 }
 
+int Controller::verificarConexion(std::string string_IP){
+
+	return -1;
+}
+
+
 Controller::~Controller() {
 	delete this->juego;
 }

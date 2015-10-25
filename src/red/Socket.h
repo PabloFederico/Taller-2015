@@ -13,9 +13,8 @@
 #include <arpa/inet.h>
 #include <sys/fcntl.h>
 #include <unistd.h>
-
 #include "../utils/Constantes.h"
-
+#include <string>
 
 class Socket {
 protected:
@@ -24,6 +23,8 @@ protected:
 
 public:
 	Socket();
+
+	Socket(std::string string_IP);
 
 	bool creadoCorrectamente();
 

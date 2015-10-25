@@ -8,6 +8,7 @@
 #ifndef VISTA_VENTANA_H_
 #define VISTA_VENTANA_H_
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 #include "../controlador/Controller.h"
 
 class Ventana {
@@ -15,6 +16,7 @@ protected:
 	Controller *controlador;
 	SDL_Window *window;
 	SDL_Renderer *renderer;
+	TTF_Font *fuenteTexto;
 	int SCREEN_WIDTH;
 	int SCREEN_HEIGHT;
 

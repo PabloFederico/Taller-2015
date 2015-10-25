@@ -15,7 +15,8 @@
 #include "../utils/Structs.h"
 #include "../modelo/EntidadFactory.h"
 #include "../modelo/Entidad.h"
-#include "../vista/CapaNegra.h"
+#include "../vista/CapaFog.h"
+#include "../modelo/Tile.h"
 using namespace std;
 
 class Escenario {
@@ -23,7 +24,9 @@ private:
 	int size_x;
 	int size_y;
 
-	CapaNegra *capa;
+	Tile*** matriz_tiles;
+
+	CapaFog *capa;
 
 	vector<PosEntidad>* posicionesEntidades;
 
@@ -32,6 +35,8 @@ private:
 	EntidadFactory* fabricaDeEntidades;
 
 	Entidad* protagonista;
+
+	Coordenada c_protagonista;
 
 	void quitarEntidad(Coordenada pos, Entidad* entidad);
 
@@ -56,7 +61,11 @@ public:
 
 	void desocuparTile(Coordenada c);
 
-	CapaNegra* getCapa();
+	Tile* getTile(int x, int y);
+
+	void actualizarPosicionProtagonista(Coordenada c);
+
+	CapaFog* getCapa();
 
 	virtual ~Escenario();
 };

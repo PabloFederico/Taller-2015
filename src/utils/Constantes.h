@@ -29,4 +29,7 @@
 
 #define KEY_RESET 'r'
 
+#define TAM_LETRA_CONEXION  30
+#define TAM_LETRA_JUEGO     10
+
 #endif /* UTILS_CONSTANTES_H_ */

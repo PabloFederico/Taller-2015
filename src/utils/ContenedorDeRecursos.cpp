@@ -25,9 +25,6 @@ void ContenedorDeRecursos::cargarImagenesEntidades(vector<InfoEntidad> infoEntid
 	Imagen *pasto = Loader::cargarImagen(this->renderer,"images/pasto.png");
 	this->mapImagenes->insert(PASTO,pasto);
 
-	Imagen *capaNegra = Loader::cargarImagen(this->renderer,"images/black1.png");
-	this->mapImagenes->insert(DEFAULT,capaNegra);
-
 	for (unsigned i = 0; i < infoEntidades.size(); i++){
 		TipoEntidad tipo = infoEntidades[i].tipo;
 		string path = infoEntidades[i].path;
@@ -49,6 +46,7 @@ void ContenedorDeRecursos::generarYGuardarSpritesEntidades(vector<PosEntidad> *p
 		int tile_y = (*posEntidades)[i].y;
 		Coordenada coord_tile(tile_x, tile_y);
 		Entidad* entidad = (*posEntidades)[i].entidad;
+		entidad->setTam(mapInfoEntidades[entidad->getTipo()].ancho, mapInfoEntidades[entidad->getTipo()].alto);
 		Coordenada coordenada = Calculador::calcularPosicionRelativa(coord_tile,coord_ceros,escenario);
 
 		SDL_Rect posicion;
@@ -80,7 +78,7 @@ void ContenedorDeRecursos::generarYGuardarSpritesEntidades(vector<PosEntidad> *p
 						    //posicion.h = (ALTO_PIXEL_PASTO * this->mapInfoEntidades[CASTILLO].ancho + ALTO_PIXEL_PASTO) / this->mapInfoEntidades[CASTILLO].ancho;
 						    //sprite = new Sprite(mapInfoEntidades[CASTILLO].ancho,mapInfoEntidades[CASTILLO].ancho,this->getImagenTipo(CASTILLO),posicion);
 						    posicion.w = ANCHO_PIXEL_PASTO * this->mapInfoEntidades[CASTILLO].ancho;
-						    posicion.h = ALTO_PIXEL_PASTO * this->mapInfoEntidades[CASTILLO].ancho + (ALTO_PIXEL_PASTO -  DISTANCIA_ENTRE_Y / 4);
+						    posicion.h = ALTO_PIXEL_PASTO * this->mapInfoEntidades[CASTILLO].alto + (ALTO_PIXEL_PASTO -  DISTANCIA_ENTRE_Y / 4);
 						    sprite = new Sprite(1,1,this->getImagenTipo(CASTILLO),posicion,escenario,coord_ceros);
 
 						    int x_ini = posicion.x;
@@ -175,14 +173,54 @@ void ContenedorDeRecursos::cargarImagenesUtil(){
 	imagen = Loader::cargarImagen(this->renderer,"images/barra_descripcion.png");
 	this->mapImagenesUtil->insert(BARRA_DESCRIPCION,imagen);
 
+	imagen = Loader::cargarImagen(this->renderer,"images/barra_negra.png");
+	this->mapImagenesUtil->insert(BARRA_NEGRA,imagen);
+
 	imagen = Loader::cargarImagen(this->renderer,"images/selector_tile.png");
 	this->mapImagenesUtil->insert(SELECT_TILE,imagen);
+
+	imagen = Loader::cargarImagen(this->renderer,"images/icono_rojo_1.png");
+	this->mapImagenesUtil->insert(ICONO_ROJO,imagen);
+
+	imagen = Loader::cargarImagen(this->renderer,"images/icono_azul_1.png");
+	this->mapImagenesUtil->insert(ICONO_AZUL,imagen);
+
+	imagen = Loader::cargarImagen(this->renderer,"images/icono_amarillo_1.png");
+	this->mapImagenesUtil->insert(ICONO_AMARILLO,imagen);
+
+	imagen = Loader::cargarImagen(this->renderer,"images/icono_naranja_1.png");
+	this->mapImagenesUtil->insert(ICONO_NARANJA,imagen);
+
+	imagen = Loader::cargarImagen(this->renderer,"images/icono_verde_1.png");
+	this->mapImagenesUtil->insert(ICONO_VERDE,imagen);
+
+	imagen = Loader::cargarImagen(this->renderer,"images/icono_rosa_1.png");
+	this->mapImagenesUtil->insert(ICONO_ROSA,imagen);
+
+	imagen = Loader::cargarImagen(this->renderer,"images/icono_blanco_1.png");
+	this->mapImagenesUtil->insert(ICONO_BLANCO,imagen);
+
+	imagen = Loader::cargarImagen(this->renderer,"images/icono_gris_1.png");
+	this->mapImagenesUtil->insert(ICONO_GRIS,imagen);
+
+	imagen = Loader::cargarImagen(this->renderer,"images/capa_gris.png");
+	this->mapImagenesUtil->insert(CAPA_GRIS,imagen);
+
+	imagen = Loader::cargarImagen(this->renderer,"images/capa_negra.png");
+	this->mapImagenesUtil->insert(CAPA_NEGRA,imagen);
 }
 
 
 /********************************************************************************/
 void ContenedorDeRecursos::cargarImagenesRecursos(){
+	Imagen *imagen = Loader::cargarImagen(this->renderer,"images/moneda_1.png");
+	this->mapImagenesRecursos->insert(ORO,imagen);
 
+	imagen = Loader::cargarImagen(this->renderer,"images/madera_1.png");
+	this->mapImagenesRecursos->insert(MADERA,imagen);
+
+	imagen = Loader::cargarImagen(this->renderer,"images/comida_1.png");
+	this->mapImagenesRecursos->insert(COMIDA,imagen);
 }
 
 /********************************************************************************/

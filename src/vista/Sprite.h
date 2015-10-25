@@ -97,6 +97,8 @@ public:
 
 	void revisarCamino(Coordenada c_ult_punto, Coordenada c_prox_punto);
 
+	bool estaEnZonaDespejada(int x, int y);
+
 	void acomodar();
 
 	void update(int vel_personaje);
