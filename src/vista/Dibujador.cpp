@@ -109,11 +109,11 @@ void Dibujador::dibujarProtagonista(Sprite* sprite){
 }
 
 /********************************************************************************/
-void Dibujador::dibujarCapaNegra(CapaNegra* capa){
-	if (!capa->totalmenteDescubierta()){
+void Dibujador::dibujarCapaNegra(CapaFog* capa){
 		int tiles_x = capa->getDimension().first;
 		int tiles_y = capa->getDimension().second;
-		Imagen* imagen = this->contenedor->getImagenTipo(DEFAULT);
+		Imagen* imagenNegra = this->contenedor->getImagenUtilTipo(CAPA_NEGRA);
+		Imagen* imagenGris = this->contenedor->getImagenUtilTipo(CAPA_GRIS);
 
 		int cero_relativo_x = *this->cero_x;
 		int cero_relativo_y = *this->cero_y;
@@ -129,8 +129,14 @@ void Dibujador::dibujarCapaNegra(CapaNegra* capa){
 
 			for(int i = 0; i < tiles_x; i++){
 
-				if (capa->tileOculto(i,j)){
-					SDL_RenderCopy(this->renderer,imagen->getTexture(),NULL,&rectRelieve);
+				switch (capa->getEstadoTile(i,j)){
+				case ESTADO_GRIS:
+							SDL_RenderCopy(this->renderer,imagenGris->getTexture(),NULL,&rectRelieve);
+							break;
+					case ESTADO_NEGRO:
+							SDL_RenderCopy(this->renderer,imagenNegra->getTexture(),NULL,&rectRelieve);
+							break;
+					default : break;
 				}
 
 				rectRelieve.x += DISTANCIA_ENTRE_X;
@@ -139,7 +145,6 @@ void Dibujador::dibujarCapaNegra(CapaNegra* capa){
 			cero_relativo_x -= DISTANCIA_ENTRE_X;
 			cero_relativo_y += DISTANCIA_ENTRE_Y;
 		}
-	}
 }
 
 /********************************************************************************/

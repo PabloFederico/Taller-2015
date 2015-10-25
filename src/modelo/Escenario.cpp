@@ -9,7 +9,17 @@
 Escenario::Escenario(InfoEscenario infoEsc, EntidadFactory *fabrica): fabricaDeEntidades(fabrica) {
 	this->size_x = infoEsc.size_x;
 	this->size_y = infoEsc.size_y;
-	this->capa = new CapaNegra(size_x,size_y);
+/*
+	this->matriz_tiles = new Tile**[size_x];
+	for (int i = 0; i < size_x; i++){
+		this->matriz_tiles[i] = new Tile*[size_y];
+
+		for (int j = 0; j < size_y; j++){
+			this->matriz_tiles[i][j] = new Tile();
+		}
+	}
+*/
+	this->capa = new CapaFog(size_x,size_y);
 
 	this->posicionesEntidades = new vector<PosEntidad>();
 
@@ -62,7 +72,11 @@ void Escenario::agregarEntidad(Coordenada pos, Entidad* entidad){
 		}
 		PosEntidad posEntidad(pos.x, pos.y, entidad);
 		this->posicionesEntidades->push_back(posEntidad);
+
+		//this->matriz_tiles[pos.x][pos.y]->agregarEntidad(entidad);
 	} catch ( TileEstaOcupado &e ) {} // TODO: Alguna devolución de que no se pudo insertar?
+
+
 }
 
 /********************************************************************************/
@@ -108,7 +122,7 @@ void Escenario::desocuparTile(Coordenada c) {
 }
 
 /********************************************************************************/
-CapaNegra* Escenario::getCapa() {
+CapaFog* Escenario::getCapa() {
 	return this->capa;
 }
 

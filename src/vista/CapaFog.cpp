@@ -5,31 +5,30 @@
  *      Author: emanuel
  */
 
-#include "../vista/CapaNegra.h"
+#include "CapaFog.h"
 
-CapaNegra::CapaNegra(int tiles_x, int tiles_y) {
+CapaFog::CapaFog(int tiles_x, int tiles_y) {
 	this->tiles_x = tiles_x;
 	this->tiles_y = tiles_y;
-	this->tilesOcultos = tiles_x * tiles_y;
 
-	this->tiles = new bool*[tiles_x];
+	this->tiles = new EstadoCapa*[tiles_x];
 
 	for (int i = 0; i < tiles_x; i++){
-		this->tiles[i] = new bool[tiles_y];
+		this->tiles[i] = new EstadoCapa[tiles_y];
 	}
 	for (int i = 0; i < tiles_x; i++){
 		for (int j = 0; j < tiles_y; j++){
-			this->tiles[i][j] = true;
+			this->tiles[i][j] = ESTADO_NEGRO;
 		}
 	}
 }
 
-pair<int,int> CapaNegra::getDimension(){
+pair<int,int> CapaFog::getDimension(){
 	return make_pair(tiles_x,tiles_y);
 }
 
-vector<pair<int,int> > CapaNegra::generarPuntos(int x, int y){
-	int cant_quitar = 2;
+vector<pair<int,int> > CapaFog::generarPuntos(int x, int y){
+	int cant_quitar = 3;
 	vector<pair<int,int> > puntos;
 	int x_relativo;
 	int y_relativo = y - cant_quitar;
@@ -47,27 +46,32 @@ vector<pair<int,int> > CapaNegra::generarPuntos(int x, int y){
 	return puntos;
 }
 
-void CapaNegra::descubrirDesdePunto(int x, int y){
+void CapaFog::descubrirDesdePunto(int x, int y){
+	this->actualizarCapaGris();
 	vector<pair<int,int> > puntos = this->generarPuntos(x,y);
 	for (unsigned i = 0; i < puntos.size(); i++){
 		int tileX = puntos[i].first;
 		int tileY = puntos[i].second;
-		if (this->tiles[tileX][tileY]){
-			this->tiles[tileX][tileY] = false;
-			this->tilesOcultos--;
+		this->tiles[tileX][tileY] = ESTADO_COLOR;
+	}
+
+}
+
+void CapaFog::actualizarCapaGris(){
+	for (int i = 0; i < tiles_x; i++){
+		for (int j = 0; j < tiles_y; j++){
+			if (this->tiles[i][j] == ESTADO_COLOR){
+				this->tiles[i][j] = ESTADO_GRIS;
+			}
 		}
 	}
 }
 
-bool CapaNegra::totalmenteDescubierta(){
-	return (this->tilesOcultos < 1);
+EstadoCapa CapaFog::getEstadoTile(int x, int y){
+	return this->tiles[x][y];
 }
 
-bool CapaNegra::tileOculto(int x, int y){
-	return (this->tiles[x][y] == true);
-}
-
-CapaNegra::~CapaNegra() {
+CapaFog::~CapaFog() {
 	for (int i = 0; i < tiles_x; i++){
 		delete[] this->tiles[i];
 	}

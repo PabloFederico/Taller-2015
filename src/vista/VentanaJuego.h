@@ -13,10 +13,10 @@
 #include "../utils/ContenedorDeRecursos.h"
 #include "../utils/Map.h"
 #include "../utils/Structs.h"
-#include "CapaNegra.h"
 #include "Dibujador.h"
 #include "../vista/Sprite.h"
 #include "../vista/Ventana.h"
+#include "CapaFog.h"
 using namespace std;
 
 

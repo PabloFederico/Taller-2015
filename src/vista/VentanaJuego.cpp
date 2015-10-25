@@ -71,7 +71,7 @@ void VentanaJuego::dibujar(){
 	int ancho = controlador->getJuego()->getEscenario()->getDimension().first;
 	int largo = controlador->getJuego()->getEscenario()->getDimension().second;
 	Escenario* escenario = controlador->getJuego()->getEscenario();
-	CapaNegra* capa = escenario->getCapa();
+	CapaFog* capa = escenario->getCapa();
 	BarraEstado* barraEstado = controlador->getJuego()->getBarraEstado();
 
 	dibujador->dibujarRelieve(ancho,largo);

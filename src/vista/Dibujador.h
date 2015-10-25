@@ -10,7 +10,7 @@
 #include "../modelo/BarraEstado.h"
 #include "../utils/ContenedorDeRecursos.h"
 #include "../modelo/Escenario.h"
-#include "../vista/CapaNegra.h"
+#include "../vista/CapaFog.h"
 #include <SDL2/SDL_ttf.h>
 
 class Dibujador {
@@ -32,7 +32,7 @@ public:
 	void dibujarRelieve(int tiles_x, int tiles_y);
 	void dibujarEntidades();
 	void dibujarProtagonista(Sprite* sprite);
-	void dibujarCapaNegra(CapaNegra* capa);
+	void dibujarCapaNegra(CapaFog* capa);
 	void dibujarBarraEstado(Escenario* esc, BarraEstado* barraEstado, TTF_Font *fuenteTexto);
 
 	virtual ~Dibujador();

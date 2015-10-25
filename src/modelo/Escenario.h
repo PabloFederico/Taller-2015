@@ -15,7 +15,8 @@
 #include "../utils/Structs.h"
 #include "../modelo/EntidadFactory.h"
 #include "../modelo/Entidad.h"
-#include "../vista/CapaNegra.h"
+#include "../vista/CapaFog.h"
+#include "../modelo/Tile.h"
 using namespace std;
 
 class Escenario {
@@ -23,7 +24,9 @@ private:
 	int size_x;
 	int size_y;
 
-	CapaNegra *capa;
+	Tile*** matriz_tiles;
+
+	CapaFog *capa;
 
 	vector<PosEntidad>* posicionesEntidades;
 
@@ -56,7 +59,7 @@ public:
 
 	void desocuparTile(Coordenada c);
 
-	CapaNegra* getCapa();
+	CapaFog* getCapa();
 
 	virtual ~Escenario();
 };

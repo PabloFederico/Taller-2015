@@ -25,9 +25,6 @@ void ContenedorDeRecursos::cargarImagenesEntidades(vector<InfoEntidad> infoEntid
 	Imagen *pasto = Loader::cargarImagen(this->renderer,"images/pasto.png");
 	this->mapImagenes->insert(PASTO,pasto);
 
-	Imagen *capaNegra = Loader::cargarImagen(this->renderer,"images/black1.png");
-	this->mapImagenes->insert(DEFAULT,capaNegra);
-
 	for (unsigned i = 0; i < infoEntidades.size(); i++){
 		TipoEntidad tipo = infoEntidades[i].tipo;
 		string path = infoEntidades[i].path;
@@ -204,6 +201,12 @@ void ContenedorDeRecursos::cargarImagenesUtil(){
 
 	imagen = Loader::cargarImagen(this->renderer,"images/icono_gris_1.png");
 	this->mapImagenesUtil->insert(ICONO_GRIS,imagen);
+
+	imagen = Loader::cargarImagen(this->renderer,"images/capa_gris.png");
+	this->mapImagenesUtil->insert(CAPA_GRIS,imagen);
+
+	imagen = Loader::cargarImagen(this->renderer,"images/capa_negra.png");
+	this->mapImagenesUtil->insert(CAPA_NEGRA,imagen);
 }
 
 
