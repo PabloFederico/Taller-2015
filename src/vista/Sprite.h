@@ -64,6 +64,8 @@ public:
 
 	SDL_Rect getPosicion();
 
+	Coordenada getPosPies();
+
 	void setPosX(int x);
 	void setPosY(int y);
 
@@ -93,7 +95,7 @@ public:
 
 	bool quedaCaminoPorRecorrer();
 
-	void revisarCamino(Coordenada c_ult_punto, Coordenada c_prox_punto);
+	bool revisarCamino(Coordenada c_punto_actual);
 
 	void acomodar();
 

@@ -30,8 +30,6 @@ private:
 
 	vector<PosEntidad>* posicionesEntidades;
 
-	map<Coordenada,bool> estadoOcupadoDeTiles;
-
 	EntidadFactory* fabricaDeEntidades;
 
 	Entidad* protagonista;

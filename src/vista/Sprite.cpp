@@ -73,6 +73,11 @@ SDL_Rect Sprite::getPosicion(){
 }
 
 /********************************************************************************/
+Coordenada Sprite::getPosPies() {
+	return Coordenada( posicion.x + (posicion.w / 2), posicion.y + posicion.h );
+}
+
+/********************************************************************************/
 void Sprite::setPosX(int x){
 	int diferencia = rectangulos[0].x_ini - posicion.x;
 	this->posicion.x = x;
@@ -205,32 +210,27 @@ Coordenada Sprite::coordPixelSprite() {
 
 /********************************************************************************/
 void Sprite::setearNuevoCamino(Camino nuevoCamino, Coordenada coord_ceros){
-	this->caminoARecorrer.clear();
-	nuevoCamino.convertirTilesAPixeles(coord_ceros);
-
-	Coordenada c_tile_actual = Calculador::tileParaPixel(Coordenada(getPosicion().x,getPosicion().y), this->coord_ceros);
-	Coordenada c_prox_punto = nuevoCamino[0];
 	this->coord_ceros = coord_ceros;
-	escenario->ocuparTile(Calculador::tileParaPixel(c_prox_punto, coord_ceros));
-	escenario->desocuparTile(c_tile_actual);	//Debería desocuparse la posición actual.. dónde está??
-	c_prox_punto.x -= this->getPosicion().w / 2;
-	c_prox_punto.y -= this->getPosicion().h / 2;
-
-	Direccion direccion = Calculador::calcularDireccion(c_prox_punto, coordPixelSprite());
-	this->setDireccion(direccion);
-	this->activarMovimiento(true);
-
-	this->caminoARecorrer = nuevoCamino.v;
-	/*
-	for(unsigned i = 0; i < caminoARecorrer.size()-1; i++){
-		if (nuevoCamino[i].x != nuevoCamino[i+1].x &&
-			nuevoCamino[i].y != nuevoCamino[i+1].y &&
-			nuevoCamino[i].x != nuevoCamino[i].y   &&
-			nuevoCamino[i+1].y != nuevoCamino[i+1].y){
-			caminoARecorrer.push_back(nuevoCamino[i]);
-		}
+	this->caminoARecorrer.clear();
+	if (nuevoCamino.size() == 0) {
+		this->caminoARecorrer = nuevoCamino.v;
+		return;
 	}
-	*/
+
+	try {
+		nuevoCamino.convertirTilesAPixeles(coord_ceros);
+		Coordenada c_prox_punto = nuevoCamino[0];
+		// Coordenada para posicionar el sprite.
+		c_prox_punto.x -= this->getPosicion().w / 2;
+		c_prox_punto.y -= this->getPosicion().h;// / 2;
+
+		Direccion direccion = Calculador::calcularDireccion(c_prox_punto, coordPixelSprite());
+		this->setDireccion(direccion);
+		this->activarMovimiento(true);
+
+		this->caminoARecorrer = nuevoCamino.v;
+	} catch ( FueraDeEscenario &e ) { /* Hacer algo!? */
+	} catch ( TileEstaOcupado &e ) { }
 }
 
 /********************************************************************************/
@@ -249,26 +249,23 @@ bool Sprite::quedaCaminoPorRecorrer(){
 }
 
 /********************************************************************************/
-void Sprite::revisarCamino(Coordenada c_ult_punto, Coordenada c_prox_punto) {
-	Coordenada  c_ult_tile = Calculador::tileParaPixel( c_ult_punto, coord_ceros);
-	Coordenada c_prox_tile = Calculador::tileParaPixel(c_prox_punto, coord_ceros);
-
-	if (!(this->escenario->tileEsOcupable(c_prox_tile))) {
-		Coordenada c_destino = getCaminoARecorrer().back();
-		if (c_prox_tile == c_destino) {	// El tile ahora ocupado es el de destino, quedarme donde estoy.
-			setearNuevoCamino(Camino(), coord_ceros);
-			return;
-		} else {	// Siguiente tile del camino ocupado; crear nuevo camino para esquivarlo.
-			Coordenada c_pix_destino = Calculador::pixelCentralDeTile(c_destino, coord_ceros);
-			setearNuevoCamino(Calculador::obtenerCaminoMin(escenario, c_ult_punto, c_pix_destino, coord_ceros), coord_ceros);
-			c_prox_tile = Calculador::tileParaPixel(getCaminoARecorrer()[0], coord_ceros);
-			escenario->ocuparTile(c_prox_tile);
-		}
-	}
+// PRE: queda camino por recorrer.
+bool Sprite::revisarCamino(Coordenada c_punto_actual) {
+	Coordenada c_prox_punto = this->getCaminoARecorrer()[0];
 	try {
-		escenario->ocuparTile(c_prox_tile);
-		escenario->desocuparTile(c_ult_tile);
-	} catch ( TileEstaOcupado &e ) {}
+		Coordenada   c_prox_tile = Calculador::tileParaPixel(  c_prox_punto, coord_ceros);
+		if (!(this->escenario->tileEsOcupable(c_prox_tile))) {
+			Coordenada c_pix_destino = getCaminoARecorrer().back();
+			Coordenada c_tile_destino = Calculador::tileParaPixel(c_pix_destino, coord_ceros);
+			// Si el tile que fue ocupado por otra entidad es el de destino, quedarse donde está.
+			if (c_prox_tile == c_tile_destino) throw TileEstaOcupado();
+			// Caso contrario, con el siguiente tile del camino ahora ocupado, crear nuevo camino para esquivarlo.
+			else setearNuevoCamino(Calculador::obtenerCaminoMin(escenario, c_punto_actual, c_pix_destino, coord_ceros), coord_ceros);
+		}
+		return true;
+	} catch ( FueraDeEscenario &e ) {} catch ( TileEstaOcupado &e ) {}
+	setearNuevoCamino(Camino(), coord_ceros);
+	return false;
 }
 
 /********************************************************************************/
@@ -288,51 +285,49 @@ void Sprite::update(int vel_personaje) {
 		 * */
 		Coordenada c_prox_pixel = this->getCaminoARecorrer()[0];
 
-		/* Esta condición es para que el chabon se ubique en el centro del tile,
-		 * pero no se aplica para el último punto destino. */
-		if (this->getCaminoARecorrer().size() > 1){
-			c_prox_pixel.x -= this->getPosicion().w / 2;
-			c_prox_pixel.y -= this->getPosicion().h / 2;
-		}
+		///* Esta condición es para que el chabón se ubique en el centro del tile,
+		// * pero no se aplica para el último punto destino. */
+		//if (this->getCaminoARecorrer().size() > 1){
+		c_prox_pixel.x -= this->getPosicion().w / 2;
+		c_prox_pixel.y -= this->getPosicion().h;// / 2;
+		//}
 
 		float distancia = Calculador::calcularDistanciaEntrePixeles(Coordenada(this->regPos.posX_player, this->regPos.posY_player), c_prox_pixel);
 
 		if (distancia > 1){
-
             if (this->regPos.posX_player != c_prox_pixel.x) {
             	float x_result = (this->regPos.posX_player - ((this->regPos.posX_player - c_prox_pixel.x) / distancia) * vel_personaje  * 0.05);
             	this->setPosX(int(x_result));
             	this->regPos.posX_player = x_result;
             }
-
             if (this->regPos.posY_player != c_prox_pixel.y) {
                 float y_result = (this->regPos.posY_player - ((this->regPos.posY_player - c_prox_pixel.y) / distancia) * vel_personaje * 0.05);
                 this->setPosY(int(y_result));
                 this->regPos.posY_player = y_result;
             }
-
-		}else{
-			/* cambiar a la próxima coordenada */
+		} else {
+			/* guardar última coordenada para desocuparla y cambiar a la próxima */
 			Coordenada c_ult_punto = this->getCaminoARecorrer()[0];
 			this->quitarPrimeraCoordenada();
-			this->escenario->desocuparTile(c_ult_punto);
 
 			/* Seteamos la dirección para el siguiente punto. */
 			if (this->getCaminoARecorrer().size() > 0){
-				Coordenada c_prox_punto = this->getCaminoARecorrer()[0];
-				this->revisarCamino(c_ult_punto, c_prox_punto);
-				c_prox_punto.x -= this->getPosicion().w / 2;
-				c_prox_punto.y -= this->getPosicion().h / 2;
-
-				Direccion direccion = Calculador::calcularDireccion(c_prox_punto, coordPixelSprite());
-				this->setDireccion(direccion);
+				try {
+					//this->escenario->desocuparTile(Calculador::tileParaPixel(c_ult_punto, coord_ceros));
+					if (this->revisarCamino(c_ult_punto)) {
+						Coordenada c_prox_punto = this->getCaminoARecorrer()[0];
+						c_prox_punto.x -= this->getPosicion().w / 2;
+						c_prox_punto.y -= this->getPosicion().h / 2;
+						Direccion direccion = Calculador::calcularDireccion(c_prox_punto, coordPixelSprite());
+						this->setDireccion(direccion);
+					}
+				} catch ( FueraDeEscenario &e ) { setearNuevoCamino(Camino(), coord_ceros); }
 			}
-
 		}
 
-	}else{
-		/* Cuando se deja de mover, se debería quedar en una posición
-		 * firme correspondiente a su dirección. */
+	} else {
+		/* Cuando se deja de mover, se debería quedar en
+		 * una posición firme correspondiente a su dirección. */
 		 this->activarMovimiento(false);
 		 this->acomodar();
 	}

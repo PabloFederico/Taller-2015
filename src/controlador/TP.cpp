@@ -12,12 +12,15 @@ int main(int argc, char** argv) {
 		return -1;
 	}else{
 		TTF_Init();
-		Connection* lan = NULL;
+		Connection* lan = NULL;//
+		Server* server = NULL;
 		if (argc > 1) {
 			try {
-				if (argv[1][0] == 's')
-					lan = new Server();
-				else if (argv[1][0] == 'c')
+				if (argv[1][0] == 's') {
+					server = new Server();
+					while (true)
+						server->correr();
+				} else if (argv[1][0] == 'c')
 					lan = new Client();
 			} catch ( ConnectionProblem &e ) { lan = NULL; }
 		}
@@ -25,7 +28,7 @@ int main(int argc, char** argv) {
 		Controller *controller = new Controller(lan);
 		VentanaJuego *ventana = new VentanaJuego(controller);
 		//VentanaConexion *ventana = new VentanaConexion(controller);
-		ventana->mostrar();
+		ventana->mostrar(server);
 		delete ventana;
 		delete controller;
 		SDL_Quit();

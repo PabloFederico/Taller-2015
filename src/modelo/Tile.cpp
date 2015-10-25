@@ -14,7 +14,7 @@ Tile::Tile() {
 
 bool Tile::estaLibre(){
 	if (entidades.size() == 0) return true;
-	if (entidades.size() == 1 && entidades[0]->getTipo() == TIERRA) return true;
+	if (entidades.size() == 1 && (!entidades[0]->ocupaSuTile())) return true;
 
 	return false;
 }
@@ -34,8 +34,11 @@ void Tile::eliminarEntidad(Entidad* entidad){
 }
 
 Tile::~Tile() {
-	for (unsigned i = 0; i < entidades.size(); i++){
-		delete entidades[i];
+	//for (unsigned i = 0; i < entidades.size(); i++){
+	//	delete entidades[i];
+	for (std::vector<Entidad*>::iterator it = entidades.begin(); it < entidades.end(); ++it) {
+		Entidad* aux = *it;
+		delete aux;
 	}
 	entidades.clear();
 }

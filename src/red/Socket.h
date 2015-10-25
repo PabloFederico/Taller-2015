@@ -30,7 +30,7 @@ public:
 
 	int getDescriptor();
 
-	sockaddr_in getInfoDir();
+	sockaddr_in* getpInfoDir();
 
 	void cerrarSocket(int fd);
 

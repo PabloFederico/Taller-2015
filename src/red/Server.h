@@ -9,17 +9,20 @@
 #define RED_SERVER_H_
 
 #include "Connection.h"
+#include <cerrno>
 
 
 class Server: public Connection {
 private:
 	SocketServidor* socket;
+	fd_set descriptors;
 
 public:
-	static void ejecutar();
-
 	Server();
 	bool iniciar();
+
+	void correr();
+
 	void finalizar();
 	~Server();
 };

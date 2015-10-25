@@ -38,6 +38,9 @@ public:
 	void dibujarEscenario(Escenario* esc);
 	void dibujarBarraEstado(Escenario* esc, BarraEstado* barraEstado, TTF_Font *fuenteTexto);
 
+	///
+	void repintarOcupado(Escenario* esc);
+
 	virtual ~Dibujador();
 };
 

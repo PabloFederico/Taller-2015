@@ -16,8 +16,6 @@ private:
 	SocketCliente* socket;
 
 public:
-	static void ejecutar();
-
 	Client();
 	bool iniciar();
 	void finalizar();

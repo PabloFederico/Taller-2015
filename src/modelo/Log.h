@@ -23,7 +23,7 @@ public:
 		std::string timestamp(buffer);
 
 		ofstream fLog("TP.log", std::ofstream::app);
-		fLog << "[" << timestamp << "]    " <<LogToString(tipo)<<"    "<< output << std::endl;
+		fLog << "[" << timestamp << "]" << '\t' <<LogToString(tipo)<< '\t' << output << std::endl;
 		fLog.close();
 		std::cerr <<output <<std::endl;
 	};

@@ -210,7 +210,9 @@ struct Camino {
 	void convertirTilesAPixeles(Coordenada coord_ceros) {
 		std::vector<Coordenada> vAux;
 		for(std::vector<Coordenada>::iterator it = v.begin(); it < v.end(); ++it)
-			vAux.push_back( pixelCentralDeTile(*it, coord_ceros) );
+			try {
+				vAux.push_back( pixelCentralDeTile(*it, coord_ceros) );
+			} catch ( FueraDeEscenario &e ) {}
 		v.clear();
 		v = vAux;
 	}
