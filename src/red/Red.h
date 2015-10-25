@@ -20,9 +20,9 @@ public:
 	/* bind() */
 	static int enlazarSocket(Socket *socket){
 		int descriptor = socket->getDescriptor();
-		sockaddr_in infoDir = socket->getInfoDir();
+		sockaddr_in* infoDir = socket->getpInfoDir();
 
-		int success = bind(descriptor, (sockaddr *)&infoDir, sizeof(infoDir));
+		int success = bind(descriptor, (sockaddr*)infoDir, sizeof(*infoDir));
 		return success;
 	};
 
@@ -34,13 +34,13 @@ public:
 	};
 
 
-	/* accept() */
-	static int aceptarClientes(Socket* socket){
+	/* accept() */ // por 30 segundos //
+	static int aceptarCliente(Socket* socket){
 		int descriptorServidor = socket->getDescriptor();
-		sockaddr_in infoDir = socket->getInfoDir();
-		socklen_t tam = sizeof(infoDir);
-		int descriptorCliente = accept(descriptorServidor, (sockaddr*) &infoDir, &tam);
+		sockaddr_in* infoDir = socket->getpInfoDir();
+		socklen_t tam = sizeof(*infoDir);
 
+		int descriptorCliente = accept(descriptorServidor, (sockaddr*)infoDir, &tam);
 		return descriptorCliente;
 	};
 
@@ -48,8 +48,8 @@ public:
 	/* connect() */
 	static int crearConexion(Socket* socket){
 		int descriptor = socket->getDescriptor();
-		sockaddr_in infoDir = socket->getInfoDir();
-		int success = connect(descriptor, (sockaddr*)&infoDir, sizeof(infoDir));
+		sockaddr_in* infoDir = socket->getpInfoDir();
+		int success = connect(descriptor, (sockaddr*)infoDir, sizeof(*infoDir));
 		return success;
 	};
 

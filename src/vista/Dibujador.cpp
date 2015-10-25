@@ -190,6 +190,39 @@ void Dibujador::dibujarBarraEstado(BarraEstado* barraEstado){
 
 }
 
+
+///para pruebas
+void Dibujador::repintarOcupado(Escenario* esc) {
+	Imagen *imagenRelievePASTO = this->contenedor->getImagenTipo(PASTO);
+	Imagen *imagenRelieveAGUA  = this->contenedor->getImagenTipo(AGUA);
+
+	int cero_relativo_x = *this->cero_x;
+	int cero_relativo_y = *this->cero_y;
+
+	rectRelieve.w = ANCHO_PIXEL_PASTO;
+	rectRelieve.h = ALTO_PIXEL_PASTO;
+
+	/* Dibujamos el relieve por Default */
+	for(int j = 0; j < 50; j++){
+
+		rectRelieve.x = cero_relativo_x;
+		rectRelieve.y = cero_relativo_y;
+
+		for(int i = 0; i < 50; i++){
+			if (esc->tileEsOcupable(Coordenada(i,j)))
+				SDL_RenderCopy(this->renderer,imagenRelievePASTO->getTexture(),NULL,&rectRelieve);
+			else
+				SDL_RenderCopy(this->renderer,imagenRelieveAGUA->getTexture(), NULL,&rectRelieve);
+
+			rectRelieve.x += DISTANCIA_ENTRE_X;
+			rectRelieve.y += DISTANCIA_ENTRE_Y;
+		}
+		cero_relativo_x -= DISTANCIA_ENTRE_X;
+		cero_relativo_y += DISTANCIA_ENTRE_Y;
+	}
+}
+
+
 /********************************************************************************/
 Dibujador::~Dibujador() {
 	this->mapInfoEntidades.clear();

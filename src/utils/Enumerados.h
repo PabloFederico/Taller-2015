@@ -14,6 +14,8 @@ enum TipoImagenUtil { BARRA_FONDO , BARRA_DESCRIPCION, SELECT_TILE };
 
 enum TipoRecurso { MADERA, ORO, COMIDA};
 
+enum TipoMensajeRed { MOV, NUEVA_ENTIDAD, MSJ, ATAQUE /*...*/};
+
 /* Tipos de Log:
  * * INFO = Error Informátivo
  * * WAR  = Warning
@@ -25,11 +27,11 @@ enum TipoLog { INFO, WAR, ERR, ERR_FAT};
 inline const char* LogToString(TipoLog v){
     switch (v)
     {
-        case INFO:   return "INFO";
-        case WAR:   return "WAR";
-        case ERR: return "ERR";
+        case INFO:	  return "INFO";
+        case WAR:	  return "WAR";
+        case ERR:	  return "ERR";
         case ERR_FAT: return "ERR_FAT";
-        default:      return "Unknown";
+        default:	  return "Unknown";
     }
 }
 

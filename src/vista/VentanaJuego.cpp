@@ -62,6 +62,9 @@ void VentanaJuego::cargarImagenesYSprites(Juego* juego){
 
 	this->controlador->getJuego()->agregarContenedorDeRecursos(contenedor);
 	this->dibujador->setContenedorDeRecursos(contenedor);
+
+	///
+	this->esc = juego->getEscenario();
 }
 
 /********************************************************************************/
@@ -79,7 +82,7 @@ void VentanaJuego::dibujar(){
 }
 
 /********************************************************************************/
-void VentanaJuego::mostrar(){
+void VentanaJuego::mostrar(Server* server = NULL){
 		bool run = true;
 		SDL_Event event;
 
@@ -107,6 +110,12 @@ void VentanaJuego::mostrar(){
 	            		this->reiniciar();
 	            	}
 	            }
+
+	            //if (server)
+	            //	server->correr();
+
+	            ///para pruebas
+	            this->dibujador->repintarOcupado(this->esc);
 
 		} /* Fin del while*/
 }

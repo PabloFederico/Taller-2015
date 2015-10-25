@@ -181,8 +181,7 @@ InfoEscenario Juego::parsearConfig() {
 			Log::imprimirALog(ERR,"Escenario no definido, se usará uno por defecto");
 		}
 
-	}
-	catch( YAML::BadConversion &e )			//Hay forma de hacer un catch múltiple?
+	} catch( YAML::BadConversion &e )			//Hay forma de hacer un catch múltiple?
 	{
 		//infoEsc = infoEscenarioDefault();
 		Log::imprimirALog(ERR,"Error en el archivo de configuración: se tomarán los valores por defecto.");

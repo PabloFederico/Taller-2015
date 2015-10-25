@@ -211,31 +211,28 @@ Coordenada Sprite::coordPixelSprite() {
 /********************************************************************************/
 void Sprite::setearNuevoCamino(Camino nuevoCamino, Coordenada coord_ceros){
 	this->caminoARecorrer.clear();
-	nuevoCamino.convertirTilesAPixeles(coord_ceros);
-
-	Coordenada c_tile_actual = Calculador::tileParaPixel(Coordenada(getPosicion().x,getPosicion().y), this->coord_ceros);
-	Coordenada c_prox_punto = nuevoCamino[0];
-	this->coord_ceros = coord_ceros;
-	escenario->ocuparTile(Calculador::tileParaPixel(c_prox_punto, coord_ceros));
-	escenario->desocuparTile(c_tile_actual);	//Debería desocuparse la posición actual.. dónde está??
-	c_prox_punto.x -= this->getPosicion().w / 2;
-	c_prox_punto.y -= this->getPosicion().h / 2;
-
-	Direccion direccion = Calculador::calcularDireccion(c_prox_punto, coordPixelSprite());
-	this->setDireccion(direccion);
-	this->activarMovimiento(true);
-
-	this->caminoARecorrer = nuevoCamino.v;
-	/*
-	for(unsigned i = 0; i < caminoARecorrer.size()-1; i++){
-		if (nuevoCamino[i].x != nuevoCamino[i+1].x &&
-			nuevoCamino[i].y != nuevoCamino[i+1].y &&
-			nuevoCamino[i].x != nuevoCamino[i].y   &&
-			nuevoCamino[i+1].y != nuevoCamino[i+1].y){
-			caminoARecorrer.push_back(nuevoCamino[i]);
-		}
+	if (nuevoCamino.size() == 0) {
+		this->caminoARecorrer = nuevoCamino.v;
+		return;
 	}
-	*/
+
+	nuevoCamino.convertirTilesAPixeles(coord_ceros);
+	try {
+		Coordenada c_tile_actual = Calculador::tileParaPixel(Coordenada(getPosicion().x,getPosicion().y), coord_ceros);
+		Coordenada c_prox_punto = nuevoCamino[0];
+		this->coord_ceros = coord_ceros;
+		escenario->ocuparTile(Calculador::tileParaPixel(c_prox_punto, coord_ceros));
+		escenario->desocuparTile(c_tile_actual);
+		c_prox_punto.x -= this->getPosicion().w / 2;
+		c_prox_punto.y -= this->getPosicion().h / 2;
+
+		Direccion direccion = Calculador::calcularDireccion(c_prox_punto, coordPixelSprite());
+		this->setDireccion(direccion);
+		this->activarMovimiento(true);
+
+		this->caminoARecorrer = nuevoCamino.v;
+	} catch ( FueraDeEscenario &e ) { /* Hacer algo!? */
+	} catch ( TileEstaOcupado &e ) { }
 }
 
 /********************************************************************************/
@@ -255,26 +252,34 @@ bool Sprite::quedaCaminoPorRecorrer(){
 
 /********************************************************************************/
 void Sprite::revisarCamino(Coordenada c_ult_punto, Coordenada c_prox_punto) {
-	Coordenada  c_ult_tile = Calculador::tileParaPixel( c_ult_punto, coord_ceros);
-	Coordenada c_prox_tile = Calculador::tileParaPixel(c_prox_punto, coord_ceros);
+/*	try {
+		Coordenada  c_ult_tile = Calculador::tileParaPixel( c_ult_punto, coord_ceros);
+		Coordenada c_prox_tile = Calculador::tileParaPixel(c_prox_punto, coord_ceros);
 
-	if (!(this->escenario->tileEsOcupable(c_prox_tile))) {
-		Coordenada c_destino = getCaminoARecorrer().back();
-		if (c_prox_tile == c_destino) {	// El tile ahora ocupado es el de destino, quedarme donde estoy.
-			setearNuevoCamino(Camino(), coord_ceros);
-			return;
-		} else {	// Siguiente tile del camino ocupado; crear nuevo camino para esquivarlo.
-			Coordenada c_pix_destino = Calculador::pixelCentralDeTile(c_destino, coord_ceros);
-			setearNuevoCamino(Calculador::obtenerCaminoMin(escenario, c_ult_punto, c_pix_destino, coord_ceros), coord_ceros);
-			c_prox_tile = Calculador::tileParaPixel(getCaminoARecorrer()[0], coord_ceros);
-			escenario->ocuparTile(c_prox_tile);
+		if (!(this->escenario->tileEsOcupable(c_prox_tile))) {
+			Coordenada c_destino = getCaminoARecorrer().back();
+			if (c_prox_tile == c_destino) {	// Si el tile que fue ocupado es el de destino, quedarme donde estoy.
+				setearNuevoCamino(Camino(), coord_ceros);
+				return;
+			} else {	// Con el siguiente tile del camino ahora ocupado; crear nuevo camino para esquivarlo.
+				Coordenada c_pix_destino = Calculador::pixelCentralDeTile(c_destino, coord_ceros);
+				setearNuevoCamino(Calculador::obtenerCaminoMin(escenario, c_ult_punto, c_pix_destino, coord_ceros), coord_ceros);
+				if (quedaCaminoPorRecorrer()) {
+					c_prox_tile = Calculador::tileParaPixel(getCaminoARecorrer()[0], coord_ceros);
+				} else escenario->ocuparTile(c_ult_tile);
+			}
 		}
+		try {
+			escenario->ocuparTile(c_prox_tile);
+			escenario->desocuparTile(c_ult_tile);
+		} catch ( TileEstaOcupado &e ) {}
+
+	} catch ( FueraDeEscenario &e ) {
+		setearNuevoCamino(Camino(), coord_ceros);
+	} catch ( TileEstaOcupado &e ) {
+		setearNuevoCamino(Camino(), coord_ceros);
 	}
-	try {
-		escenario->ocuparTile(c_prox_tile);
-		escenario->desocuparTile(c_ult_tile);
-	} catch ( TileEstaOcupado &e ) {}
-}
+*/}
 
 /********************************************************************************/
 void Sprite::acomodar(){

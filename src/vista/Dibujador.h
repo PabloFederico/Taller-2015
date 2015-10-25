@@ -33,6 +33,9 @@ public:
 	void dibujarCapaNegra(CapaNegra* capa);
 	void dibujarBarraEstado(BarraEstado* barraEstado);
 
+	///
+	void repintarOcupado(Escenario* esc);
+
 	virtual ~Dibujador();
 };
 

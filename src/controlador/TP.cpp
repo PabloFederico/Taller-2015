@@ -10,19 +10,22 @@ int main(int argc, char** argv) {
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0){
 		return -1;
 	}else{
-		Connection* lan = NULL;
+		Connection* lan = NULL;//
+		Server* server = NULL;
 		if (argc > 1) {
 			try {
-				if (argv[1][0] == 's')
-					lan = new Server();
-				else if (argv[1][0] == 'c')
+				if (argv[1][0] == 's') {
+					server = new Server();
+					while (true)
+						server->correr();
+				} else if (argv[1][0] == 'c')
 					lan = new Client();
 			} catch ( ConnectionProblem &e ) { lan = NULL; }
 		}
 
 		Controller *controller = new Controller(lan);
 		VentanaJuego *ventana = new VentanaJuego(controller);
-		ventana->mostrar();
+		ventana->mostrar(server);
 		delete ventana;
 		delete controller;
 		SDL_Quit();

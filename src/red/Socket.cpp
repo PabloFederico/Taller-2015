@@ -19,8 +19,8 @@ int Socket::getDescriptor(){
 	return descriptor;
 }
 
-sockaddr_in Socket::getInfoDir(){
-	return infoDir;
+sockaddr_in* Socket::getpInfoDir(){
+	return (&infoDir);
 }
 
 

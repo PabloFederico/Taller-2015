@@ -34,11 +34,14 @@ private:
 
 	void liberarRecursos();
 
+	///para pruebas
+	Escenario* esc;
+
 public:
 	VentanaJuego(Controller *controlador);
 
 	/* Muestra la ventana principal */
-	void mostrar();
+	void mostrar(Server* server);
 
 	virtual ~VentanaJuego();
 
