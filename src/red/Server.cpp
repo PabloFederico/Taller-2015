@@ -34,64 +34,16 @@ bool Server::iniciar() {
 
 	/* listen() */
 	if (Red::escucharConexiones(this->socket->getDescriptor(),MAX_CONEXIONES) < 0)
-		return false; // No hubo conexiones.
+		return false;
 
-//	std::cout << "30 segundos para conectarse..."<<std::endl;
-//	sleep(30); // necesitaría threads o algo así si no.
-//	std::cout << "waiting for incoming connections..."<<std::endl;
-
-//	std::cout << "waiting for incoming connections..."<<std::endl;
-
-	/* accept() */
-//	int new_descriptor = Red::aceptarCliente(this->socket);
-
-//	if (new_descriptor < 0) {
-//		std::cout << "ERROR: accept failed."<<std::endl;
-//		return false;
-//	}
-//	fcntl(new_descriptor, F_SETFL, O_NONBLOCK); // non-blocking mode
-
-//	this->lastDescriptor = new_descriptor;
-//	std::cout << "Connected."<<std::endl;
-
-/*	int i;
-	for (i = 0; i < MAX_CONEXIONES; i++) {
-		int new_descriptor = Red::aceptarCliente(this->socket);
-
-		if (new_descriptor < 0){
-			//return false;
-			if (i == 0)		// Si no hubo ninguna conexión lograda, falló.
-				return false;
-			break;
-		}
-//		fcntl(new_descriptor, F_SETFL, O_NONBLOCK); // non-blocking mode
-
-		//this->descriptors.(new_descriptor); Agregar descriptors
-		this->lastDescriptor = new_descriptor;
-		std::cout << "Connected to "<<new_descriptor<<"."<<std::endl;
-	}
-	std::cout << "Se recibieron "<<i<<" conexiones."<<std::endl;
-*/
 	return true;
 }
 
 
 void Server::correr() {
-//	while (true) {		// Para algo así, necesitamos threads.
-//	for (vector<int>::iterator i = descriptors.begin(); i < descriptors.end(); ++i) {
-//		int descriptor = *i;
-//		char buf[MAX_BYTES_LECTURA];
-//		if (!(Red::recibirInformacion(descriptor, buf) < 0)) {
-//			std::cout << "Reenviando:"<<std::endl <<buf<<std::endl <<"-----"<<std::endl;//
-//			if (Red::enviarInformacion(descriptor, buf) < 0)
-//				std::cout << "ERROR: sending failed."<<std::endl;
-//			else
-//				std::cout << "Message sent"<<std::endl;//
-//		}
-//	}
 
 	fd_set readset, tempset;
-	int srvsock, maxfd, result, peersock, sent, justsent;
+	int srvsock, maxfd, result, peersock, sent, justsent, cantConectados = 0;
 	unsigned int len;
 	timeval tv;
 	char buffer[MAX_BYTES_LECTURA+1];
@@ -102,14 +54,15 @@ void Server::correr() {
 	FD_SET(srvsock, &readset);
 	maxfd = srvsock;
 
-	std::cout << "Aceptando hasta 5 jugadores."<<std::endl;
+	std::cout << "Aceptando hasta "<<MAX_CONEXIONES<<" jugadores."<<std::endl;
+	std::cout << "Cada jugador tiene 20 segundos para conectarse."<<std::endl;
 
 	for (int i = 0; i < MAX_CONEXIONES; i++) {
+		std::cout << "#"<<i+1<<" ... ";
 		memcpy(&tempset, &readset, sizeof(tempset));
-		tv.tv_sec = 10;//
+		tv.tv_sec = 20;//
 		tv.tv_usec = 0;
 		// Espera 30 segundos a aparezca una conexión.
-		std::cout << "#"<<i+1<<" ... ";
 		result = select(maxfd+1, &tempset, NULL, NULL, &tv);
 
 		if (result == 0) {
@@ -124,43 +77,66 @@ void Server::correr() {
 				if (peersock < 0) {
 					std::cout << "Error in accept(): "<<strerror(errno)<<std::endl;
 				} else {
+					fcntl(peersock, F_SETFL, O_NONBLOCK); // non-blocking mode
 					FD_SET(peersock, &readset);
 					maxfd = (maxfd > peersock)?maxfd:peersock;
 					std::cout << "Conectado!"<<std::endl;
+					cantConectados++;
 				}
-				FD_CLR(srvsock, &tempset);
 			}
-
-			for (int j = 0; j < maxfd+1; j++) {
-				if (FD_ISSET(j, &tempset)) {
-
-					do {
-						result = recv(j, buffer, MAX_BYTES_LECTURA, 0);
-					} while (result == -1 && errno == EINTR);
-
-					if (result > 0) {
-
-						buffer[result] = 0;
-						std::cout << "Echoing: "<<buffer<<std::endl;
-						sent = 0;
-						do {
-							justsent = send(j, buffer+sent, result-sent, MSG_NOSIGNAL); //solo al mismo socket
-							if (justsent > 0)
-								sent += justsent;
-							else if (justsent < 0 && errno != EINTR)
-								break; //Puede enviarse solo parte de la data?...
-						} while (sent < result);
-
-					} else if (result == 0) {
-						close(j);
-						FD_CLR(j, &readset);
-					} else {
-						std::cout << "Error in recv(): "<<strerror(errno)<<std::endl;
-					}
-				} // end if (FD_ISSET(j, &tempset))
-			} // rof
-		} // end else if (result > 0)
+		}
 	}
+	FD_CLR(srvsock, &readset);
+
+	if (cantConectados < 2) {
+		std::cout << "No se conectaron suficientes jugadores para una partida en red."<<std::endl;
+		std::cout << "Hazte algunos amigos y vuelve a intentarlo"<<std::endl;
+		return;
+	}
+
+	std::cout << std::endl<<"Se recibieron "<<cantConectados<<" conexiones."<<std::endl;
+	std::cout << "Comenzando juego..."<<std::endl<<std::endl;
+
+	while (cantConectados > 0) {
+		for (int j = 0; j < maxfd+1; j++) {
+			if (FD_ISSET(j, &readset)) {
+
+				do {
+					result = recv(j, buffer, MAX_BYTES_LECTURA, 0);
+				} while (result == -1 && errno == EINTR);
+
+				if (result > 0) {
+
+					buffer[result] = 0;
+					std::cout << "Echoing: "<<buffer<<std::endl;
+
+					// Lo recibido de un socket, mandarlo a todos los demás
+					for (int k = 0; k < maxfd+1; k++) {
+						if ((k != j) && FD_ISSET(k, &readset)) {
+							sent = 0;
+							do {
+								justsent = send(k, buffer+sent, result-sent, MSG_NOSIGNAL);
+								if (justsent > 0)
+									sent += justsent;
+								else if (justsent < 0 && errno != EINTR)
+									break; //Podría llegar a enviarse solo parte de la data?...
+							} while (sent < result);
+						}
+					}
+
+				} else if (result == 0/* && errno != EWOULDBLOCK*/) {
+					close(j);
+					FD_CLR(j, &readset);
+					std::cout << "Un jugador (socket "<<j<<") se ha desconectado."<<std::endl;
+					cantConectados--;
+				} else if (errno != EWOULDBLOCK) {
+					std::cout << "Error in recv(): "<<strerror(errno)<<std::endl;
+				}
+			} // end if (FD_ISSET(j, &readset))
+		} // rof
+	} // end while
+	std::cout << std::endl<<"Se han desconectado todos los jugadores. Fin de la partida."<<std::endl;
+	sleep(5);
 }
 
 

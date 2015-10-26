@@ -14,8 +14,7 @@ int main(int argc, char** argv) {
 		try {
 			if (argv[1][0] == 's') {
 				server = new Server();
-				while (true)
-					server->correr();
+				server->correr();
 				delete server;
 			} else if (argv[1][0] == 'c')
 				lan = new Client();
@@ -36,6 +35,7 @@ int main(int argc, char** argv) {
 		SDL_Quit();
 		IMG_Quit();
 		TTF_Quit();
+		lan->~Client();
 		delete lan;
 	}
 

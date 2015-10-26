@@ -194,7 +194,7 @@ InfoEscenario Juego::parsearConfig() {
 	} catch( YAML::ParserException &e )
 	{
 		//infoEsc = infoEscenarioDefault();
-		Log::imprimirALog(ERR,"Error en el archivo de configuración: se tomarán los valores por valores por defecto.");
+		Log::imprimirALog(ERR,"Error en el archivo de configuración: se tomarán los valores por defecto.");
 		return OdioYAML();
 	}
 	if (!infoEsc) {		// Si no se cargó un escenario válido, se revierte al default.
@@ -266,7 +266,6 @@ int Juego::getMargenScroll(){
 /********************************************************************************/
 Juego::~Juego() {
 	delete this->escenario;
-	delete this->connection;
 	delete this->barraEstado;
 }
 
