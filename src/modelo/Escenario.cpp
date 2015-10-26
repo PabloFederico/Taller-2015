@@ -167,11 +167,11 @@ CapaFog* Escenario::getCapa() {
 
 /********************************************************************************/
 Escenario::~Escenario() {
-/*	for (unsigned i = 0; i < posicionesEntidades->size(); i++){
+	for (unsigned i = 0; i < posicionesEntidades->size(); i++){
 		Entidad* entidad = (*posicionesEntidades)[i].entidad;
 		delete entidad; // meter en quitarEntidad y reemplazar acá?
 	}
-	*/
+
 	this->posicionesEntidades->clear();
 	delete this->posicionesEntidades;
 

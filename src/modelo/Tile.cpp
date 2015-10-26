@@ -34,12 +34,6 @@ void Tile::eliminarEntidad(Entidad* entidad){
 }
 
 Tile::~Tile() {
-	//for (unsigned i = 0; i < entidades.size(); i++){
-	//	delete entidades[i];
-	for (std::vector<Entidad*>::iterator it = entidades.begin(); it < entidades.end(); ++it) {
-		Entidad* aux = *it;
-		delete aux;
-	}
 	entidades.clear();
 }
 
