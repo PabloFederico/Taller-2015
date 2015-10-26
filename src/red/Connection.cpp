@@ -8,24 +8,20 @@
 #include "Connection.h"
 
 
-void Connection::enviar(Camino cam) {
-	string msg = cam.enc();//.c_str();// + '.';
-	std::cout << "Enviando:" << std::endl << msg << std::endl << "-----";//
-	if (Red::enviarInformacion(this->lastDescriptor, msg) < 0) {
+void Connection::enviar(std::string s) {
+	if (Red::enviarInformacion(this->lastDescriptor, s) < 0) {
 		//Log::imprimirALog(ERR, "ERROR: send failed.");
 		std::cout << "ERROR: send failed." << std::endl;
 	} else
-		std::cout << "Message sent" << std::endl;//
+		std::cout << "Enviado:"<<std::endl << s<<std::endl << "-----";//
 }
 
-
-Camino Connection::recibirCamino() {
-	char info[MAX_BYTES_LECTURA];
-	if (Red::recibirInformacion(this->lastDescriptor, info) < 0)
+std::string Connection::recibir() {
+	char buffer[MAX_BYTES_LECTURA];
+	if (Red::recibirInformacion(this->lastDescriptor, buffer) < 0)
 		throw NoSeRecibio();
-	std::cout << "Information received."<<std::endl;//
-	std::cout << "Recibido:" << std::endl << info << std::endl << "-----";//
-	return Camino::dec(info);
+	std::cout << "Recibido:"<<std::endl << buffer<<std::endl << "-----";//
+	return buffer;
 }
 
 
@@ -37,4 +33,3 @@ void Connection::finalizar() {
 Connection::~Connection() {
 	finalizar();
 }
-

@@ -65,11 +65,8 @@ void ControladorMouse::procesarEvento(SDL_Event &event, int MouseX, int MouseY){
 
 					/* Activamos el movimiento del sprite y seteamos el nuevo camino que debe recorrer. */
 					if (camino.size() > 0) {
-						///solo de prueba, los encodeados tendrían q tener por lo menos una letra al comienzo especificando el tipo [ej.: M(ovimiento)].
-						// asumo servidor
-						juego->enviar(camino);
-						///
-
+						if (juego->esCliente())
+							Proxy::enviar(juego->getConnection(), camino);
 						sprite->setearNuevoCamino(camino, coord_pixel_ceros);
 					}
 				} catch ( FueraDeEscenario &e ) {}
@@ -77,10 +74,10 @@ void ControladorMouse::procesarEvento(SDL_Event &event, int MouseX, int MouseY){
 		}
 	} /* Fin if SDL_MOUSEBUTTONDOWN */
 
-	try {
-		Camino camino = juego->recibirCamino();
-		sprite->setearNuevoCamino(camino, coord_pixel_ceros);
-	} catch ( NoSeRecibio &e ) {}
+	//try {
+	//	Camino camino = juego->recibirCamino();
+	//	sprite->setearNuevoCamino(camino, coord_pixel_ceros);
+	//} catch ( NoSeRecibio &e ) {}
 
 	if (sprite->estaEnMovimiento())		//verificar que esta optimización no rompa nada
 		sprite->update(juego->getVelocidad());

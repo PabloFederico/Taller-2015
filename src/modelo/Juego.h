@@ -71,6 +71,8 @@ public:
 
 	Escenario* getEscenario();
 
+	bool esCliente();
+
 	vector<InfoEntidad> getInfoTiposEntidades();
 	//map<std::string,VistaEntidad*>* getMapEntidades();
 
@@ -80,6 +82,8 @@ public:
 	Entidad* getProtagonista();
 
 	int getMargenScroll();
+
+	Coordenada getCoordCeros();
 
 	void agregarContenedorDeRecursos(ContenedorDeRecursos *container);
 
@@ -99,6 +103,10 @@ public:
 	void generarRecursosAleatoriosParaElEscenario();
 
 	BarraEstado* getBarraEstado();
+
+	Connection* const getConnection();
+
+	void multiplayer();
 
 	virtual ~Juego();
 };

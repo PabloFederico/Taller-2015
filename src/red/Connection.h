@@ -11,11 +11,13 @@
 #include <iostream>
 #include <stdlib.h>
 #include <sys/fcntl.h>
+#include <string>
 
 #include "SocketCliente.h"
 #include "SocketServidor.h"
 #include "Red.h"
-#include "../utils/Structs.h"
+//#include "../utils/Structs.h"
+#include "../modelo/Exceptions.h"
 #include "../modelo/Log.h"
 
 
@@ -23,15 +25,13 @@ class Connection {
 protected:
 	Socket* socket = NULL;
 	int lastDescriptor;
+	std::string memoria;
 
 public:
 	virtual bool iniciar() = 0;
 
-	void enviar(Camino cam);
-	//enviar de cada tipo
-
-	Camino recibirCamino();
-	//recibir de cada tipo
+	void enviar(std::string);
+	std::string recibir();
 
 	void finalizar();
 	virtual ~Connection();

@@ -10,7 +10,7 @@
 #include <iostream>
 
 
-Juego::Juego(Connection* lan = NULL) {
+Juego::Juego(Connection* lan = NULL): connection(lan) {
 	this->cero_x = NULL;
 	this->cero_y = NULL;
 	this->contenedor = NULL;
@@ -18,13 +18,11 @@ Juego::Juego(Connection* lan = NULL) {
 	this->escenario = NULL;
 	this->fabricaDeEntidades = NULL;
 	this->protagonista = NULL;
-	this->screenWidth = 800;	// Default
-	this->screenHeight = 600;	// Default
+	// Valores por defecto
+	this->screenWidth = 800;
+	this->screenHeight = 600;
 	this->vel_personaje = 50;
 	this->margen_scroll = 30;
-
-	//Juego en red, comentar para apagar
-	this->connection = lan;
 
 	this->cargarJuego();
 }
@@ -45,21 +43,22 @@ Entidad* Juego::getProtagonista(){
 }
 
 /********************************************************************************/
-void Juego::cargarJuego(){
-	// Valores default
-	this->screenWidth = 800;
-	this->screenHeight = 600;
-	this->vel_personaje = 30;
-	this->margen_scroll = 50;
-	//	std::vector<InfoEscenario> vecEscenarios;
+bool Juego::esCliente() {
+	return (this->connection != NULL);
+}
 
-	//if EsCliente, receive Escenario; !!!
+/********************************************************************************/
+void Juego::cargarJuego(){
+	//	std::vector<InfoEscenario> vecEscenarios;
 
 	//---------------------------------------------------------------------------------------------!!
 	InfoEscenario infoEsc = parsearConfig();
 	// !!! Para el que no le funciona YAML, comentar la línea de arriba y descomentar la de abajo.
 	//InfoEscenario infoEsc = OdioYAML();
 	//---------------------------------------------------------------------------------------------!!
+
+	//if esCliente(), receive Escenario; chequear disponibilidad de las entidades, rellenar con missing las faltantes.
+	//además, se debería hardcodear la vel_personaje para evitar ventajas.
 
 	// Acá me imagino la posibilidad de un selector de escenarios.
 	this->fabricaDeEntidades = new EntidadFactory(this->vectorInfoTiposEntidades);
@@ -264,12 +263,9 @@ int Juego::getMargenScroll(){
 }
 
 /********************************************************************************/
-Juego::~Juego() {
-	delete this->escenario;
-	delete this->barraEstado;
+Coordenada Juego::getCoordCeros() {
+	return Coordenada(*getCeros().first + DISTANCIA_ENTRE_X, *getCeros().second);
 }
-
-
 
 /*************!!!***********************!!!**************************!!!********/
 InfoEscenario Juego::OdioYAML() {
@@ -330,42 +326,34 @@ InfoEscenario Juego::OdioYAML() {
 }
 
 /***************************************************/
-Camino Juego::recibirCamino() {
-	if (this->connection == NULL)
-		throw NoSeRecibio();
-	return this->connection->recibirCamino();
-}
-
-/***************************************************/
-void Juego::enviar(Camino cam) {
-	if (this->connection != NULL)
-		this->connection->enviar(cam);
-}
-
-/***************************************************/
 int Juego::getVelocidad(){
 	return this->vel_personaje;
 }
 
+/***************************************************/
 void Juego::agregarContenedorDeRecursos(ContenedorDeRecursos *container){
 	this->contenedor = container;
 	this->contenedor->cargarImagenesUtil();
 	this->contenedor->cargarImagenesRecursos();
 }
 
+/***************************************************/
 Sprite* Juego::getSpritePlayer(){
 	return this->contenedor->getSpriteDeEntidad(protagonista);
 }
 
+/***************************************************/
 void Juego::setCeros(int *x, int *y){
 	this->cero_x = x;
 	this->cero_y = y;
 }
 
+/***************************************************/
 std::pair<int*,int*> Juego::getCeros(){
 	return std::make_pair(cero_x,cero_y);
 }
 
+/***************************************************/
 void Juego::reiniciar(){
 	delete this->escenario;
 	delete this->contenedor;
@@ -373,14 +361,17 @@ void Juego::reiniciar(){
 	cargarJuego();
 }
 
+/***************************************************/
 void Juego::actualizarPosicionesEntidades(int cant_x, int cant_y){
 	this->contenedor->actualizarPosicionesEntidades(cant_x,cant_y);
 }
 
+/***************************************************/
 Map<Entidad*, Sprite*>* Juego::getSpritesEntidades(){
 	return this->contenedor->getMapaSpritesEntidades();
 }
 
+/***************************************************/
 void Juego::generarRecursosAleatoriosParaElEscenario(){
 	/* Generar algunos recursos (madera, oro, comida, etc)
 	 * y asignarles algunas posiciones en el escenario
@@ -388,6 +379,32 @@ void Juego::generarRecursosAleatoriosParaElEscenario(){
 	 * */
 }
 
+/***************************************************/
 BarraEstado* Juego::getBarraEstado(){
 	return barraEstado;
+}
+
+/***************************************************/
+Connection* const Juego::getConnection() {
+	return this->connection;
+}
+
+/***************************************************/
+//void Juego::multiplayer() {
+//	if (!esCliente()) return;
+//	try {
+//		TipoMensajeRed tipo = Proxy::actualizarMultiplayer(this);
+//	} catch ( NoSeRecibio &e ) {}
+//}
+
+/***************************************************/
+void Juego::enviar(Camino cam) {
+//	if (esCliente())
+//		Proxy::enviar(this->connection, cam);
+}
+
+/********************************************************************************/
+Juego::~Juego() {
+	delete this->escenario;
+	delete this->barraEstado;
 }

@@ -29,7 +29,7 @@ int main(int argc, char** argv) {
 		Controller *controller = new Controller(lan);
 		VentanaJuego *ventana = new VentanaJuego(controller);
 		//VentanaConexion *ventana = new VentanaConexion(controller);
-		ventana->mostrar(server);
+		ventana->mostrar(server); // cambiar MC
 		delete ventana;
 		delete controller;
 		SDL_Quit();

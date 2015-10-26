@@ -75,6 +75,8 @@ void Escenario::actualizarPosicionProtagonista(Coordenada c){
 }
 /********************************************************************************/
 Tile* Escenario::getTile(int x, int y){
+	if (x < 0 || y < 0 || x >= this->size_x || y >= this->size_y)
+		return NULL;
 	return this->matriz_tiles[x][y];
 }
 /********************************************************************************/

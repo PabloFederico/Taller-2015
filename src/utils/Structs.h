@@ -26,6 +26,23 @@ struct PosTipoEntidad{
 		this->y = y;
 		this->tipo = tipo;
 	};
+
+	// "tipo(x;y)"
+	std::string enc() {
+		ostringstream Encode;
+		Encode << tipo<<"("<<x<<";"<<y<<")";
+		return Encode.str();
+	}
+	static PosTipoEntidad dec(std::string s) {
+		std::stringstream ss(s);
+		int x,y,tipo;
+		ss >> tipo;
+		ss.ignore();
+		ss >> x;
+		ss.ignore();
+		ss >> y;
+		return PosTipoEntidad(x, y, TipoEntidad(tipo));
+	}
 };
 
 /* Estructura para guardar información para Escenario */
@@ -56,6 +73,39 @@ struct InfoEscenario{
 
 	bool operator!() {
 		return !((size_x > 0) && (size_y > 0) && (posX_protagonista >= 0) && (posY_protagonista >= 0));
+	}
+
+	// "x;y|[...,PTE,...,]|protTE"
+	std::string enc() {
+		ostringstream Encode;
+		Encode << size_x << ";" << size_y << "|[";
+		for (vector<PosTipoEntidad>::iterator it = posTipoEntidades.begin(); it < posTipoEntidades.end(); ++it) {
+			Encode << it->enc()<<",";
+		}
+		Encode << "]|"<<(PosTipoEntidad(posX_protagonista, posY_protagonista, protagonista).enc());
+		return Encode.str();
+	}
+	static InfoEscenario dec(std::string s) {
+		std::stringstream ss(s);
+		InfoEscenario ie;
+		ss >> ie.size_x;
+		ss.ignore();
+		ss >> ie.size_y;
+		char cs[16];
+		ss.ignore(2);
+		while (ss.peek() != ']') {
+			ss.get(cs, 14, ',');
+			ie.posTipoEntidades.push_back(PosTipoEntidad::dec(cs));
+			ss.ignore();
+		}
+		ss.ignore(2);
+		ss.get(cs, 14);
+		PosTipoEntidad prot = PosTipoEntidad::dec(cs);
+		ie.protagonista = prot.tipo;
+		ie.posX_protagonista = prot.x;
+		ie.posY_protagonista = prot.y;
+
+		return ie;
 	}
 };
 

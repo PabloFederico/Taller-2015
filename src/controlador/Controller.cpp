@@ -23,6 +23,13 @@ void Controller::procesarEvento(SDL_Event &event){
 	SDL_GetMouseState(&x,&y);
 	controladorMouse->procesarEvento(event,x,y);
 	controladorCamara->procesarPosicionMouse(x,y);
+
+	try {
+		if (this->juego->esCliente()) {
+			TipoMensajeRed tipo = Proxy::actualizarMultiplayer(this->juego);
+			std::cout << "Mensaje recibido y procesado de tipo "<<tipo<<std::endl;//
+		}
+	} catch ( NoSeRecibio &e ) {}
 }
 
 void Controller::agregarCamara(Camara *cam){
