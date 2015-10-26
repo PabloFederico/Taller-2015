@@ -202,6 +202,9 @@ void ContenedorDeRecursos::cargarImagenesUtil(){
 	imagen = Loader::cargarImagen(this->renderer,"images/icono_gris_1.png");
 	this->mapImagenesUtil->insert(ICONO_GRIS,imagen);
 
+	imagen = Loader::cargarImagen(this->renderer,"images/icono_violeta_1.png");
+	this->mapImagenesUtil->insert(ICONO_VIOLETA,imagen);
+
 	imagen = Loader::cargarImagen(this->renderer,"images/capa_gris.png");
 	this->mapImagenesUtil->insert(CAPA_GRIS,imagen);
 

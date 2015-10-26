@@ -336,7 +336,7 @@ void Dibujador::dibujarMiniMapa(Escenario* esc, SDL_Rect rect){
 				SDL_Rect rect_aux = rectRelieve;
 				rect_aux.w = 3;
 				rect_aux.h = 3;
-				Imagen* image;
+				Imagen* image = NULL;
 				for (unsigned k = 0; k < entidades.size(); k++){
 					Entidad* entidad = entidades[k];
 					switch (entidad->getTipo()){
@@ -373,9 +373,7 @@ void Dibujador::dibujarMiniMapa(Escenario* esc, SDL_Rect rect){
 								break;
 						default : break;
  					}
-
 					SDL_RenderCopy(this->renderer,image->getTexture(),NULL,&rect_aux);
-
 				}
 			}
 			rectRelieve.x += 0.5 * ANCHO;
