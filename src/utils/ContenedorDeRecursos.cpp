@@ -24,6 +24,12 @@ void ContenedorDeRecursos::cargarImagenesEntidades(vector<InfoEntidad> infoEntid
 	Imagen *pasto = Loader::cargarImagen(this->renderer,"images/pasto.png");
 	this->mapImagenes->insert(PASTO,pasto);
 
+	Imagen *contorno = Loader::cargarImagen(this->renderer,"images/selector_tile.png");
+	this->mapImagenes->insert(CONTORNO,contorno);
+
+	Imagen *contorno_grande = Loader::cargarImagen(this->renderer,"images/selector_tile_2.png");
+	this->mapImagenes->insert(CONTORNOXL,contorno_grande);
+
 	for (unsigned i = 0; i < infoEntidades.size(); i++){
 		TipoEntidad tipo = infoEntidades[i].tipo;
 		string path = infoEntidades[i].path;
