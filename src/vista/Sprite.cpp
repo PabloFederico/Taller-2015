@@ -262,7 +262,8 @@ bool Sprite::revisarCamino(Coordenada c_punto_actual) {
 			// Caso contrario, con el siguiente tile del camino ahora ocupado, crear nuevo camino para esquivarlo.
 			else setearNuevoCamino(Calculador::obtenerCaminoMin(escenario, c_punto_actual, c_pix_destino, coord_ceros), coord_ceros);
 		}
-		return true;
+		if (quedaCaminoPorRecorrer())
+			return true;
 	} catch ( FueraDeEscenario &e ) {} catch ( TileEstaOcupado &e ) {}
 	setearNuevoCamino(Camino(), coord_ceros);
 	return false;
