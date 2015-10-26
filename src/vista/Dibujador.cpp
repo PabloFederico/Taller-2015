@@ -181,6 +181,7 @@ void Dibujador::dibujarEscenario(Escenario* esc){
 
 			/* Solo dibujamos para las zonas visibles (GRISES ó COLOR) */
 			if (capaFog->getEstadoTile(i,j) != ESTADO_NEGRO){
+				this->dibujarContorno(esc);
 				SDL_RenderCopy(renderer,imagenRelieve->getTexture(),NULL,&rectRelieve);
 				Tile* tile = esc->getTile(i,j);
 				vector<Entidad*> entidades = tile->getEntidades();
@@ -217,6 +218,54 @@ void Dibujador::dibujarEscenario(Escenario* esc){
 	}
 }
 
+
+/********************************************************************************/
+bool Dibujador::dibujarContorno(Escenario* esc){
+	Imagen* contorno = contenedor->getImagenTipo(CONTORNO);
+	Imagen* contornoxl = contenedor->getImagenTipo(CONTORNOXL);
+
+	Tile* tile = esc->getTileClic();
+	if (tile == NULL) return false;
+
+	vector<Entidad*> entidades = tile->getEntidades();
+	if (entidades.size() == 0) esc->setearTileClic(NULL);
+
+	for (unsigned k = 0; k < entidades.size(); k++){
+		Entidad* entidad = entidades[k];
+		Sprite* sprite = contenedor->getSpriteDeEntidad(entidad);
+		SDL_Rect pos = sprite->getPosicion();
+		pos.w = ANCHO_PIXEL_PASTO;
+		pos.h = ALTO_PIXEL_PASTO;
+
+		switch (entidad->getTipo()){
+			case SOLDADO:
+				SDL_RenderCopy(this->renderer,contorno->getTexture(),NULL,&pos);
+				break;
+			case ARBOL:
+				pos.y += 23;
+				SDL_RenderCopy(this->renderer,contorno->getTexture(),NULL,&pos);
+				break;
+			case ANIMAL:
+				pos.x -= 5;
+				pos.y += 15;
+				SDL_RenderCopy(this->renderer,contorno->getTexture(),NULL,&pos);
+				break;
+			case CASTILLO:
+				pos.w = entidad->getTam().first + 250;
+				pos.h = entidad->getTam().second + 120;
+				pos.x -= 5;
+				pos.y += 5;
+				SDL_RenderCopy(this->renderer,contornoxl->getTexture(),NULL,&pos);
+				break;
+			case TIERRA:
+				if (entidades.size() == 1) esc->setearTileClic(NULL);
+				break;
+			default :
+				break;
+		}
+	}
+
+}
 /********************************************************************************/
 void Dibujador::dibujarBarraEstado(Escenario* esc, BarraEstado* barraEstado, TTF_Font* fuenteTexto){
 	for (unsigned i = 0; i < imagenesBasura.size(); i++){

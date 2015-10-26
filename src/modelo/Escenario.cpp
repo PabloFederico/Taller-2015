@@ -40,6 +40,7 @@ Escenario::Escenario(InfoEscenario infoEsc, EntidadFactory *fabrica): fabricaDeE
 	Coordenada pos(infoEsc.posX_protagonista, infoEsc.posY_protagonista);
 	this->agregarEntidad(pos, this->protagonista);
 	this->c_protagonista = pos;
+	this->tile_clic = NULL;
 	//PosEntidad posEntidad(pos.x, pos.y, this->protagonista);
 	//this->posicionesEntidades->push_back(posEntidad);
 }
@@ -144,6 +145,16 @@ bool Escenario::tileEsOcupable(Coordenada c) {
 	if (c.x < 0 || c.y < 0 || c.x >= this->size_x || c.y >= this->size_y)
 		return false;
 	return (this->matriz_tiles[c.x][c.y]->estaLibre());
+}
+
+/********************************************************************************/
+void Escenario::setearTileClic(Tile* tile){
+	this->tile_clic = tile;
+}
+
+/********************************************************************************/
+Tile* Escenario::getTileClic(){
+	return this->tile_clic;
 }
 
 /********************************************************************************

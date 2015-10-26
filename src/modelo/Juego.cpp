@@ -56,9 +56,9 @@ void Juego::cargarJuego(){
 	//if EsCliente, receive Escenario; !!!
 
 	//---------------------------------------------------------------------------------------------!!
-	InfoEscenario infoEsc = parsearConfig();
+	//InfoEscenario infoEsc = parsearConfig();
 	// !!! Para el que no le funciona YAML, comentar la línea de arriba y descomentar la de abajo.
-	//InfoEscenario infoEsc = OdioYAML();
+	InfoEscenario infoEsc = OdioYAML();
 	//---------------------------------------------------------------------------------------------!!
 
 	// Acá me imagino la posibilidad de un selector de escenarios.

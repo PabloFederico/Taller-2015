@@ -39,8 +39,13 @@ void ControladorMouse::procesarEvento(SDL_Event &event, int MouseX, int MouseY){
 			try{
 				Coordenada c_tile_clic = Calculador::tileParaPixel(Coordenada(MouseX,MouseY), coord_pixel_ceros);
 				clicValido = Calculador::puntoContenidoEnEscenario(c_tile_clic, escenario);
+				//Seteo tile clic:
+				Tile* tile_clic = escenario->getTile(c_tile_clic.x, c_tile_clic.y);
+				escenario->setearTileClic(tile_clic);
+
 			}catch(FueraDeEscenario &e) {
 				clicValido = false;
+				escenario->setearTileClic(NULL);
 			}
 
 			/* Si el clic es válido, buscamos el camino mínimo. */
