@@ -102,7 +102,7 @@ struct InfoEntidad{
 	int delay;
 	InfoEntidad(){
 		tipo = PASTO;
-		path = "images/mann.png";	// Acá poner la imagen de ImagenNoEncontrada.
+		path = "images/missing1.png";
 		ancho = 1;
 		alto = 1;
 		pixel_ref_x = 0;

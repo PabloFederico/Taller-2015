@@ -8,22 +8,24 @@
 
 int main(int argc, char** argv) {
 
-	if (SDL_Init(SDL_INIT_EVERYTHING) < 0){
+	Server* server = NULL;
+	Client* lan = NULL;//
+	if (argc > 1) {
+		try {
+			if (argv[1][0] == 's') {
+				server = new Server();
+				while (true)
+					server->correr();
+				delete server;
+			} else if (argv[1][0] == 'c')
+				lan = new Client();
+		} catch ( ConnectionProblem &e ) { lan = NULL; }
+	}
+
+	if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
 		return -1;
-	}else{
+	} else if (server == NULL) {
 		TTF_Init();
-		Connection* lan = NULL;//
-		Server* server = NULL;
-		if (argc > 1) {
-			try {
-				if (argv[1][0] == 's') {
-					server = new Server();
-					while (true)
-						server->correr();
-				} else if (argv[1][0] == 'c')
-					lan = new Client();
-			} catch ( ConnectionProblem &e ) { lan = NULL; }
-		}
 
 		Controller *controller = new Controller(lan);
 		VentanaJuego *ventana = new VentanaJuego(controller);
@@ -34,6 +36,7 @@ int main(int argc, char** argv) {
 		SDL_Quit();
 		IMG_Quit();
 		TTF_Quit();
+		delete lan;
 	}
 
 	return 0;

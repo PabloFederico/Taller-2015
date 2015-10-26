@@ -45,9 +45,9 @@ void ControladorMouse::procesarEvento(SDL_Event &event, int MouseX, int MouseY){
 
 			/* Si el clic es válido, buscamos el camino mínimo. */
 			if (clicValido){
-				SDL_Rect posicionPlayer = sprite->getPosicion();
-	            int Follow_Point_X = MouseX - posicionPlayer.w / 2;
-	            int Follow_Point_Y = MouseY - posicionPlayer.h;
+				//SDL_Rect posicionPlayer = sprite->getPosicion();
+	            //int Follow_Point_X = MouseX - posicionPlayer.w / 2;
+	            //int Follow_Point_Y = MouseY - posicionPlayer.h;
 
 	            ///pruebas
 	            //Coordenada mouse = Calculador::tileParaPixel(Coordenada(MouseX,MouseY),coord_pixel_ceros);
