@@ -40,19 +40,19 @@ bool Server::iniciar() {
 //	sleep(30); // necesitaría threads o algo así si no.
 //	std::cout << "waiting for incoming connections..."<<std::endl;
 
-	std::cout << "waiting for incoming connections..."<<std::endl;
+//	std::cout << "waiting for incoming connections..."<<std::endl;
 
 	/* accept() */
-	int new_descriptor = Red::aceptarCliente(this->socket);
+//	int new_descriptor = Red::aceptarCliente(this->socket);
 
-	if (new_descriptor < 0) {
-		std::cout << "ERROR: accept failed."<<std::endl;
-		return false;
-	}
+//	if (new_descriptor < 0) {
+//		std::cout << "ERROR: accept failed."<<std::endl;
+//		return false;
+//	}
 //	fcntl(new_descriptor, F_SETFL, O_NONBLOCK); // non-blocking mode
 
-	this->lastDescriptor = new_descriptor;
-	std::cout << "Connected."<<std::endl;
+//	this->lastDescriptor = new_descriptor;
+//	std::cout << "Connected."<<std::endl;
 
 /*	int i;
 	for (i = 0; i < MAX_CONEXIONES; i++) {
@@ -71,7 +71,8 @@ bool Server::iniciar() {
 		std::cout << "Connected to "<<new_descriptor<<"."<<std::endl;
 	}
 	std::cout << "Se recibieron "<<i<<" conexiones."<<std::endl;
-*/	return true;
+*/
+	return true;
 }
 
 
@@ -101,15 +102,18 @@ void Server::correr() {
 	FD_SET(srvsock, &readset);
 	maxfd = srvsock;
 
+	std::cout << "Aceptando hasta 5 jugadores."<<std::endl;
+
 	for (int i = 0; i < MAX_CONEXIONES; i++) {
 		memcpy(&tempset, &readset, sizeof(tempset));
-		tv.tv_sec = 30;
+		tv.tv_sec = 10;//
 		tv.tv_usec = 0;
 		// Espera 30 segundos a aparezca una conexión.
+		std::cout << "#"<<i+1<<" ... ";
 		result = select(maxfd+1, &tempset, NULL, NULL, &tv);
 
 		if (result == 0) {
-			std::cout << "select() timed out!"<<std::endl;
+			std::cout << "timed out!"<<std::endl;
 		} else if (result < 0 && errno != EINTR) {
 			std::cout << "Error in select(): "<<strerror(errno)<<std::endl;
 		} else if (result > 0) {
@@ -122,6 +126,7 @@ void Server::correr() {
 				} else {
 					FD_SET(peersock, &readset);
 					maxfd = (maxfd > peersock)?maxfd:peersock;
+					std::cout << "Conectado!"<<std::endl;
 				}
 				FD_CLR(srvsock, &tempset);
 			}

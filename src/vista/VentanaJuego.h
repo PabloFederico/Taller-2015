@@ -25,6 +25,7 @@ private:
 	Dibujador *dibujador;
 
 	void cargarImagenesYSprites(Juego *juego);
+
 	/* Dibuja el escenario*/
 	void dibujar();
 
@@ -33,9 +34,6 @@ private:
 	void cargarJuego(Juego *juego);
 
 	void liberarRecursos();
-
-	///para pruebas
-	Escenario* esc;
 
 public:
 	VentanaJuego(Controller *controlador);
