@@ -56,9 +56,9 @@ void Juego::cargarJuego(){
 	//if EsCliente, receive Escenario; !!!
 
 	//---------------------------------------------------------------------------------------------!!
-	//InfoEscenario infoEsc = parsearConfig();
+	InfoEscenario infoEsc = parsearConfig();
 	// !!! Para el que no le funciona YAML, comentar la línea de arriba y descomentar la de abajo.
-	InfoEscenario infoEsc = OdioYAML();
+	//InfoEscenario infoEsc = OdioYAML();
 	//---------------------------------------------------------------------------------------------!!
 
 	// Acá me imagino la posibilidad de un selector de escenarios.
@@ -303,18 +303,18 @@ InfoEscenario Juego::OdioYAML() {
 
 	InfoEntidad infoSoldado;
 	infoSoldado.tipo = tipos["soldado"];
-	infoSoldado.path = "images/soldado.png";
+	infoSoldado.path = "images/chabon000.png";
 	infoSoldado.fps = 50;
 	infoSoldado.delay = 0;
 
 	InfoEntidad infoJuana;
 	infoJuana.tipo = tipos["juana_de_arco"];
-	infoJuana.path = "images/juana.png";
+	infoJuana.path = "images/juanita.png";
 	infoJuana.fps = 10;
 
 	InfoEntidad infoAnimal;
 	infoAnimal.tipo = tipos["animal"];
-	infoAnimal.path = "images/animal.png";
+	infoAnimal.path = "images/animal1.png";
 	infoAnimal.fps = 50;
 
 

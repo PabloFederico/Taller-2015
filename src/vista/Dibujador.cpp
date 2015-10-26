@@ -264,7 +264,7 @@ bool Dibujador::dibujarContorno(Escenario* esc){
 				break;
 		}
 	}
-
+	return true; //agregado por MC
 }
 /********************************************************************************/
 void Dibujador::dibujarBarraEstado(Escenario* esc, BarraEstado* barraEstado, TTF_Font* fuenteTexto){
