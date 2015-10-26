@@ -239,6 +239,8 @@ bool Dibujador::dibujarContorno(Escenario* esc){
 
 		switch (entidad->getTipo()){
 			case SOLDADO:
+				pos.x -= 14;
+				pos.y += 10;
 				SDL_RenderCopy(this->renderer,contorno->getTexture(),NULL,&pos);
 				break;
 			case ARBOL:
