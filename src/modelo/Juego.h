@@ -75,6 +75,9 @@ public:
 	vector<InfoEntidad> getInfoTiposEntidades();
 	Entidad* getProtagonista();
 	Sprite* getSpritePlayer();
+	Sprite* getSpritePlayer(int idJug);
+	vector<Sprite*> getSpritesProtagonistas();
+	PosEntidad getPosEntDeProtagonista();
 	pair<int,int> getDimensionVentana();
 	int getVelocidad();
 	int getMargenScroll();

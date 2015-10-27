@@ -62,6 +62,7 @@ void ControladorMouse::procesarEvento(SDL_Event &event, int MouseX, int MouseY){
 							/* Si se está jugando en red, enviar el movimiento a los demás jugadores. */
 							if (juego->esCliente())
 								Proxy::enviar(juego->getConnection(), camino);
+
 							/* Activamos el movimiento del sprite y seteamos el nuevo camino que debe recorrer. */
 							sprite->setearNuevoCamino(camino, coord_pixel_ceros);
 						}
@@ -71,12 +72,14 @@ void ControladorMouse::procesarEvento(SDL_Event &event, int MouseX, int MouseY){
 				if (escenario->getEntidadSeleccionada() != NULL){
 					juego->getBarraEstado()->setInformacion(escenario->getEntidadSeleccionada()->getInfo());
 				}
-			}/* Fin clicValido */
+			} /* Fin clicValido */
 		}
 	} /* Fin if SDL_MOUSEBUTTONDOWN */
 
-	if (sprite->estaEnMovimiento())		//verificar que esta optimización no rompa nada
-		sprite->update(juego->getVelocidad());
+	vector<Sprite*> spritesProtagonistas = juego->getSpritesProtagonistas();
+	for (vector<Sprite*>::iterator it = spritesProtagonistas.begin(); it < spritesProtagonistas.end(); ++it)
+		if ((*it)->estaEnMovimiento())
+			(*it)->update(juego->getVelocidad());
 
 }
 

@@ -61,16 +61,18 @@ void Juego::cargarNumJugador() {
 void Juego::cargarJuego(InfoEscenario* infoEscRed = NULL) {
 	//	std::vector<InfoEscenario> vecEscenarios;
 
-	//---------------------------------------------------------------------------------------------!!
+	//----------------------------------------------------------------------------------------!!
 	InfoEscenario infoEsc = parsearConfig();
-	// !!! Para el que no le funciona YAML, comentar la línea de arriba y descomentar la de abajo.
+	// !!! Para Guido, comentar la línea de arriba y descomentar la de abajo.
 	//InfoEscenario infoEsc = OdioYAML();
-	//---------------------------------------------------------------------------------------------!!
+	//----------------------------------------------------------------------------------------!!
 
 	//if esCliente(), receive Escenario; chequear disponibilidad de las entidades, rellenar con missing las faltantes.
-	//además, se debería hardcodear la vel_personaje para evitar ventajas.
 
 	// Acá me imagino la posibilidad de un selector de escenarios.
+	if (esCliente()) {
+		this->vel_personaje = 50; // Misma velocidad para todos.
+	}
 	this->fabricaDeEntidades = new EntidadFactory(this->idJug, this->vectorInfoTiposEntidades);
 	this->escenario = new Escenario(infoEsc, this->fabricaDeEntidades);
 	this->protagonista = this->escenario->getProtagonista();
@@ -170,6 +172,7 @@ InfoEscenario Juego::parsearConfig() {
 							int y = ChequeoDeBorde(infoEsc.size_y-(it->alto), ent["y"].as<int>());
 							if ((x!=ent["x"].as<int>()) || (y!=ent["y"].as<int>()))
 								Log::imprimirALog(WAR,"Coordenadas inválidas para '" + ent["tipo"].as<string>() + "'; reposicionado");
+
 							infoEsc.agregarEntidad( make_pair(x,y), tipo );
 						} else Log::imprimirALog(WAR,"Error: El tipo '" + ent["tipo"].as<string>() + "' no fue configurado");
 
@@ -358,6 +361,25 @@ Sprite* Juego::getSpritePlayer(){
 }
 
 /***************************************************/
+// Devuelve Sprite protagonista de jugador idJug; en caso de no encontrarlo devuelve el propio.
+// Solo para una entidad de adversario; no chequea tipo.
+Sprite* Juego::getSpritePlayer(int id_jug) {
+	for (vector<PosEntidad>::iterator it = enemigos.begin(); it < enemigos.end(); ++it)
+		if (it->entidad->getIDJug() == id_jug)
+			return this->contenedor->getSpriteDeEntidad(it->entidad);
+	return this->contenedor->getSpriteDeEntidad(protagonista);
+}
+
+/***************************************************/
+vector<Sprite*> Juego::getSpritesProtagonistas() {
+	vector<Sprite*> v;
+	for (vector<PosEntidad>::iterator it = enemigos.begin(); it < enemigos.end(); ++it)
+		v.push_back(this->contenedor->getSpriteDeEntidad(it->entidad)); // ajenos
+	v.push_back(this->getSpritePlayer()); // propio
+	return v;
+}
+
+/***************************************************/
 void Juego::setCeros(int *x, int *y){
 	this->cero_x = x;
 	this->cero_y = y;
@@ -405,6 +427,11 @@ Connection* const Juego::getConnection() {
 }
 
 /***************************************************/
+PosEntidad Juego::getPosEntDeProtagonista() {
+	return PosEntidad(this->escenario->getPosProtagonista(), this->protagonista);
+}
+
+/***************************************************/
 void Juego::cargarEnemigo(PosEntidad posEnt) {
 	escenario->agregarEntidad(posEnt.coord(), posEnt.entidad);
 	enemigos.push_back(posEnt);
@@ -412,6 +439,7 @@ void Juego::cargarEnemigo(PosEntidad posEnt) {
 
 /********************************************************************************/
 Juego::~Juego() {
+	this->enemigos.clear();
 	delete this->escenario;
 	delete this->contenedor;
 	delete this->barraEstado;

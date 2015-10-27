@@ -100,9 +100,7 @@ void Proxy::procesarCamino(Juego* juego, string encodeado) {
 	ss.get(camEnc, MAX_BYTES_LECTURA, '~');
 	std::cout << jug << "|||" << camEnc << std::endl;//
 	Camino cam = Camino::dec(camEnc);
-	// TODO extender a varios jugadores
-	juego->getSpritePlayer()->setearNuevoCamino(cam, juego->getCoordCeros());
-	//juego->getSpritePlayer(jug)->setearNuevoCamino(cam, juego->getCoordCeros());
+	juego->getSpritePlayer(jug)->setearNuevoCamino(cam, juego->getCoordCeros());
 }
 
 void Proxy::procesarNuevaEntidad(Juego* juego, string encodeado) {
@@ -133,4 +131,5 @@ void Proxy::enviar(Connection* lan, PosEntidad ent) {
 	string t = agregarPrefijoYFinal("ENT", ent.enc());
 	lan->enviar(t);
 }
+
 //void Proxy::enviar(Ataque)

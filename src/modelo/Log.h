@@ -7,6 +7,9 @@
 
 #ifndef MODELO_LOG_H_
 #define MODELO_LOG_H_
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
 #include <ctime>
 #include <fstream>
 #include "../utils/Enumerados.h"
@@ -25,7 +28,7 @@ public:
 		ofstream fLog("TP.log", std::ofstream::app);
 		fLog << "[" << timestamp << "]" << '\t' <<LogToString(tipo)<< '\t' << output << std::endl;
 		fLog.close();
-		std::cerr <<output <<std::endl;
+		std::cerr << output <<std::endl;
 	};
 };
 

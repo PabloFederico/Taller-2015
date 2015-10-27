@@ -5,7 +5,7 @@
  *      Author: pgfederi
  */
 #include "../modelo/Escenario.h"
-//#include "../modelo/Log.h"
+
 
 Escenario::Escenario(InfoEscenario infoEsc, EntidadFactory *fabrica): fabricaDeEntidades(fabrica) {
 	this->size_x = infoEsc.size_x;
@@ -54,6 +54,11 @@ void Escenario::inicializarMatrizTiles() {
 /********************************************************************************/
 Entidad* Escenario::getProtagonista(){
 	return this->protagonista;
+}
+
+/********************************************************************************/
+Coordenada Escenario::getPosProtagonista() {
+	return this->c_protagonista;
 }
 
 /********************************************************************************/
@@ -107,7 +112,7 @@ void Escenario::agregarEntidad(Coordenada pos, Entidad* entidad){
 		PosEntidad posEntidad(pos, entidad);
 		this->posicionesEntidades->push_back(posEntidad);
 	} catch ( TileEstaOcupado &e ) {
-		//Log::imprimirALog(ERR,"Se intento agregar una entidad en un tile ocupado");
+		Log::imprimirALog(ERR,"Se intentó agregar una entidad en un tile ocupado");
 	} // TODO: Alguna devolución de que no se pudo insertar?
 }
 
@@ -147,7 +152,7 @@ void Escenario::setearTileClic(Tile* tile, Coordenada c_tile){
 		vector<Entidad*> entidades = tile->getEntidades();
 		for (unsigned i = 0; i < entidades.size(); i++){
 			if (entidades[i]->ocupaSuTile()){
-				this->entidadSeleccionada = entidades[i];
+				this->entidadSeleccionada = entidades[i];	// Si hay varias (que no debería), queda la última
 			}
 		}
 	}

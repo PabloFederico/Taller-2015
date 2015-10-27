@@ -13,6 +13,9 @@ Controller::Controller(Connection* lan = NULL) {
 		Proxy::esperarComienzo(lan);
 
 	this->juego = new Juego(lan, NULL);
+	if (lan != NULL)
+		Proxy::enviar(lan, juego->getPosEntDeProtagonista());
+
 	this->controladorMouse = new ControladorMouse(juego);
 	this->controladorCamara = new ControladorCamara(juego);
 }
@@ -27,12 +30,12 @@ void Controller::procesarEvento(SDL_Event &event){
 	controladorMouse->procesarEvento(event,x,y);
 	controladorCamara->procesarPosicionMouse(x,y);
 
-	try {
-		if (this->juego->esCliente()) {
+	if (this->juego->esCliente()) {
+		try {
 			TipoMensajeRed tipo = Proxy::actualizarMultiplayer(this->juego);
 			std::cout << "Mensaje recibido y procesado de tipo "<<tipo<<std::endl;//
-		}
-	} catch ( NoSeRecibio &e ) {}
+		} catch ( NoSeRecibio &e ) {}
+	}
 }
 
 void Controller::agregarCamara(Camara *cam){

@@ -51,7 +51,7 @@ void ContenedorDeRecursos::generarYGuardarSpritesEntidades(vector<PosEntidad> *p
 		int tile_y = (*posEntidades)[i].y;
 		Coordenada coord_tile(tile_x, tile_y);
 		Entidad* entidad = (*posEntidades)[i].entidad;
-		entidad->setTam(mapInfoEntidades[entidad->getTipo()].ancho, mapInfoEntidades[entidad->getTipo()].alto);
+		entidad->setTam(mapInfoEntidades[entidad->getTipo()].ancho, mapInfoEntidades[entidad->getTipo()].alto);	// Esto ya lo hace la clase Factory
 		Coordenada coordenada = Calculador::calcularPosicionRelativa(coord_tile,coord_ceros,escenario);
 
 		SDL_Rect posicion;
@@ -156,9 +156,7 @@ Map<Entidad*, Sprite*>* ContenedorDeRecursos::getMapaSpritesEntidades(){
 /********************************************************************************/
 Sprite* ContenedorDeRecursos::getSpriteDeEntidad(Entidad *entidad){
 	map<Entidad*, Sprite* >::iterator it = this->mapSpritesEntidades->find(entidad);
-	Sprite *sprite = it->second;
-	//this->mapSpritesEntidades->erase(entidad);
-	return sprite;
+	return it->second;
 }
 /********************************************************************************/
 void ContenedorDeRecursos::actualizarPosicionesEntidades(int corrimiento_x, int corrimiento_y){
