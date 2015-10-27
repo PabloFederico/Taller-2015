@@ -39,10 +39,7 @@ private:
 	Tile* tile_clic;
 	Coordenada c_tile_clic;
 
-	void quitarEntidad(Coordenada pos, Entidad* entidad);
-
-	/* Agrega una entidad en una posición indicada como parámetro */
-	void agregarEntidad(Coordenada pos, Entidad* entidad);
+	void inicializarMatrizTiles();
 
 public:
 	Escenario(InfoEscenario info, EntidadFactory* fabrica);
@@ -53,6 +50,10 @@ public:
 	/* Devuelve un vector que contiene structs de PosEntidad, posición en X,
 	 * posición en Y y la entidad */
 	vector<PosEntidad>* getVectorEntidades();
+
+	/* Agrega una entidad en una posición indicada como parámetro */
+	void agregarEntidad(Coordenada pos, Entidad* entidad);
+	void quitarEntidad(Coordenada pos, Entidad* entidad);
 
 	Entidad* getProtagonista();
 

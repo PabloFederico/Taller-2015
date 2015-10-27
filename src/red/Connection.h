@@ -25,10 +25,12 @@ class Connection {
 protected:
 	Socket* socket = NULL;
 	int lastDescriptor;
-	std::string memoria;
+	int idJug;
 
 public:
 	virtual bool iniciar() = 0;
+
+	int getIDJugador();
 
 	void enviar(std::string);
 	std::string recibir();

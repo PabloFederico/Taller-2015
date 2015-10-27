@@ -20,20 +20,19 @@ private:
 	static void procesarMensaje(string encodeado);
 	static void procesarEscenario(Juego* juego, string encodeado);
 	static void procesarCamino(Juego* juego, string encodeado);
-	//static procesarNuevaEntidad(Juego* juego, string encodeado)
-	//static procesarAtaque(Juego* juego, string encodeado)
+	static void procesarNuevaEntidad(Juego* juego, string encodeado);
+	//static void procesarAtaque(Juego* juego, string encodeado)
 
 public:
 	static TipoMensajeRed esperarComienzo(Connection* lan);
 	// Recibir todo.
 	static TipoMensajeRed actualizarMultiplayer(Juego* juego);
 
-	static void enviarComienzo(Connection* lan);			// Enviar señal de comienzo (solo servidor)
-	static void enviar(Connection* lan, string s);			// Enviar mensaje
-	static void enviar(Connection* lan, InfoEscenario ie);	// Enviar datos iniciales de Escenario
-	static void enviar(Connection* lan, Camino cam);		// Enviar movimiento de cierta entidad
-	//static void enviar(Entidad*)
-	//static void enviar(Ataque)
+	static void enviar(Connection* lan, string s);	// Enviar mensaje
+	static void enviar(Connection* lan, InfoEscenario ie);		// Enviar datos iniciales de Escenario
+	static void enviar(Connection* lan, Camino cam);	// Enviar movimientos del protagonista
+	static void enviar(Connection* lan, PosEntidad ent);		// Enviar información de entidad
+	//static void enviar(Connection* lan, Ataque)
 
 };
 

@@ -25,6 +25,7 @@
 
 class Juego {
 private:
+	int idJug;
 	int *cero_x;
 	int *cero_y;
 
@@ -36,7 +37,7 @@ private:
 	
 	Escenario *escenario;
 	Entidad *protagonista;
-	vector<Entidad*> enemigos;
+	vector<PosEntidad> enemigos;
 
 	Connection* connection;
 
@@ -49,13 +50,11 @@ private:
 
 	void cargarImagenes();
 
-
 	int ChequeoDeBorde(int max, int input);
-
-	InfoEscenario infoEscenarioDefault();
 
 	InfoEscenario parsearConfig();
 
+	InfoEscenario infoEscenarioDefault();
 	//de prueba		!!!
 	InfoEscenario OdioYAML();
 
@@ -69,7 +68,8 @@ public:
 	Connection* const getConnection();
 	bool esCliente();
 
-	void cargarEnemigo(Entidad* ent);
+	void cargarNumJugador();
+	void cargarEnemigo(PosEntidad posEnt);
 
 	Map<Entidad*, Sprite*>* getSpritesEntidades();
 	vector<InfoEntidad> getInfoTiposEntidades();

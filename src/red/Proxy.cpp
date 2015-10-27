@@ -14,12 +14,18 @@ string agregarPrefijoYFinal(string prefijo, string mensaje) {
 	return Encode.str();
 }
 
+string agregarPrefijoYJugYFinal(string prefijo, int jug, string mensaje) {
+	ostringstream Encode;
+	Encode << "<"<<prefijo<<">"<<jug<<":"<<mensaje<<"~";
+	return Encode.str();
+}
+
 TipoMensajeRed extraerPrefijoYMensaje(string recibido, string* mensaje) {
 	stringstream ss(recibido);
 	char sTipo[5], charMensaje[MAX_BYTES_LECTURA];
-	ss.ignore();		// "<"
-	ss.get(sTipo, 4);	// "tipo"
-	ss.ignore();		// ">"
+	ss.ignore();			// "<"
+	ss.get(sTipo, 4, '>');	// "tipo"
+	ss.ignore();			// ">"
 	ss.get(charMensaje, MAX_BYTES_LECTURA, '\0');
 	*mensaje = string(charMensaje);
 	return StringToTipoMensajeRed(sTipo);
@@ -69,7 +75,7 @@ TipoMensajeRed Proxy::actualizarMultiplayer(Juego* juego) {
 		default: procesarMensaje(unContenido);
 		}
 
-		ss.ignore();	// "~"
+		ss.ignore();	// '~'
 		ss.get(charUnMensaje, MAX_BYTES_LECTURA, '~');
 	}
 
@@ -78,8 +84,9 @@ TipoMensajeRed Proxy::actualizarMultiplayer(Juego* juego) {
 
 
 void Proxy::procesarMensaje(string encodeado) {
-	string mensaje;
-	Log::imprimirALog(INFO, mensaje);
+	stringstream ss(encodeado);
+	int jug; ss >> jug; ss.ignore(); // ':'
+	Log::imprimirALog(INFO, jug+"> "+ss.str());
 }
 
 void Proxy::procesarEscenario(Juego* juego, string encodeado) {
@@ -87,24 +94,25 @@ void Proxy::procesarEscenario(Juego* juego, string encodeado) {
 }
 
 void Proxy::procesarCamino(Juego* juego, string encodeado) {
-	Camino cam = Camino::dec(encodeado);
+	stringstream ss(encodeado);
+	int jug; ss >> jug; ss.ignore(); // ':'
+	Camino cam = Camino::dec(ss.str());
 	// TODO extender a varios jugadores
 	juego->getSpritePlayer()->setearNuevoCamino(cam, juego->getCoordCeros());
+	//juego->getSpritePlayer(jug)->setearNuevoCamino(cam, juego->getCoordCeros());
 }
 
-//recibirNuevaEntidad(Juego* juego, string encodeado)
-//recibirAtaque(Juego* juego, string encodeado)
+void Proxy::procesarNuevaEntidad(Juego* juego, string encodeado) {
+	juego->cargarEnemigo(PosEntidad::dec(encodeado));
+}
+
+//void procesarAtaque(Juego* juego, string encodeado)
 
 /***************************************************
 ***************************************************/
 
 void Proxy::enviar(Connection* lan, string s) {
-	string t = agregarPrefijoYFinal("MSJ", s);
-	lan->enviar(t);
-}
-
-void Proxy::enviarComienzo(Connection* lan) {
-	string t = agregarPrefijoYFinal("COM", "");
+	string t = agregarPrefijoYJugYFinal("MSJ", lan->getIDJugador(), s);
 	lan->enviar(t);
 }
 
@@ -114,9 +122,12 @@ void Proxy::enviar(Connection* lan, InfoEscenario ie) {
 }
 
 void Proxy::enviar(Connection* lan, Camino cam) {
-	string t = agregarPrefijoYFinal("MOV", cam.enc());
+	string t = agregarPrefijoYJugYFinal("MOV", lan->getIDJugador(), cam.enc());
 	lan->enviar(t);
 }
 
-//void enviar(Entidad*)
-//void enviar(Ataque)
+void Proxy::enviar(Connection* lan, PosEntidad ent) {
+	string t = agregarPrefijoYFinal("ENT", ent.enc());
+	lan->enviar(t);
+}
+//void Proxy::enviar(Ataque)

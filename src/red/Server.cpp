@@ -77,11 +77,17 @@ void Server::correr() {
 				if (peersock < 0) {
 					std::cout << "Error in accept(): "<<strerror(errno)<<std::endl;
 				} else {
+					cantConectados++;
+
+					ostringstream ss;
+					ss << cantConectados<<"~";
+					send(peersock, ss.str().c_str(), 5, MSG_NOSIGNAL);
+					// Envío # de jugador.
+
 					fcntl(peersock, F_SETFL, O_NONBLOCK); // non-blocking mode
 					FD_SET(peersock, &readset);
 					maxfd = (maxfd > peersock)?maxfd:peersock;
-					std::cout << "Conectado!"<<std::endl;
-					cantConectados++;
+					std::cout << "Jugador "<<cantConectados<<" conectado!"<<std::endl;
 				}
 			}
 		}

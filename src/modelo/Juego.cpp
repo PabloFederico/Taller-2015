@@ -11,6 +11,7 @@
 
 
 Juego::Juego(Connection* lan = NULL, InfoEscenario* infoEscRed = NULL): connection(lan) {
+	this->idJug = 0;
 	this->cero_x = NULL;
 	this->cero_y = NULL;
 	this->contenedor = NULL;
@@ -18,12 +19,14 @@ Juego::Juego(Connection* lan = NULL, InfoEscenario* infoEscRed = NULL): connecti
 	this->escenario = NULL;
 	this->fabricaDeEntidades = NULL;
 	this->protagonista = NULL;
+
 	// Valores por defecto
 	this->screenWidth = 800;
 	this->screenHeight = 600;
 	this->vel_personaje = 50;
 	this->margen_scroll = 30;
 
+	this->cargarNumJugador();
 	this->cargarJuego(infoEscRed);
 }
 
@@ -48,20 +51,27 @@ bool Juego::esCliente() {
 }
 
 /********************************************************************************/
+void Juego::cargarNumJugador() {
+	if (connection != NULL)
+		 this->idJug = connection->getIDJugador();
+	else this->idJug = 0;
+}
+
+/********************************************************************************/
 void Juego::cargarJuego(InfoEscenario* infoEscRed = NULL) {
 	//	std::vector<InfoEscenario> vecEscenarios;
 
 	//---------------------------------------------------------------------------------------------!!
-	//InfoEscenario infoEsc = parsearConfig();
+	InfoEscenario infoEsc = parsearConfig();
 	// !!! Para el que no le funciona YAML, comentar la línea de arriba y descomentar la de abajo.
-	InfoEscenario infoEsc = OdioYAML();
+	//InfoEscenario infoEsc = OdioYAML();
 	//---------------------------------------------------------------------------------------------!!
 
 	//if esCliente(), receive Escenario; chequear disponibilidad de las entidades, rellenar con missing las faltantes.
 	//además, se debería hardcodear la vel_personaje para evitar ventajas.
 
 	// Acá me imagino la posibilidad de un selector de escenarios.
-	this->fabricaDeEntidades = new EntidadFactory(this->vectorInfoTiposEntidades);
+	this->fabricaDeEntidades = new EntidadFactory(this->idJug, this->vectorInfoTiposEntidades);
 	this->escenario = new Escenario(infoEsc, this->fabricaDeEntidades);
 	this->protagonista = this->escenario->getProtagonista();
 	this->barraEstado = new BarraEstado(this->screenWidth, 150);
@@ -391,6 +401,12 @@ BarraEstado* Juego::getBarraEstado(){
 /***************************************************/
 Connection* const Juego::getConnection() {
 	return this->connection;
+}
+
+/***************************************************/
+void Juego::cargarEnemigo(PosEntidad posEnt) {
+	escenario->agregarEntidad(posEnt.coord(), posEnt.entidad);
+	enemigos.push_back(posEnt);
 }
 
 /********************************************************************************/

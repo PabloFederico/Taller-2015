@@ -9,6 +9,7 @@
 #define RED_CLIENT_H_
 
 #include "Connection.h"
+#include <sstream>
 
 
 class Client: public Connection {

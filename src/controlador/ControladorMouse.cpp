@@ -27,7 +27,7 @@ void ControladorMouse::procesarEvento(SDL_Event &event, int MouseX, int MouseY){
 		Coordenada coord_tile_sprite = Calculador::tileParaPixel(coord_pixel_sprite,coord_pixel_ceros);
 		juego->getEscenario()->actualizarPosicionProtagonista(coord_tile_sprite);
 		juego->getEscenario()->getCapa()->descubrirDesdePunto(coord_tile_sprite.x, coord_tile_sprite.y);
-	}catch (FueraDeEscenario &e){}
+	}catch (FueraDeEscenario &e) {}
 
 
 	/*********** Análisis del clic del mouse *************/

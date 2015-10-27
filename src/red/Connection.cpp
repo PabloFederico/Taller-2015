@@ -8,6 +8,10 @@
 #include "Connection.h"
 
 
+int Connection::getIDJugador() {
+	return this->idJug;
+}
+
 void Connection::enviar(std::string s) {
 	if (Red::enviarInformacion(this->lastDescriptor, s) < 0) {
 		//Log::imprimirALog(ERR, "ERROR: send failed.");
