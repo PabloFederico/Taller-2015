@@ -9,7 +9,10 @@
 
 
 Controller::Controller(Connection* lan = NULL) {
-	this->juego = new Juego(lan);
+	if (lan != NULL)
+		Proxy::esperarComienzo(lan);
+
+	this->juego = new Juego(lan, NULL);
 	this->controladorMouse = new ControladorMouse(juego);
 	this->controladorCamara = new ControladorCamara(juego);
 }

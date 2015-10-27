@@ -10,7 +10,7 @@
 #include <iostream>
 
 
-Juego::Juego(Connection* lan = NULL): connection(lan) {
+Juego::Juego(Connection* lan = NULL, InfoEscenario* infoEscRed = NULL): connection(lan) {
 	this->cero_x = NULL;
 	this->cero_y = NULL;
 	this->contenedor = NULL;
@@ -24,7 +24,7 @@ Juego::Juego(Connection* lan = NULL): connection(lan) {
 	this->vel_personaje = 50;
 	this->margen_scroll = 30;
 
-	this->cargarJuego();
+	this->cargarJuego(infoEscRed);
 }
 
 /********************************************************************************/
@@ -48,7 +48,7 @@ bool Juego::esCliente() {
 }
 
 /********************************************************************************/
-void Juego::cargarJuego(){
+void Juego::cargarJuego(InfoEscenario* infoEscRed = NULL) {
 	//	std::vector<InfoEscenario> vecEscenarios;
 
 	//---------------------------------------------------------------------------------------------!!
@@ -358,7 +358,7 @@ void Juego::reiniciar(){
 	delete this->escenario;
 	delete this->contenedor;
 	delete this->barraEstado;
-	cargarJuego();
+	cargarJuego(NULL);
 }
 
 /***************************************************/

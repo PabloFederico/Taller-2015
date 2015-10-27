@@ -83,7 +83,7 @@ void VentanaJuego::dibujar(){
 }
 
 /********************************************************************************/
-void VentanaJuego::mostrar(Server* server = NULL){
+void VentanaJuego::mostrar(){
 		bool run = true;
 		SDL_Event event;
 
@@ -109,9 +109,6 @@ void VentanaJuego::mostrar(Server* server = NULL){
 	            		this->reiniciar();
 	            	}
 	            }
-
-	            //if (server)
-	            //	server->correr();
 
 		} /* Fin del while*/
 }

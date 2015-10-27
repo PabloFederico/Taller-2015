@@ -26,6 +26,21 @@ TipoMensajeRed extraerPrefijoYMensaje(string recibido, string* mensaje) {
 }
 
 
+TipoMensajeRed Proxy::esperarComienzo(Connection* lan) {
+	TipoMensajeRed tipo = TipoMensajeRed(0);
+	do {
+		try {
+			string unContenido, recibido = lan->recibir();
+			stringstream ss(recibido);
+			char charUnMensaje[MAX_BYTES_LECTURA];
+			ss.get(charUnMensaje, MAX_BYTES_LECTURA, '~');
+			string unMensaje(charUnMensaje);
+			tipo = extraerPrefijoYMensaje(unMensaje, &unContenido);
+		} catch ( NoSeRecibio &e ) {}
+	} while (tipo != COMIENZO);
+	return tipo;
+}
+
 TipoMensajeRed Proxy::actualizarMultiplayer(Juego* juego) {
 	string unContenido, recibido = juego->getConnection()->recibir();
 	// Si no se recibe nada, recibir() lanza NoSeRecibio y se saltea el resto.
@@ -40,7 +55,7 @@ TipoMensajeRed Proxy::actualizarMultiplayer(Juego* juego) {
 		tipo = extraerPrefijoYMensaje(unMensaje, &unContenido);
 
 		switch (tipo) {
-		case COMIENZO: procesarComienzo(juego);
+		case COMIENZO:
 			break;
 		case ESCENARIO: procesarEscenario(juego, unContenido);
 			break;
@@ -51,7 +66,6 @@ TipoMensajeRed Proxy::actualizarMultiplayer(Juego* juego) {
 		case ATAQUE:
 			break;
 		case MENSAJE:
-			break;
 		default: procesarMensaje(unContenido);
 		}
 
@@ -64,13 +78,8 @@ TipoMensajeRed Proxy::actualizarMultiplayer(Juego* juego) {
 
 
 void Proxy::procesarMensaje(string encodeado) {
-	// extraer mensaje
 	string mensaje;
 	Log::imprimirALog(INFO, mensaje);
-}
-
-void Proxy::procesarComienzo(Juego* juego) {
-	//juego->comenzar();TODO
 }
 
 void Proxy::procesarEscenario(Juego* juego, string encodeado) {
@@ -90,7 +99,8 @@ void Proxy::procesarCamino(Juego* juego, string encodeado) {
 ***************************************************/
 
 void Proxy::enviar(Connection* lan, string s) {
-
+	string t = agregarPrefijoYFinal("MSJ", s);
+	lan->enviar(t);
 }
 
 void Proxy::enviarComienzo(Connection* lan) {

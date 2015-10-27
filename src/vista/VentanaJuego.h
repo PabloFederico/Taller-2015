@@ -39,7 +39,7 @@ public:
 	VentanaJuego(Controller *controlador);
 
 	/* Muestra la ventana principal */
-	void mostrar(Server* server);
+	void mostrar();
 
 	virtual ~VentanaJuego();
 

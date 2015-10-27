@@ -18,13 +18,13 @@ class Proxy {
 
 private:
 	static void procesarMensaje(string encodeado);
-	static void procesarComienzo(Juego* juego);
 	static void procesarEscenario(Juego* juego, string encodeado);
 	static void procesarCamino(Juego* juego, string encodeado);
 	//static procesarNuevaEntidad(Juego* juego, string encodeado)
 	//static prcoesarAtaque(Juego* juego, string encodeado)
 
 public:
+	static TipoMensajeRed esperarComienzo(Connection* lan);
 	// Recibir todo.
 	static TipoMensajeRed actualizarMultiplayer(Juego* juego);
 

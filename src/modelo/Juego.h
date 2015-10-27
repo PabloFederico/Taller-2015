@@ -21,7 +21,6 @@
 #include "../modelo/Escenario.h"
 #include "../modelo/Exceptions.h"
 #include "../red/Connection.h"
-#include "../red/Server.h"
 #include "../red/Client.h"
 #include "../vista/Sprite.h"
 
@@ -46,7 +45,7 @@ private:
 
 	/* Carga la configuración inicial del juego a traves
 	 * de un archivo de configuración */
-	void cargarJuego();
+	void cargarJuego(InfoEscenario* infoEscRed);
 
 	void cargarImagenes();
 
@@ -65,13 +64,17 @@ private:
 	BarraEstado *barraEstado;
 
 public:
-	Juego(Connection* lan);
+	Juego(Connection* lan, InfoEscenario* infoEscRed);
+
 	int getVelocidad();
+
 	pair<int,int> dimensionVentana();
 
 	Escenario* getEscenario();
 
 	bool esCliente();
+
+	void comenzar();
 
 	vector<InfoEntidad> getInfoTiposEntidades();
 	//map<std::string,VistaEntidad*>* getMapEntidades();

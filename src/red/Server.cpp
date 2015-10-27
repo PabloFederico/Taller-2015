@@ -97,6 +97,13 @@ void Server::correr() {
 	std::cout << std::endl<<"Se recibieron "<<cantConectados<<" conexiones."<<std::endl;
 	std::cout << "Comenzando juego..."<<std::endl<<std::endl;
 
+	strcpy(buffer, "<COM>~");
+	for (int j = 0; j < maxfd+1; j++) {
+		if (FD_ISSET(j, &readset)) {
+			send(j, buffer, sizeof(buffer), MSG_NOSIGNAL);
+		}
+	}
+
 	while (cantConectados > 0) {
 		for (int j = 0; j < maxfd+1; j++) {
 			if (FD_ISSET(j, &readset)) {

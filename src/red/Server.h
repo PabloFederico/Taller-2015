@@ -9,6 +9,7 @@
 #define RED_SERVER_H_
 
 #include "Connection.h"
+#include "Proxy.h"
 #include <cerrno>
 
 
