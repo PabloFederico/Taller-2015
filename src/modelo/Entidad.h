@@ -10,33 +10,33 @@
 
 using namespace std;
 #include <string>
+#include <sstream>
 #include "../utils/Enumerados.h"
 
 class Entidad {
 private:
-	//std::string tipo;
 	TipoEntidad tipo;
+	int idJug;
 	bool movible,ocupador;
 	int ancho,alto;
 	std::string info;
 
 public:
-	//Entidad(std::string tipo);
-	Entidad(TipoEntidad tipo);
+	Entidad(TipoEntidad tipo, int num_jug = 0);
 
-	/* Devuelve el tipo de entidad*/
-	//std::string getTipo();
 	TipoEntidad getTipo();
-
-	bool esMovible();
-
-	bool ocupaSuTile();
+	int getIDJug();
 
 	void setTam(int ancho, int alto);
-
 	std::pair<int,int> getTam();
 
 	std::string getInfo();
+
+	bool esMovible();
+	bool ocupaSuTile();
+
+	std::string enc();
+	static Entidad dec(std::string);
 
 	virtual ~Entidad();
 };

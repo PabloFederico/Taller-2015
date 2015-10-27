@@ -11,6 +11,7 @@
 
 
 Juego::Juego(Connection* lan = NULL, InfoEscenario* infoEscRed = NULL): connection(lan) {
+	this->idJug = 0;
 	this->cero_x = NULL;
 	this->cero_y = NULL;
 	this->contenedor = NULL;
@@ -18,12 +19,14 @@ Juego::Juego(Connection* lan = NULL, InfoEscenario* infoEscRed = NULL): connecti
 	this->escenario = NULL;
 	this->fabricaDeEntidades = NULL;
 	this->protagonista = NULL;
+
 	// Valores por defecto
 	this->screenWidth = 800;
 	this->screenHeight = 600;
 	this->vel_personaje = 50;
 	this->margen_scroll = 30;
 
+	this->cargarNumJugador();
 	this->cargarJuego(infoEscRed);
 }
 
@@ -48,6 +51,13 @@ bool Juego::esCliente() {
 }
 
 /********************************************************************************/
+void Juego::cargarNumJugador() {
+	if (connection != NULL)
+		 this->idJug = connection->getIDJugador();
+	else this->idJug = 0;
+}
+
+/********************************************************************************/
 void Juego::cargarJuego(InfoEscenario* infoEscRed = NULL) {
 	//	std::vector<InfoEscenario> vecEscenarios;
 
@@ -61,7 +71,7 @@ void Juego::cargarJuego(InfoEscenario* infoEscRed = NULL) {
 	//además, se debería hardcodear la vel_personaje para evitar ventajas.
 
 	// Acá me imagino la posibilidad de un selector de escenarios.
-	this->fabricaDeEntidades = new EntidadFactory(this->vectorInfoTiposEntidades);
+	this->fabricaDeEntidades = new EntidadFactory(this->idJug, this->vectorInfoTiposEntidades);
 	this->escenario = new Escenario(infoEsc, this->fabricaDeEntidades);
 	this->protagonista = this->escenario->getProtagonista();
 	this->barraEstado = new BarraEstado(this->screenWidth, 150);
@@ -125,7 +135,7 @@ InfoEscenario Juego::parsearConfig() {
 
 				if ((unTipo["imagen"]) && (access(unTipo["imagen"].as<string>().c_str(), F_OK) != -1))		// Verificación de existencia
 					iE.path = unTipo["imagen"].as<string>();
-				else Log::imprimirALog(ERR,"Error: No se encontró imagen para " + unTipo["nombre"].as<string>());
+				else Log::imprimirALog(ERR,"Error: No se encontró imagen para "+unTipo["nombre"].as<string>());
 
 				if (unTipo["alto_base"] && unTipo["alto_base"].as<int>() > 0)	iE.alto = unTipo["alto_base"].as<int>();
 				if (unTipo["ancho_base"] && unTipo["ancho_base"].as<int>() > 0) iE.ancho = unTipo["ancho_base"].as<int>();
@@ -133,6 +143,7 @@ InfoEscenario Juego::parsearConfig() {
 				if (unTipo["pixel_ref_y"])										iE.pixel_ref_y = unTipo["pixel_ref_y"].as<int>();
 				if (unTipo["fps"] && unTipo["fps"].as<int>() >= 0)				iE.fps = unTipo["fps"].as<int>();
 				if (unTipo["delay"] && unTipo["delay"].as<int>() >= 0) 			iE.delay = unTipo["delay"].as<int>();
+				if (unTipo["descripcion"])										iE.descripcion = unTipo["descripcion"].as<string>();
 
 				this->vectorInfoTiposEntidades.push_back(iE);
 			}
@@ -391,6 +402,12 @@ BarraEstado* Juego::getBarraEstado(){
 /***************************************************/
 Connection* const Juego::getConnection() {
 	return this->connection;
+}
+
+/***************************************************/
+void Juego::cargarEnemigo(PosEntidad posEnt) {
+	escenario->agregarEntidad(posEnt.coord(), posEnt.entidad);
+	enemigos.push_back(posEnt);
 }
 
 /********************************************************************************/

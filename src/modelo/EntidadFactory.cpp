@@ -8,11 +8,15 @@
 #include "EntidadFactory.h"
 
 
-EntidadFactory::EntidadFactory(vector<InfoEntidad> v): vInfoEntidades(v) {};
+EntidadFactory::EntidadFactory(int num_jug, vector<InfoEntidad> v): idJug(num_jug), vInfoEntidades(v) {};
 
 
 Entidad* EntidadFactory::nuevaEntidad(TipoEntidad tipo) {
-	Entidad *e = new Entidad(tipo);
+	Entidad *e;
+	if (tipo == SOLDADO || tipo == JUANA_DE_ARCO) //hardcodeado
+		e = new Entidad(tipo, idJug);
+	else
+		e = new Entidad(tipo, 0);
 
 	std::vector<InfoEntidad>::iterator it = std::find(this->vInfoEntidades.begin(), this->vInfoEntidades.end(), tipo);
 

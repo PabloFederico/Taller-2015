@@ -13,7 +13,6 @@
 #include <unistd.h>
 
 #include "../utils/Map.h"
-#include "../modelo/Castillo.h"
 #include "../modelo/ConfigDefault.h"
 #include "../utils/ContenedorDeRecursos.h"
 #include "../modelo/Entidad.h"
@@ -26,6 +25,7 @@
 
 class Juego {
 private:
+	int idJug;
 	int *cero_x;
 	int *cero_y;
 
@@ -37,6 +37,7 @@ private:
 	
 	Escenario *escenario;
 	Entidad *protagonista;
+	vector<PosEntidad> enemigos;
 
 	Connection* connection;
 
@@ -49,13 +50,11 @@ private:
 
 	void cargarImagenes();
 
-
 	int ChequeoDeBorde(int max, int input);
-
-	InfoEscenario infoEscenarioDefault();
 
 	InfoEscenario parsearConfig();
 
+	InfoEscenario infoEscenarioDefault();
 	//de prueba		!!!
 	InfoEscenario OdioYAML();
 
@@ -68,6 +67,9 @@ public:
 
 	Connection* const getConnection();
 	bool esCliente();
+
+	void cargarNumJugador();
+	void cargarEnemigo(PosEntidad posEnt);
 
 	Map<Entidad*, Sprite*>* getSpritesEntidades();
 	vector<InfoEntidad> getInfoTiposEntidades();

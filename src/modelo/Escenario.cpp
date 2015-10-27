@@ -11,14 +11,8 @@ Escenario::Escenario(InfoEscenario infoEsc, EntidadFactory *fabrica): fabricaDeE
 	this->size_x = infoEsc.size_x;
 	this->size_y = infoEsc.size_y;
 
-	this->matriz_tiles = new Tile**[size_x];
-	for (int i = 0; i < size_x; i++){
-		this->matriz_tiles[i] = new Tile*[size_y];
-
-		for (int j = 0; j < size_y; j++){
-			this->matriz_tiles[i][j] = new Tile();
-		}
-	}
+	matriz_tiles = new Tile**[size_x];
+	this->inicializarMatrizTiles();
 
 	this->capa = new CapaFog(size_x,size_y);
 
@@ -33,7 +27,6 @@ Escenario::Escenario(InfoEscenario infoEsc, EntidadFactory *fabrica): fabricaDeE
 		Coordenada pos(x,y);
 		this->agregarEntidad(pos,entidad);
 	}
-
 	infoEsc.getPosicionesEntidades().clear();
 
 	this->protagonista = this->fabricaDeEntidades->nuevaEntidad(infoEsc.protagonista);
@@ -44,6 +37,18 @@ Escenario::Escenario(InfoEscenario infoEsc, EntidadFactory *fabrica): fabricaDeE
 	this->entidadSeleccionada = NULL;
 	//PosEntidad posEntidad(pos.x, pos.y, this->protagonista);
 	//this->posicionesEntidades->push_back(posEntidad);
+}
+
+/********************************************************************************/
+// No libera memoria de previa matriz/
+void Escenario::inicializarMatrizTiles() {
+	for (int i = 0; i < size_x; i++){
+		matriz_tiles[i] = new Tile*[size_y];
+
+		for (int j = 0; j < size_y; j++){
+			matriz_tiles[i][j] = new Tile();
+		}
+	}
 }
 
 /********************************************************************************/
@@ -74,12 +79,14 @@ void Escenario::actualizarPosicionProtagonista(Coordenada c){
 		c_protagonista = c;
 	}
 }
+
 /********************************************************************************/
 Tile* Escenario::getTile(int x, int y){
 	if (x < 0 || y < 0 || x >= this->size_x || y >= this->size_y)
 		return NULL;
 	return this->matriz_tiles[x][y];
 }
+
 /********************************************************************************/
 void Escenario::agregarEntidad(Coordenada pos, Entidad* entidad){
 	try {
@@ -97,19 +104,17 @@ void Escenario::agregarEntidad(Coordenada pos, Entidad* entidad){
 				tile->agregarEntidad(entidad);
 			}
 		}
-		PosEntidad posEntidad(pos.x, pos.y, entidad);
+		PosEntidad posEntidad(pos, entidad);
 		this->posicionesEntidades->push_back(posEntidad);
 	} catch ( TileEstaOcupado &e ) {
 		//Log::imprimirALog(ERR,"Se intento agregar una entidad en un tile ocupado");
 	} // TODO: Alguna devolución de que no se pudo insertar?
-
-
 }
 
 /********************************************************************************/
 void Escenario::quitarEntidad(Coordenada pos, Entidad* entidad) {
 	// La quita del vector posicionesEntidades.
-	PosEntidad pE(pos.x, pos.y, entidad);
+	PosEntidad pE(pos, entidad);
 	std::vector<PosEntidad>::iterator it = std::find(this->posicionesEntidades->begin(), this->posicionesEntidades->end(), pE);
 	if (it != this->posicionesEntidades->end()) {
 		this->posicionesEntidades->erase(it);

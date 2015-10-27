@@ -109,24 +109,6 @@ struct InfoEscenario{
 	}
 };
 
-/* Estructura para guardar una instancia Entidad que se encuentra en las
- *  coordenadas x,y */
-struct PosEntidad{
-	int x;
-	int y;
-	Entidad* entidad;
-
-	PosEntidad(int x, int y, Entidad* ente){
-		this->x = x;
-		this->y = y;
-		this->entidad = ente;
-	};
-
-	bool operator==(const PosEntidad &r) const {
-		return (this->x == r.x && this->y == r.y
-				  && this->entidad == r.entidad);
-	}
-};
 
 /* Estructura para guardar el Tipo de Entidad asociado a un SDL_Rect para
  * poder dibujar sobre el renderer */
@@ -304,6 +286,50 @@ struct Camino {
 	~Camino() {
 		v.clear();
 	}
+};
+
+
+/* Estructura para guardar una instancia Entidad que se encuentra en las
+ *  coordenadas x,y */
+struct PosEntidad{
+	int x,y;
+	Entidad* entidad;
+
+	PosEntidad(int x, int y, Entidad* ente){
+		this->x = x;
+		this->y = y;
+		this->entidad = ente;
+	};
+	PosEntidad(Coordenada c, Entidad* ente) {
+		this->x = c.x;
+		this->y = c.y;
+		this->entidad = ente;
+	};
+
+	Coordenada coord() {
+		return Coordenada(this->x,this->y);
+	}
+
+	bool operator==(const PosEntidad &r) const {
+		return (this->x == r.x && this->y == r.y
+				  && this->entidad == r.entidad);
+	};
+
+	// Encodeado: "x;y[entidad]"
+	std::string enc() {
+		ostringstream Encode;
+		Encode << x<<";"<<y<<"["<<entidad->enc()<<"]";
+		return Encode.str();
+	};
+	static PosEntidad dec(std::string s) {
+		std::stringstream ss(s);
+		int x,y; char aux[21];
+		ss >> x; ss.ignore(); // ','
+		ss >> y; ss.ignore(); // '['
+		ss.get(aux, 20, ']');
+		Entidad e = Entidad::dec(aux);
+		return PosEntidad(x,y,&e);
+	};
 };
 
 

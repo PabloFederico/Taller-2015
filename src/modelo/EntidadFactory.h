@@ -18,10 +18,11 @@
 class EntidadFactory {
 
 private:
+	int idJug;
 	vector<InfoEntidad> vInfoEntidades;
 
 public:
-	EntidadFactory(std::vector<InfoEntidad> v);
+	EntidadFactory(int num_jug, std::vector<InfoEntidad> v);
 	Entidad* nuevaEntidad(TipoEntidad tipo);
 	virtual ~EntidadFactory();
 
