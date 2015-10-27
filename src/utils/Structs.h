@@ -94,6 +94,7 @@ struct DataPos{
 struct InfoEntidad{
 	TipoEntidad tipo;
 	string path;
+	string descripcion;
 	int ancho;
 	int alto;
 	int pixel_ref_x;
@@ -103,6 +104,7 @@ struct InfoEntidad{
 	InfoEntidad(){
 		tipo = PASTO;
 		path = "images/missing1.png";
+		descripcion = "";
 		ancho = 1;
 		alto = 1;
 		pixel_ref_x = 0;
