@@ -52,7 +52,7 @@ void ContenedorDeRecursos::generarYGuardarSpritesEntidades(vector<PosEntidad> *p
 		Coordenada coord_tile(tile_x, tile_y);
 		Entidad* entidad = (*posEntidades)[i].entidad;
 		entidad->setTam(mapInfoEntidades[entidad->getTipo()].ancho, mapInfoEntidades[entidad->getTipo()].alto);	// Esto ya lo hace la clase Factory
-		Coordenada coordenada = Calculador::calcularPosicionRelativa(coord_tile,coord_ceros,escenario);
+		Coordenada coordenada = Calculador::calcularPosicionRelativa(coord_tile,coord_ceros);
 
 		SDL_Rect posicion;
     	/* Cargamos por default los siguientes valores para TIERRA ó AGUA */

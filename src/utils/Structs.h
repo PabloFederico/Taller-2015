@@ -45,70 +45,6 @@ struct PosTipoEntidad{
 	}
 };
 
-/* Estructura para guardar información para Escenario */
-struct InfoEscenario{
-	int size_x;
-	int size_y;
-	vector<PosTipoEntidad> posTipoEntidades;
-	TipoEntidad protagonista;
-	int posX_protagonista;
-	int posY_protagonista;
-
-	InfoEscenario(){
-		size_x = 1;
-		size_y = 1;
-		protagonista = SOLDADO;
-		posX_protagonista = 0;
-		posY_protagonista = 0;
-	};
-
-	void agregarEntidad(pair<int,int> pos, TipoEntidad tipo){
-		PosTipoEntidad posTipoEnte(pos.first,pos.second,tipo);
-		this->posTipoEntidades.push_back(posTipoEnte);
-	};
-
-	vector<PosTipoEntidad> getPosicionesEntidades(){
-		return this->posTipoEntidades;
-	}
-
-	bool operator!() {
-		return !((size_x > 0) && (size_y > 0) && (posX_protagonista >= 0) && (posY_protagonista >= 0));
-	}
-
-	// Encodeado: "x;y|[...,PTE,...,]|protTE"
-	std::string enc() {
-		ostringstream Encode;
-		Encode << size_x << ";" << size_y << "|[";
-		for (vector<PosTipoEntidad>::iterator it = posTipoEntidades.begin(); it < posTipoEntidades.end(); ++it) {
-			Encode << it->enc()<<",";
-		}
-		Encode << "]|"<<(PosTipoEntidad(posX_protagonista, posY_protagonista, protagonista).enc());
-		return Encode.str();
-	}
-	static InfoEscenario dec(std::string s) {
-		std::stringstream ss(s);
-		InfoEscenario ie;
-		ss >> ie.size_x;
-		ss.ignore();
-		ss >> ie.size_y;
-		char cs[16];
-		ss.ignore(2);
-		while (ss.peek() != ']') {
-			ss.get(cs, 14, ',');
-			ie.posTipoEntidades.push_back(PosTipoEntidad::dec(cs));
-			ss.ignore();
-		}
-		ss.ignore(2);
-		ss.get(cs, 14);
-		PosTipoEntidad prot = PosTipoEntidad::dec(cs);
-		ie.protagonista = prot.tipo;
-		ie.posX_protagonista = prot.x;
-		ie.posY_protagonista = prot.y;
-
-		return ie;
-	}
-};
-
 
 /* Estructura para guardar el Tipo de Entidad asociado a un SDL_Rect para
  * poder dibujar sobre el renderer */
@@ -330,6 +266,76 @@ struct PosEntidad{
 		Entidad e = Entidad::dec(aux);
 		return PosEntidad(x,y,&e);
 	};
+};
+
+
+/* Estructura para guardar información para Escenario */
+struct InfoEscenario{
+	int size_x;
+	int size_y;
+	vector<PosTipoEntidad> posTipoEntidades;
+	TipoEntidad protagonista;
+	int posX_protagonista;
+	int posY_protagonista;
+
+	InfoEscenario(){
+		size_x = 1;
+		size_y = 1;
+		protagonista = SOLDADO;
+		posX_protagonista = 0;
+		posY_protagonista = 0;
+	};
+
+	void setPosProtag(Coordenada c) {
+		posX_protagonista = c.x;
+		posY_protagonista = c.y;
+	}
+
+	void agregarEntidad(pair<int,int> pos, TipoEntidad tipo){
+		PosTipoEntidad posTipoEnte(pos.first,pos.second,tipo);
+		this->posTipoEntidades.push_back(posTipoEnte);
+	};
+
+	vector<PosTipoEntidad> getPosicionesEntidades(){
+		return this->posTipoEntidades;
+	}
+
+	bool operator!() {
+		return !((size_x > 0) && (size_y > 0) && (posX_protagonista >= 0) && (posY_protagonista >= 0));
+	}
+
+	// Encodeado: "x;y|[...,PTE,...,]|protTE"
+	std::string enc() {
+		ostringstream Encode;
+		Encode << size_x << ";" << size_y << "|[";
+		for (vector<PosTipoEntidad>::iterator it = posTipoEntidades.begin(); it < posTipoEntidades.end(); ++it) {
+			Encode << it->enc()<<",";
+		}
+		Encode << "]|"<<(PosTipoEntidad(posX_protagonista, posY_protagonista, protagonista).enc());
+		return Encode.str();
+	}
+	static InfoEscenario dec(std::string s) {
+		std::stringstream ss(s);
+		InfoEscenario ie;
+		ss >> ie.size_x;
+		ss.ignore();
+		ss >> ie.size_y;
+		char cs[16];
+		ss.ignore(2);
+		while (ss.peek() != ']') {
+			ss.get(cs, 14, ',');
+			ie.posTipoEntidades.push_back(PosTipoEntidad::dec(cs));
+			ss.ignore();
+		}
+		ss.ignore(2);
+		ss.get(cs, 14);
+		PosTipoEntidad prot = PosTipoEntidad::dec(cs);
+		ie.protagonista = prot.tipo;
+		ie.posX_protagonista = prot.x;
+		ie.posY_protagonista = prot.y;
+
+		return ie;
+	}
 };
 
 

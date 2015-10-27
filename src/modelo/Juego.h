@@ -15,6 +15,7 @@
 #include "../utils/Map.h"
 #include "../modelo/ConfigDefault.h"
 #include "../utils/ContenedorDeRecursos.h"
+#include "../utils/Calculador.h"
 #include "../modelo/Entidad.h"
 #include "../modelo/BarraEstado.h"
 #include "../modelo/Escenario.h"

@@ -9,7 +9,7 @@
 
 #include <iostream>
 
-Coordenada Calculador::calcularPosicionRelativa(Coordenada coord_tile, Coordenada coord_ceros_pixel, Escenario *escenario){
+Coordenada Calculador::calcularPosicionRelativa(Coordenada coord_tile, Coordenada coord_ceros_pixel){
 	int x_nuevo, y_nuevo;
 
 	//Posicionamiento en el eje y relativo
@@ -193,7 +193,6 @@ struct Nodo {
 };
 
 // PRE: Chequeo de destino ocupable; posiciones en píxeles. POST: camino posee pares de posiciones EN TILES que debe recorrer secuencialmente.
-//std::vector< Coordenada > Calculador::obtenerCaminoMin(Escenario *esc, int inic_x, int inic_y, int dest_x, int dest_y, int cero_x, int cero_y) {
 Camino Calculador::obtenerCaminoMin(Escenario *esc, Coordenada coord_pixel_orig, Coordenada coord_pixel_dest, Coordenada coord_ceros) {
 	Camino camino;
 	Coordenada pos_tile_inicial, pos_tile_destino;
@@ -203,12 +202,6 @@ Camino Calculador::obtenerCaminoMin(Escenario *esc, Coordenada coord_pixel_orig,
 
 		if ((!esc->tileEsOcupable(pos_tile_destino)) || (pos_tile_inicial == pos_tile_destino))
 			return camino;
-		/*if (!esc->tileEsOcupable(pos_tile_destino))
-			return camino;
-		else if (pos_tile_inicial == pos_tile_destino) {
-			camino.agregar(coord_pixel_dest);
-			return camino;
-		}*/
 	} catch ( FueraDeEscenario &e ) {
 		return camino;
 	}
@@ -263,12 +256,10 @@ Camino Calculador::obtenerCaminoMin(Escenario *esc, Coordenada coord_pixel_orig,
 		}
 	} catch ( DestinoEncontrado &e ) {	// pActual tiene ahora el último tile del camino, NO el destino.
 		while (!pActual->esTile(tile_inicial)) {
-				//camino.agregar( pixelCentralDeTile(pActual->pos, coord_ceros) );
 				camino.agregar( pActual->pos );
 				pActual = pActual->padre;
 			}
 			camino.invertir();
-			//camino.agregar(coord_pixel_dest);
 			camino.agregar( pos_tile_destino );
 	}
 
@@ -280,7 +271,6 @@ Camino Calculador::obtenerCaminoMin(Escenario *esc, Coordenada coord_pixel_orig,
 	vecinos.clear();
 
 	return camino;
-	// CAMBIADO A CAMINO DE TILES
 }
 
 Coordenada generarPosRandom(int size_x , int size_y){
@@ -288,7 +278,6 @@ Coordenada generarPosRandom(int size_x , int size_y){
 	srand((int) time(0)); //seedeo el random bien
 	x_rand = (rand() % size_x );
 	y_rand = (rand() % size_y);
-
 
 	return Coordenada(x_rand,y_rand);
 }

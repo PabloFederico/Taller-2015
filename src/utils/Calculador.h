@@ -23,7 +23,7 @@ class Calculador {
 public:
 	static double calcularDistanciaEntrePixeles(Coordenada coord_pixel1, Coordenada coord_pixel2);
 
-	static Coordenada calcularPosicionRelativa(Coordenada coord_tile, Coordenada coord_ceros_pixel, Escenario *escenario);
+	static Coordenada calcularPosicionRelativa(Coordenada coord_tile, Coordenada coord_ceros_pixel);
 
 	static Coordenada calcularPosicionInversa(Coordenada coord_pixel, Coordenada coord_ceros_pixel, Escenario *escenario);
 
@@ -39,7 +39,6 @@ public:
 	static Camino obtenerCaminoMin(Escenario *esc, Coordenada coord_pixel_orig, Coordenada coord_pixel_dest, Coordenada coord_ceros_pixel);
 
 	static Coordenada generarPosRandom(int size_x,int size_y);
-
 };
 
 #endif /* UTILS_CALCULADOR_H_ */

@@ -54,7 +54,7 @@ public:
 	vector<PosEntidad>* getVectorEntidades();
 
 	/* Agrega una entidad en una posición indicada como parámetro */
-	void agregarEntidad(Coordenada pos, Entidad* entidad);
+	bool agregarEntidad(Coordenada pos, Entidad* entidad);
 	void quitarEntidad(Coordenada pos, Entidad* entidad);
 
 	Entidad* getProtagonista();
@@ -64,6 +64,7 @@ public:
 
 	void setearTileClic(Tile* tile, Coordenada c_tile);
 	void setearCoordTileClic(Coordenada c);
+	bool coordEnEscenario(Coordenada c);
 
 	Tile* getTileClic();
 	Coordenada getCoordTileClic();
@@ -75,6 +76,8 @@ public:
 	void desocuparTile(Coordenada c);
 
 	Tile* getTile(int x, int y);
+
+	static Coordenada generarCoordenadaRandom(int size_x , int size_y);
 
 	void actualizarPosicionProtagonista(Coordenada c);
 

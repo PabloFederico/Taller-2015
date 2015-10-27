@@ -67,6 +67,7 @@ void Juego::cargarJuego(InfoEscenario* infoEscRed = NULL) {
 	// Acá me imagino la posibilidad de un selector de escenarios.
 	if (esCliente()) {
 		this->vel_personaje = 50; // Misma velocidad para todos.
+		infoEsc.setPosProtag(Escenario::generarCoordenadaRandom(infoEsc.size_x, infoEsc.size_y));
 	}
 	this->fabricaDeEntidades = new EntidadFactory(this->idJug, this->vectorInfoTiposEntidades);
 	this->escenario = new Escenario(infoEsc, this->fabricaDeEntidades);
@@ -438,7 +439,19 @@ PosEntidad Juego::getPosEntDeProtagonista() {
 
 /***************************************************/
 void Juego::cargarEnemigo(PosEntidad posEnt) {
-	escenario->agregarEntidad(posEnt.coord(), posEnt.entidad);
+	bool resPosicionar = false;
+	int aux = posEnt.x;
+	int *d = &posEnt.x;
+	// cabeza para resolver situación inicial, se las arregla para el 9# % de los casos
+	while (!resPosicionar) {
+		try {
+			resPosicionar = escenario->agregarEntidad(posEnt.coord(), posEnt.entidad);
+			if (!resPosicionar) *d += 1;
+		} catch ( FueraDeEscenario &e ) {
+			*d = aux;
+			d = &posEnt.y;
+		}
+	}
 	enemigos.push_back(posEnt);
 }
 

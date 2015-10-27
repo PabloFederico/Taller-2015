@@ -25,17 +25,21 @@ Escenario::Escenario(InfoEscenario infoEsc, EntidadFactory *fabrica): fabricaDeE
 		TipoEntidad tipo = vecPosTipoEntidades[i].tipo;
 		Entidad *entidad = this->fabricaDeEntidades->nuevaEntidad(tipo);
 		Coordenada pos(x,y);
-		this->agregarEntidad(pos,entidad);
+		this->agregarEntidad(pos,entidad);	// Si no pudo, no reintento.
 	}
 	infoEsc.getPosicionesEntidades().clear();
 
 	this->protagonista = this->fabricaDeEntidades->nuevaEntidad(infoEsc.protagonista);
-	Coordenada pos(infoEsc.posX_protagonista, infoEsc.posY_protagonista);
-	this->agregarEntidad(pos, this->protagonista);
-	this->c_protagonista = pos;
+	Coordenada posProtag(infoEsc.posX_protagonista, infoEsc.posY_protagonista);
+	bool resPosicionar = this->agregarEntidad(posProtag, this->protagonista);
+	while (resPosicionar == false) {	// Genera posiciones random hasta poder agregar al protagonista.
+		Coordenada posProtag = generarCoordenadaRandom(size_x, size_y);
+		resPosicionar = this->agregarEntidad(posProtag, this->protagonista);
+	}
+	this->c_protagonista = posProtag;
 	this->tile_clic = NULL;
 	this->entidadSeleccionada = NULL;
-	//PosEntidad posEntidad(pos.x, pos.y, this->protagonista);
+	//PosEntidad posEntidad(posProtag, this->protagonista);
 	//this->posicionesEntidades->push_back(posEntidad);
 }
 
@@ -93,7 +97,19 @@ Tile* Escenario::getTile(int x, int y){
 }
 
 /********************************************************************************/
-void Escenario::agregarEntidad(Coordenada pos, Entidad* entidad){
+Coordenada Escenario::generarCoordenadaRandom(int size_x , int size_y){
+	int x_rand, y_rand;
+	srand((int) time(0)); //seedeo el random bien
+	x_rand = (rand() % size_x );
+	y_rand = (rand() % size_y);
+
+	return Coordenada(x_rand,y_rand);
+}
+
+/********************************************************************************/
+bool Escenario::agregarEntidad(Coordenada pos, Entidad* entidad){
+	if (!coordEnEscenario(pos))
+		throw FueraDeEscenario();
 	try {
 		pair<int,int> dim = entidad->getTam();
 		for (int j = 0; j < dim.second; j++)
@@ -113,7 +129,9 @@ void Escenario::agregarEntidad(Coordenada pos, Entidad* entidad){
 		this->posicionesEntidades->push_back(posEntidad);
 	} catch ( TileEstaOcupado &e ) {
 		Log::imprimirALog(ERR,"Se intentó agregar una entidad en un tile ocupado");
-	} // TODO: Alguna devolución de que no se pudo insertar?
+		return false;
+	}
+	return true;
 }
 
 /********************************************************************************/
@@ -138,9 +156,16 @@ void Escenario::quitarEntidad(Coordenada pos, Entidad* entidad) {
 }
 
 /********************************************************************************/
+bool Escenario::coordEnEscenario(Coordenada c) {
+	if (c.x < 0 || c.y < 0 || c.x >= this->size_x || c.y >= this->size_y)
+			return false;
+	return true;
+}
+
+/********************************************************************************/
 // Verifica que (x;y) corresponde a una posición en el escenario que está desocupada.
 bool Escenario::tileEsOcupable(Coordenada c) {
-	if (c.x < 0 || c.y < 0 || c.x >= this->size_x || c.y >= this->size_y)
+	if (!coordEnEscenario(c))
 		return false;
 	return (this->matriz_tiles[c.x][c.y]->estaLibre());
 }
