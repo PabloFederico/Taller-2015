@@ -37,6 +37,7 @@ private:
 	Coordenada c_protagonista;
 
 	Tile* tile_clic;
+	Coordenada c_tile_clic;
 
 	void quitarEntidad(Coordenada pos, Entidad* entidad);
 
@@ -56,8 +57,10 @@ public:
 	Entidad* getProtagonista();
 
 	void setearTileClic(Tile* tile);
+	void setearCoordTileClic(Coordenada c);
 
 	Tile* getTileClic();
+	Coordenada getCoordTileClic();
 
 	bool tileEsOcupable(Coordenada c);
 

@@ -161,7 +161,7 @@ void Dibujador::dibujarCapaNegra(CapaFog* capa){
 }
 */
 /********************************************************************************/
-void Dibujador::dibujarEscenario(Escenario* esc, TTF_Font* fuenteTexto){
+void Dibujador::dibujarEscenario(Escenario* esc){
 	pair<int,int> dimension = esc->getDimension();
 	CapaFog* capaFog = esc->getCapa();
 	Imagen *imagenRelieve = this->contenedor->getImagenTipo(PASTO);
@@ -181,7 +181,7 @@ void Dibujador::dibujarEscenario(Escenario* esc, TTF_Font* fuenteTexto){
 
 			/* Solo dibujamos para las zonas visibles (GRISES ó COLOR) */
 			if (capaFog->getEstadoTile(i,j) != ESTADO_NEGRO){
-				this->dibujarContorno(esc, fuenteTexto);
+				//this->dibujarContorno(esc, fuenteTexto);
 				SDL_RenderCopy(renderer,imagenRelieve->getTexture(),NULL,&rectRelieve);
 				Tile* tile = esc->getTile(i,j);
 				vector<Entidad*> entidades = tile->getEntidades();
@@ -231,6 +231,13 @@ bool Dibujador::dibujarContorno(Escenario* esc, TTF_Font* fuenteTexto){
 
 	Tile* tile = esc->getTileClic();
 	if (tile == NULL) return false;
+
+	CapaFog* capaFog = esc->getCapa();
+	Coordenada c_tile = esc->getCoordTileClic();
+	if (capaFog->getEstadoTile(c_tile.x, c_tile.y) == ESTADO_NEGRO){
+		esc->setearTileClic(NULL);
+		return false;
+	}
 
 	vector<Entidad*> entidades = tile->getEntidades();
 	if (entidades.size() == 0) esc->setearTileClic(NULL);

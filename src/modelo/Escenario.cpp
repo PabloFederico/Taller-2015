@@ -41,6 +41,7 @@ Escenario::Escenario(InfoEscenario infoEsc, EntidadFactory *fabrica): fabricaDeE
 	this->agregarEntidad(pos, this->protagonista);
 	this->c_protagonista = pos;
 	this->tile_clic = NULL;
+
 	//PosEntidad posEntidad(pos.x, pos.y, this->protagonista);
 	//this->posicionesEntidades->push_back(posEntidad);
 }
@@ -144,6 +145,13 @@ Tile* Escenario::getTileClic(){
 	return this->tile_clic;
 }
 
+void Escenario::setearCoordTileClic(Coordenada c){
+	this->c_tile_clic = c;
+}
+
+Coordenada Escenario::getCoordTileClic(){
+	return c_tile_clic;
+}
 
 /********************************************************************************/
 CapaFog* Escenario::getCapa() {

@@ -42,6 +42,7 @@ void ControladorMouse::procesarEvento(SDL_Event &event, int MouseX, int MouseY){
 				//Seteo tile clic:
 				Tile* tile_clic = escenario->getTile(c_tile_clic.x, c_tile_clic.y);
 				escenario->setearTileClic(tile_clic);
+				escenario->setearCoordTileClic(c_tile_clic);
 
 			}catch(FueraDeEscenario &e) {
 				clicValido = false;
