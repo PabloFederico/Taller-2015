@@ -16,6 +16,7 @@ class Entidad {
 private:
 	//std::string tipo;
 	TipoEntidad tipo;
+	int numJug;
 	bool movible,ocupador;
 	int ancho,alto;
 

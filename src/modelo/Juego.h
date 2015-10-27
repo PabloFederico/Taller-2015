@@ -13,7 +13,6 @@
 #include <unistd.h>
 
 #include "../utils/Map.h"
-#include "../modelo/Castillo.h"
 #include "../modelo/ConfigDefault.h"
 #include "../utils/ContenedorDeRecursos.h"
 #include "../modelo/Entidad.h"
@@ -37,6 +36,7 @@ private:
 	
 	Escenario *escenario;
 	Entidad *protagonista;
+	vector<Entidad*> enemigos;
 
 	Connection* connection;
 
@@ -68,6 +68,8 @@ public:
 
 	Connection* const getConnection();
 	bool esCliente();
+
+	void cargarEnemigo(Entidad* ent);
 
 	Map<Entidad*, Sprite*>* getSpritesEntidades();
 	vector<InfoEntidad> getInfoTiposEntidades();
