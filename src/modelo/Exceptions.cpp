@@ -27,3 +27,5 @@ NoSeRecibio::NoSeRecibio() {}
 
 ConnectionProblem::ConnectionProblem() {}
 
+Disconnected::Disconnected() {}
+

@@ -58,6 +58,11 @@ Entidad::Entidad(TipoEntidad tipo, int num_jug): idJug(num_jug)  {
 				info = "";
 				break;
 	}
+	if (idJug != 0) {
+		ostringstream ssInfo;
+		ssInfo << info<<" (Jugador "<<idJug<<")";
+		info = ssInfo.str();
+	}
 }
 
 TipoEntidad Entidad::getTipo(){

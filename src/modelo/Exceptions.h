@@ -54,4 +54,10 @@ public:
 	ConnectionProblem();
 };
 
+class Disconnected: public std::exception
+{
+public:
+	Disconnected();
+};
+
 #endif /* MODELO_EXCEPTIONS_H_ */

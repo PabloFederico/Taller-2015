@@ -12,6 +12,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include <string>
+#include <cerrno>
+#include "../modelo/Exceptions.h"
 using namespace std;
 
 class Red {
@@ -63,6 +65,8 @@ public:
 	/* recv() */
 	static int recibirInformacion(int descriptor, char *info){
 		int success = recv(descriptor, info, MAX_BYTES_LECTURA, 0);
+		if (success == 0 && errno == ENOTCONN)
+			throw Disconnected();
 		return success;
 	};
 

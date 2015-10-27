@@ -54,7 +54,7 @@ void ControladorMouse::procesarEvento(SDL_Event &event, int MouseX, int MouseY){
 	            ///pruebas
 	            //Coordenada mouse = Calculador::tileParaPixel(Coordenada(MouseX,MouseY),coord_pixel_ceros);
 	            //std::cout << "mouse: "<<mouse.x<<";"<<mouse.y<<'\t'<<"follow: "<<follow.x<<";"<<follow.y<<std::endl;
-				if (escenario->getEntidadSeleccionada() == escenario->getProtagonista()){
+				if (escenario->getEntidadSeleccionada() == escenario->getProtagonista()) {
 					try {
 						Camino camino = Calculador::obtenerCaminoMin(escenario, coord_pixel_sprite, Coordenada(MouseX, MouseY), coord_pixel_ceros);
 

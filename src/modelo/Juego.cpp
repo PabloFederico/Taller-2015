@@ -46,11 +46,6 @@ Entidad* Juego::getProtagonista(){
 }
 
 /********************************************************************************/
-bool Juego::esCliente() {
-	return (this->connection != NULL);
-}
-
-/********************************************************************************/
 void Juego::cargarNumJugador() {
 	if (connection != NULL)
 		 this->idJug = connection->getIDJugador();
@@ -422,8 +417,18 @@ BarraEstado* Juego::getBarraEstado(){
 }
 
 /***************************************************/
+bool Juego::esCliente() {
+	return (this->connection != NULL);
+}
+
+/***************************************************/
 Connection* const Juego::getConnection() {
 	return this->connection;
+}
+
+/***************************************************/
+void Juego::olvidarConnection() {
+	delete this->connection;
 }
 
 /***************************************************/
@@ -437,7 +442,7 @@ void Juego::cargarEnemigo(PosEntidad posEnt) {
 	enemigos.push_back(posEnt);
 }
 
-/********************************************************************************/
+/***************************************************/
 Juego::~Juego() {
 	this->enemigos.clear();
 	delete this->escenario;

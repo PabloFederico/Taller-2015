@@ -66,6 +66,7 @@ public:
 	Juego(Connection* lan, InfoEscenario* infoEscRed);
 
 	Connection* const getConnection();
+	void olvidarConnection();
 	bool esCliente();
 
 	void cargarNumJugador();

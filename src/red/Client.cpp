@@ -9,7 +9,10 @@
 
 
 Client::Client() {
-	if (!iniciar()) {
+	try {
+		if (!iniciar())
+			throw ConnectionProblem();
+	} catch ( Disconnected &e ) {
 		throw ConnectionProblem();
 	}
 }

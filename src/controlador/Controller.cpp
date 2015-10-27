@@ -9,8 +9,10 @@
 
 
 Controller::Controller(Connection* lan = NULL) {
-	if (lan != NULL)
-		Proxy::esperarComienzo(lan);
+	try {
+		if (lan != NULL)
+			Proxy::esperarComienzo(lan);
+	} catch ( Disconnected &e ) { lan = NULL; }
 
 	this->juego = new Juego(lan, NULL);
 	if (lan != NULL)
@@ -34,7 +36,10 @@ void Controller::procesarEvento(SDL_Event &event){
 		try {
 			TipoMensajeRed tipo = Proxy::actualizarMultiplayer(this->juego);
 			std::cout << "Mensaje recibido y procesado de tipo "<<tipo<<std::endl;//
-		} catch ( NoSeRecibio &e ) {}
+		} catch ( NoSeRecibio &e ) {
+		} catch ( Disconnected &e ) {
+			juego->olvidarConnection();
+		}
 	}
 }
 
