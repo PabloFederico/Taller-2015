@@ -17,6 +17,8 @@ enum TipoImagenUtil { BARRA_FONDO , BARRA_DESCRIPCION, BARRA_NEGRA, SELECT_TILE,
 
 enum TipoMensajeRed { MOV, NUEVA_ENTIDAD, MSJ, ATAQUE /*...*/};
 
+enum TipoBoton { BOTON_NADA, BOTON_NAME, BOTON_NUEVA_PARTIDA, BOTON_SELECTOR_ESCENARIO, BOTON_CARGAR_PARTIDA ,BOTON_EXIT };
+
 /* Tipos de Log:
  * * INFO = Error Informátivo
  * * WAR  = Warning

@@ -27,17 +27,17 @@ public:
 
 		return imagen;
 	};
-/*
-	static Texto* cargarTexto(SDL_Renderer* renderer, TTF_Font* fuente, std::string texto){
+
+	static Imagen* cargarTexto(SDL_Renderer* renderer, TTF_Font* fuente, std::string texto){
 		SDL_Texture* texture = NULL;
 		SDL_Color colorText = {0,0,0,0xFF};
 		SDL_Surface* surface = TTF_RenderText_Blended(fuente, texto.c_str(), colorText);
 		texture = SDL_CreateTextureFromSurface(renderer,surface);
-		Texto* text = new Texto(texto, texture);
+		Imagen* imagen = new Imagen(surface->w, surface->h, texture);
 		SDL_FreeSurface(surface);
-		return text;
+		return imagen;
 	}
-*/
+
 	static Imagen* cargarTextoConFondo(SDL_Renderer* renderer, TTF_Font* fuente, std::string texto, SDL_Color backgroundColor){
 		SDL_Texture* texture = NULL;
 		SDL_Color colorText = {0,0,0,0xFF};
