@@ -31,14 +31,18 @@ bool Client::iniciar() {
 		std::cout << "ERROR: connect failed."<<std::endl;
 		return false;
 	}
+	this->lastDescriptor = this->socket->getDescriptor();
 
 	// Recibir # de jugador.
-	std::stringstream ss(recibir());
-	ss >> this->idJug;
+	this->idJug = 0;
+	do {
+		try {
+			std::stringstream ss(recibir());
+			ss >> this->idJug;
+		} catch ( NoSeRecibio &e ) {}
+	} while (this->idJug == 0);
 
 	fcntl(this->socket->getDescriptor(), F_SETFL, O_NONBLOCK); // non-blocking mode
-
-	this->lastDescriptor = this->socket->getDescriptor();
 	std::cout << "Conectado como jugador #"<<idJug<<"."<<std::endl;
 	return true;
 }

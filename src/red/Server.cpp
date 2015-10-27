@@ -92,6 +92,7 @@ void Server::correr() {
 			}
 		}
 	}
+	memcpy(&tempset, &readset, sizeof(tempset));
 	FD_CLR(srvsock, &readset);
 
 	if (cantConectados < 2) {
@@ -102,14 +103,24 @@ void Server::correr() {
 	}
 
 	std::cout << std::endl<<"Se recibieron "<<cantConectados<<" conexiones."<<std::endl;
-	std::cout << "Comenzando juego..."<<std::endl<<std::endl;
 
-	strcpy(buffer, "<COM>~");
 	for (int j = 0; j < maxfd+1; j++) {
 		if (FD_ISSET(j, &readset)) {
+			strcpy(buffer, "<COM>~");
+			sent = 0;
+			do {
+				std::cout << "&&" << sizeof(buffer) << buffer << std::endl;//
+				justsent = send(j, buffer+sent, sizeof(buffer)-sent, MSG_NOSIGNAL);
+				if (justsent > 0)
+					sent += justsent;
+				else if (justsent < 0 && errno != EINTR)
+					break; //Podría llegar a enviarse solo parte de la data?...
+			} while (sent < result);
 			send(j, buffer, sizeof(buffer), MSG_NOSIGNAL);
 		}
 	}
+
+	std::cout << "Comenzando juego..."<<std::endl<<std::endl;
 
 	while (cantConectados > 0) {
 		for (int j = 0; j < maxfd+1; j++) {

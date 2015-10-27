@@ -96,7 +96,10 @@ void Proxy::procesarEscenario(Juego* juego, string encodeado) {
 void Proxy::procesarCamino(Juego* juego, string encodeado) {
 	stringstream ss(encodeado);
 	int jug; ss >> jug; ss.ignore(); // ':'
-	Camino cam = Camino::dec(ss.str());
+	char camEnc[MAX_BYTES_LECTURA];
+	ss.get(camEnc, MAX_BYTES_LECTURA, '~');
+	std::cout << jug << "|||" << camEnc << std::endl;//
+	Camino cam = Camino::dec(camEnc);
 	// TODO extender a varios jugadores
 	juego->getSpritePlayer()->setearNuevoCamino(cam, juego->getCoordCeros());
 	//juego->getSpritePlayer(jug)->setearNuevoCamino(cam, juego->getCoordCeros());
