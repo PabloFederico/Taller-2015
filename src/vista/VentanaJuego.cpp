@@ -24,10 +24,11 @@ void VentanaJuego::cargarJuego(Juego *juego){
 	int LIMITE_DESPLAZAMIENTO_EN_Y = DISTANCIA_ENTRE_Y * TILES_Y;
 
 	if (init()){
-		 this->fuenteTexto = TTF_OpenFont("censcbk.ttf",TAM_LETRA_JUEGO);
+		this->fuenteTexto = TTF_OpenFont("censcbk.ttf",TAM_LETRA_JUEGO);
 		/* El (0,0) relativo del mapa respecto a la ventana principal */
-		int centro_x = SCREEN_WIDTH / 2;
-		int centro_y = SCREEN_HEIGHT / 2;
+		//PosEntidad protag = juego->getPosEntDeProtagonista();
+		int centro_x = SCREEN_WIDTH / 2;  //protag.x;
+		int centro_y = SCREEN_HEIGHT / 2; //protag.y;
 		int *cero_x = new int(centro_x);
 		int *cero_y = new int(centro_y - LIMITE_DESPLAZAMIENTO_EN_Y);
 

@@ -11,13 +11,13 @@
 #include <map>
 #include <algorithm>
 
-#include "../modelo/Exceptions.h"
 #include "../utils/Structs.h"
-#include "../modelo/Log.h"
 #include "../modelo/EntidadFactory.h"
 #include "../modelo/Entidad.h"
 #include "../vista/CapaFog.h"
 #include "../modelo/Tile.h"
+#include "../utils/Exceptions.h"
+#include "../utils/Log.h"
 using namespace std;
 
 class Escenario {

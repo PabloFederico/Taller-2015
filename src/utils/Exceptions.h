@@ -5,8 +5,8 @@
  *      Author: martin
  */
 
-#ifndef MODELO_EXCEPTIONS_H_
-#define MODELO_EXCEPTIONS_H_
+#ifndef UTILS_EXCEPTIONS_H_
+#define UTILS_EXCEPTIONS_H_
 
 #include <exception>
 #include <stdexcept>
@@ -60,4 +60,4 @@ public:
 	Disconnected();
 };
 
-#endif /* MODELO_EXCEPTIONS_H_ */
+#endif /* UTILS_EXCEPTIONS_H_ */

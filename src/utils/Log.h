@@ -5,8 +5,8 @@
  *      Author: emanuel
  */
 
-#ifndef MODELO_LOG_H_
-#define MODELO_LOG_H_
+#ifndef UTILS_LOG_H_
+#define UTILS_LOG_H_
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
@@ -32,4 +32,4 @@ public:
 	};
 };
 
-#endif /* MODELO_LOG_H_ */
+#endif /* UTILS_LOG_H_ */

@@ -6,8 +6,8 @@
  */
 
 #include "../modelo/Juego.h"
-#include "Log.h"
 #include <iostream>
+#include "../utils/Log.h"
 
 
 Juego::Juego(Connection* lan = NULL, InfoEscenario* infoEscRed = NULL): connection(lan) {

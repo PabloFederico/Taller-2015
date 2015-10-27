@@ -14,8 +14,8 @@
 
 #include "Direccion.h"
 #include "../utils/Constantes.h"
-#include "../modelo/Exceptions.h"
 #include "../modelo/Escenario.h"
+#include "Exceptions.h"
 
 
 class Calculador {

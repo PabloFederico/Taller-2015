@@ -5,7 +5,7 @@
  *      Author: martin
  */
 
-#include "../modelo/Exceptions.h"
+#include "../utils/Exceptions.h"
 
 
 bad_nombreTipoEntidad::bad_nombreTipoEntidad(const std::string& message): std::invalid_argument(message) {}
