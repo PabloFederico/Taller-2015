@@ -77,8 +77,9 @@ void VentanaJuego::dibujar(){
 	//dibujador->dibujarRelieve(ancho,largo);
 	//dibujador->dibujarEntidades();
 	//dibujador->dibujarCapaNegra(capa);
+	dibujador->dibujarEscenario(escenario);
 	dibujador->dibujarBarraEstado(escenario, barraEstado, fuenteTexto);
-	dibujador->dibujarEscenario(escenario, fuenteTexto);
+	dibujador->dibujarContorno(escenario, fuenteTexto);
 
 	SDL_RenderPresent(this->renderer);
 }
