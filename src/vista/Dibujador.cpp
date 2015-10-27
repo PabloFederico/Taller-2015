@@ -161,7 +161,7 @@ void Dibujador::dibujarCapaNegra(CapaFog* capa){
 }
 */
 /********************************************************************************/
-void Dibujador::dibujarEscenario(Escenario* esc){
+void Dibujador::dibujarEscenario(Escenario* esc, TTF_Font* fuenteTexto){
 	pair<int,int> dimension = esc->getDimension();
 	CapaFog* capaFog = esc->getCapa();
 	Imagen *imagenRelieve = this->contenedor->getImagenTipo(PASTO);
@@ -181,7 +181,7 @@ void Dibujador::dibujarEscenario(Escenario* esc){
 
 			/* Solo dibujamos para las zonas visibles (GRISES ó COLOR) */
 			if (capaFog->getEstadoTile(i,j) != ESTADO_NEGRO){
-				this->dibujarContorno(esc);
+				this->dibujarContorno(esc, fuenteTexto);
 				SDL_RenderCopy(renderer,imagenRelieve->getTexture(),NULL,&rectRelieve);
 				Tile* tile = esc->getTile(i,j);
 				vector<Entidad*> entidades = tile->getEntidades();
@@ -220,7 +220,12 @@ void Dibujador::dibujarEscenario(Escenario* esc){
 
 
 /********************************************************************************/
-bool Dibujador::dibujarContorno(Escenario* esc){
+bool Dibujador::dibujarContorno(Escenario* esc, TTF_Font* fuenteTexto){
+	for (unsigned i = 0; i < imagenesBasura.size(); i++){
+		delete imagenesBasura[i];
+	}
+	imagenesBasura.clear();
+
 	Imagen* contorno = contenedor->getImagenTipo(CONTORNO);
 	Imagen* contornoxl = contenedor->getImagenTipo(CONTORNOXL);
 
@@ -232,37 +237,63 @@ bool Dibujador::dibujarContorno(Escenario* esc){
 
 	for (unsigned k = 0; k < entidades.size(); k++){
 		Entidad* entidad = entidades[k];
+		InfoEntidad info = contenedor->getInfoTipo(entidad->getTipo());
+		string descripcion = info.descripcion;
 		Sprite* sprite = contenedor->getSpriteDeEntidad(entidad);
 		SDL_Rect pos = sprite->getPosicion();
 		pos.w = ANCHO_PIXEL_PASTO;
 		pos.h = ALTO_PIXEL_PASTO;
 
+		SDL_Rect rect_desc;
+		int width_window;
+		int height_window;
+		SDL_GetRendererOutputSize(renderer,&width_window,&height_window);
+		rect_desc.x = 250;
+		rect_desc.y = height_window - 110; // Barra arranca en 150
+		rect_desc.h = 15;
+		rect_desc.w = 10 * descripcion.size();
+
+		Imagen* image_desc = Loader::cargarTextoConFondo(renderer,fuenteTexto,descripcion,SDL_Color{255,255,255});
+		imagenesBasura.push_back(image_desc);
+
+		bool realizar;
 		switch (entidad->getTipo()){
 			case SOLDADO:
-				SDL_RenderCopy(this->renderer,contorno->getTexture(),NULL,&pos);
+				pos.x -= 14;
+				pos.y += 10;
+				realizar = true;
 				break;
 			case ARBOL:
 				pos.y += 23;
-				SDL_RenderCopy(this->renderer,contorno->getTexture(),NULL,&pos);
+				realizar = true;
 				break;
 			case ANIMAL:
 				pos.x -= 5;
 				pos.y += 15;
-				SDL_RenderCopy(this->renderer,contorno->getTexture(),NULL,&pos);
+				realizar = true;
 				break;
 			case CASTILLO:
 				pos.w = entidad->getTam().first + 250;
 				pos.h = entidad->getTam().second + 120;
 				pos.x -= 5;
 				pos.y += 5;
-				SDL_RenderCopy(this->renderer,contornoxl->getTexture(),NULL,&pos);
+				contorno = contornoxl;
+				realizar = true;
 				break;
 			case TIERRA:
 				if (entidades.size() == 1) esc->setearTileClic(NULL);
+				realizar = false;
 				break;
 			default :
+				realizar = false;
 				break;
 		}
+		// Dibujo contorno de tile y descripcion en barra:
+		if (realizar == true){
+			SDL_RenderCopy(this->renderer,contorno->getTexture(),NULL,&pos);
+			SDL_RenderCopy(renderer, image_desc->getTexture(), NULL, &rect_desc);
+		}
+
 	}
 	return true; //agregado por MC
 }

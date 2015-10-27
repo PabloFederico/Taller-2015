@@ -239,6 +239,13 @@ Imagen* ContenedorDeRecursos::getImagenUtilTipo(TipoImagenUtil tipo){
 }
 
 /********************************************************************************/
+
+InfoEntidad ContenedorDeRecursos::getInfoTipo(TipoEntidad tipo){
+	InfoEntidad info = mapInfoEntidades[tipo];
+	return info;
+}
+
+/********************************************************************************/
 ContenedorDeRecursos::~ContenedorDeRecursos() {
 	this->mapInfoEntidades.clear();
 
