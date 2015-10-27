@@ -38,6 +38,8 @@ public:
 
 	static Camino obtenerCaminoMin(Escenario *esc, Coordenada coord_pixel_orig, Coordenada coord_pixel_dest, Coordenada coord_ceros_pixel);
 
+	static Coordenada generarPosRandom(int size_x,int size_y);
+
 };
 
 #endif /* UTILS_CALCULADOR_H_ */

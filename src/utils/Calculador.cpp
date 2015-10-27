@@ -282,3 +282,13 @@ Camino Calculador::obtenerCaminoMin(Escenario *esc, Coordenada coord_pixel_orig,
 	return camino;
 	// CAMBIADO A CAMINO DE TILES
 }
+
+Coordenada generarPosRandom(int size_x , int size_y){
+	int x_rand, y_rand;
+	srand((int) time(0)); //seedeo el random bien
+	x_rand = (rand() % size_x );
+	y_rand = (rand() % size_y);
+
+
+	return Coordenada(x_rand,y_rand);
+}
