@@ -11,7 +11,7 @@
 #include <vector>
 #include <sstream>
 #include <algorithm>
-#include "../modelo/Exceptions.h"
+#include "../utils/Exceptions.h"
 #include "../utils/Constantes.h"
 #include "../modelo/Entidad.h"
 
@@ -263,8 +263,8 @@ struct PosEntidad{
 		ss >> x; ss.ignore(); // ','
 		ss >> y; ss.ignore(); // '['
 		ss.get(aux, 20, ']');
-		Entidad e = Entidad::dec(aux);
-		return PosEntidad(x,y,&e);
+		Entidad *e = Entidad::dec(aux);
+		return PosEntidad(x,y,e);
 	};
 };
 

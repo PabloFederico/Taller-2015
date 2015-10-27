@@ -8,12 +8,12 @@
 #ifndef RED_RED_H_
 #define RED_RED_H_
 #include "../utils/Constantes.h"
+#include "../utils/Exceptions.h"
 #include "../red/Socket.h"
 #include <string.h>
 #include <stdlib.h>
 #include <string>
 #include <cerrno>
-#include "../modelo/Exceptions.h"
 using namespace std;
 
 class Red {

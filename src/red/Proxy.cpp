@@ -54,6 +54,7 @@ TipoMensajeRed Proxy::actualizarMultiplayer(Juego* juego) {
 
 	stringstream ss(recibido);
 	char charUnMensaje[MAX_BYTES_LECTURA];
+	ss.get(charUnMensaje, MAX_BYTES_LECTURA, '<'); // Me deshago de posible basura.
 	ss.get(charUnMensaje, MAX_BYTES_LECTURA, '~');
 
 	while (charUnMensaje[0] == '<') {
@@ -67,12 +68,14 @@ TipoMensajeRed Proxy::actualizarMultiplayer(Juego* juego) {
 			break;
 		case MOVIMIENTO: procesarCamino(juego, unContenido);
 			break;
-		case NUEVA_ENTIDAD:
+		case NUEVA_ENTIDAD: procesarNuevaEntidad(juego, unContenido);
 			break;
 		case ATAQUE:
 			break;
-		case MENSAJE:
-		default: procesarMensaje(unContenido);
+		case MENSAJE: procesarMensaje(unContenido);
+			break;
+		case FIN:
+			break;
 		}
 
 		ss.ignore();	// '~'

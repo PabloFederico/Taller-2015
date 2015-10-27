@@ -45,95 +45,98 @@ void ContenedorDeRecursos::cargarImagenesEntidades(vector<InfoEntidad> infoEntid
 
 /********************************************************************************/
 void ContenedorDeRecursos::generarYGuardarSpritesEntidades(vector<PosEntidad> *posEntidades, Coordenada coord_ceros, Escenario* escenario){
-
-	for (unsigned i = 0; i < posEntidades->size(); i++){
-		int tile_x = (*posEntidades)[i].x;
-		int tile_y = (*posEntidades)[i].y;
-		Coordenada coord_tile(tile_x, tile_y);
-		Entidad* entidad = (*posEntidades)[i].entidad;
-		entidad->setTam(mapInfoEntidades[entidad->getTipo()].ancho, mapInfoEntidades[entidad->getTipo()].alto);	// Esto ya lo hace la clase Factory
-		Coordenada coordenada = Calculador::calcularPosicionRelativa(coord_tile,coord_ceros);
-
-		SDL_Rect posicion;
-    	/* Cargamos por default los siguientes valores para TIERRA ó AGUA */
-		posicion.x = coordenada.x;
-		posicion.y = coordenada.y;
-		posicion.w = ANCHO_PIXEL_PASTO;
-		posicion.h = ALTO_PIXEL_PASTO;
-
-		Sprite *sprite;
-
-		switch (entidad->getTipo()){
-			case ARBOL 	  : {posicion.y -= (1.5 * DISTANCIA_ENTRE_Y);
-							posicion.w = ANCHO_PIXEL_PASTO;
-							posicion.h = 2 * ALTO_PIXEL_PASTO;
-							sprite = new Sprite(1,1,this->getImagenTipo(ARBOL),posicion,escenario,coord_ceros);
-
-							int x_ini = posicion.x;
-							int y_ini = posicion.y;
-							Rectangulo rect1(x_ini + 0.25*ANCHO_PIXEL_PASTO, 0.5* ANCHO_PIXEL_PASTO, y_ini, 0.75*posicion.h);
-							sprite->agregarRectangulo(rect1);
-							}
-							break;
-	    		/* Modificamos los tamanios de la imagen castillo para que ocupe
-	    		 * los tiles que le corresponden */
-			case CASTILLO : {posicion.x -= DISTANCIA_ENTRE_X * (this->mapInfoEntidades[CASTILLO].ancho - 1);
-						    posicion.y = posicion.y - ALTO_PIXEL_PASTO +  DISTANCIA_ENTRE_Y / 4;
-						    //posicion.w = ANCHO_PIXEL_PASTO;
-						    //posicion.h = (ALTO_PIXEL_PASTO * this->mapInfoEntidades[CASTILLO].ancho + ALTO_PIXEL_PASTO) / this->mapInfoEntidades[CASTILLO].ancho;
-						    //sprite = new Sprite(mapInfoEntidades[CASTILLO].ancho,mapInfoEntidades[CASTILLO].ancho,this->getImagenTipo(CASTILLO),posicion);
-						    posicion.w = ANCHO_PIXEL_PASTO * this->mapInfoEntidades[CASTILLO].ancho;
-						    posicion.h = ALTO_PIXEL_PASTO * this->mapInfoEntidades[CASTILLO].alto + (ALTO_PIXEL_PASTO -  DISTANCIA_ENTRE_Y / 2);
-						    sprite = new Sprite(1,1,this->getImagenTipo(CASTILLO),posicion,escenario,coord_ceros);
-
-						    int x_ini = posicion.x;
-						    int y_ini = posicion.y;
-						    Rectangulo rect1(x_ini, mapInfoEntidades[CASTILLO].ancho*ANCHO_PIXEL_PASTO, y_ini, mapInfoEntidades[CASTILLO].ancho*ALTO_PIXEL_PASTO);
-							sprite->agregarRectangulo(rect1);
-							}
-						    break;
-			case SOLDADO  :
-			case JUANA_DE_ARCO :{
-							posicion.x += ANCHO_PIXEL_PASTO / 4;
-							posicion.w = ANCHO_PIXEL_PASTO / 2;
-							posicion.h = ALTO_PIXEL_PASTO * 3 / 4;
-							sprite = new Sprite(DIRECCIONES,14,this->getImagenTipo(entidad->getTipo()),posicion,escenario,coord_ceros);
-
-							int x_ini = posicion.x;
-							int y_ini = posicion.y;
-							Rectangulo rect1(x_ini + 0.3*posicion.w, 0.3*posicion.w, y_ini + 0.1 * posicion.h, 0.8*posicion.h);
-							sprite->agregarRectangulo(rect1);
-							}
-							break;
-			case ANIMAL :	{
-							posicion.x += ANCHO_PIXEL_PASTO / 8;
-							posicion.y -= (DISTANCIA_ENTRE_Y);
-							posicion.w = ANCHO_PIXEL_PASTO ;
-							posicion.h = 2*ALTO_PIXEL_PASTO;
-							sprite = new Sprite(DIRECCIONES,IMAGENES_DIFERENTES,this->getImagenTipo(ANIMAL),posicion,escenario,coord_ceros);
-							sprite->activarMovimiento(true);
-
-							int x_ini = posicion.x;
-							int y_ini = posicion.y;
-							Rectangulo rect1(x_ini + 0.3*ANCHO_PIXEL_PASTO, 0.6* ANCHO_PIXEL_PASTO, y_ini + 0.2*posicion.h, 0.6*posicion.h);
-							sprite->agregarRectangulo(rect1);
-							}
-							break;
-	    	default       :
-	    					/* AGUA ó TIERRA */
-	    					{sprite = new Sprite(1,1,this->getImagenTipo(entidad->getTipo()),posicion,escenario,coord_ceros);
-	    					int x_ini = posicion.x;
-	    					int y_ini = posicion.y;
-	    					Rectangulo rect1(x_ini, ANCHO_PIXEL_PASTO, y_ini, ALTO_PIXEL_PASTO);
-	    					 sprite->agregarRectangulo(rect1);
-	    					}
-	    					break;
-	    }
-
-		sprite->setDelay(this->mapInfoEntidades[entidad->getTipo()].delay);
-		sprite->setFps(this->mapInfoEntidades[entidad->getTipo()].fps);
-		this->mapSpritesEntidades->insert(entidad,sprite);
+	for (unsigned i = 0; i < posEntidades->size(); i++) {
+		generarYGuardarSpriteEntidad((*posEntidades)[i], coord_ceros, escenario);
 	}
+}
+
+void ContenedorDeRecursos::generarYGuardarSpriteEntidad(PosEntidad posEnt, Coordenada coord_ceros, Escenario* escenario) {
+	int tile_x = posEnt.x;
+	int tile_y = posEnt.y;
+	Coordenada coord_tile(tile_x, tile_y);
+	Entidad* entidad = posEnt.entidad;
+	entidad->setTam(mapInfoEntidades[entidad->getTipo()].ancho, mapInfoEntidades[entidad->getTipo()].alto);	// Esto ya lo hace la clase Factory
+	Coordenada coordenada = Calculador::calcularPosicionRelativa(coord_tile,coord_ceros);
+
+	SDL_Rect posicion;
+	/* Cargamos por default los siguientes valores para TIERRA ó AGUA */
+	posicion.x = coordenada.x;
+	posicion.y = coordenada.y;
+	posicion.w = ANCHO_PIXEL_PASTO;
+	posicion.h = ALTO_PIXEL_PASTO;
+
+	Sprite *sprite;
+
+	switch (entidad->getTipo()){
+		case ARBOL 	  : {posicion.y -= (1.5 * DISTANCIA_ENTRE_Y);
+						posicion.w = ANCHO_PIXEL_PASTO;
+						posicion.h = 2 * ALTO_PIXEL_PASTO;
+						sprite = new Sprite(1,1,this->getImagenTipo(ARBOL),posicion,escenario,coord_ceros);
+
+						int x_ini = posicion.x;
+						int y_ini = posicion.y;
+						Rectangulo rect1(x_ini + 0.25*ANCHO_PIXEL_PASTO, 0.5* ANCHO_PIXEL_PASTO, y_ini, 0.75*posicion.h);
+						sprite->agregarRectangulo(rect1);
+						}
+						break;
+			/* Modificamos los tamanios de la imagen castillo para que ocupe
+			 * los tiles que le corresponden */
+		case CASTILLO : {posicion.x -= DISTANCIA_ENTRE_X * (this->mapInfoEntidades[CASTILLO].ancho - 1);
+						posicion.y = posicion.y - ALTO_PIXEL_PASTO +  DISTANCIA_ENTRE_Y / 4;
+						//posicion.w = ANCHO_PIXEL_PASTO;
+						//posicion.h = (ALTO_PIXEL_PASTO * this->mapInfoEntidades[CASTILLO].ancho + ALTO_PIXEL_PASTO) / this->mapInfoEntidades[CASTILLO].ancho;
+						//sprite = new Sprite(mapInfoEntidades[CASTILLO].ancho,mapInfoEntidades[CASTILLO].ancho,this->getImagenTipo(CASTILLO),posicion);
+						posicion.w = ANCHO_PIXEL_PASTO * this->mapInfoEntidades[CASTILLO].ancho;
+						posicion.h = ALTO_PIXEL_PASTO * this->mapInfoEntidades[CASTILLO].alto + (ALTO_PIXEL_PASTO -  DISTANCIA_ENTRE_Y / 2);
+						sprite = new Sprite(1,1,this->getImagenTipo(CASTILLO),posicion,escenario,coord_ceros);
+
+						int x_ini = posicion.x;
+						int y_ini = posicion.y;
+						Rectangulo rect1(x_ini, mapInfoEntidades[CASTILLO].ancho*ANCHO_PIXEL_PASTO, y_ini, mapInfoEntidades[CASTILLO].ancho*ALTO_PIXEL_PASTO);
+						sprite->agregarRectangulo(rect1);
+						}
+						break;
+		case SOLDADO  :
+		case JUANA_DE_ARCO :{
+						posicion.x += ANCHO_PIXEL_PASTO / 4;
+						posicion.w = ANCHO_PIXEL_PASTO / 2;
+						posicion.h = ALTO_PIXEL_PASTO * 3 / 4;
+						sprite = new Sprite(DIRECCIONES,14,this->getImagenTipo(entidad->getTipo()),posicion,escenario,coord_ceros);
+
+						int x_ini = posicion.x;
+						int y_ini = posicion.y;
+						Rectangulo rect1(x_ini + 0.3*posicion.w, 0.3*posicion.w, y_ini + 0.1 * posicion.h, 0.8*posicion.h);
+						sprite->agregarRectangulo(rect1);
+						}
+						break;
+		case ANIMAL :	{
+						posicion.x += ANCHO_PIXEL_PASTO / 8;
+						posicion.y -= (DISTANCIA_ENTRE_Y);
+						posicion.w = ANCHO_PIXEL_PASTO ;
+						posicion.h = 2*ALTO_PIXEL_PASTO;
+						sprite = new Sprite(DIRECCIONES,IMAGENES_DIFERENTES,this->getImagenTipo(ANIMAL),posicion,escenario,coord_ceros);
+						sprite->activarMovimiento(true);
+
+						int x_ini = posicion.x;
+						int y_ini = posicion.y;
+						Rectangulo rect1(x_ini + 0.3*ANCHO_PIXEL_PASTO, 0.6* ANCHO_PIXEL_PASTO, y_ini + 0.2*posicion.h, 0.6*posicion.h);
+						sprite->agregarRectangulo(rect1);
+						}
+						break;
+		default       :
+						/* AGUA ó TIERRA */
+						{sprite = new Sprite(1,1,this->getImagenTipo(entidad->getTipo()),posicion,escenario,coord_ceros);
+						int x_ini = posicion.x;
+						int y_ini = posicion.y;
+						Rectangulo rect1(x_ini, ANCHO_PIXEL_PASTO, y_ini, ALTO_PIXEL_PASTO);
+						 sprite->agregarRectangulo(rect1);
+						}
+						break;
+	}
+
+	sprite->setDelay(this->mapInfoEntidades[entidad->getTipo()].delay);
+	sprite->setFps(this->mapInfoEntidades[entidad->getTipo()].fps);
+	this->mapSpritesEntidades->insert(entidad,sprite);
 }
 
 /********************************************************************************/

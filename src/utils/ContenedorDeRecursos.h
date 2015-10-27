@@ -41,6 +41,7 @@ public:
 	Sprite* getSpriteDeEntidad(Entidad *entidad);
 
 	void generarYGuardarSpritesEntidades(vector<PosEntidad> *posEntidades,Coordenada coord_ceros, Escenario* escenario);
+	void generarYGuardarSpriteEntidad(PosEntidad posEnt, Coordenada coord_ceros, Escenario* escenario);
 
 	void actualizarPosicionesEntidades(int corrimiento_x, int corrimiento_y);
 

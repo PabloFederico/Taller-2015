@@ -100,7 +100,7 @@ Tile* Escenario::getTile(int x, int y){
 Coordenada Escenario::generarCoordenadaRandom(int size_x , int size_y){
 	int x_rand, y_rand;
 	srand((int) time(0)); //seedeo el random bien
-	x_rand = (rand() % size_x );
+	x_rand = (rand() % size_x);
 	y_rand = (rand() % size_y);
 
 	return Coordenada(x_rand,y_rand);
@@ -135,6 +135,7 @@ bool Escenario::agregarEntidad(Coordenada pos, Entidad* entidad){
 }
 
 /********************************************************************************/
+// Hace DELETE de la posición de memoria, por lo que el puntero pasado no se debe seguir usando!!!
 void Escenario::quitarEntidad(Coordenada pos, Entidad* entidad) {
 	// La quita del vector posicionesEntidades.
 	PosEntidad pE(pos, entidad);

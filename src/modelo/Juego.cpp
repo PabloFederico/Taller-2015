@@ -453,6 +453,8 @@ void Juego::cargarEnemigo(PosEntidad posEnt) {
 		}
 	}
 	enemigos.push_back(posEnt);
+
+	this->contenedor->generarYGuardarSpriteEntidad(posEnt, Coordenada(*cero_x, *cero_y), escenario);
 }
 
 /***************************************************/

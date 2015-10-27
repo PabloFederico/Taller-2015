@@ -36,7 +36,7 @@ public:
 	bool ocupaSuTile();
 
 	std::string enc();
-	static Entidad dec(std::string);
+	static Entidad* dec(std::string);
 
 	virtual ~Entidad();
 };

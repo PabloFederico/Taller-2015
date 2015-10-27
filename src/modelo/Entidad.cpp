@@ -100,15 +100,15 @@ std::string Entidad::enc() {
 	return enc.str();
 }
 
-Entidad Entidad::dec(std::string s) {
+Entidad* Entidad::dec(std::string s) {
 	int id,ti,an,al;
 	stringstream ss(s);
 	ss >> id; ss.ignore();
 	ss >> ti; ss.ignore();
 	ss >> an; ss.ignore();
 	ss >> al;
-	Entidad e = Entidad(TipoEntidad(ti), id);
-	e.setTam(an, al);
+	Entidad *e = new Entidad(TipoEntidad(ti), id);
+	e->setTam(an, al);
 	return e;
 }
 

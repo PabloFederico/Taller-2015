@@ -17,8 +17,8 @@
 #include "SocketServidor.h"
 #include "Red.h"
 //#include "../utils/Structs.h"
-#include "../modelo/Exceptions.h"
-#include "../modelo/Log.h"
+#include "../utils/Exceptions.h"
+#include "../utils/Log.h"
 
 
 class Connection {

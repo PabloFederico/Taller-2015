@@ -104,20 +104,11 @@ void Server::correr() {
 
 	std::cout << std::endl<<"Se recibieron "<<cantConectados<<" conexiones."<<std::endl;
 
+	strcpy(buffer, "<COM>~");
 	for (int j = 0; j < maxfd+1; j++) {
 		if (FD_ISSET(j, &readset)) {
-			strcpy(buffer, "<COM>~");
-			sent = 0;
-			do {
-				std::cout << "&&" << sizeof(buffer) << buffer << std::endl;//
-				justsent = send(j, buffer+sent, sizeof(buffer)-sent, MSG_NOSIGNAL);
-				if (justsent > 0)
-					sent += justsent;
-				else if (justsent < 0 && errno != EINTR)
-					break; //Podría llegar a enviarse solo parte de la data?...
-			} while (sent < result);
 			send(j, buffer, sizeof(buffer), MSG_NOSIGNAL);
-		}
+		}	// NO FUNCIONANDO PARA EL MAX_CONEXIONES-ésimo!
 	}
 
 	std::cout << "Comenzando juego..."<<std::endl<<std::endl;
@@ -162,7 +153,7 @@ void Server::correr() {
 	} // end while
 
 	std::cout << std::endl << "Se han desconectado todos los jugadores. Fin de la partida."<<std::endl;
-	sleep(5);
+	sleep(4);
 }
 
 

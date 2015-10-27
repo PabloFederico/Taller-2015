@@ -7,7 +7,7 @@
 
 #include "VentanaConexion.h"
 #include "../utils/Loader.h"
-#include "../modelo/Log.h"
+#include "../utils/Log.h"
 #include <iostream>
 
 VentanaConexion::VentanaConexion(Controller *controlador): Ventana(controlador) {
