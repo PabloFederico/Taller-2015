@@ -9,6 +9,7 @@ configuracion:
 tipos:
   - nombre: arbol
     imagen: images/arbol.png
+    descripcion: Arbol
 
   - nombre: castillo
     alto_base: 4
@@ -16,15 +17,18 @@ tipos:
     imagen: images/castillo.png
     pixel_ref_x: 30
     pixel_ref_y: 40
+    descripcion: Castillo
 
   - nombre: soldado
     fps: 40
     imagen: images/chabon000.png
+    descripcion: Soldado
 
   - nombre: animal
     fps: 10
     delay: 3000
     imagen: images/animal1.png
+    descripcion: Animal
 
   - nombre: tierra
     imagen: images/tierra.png
@@ -35,6 +39,7 @@ tipos:
   - nombre: juana_de_arco
     fps: 40
     imagen: images/juanita.png
+    descripcion: Juana de Arco
 
 escenario:
   - nombre: orleans
