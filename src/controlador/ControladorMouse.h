@@ -8,6 +8,7 @@
 #ifndef CONTROLADOR_CONTROLADORMOUSE_H_
 #define CONTROLADOR_CONTROLADORMOUSE_H_
 #include "../modelo/Juego.h"
+#include "../red/Proxy.h"
 #include <SDL2/SDL.h>
 
 class ControladorMouse {

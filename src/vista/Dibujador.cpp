@@ -183,6 +183,7 @@ void Dibujador::dibujarEscenario(Escenario* esc){
 
 			/* Solo dibujamos para las zonas visibles (GRISES ó COLOR) */
 			if (capaFog->getEstadoTile(i,j) != ESTADO_NEGRO){
+				//this->dibujarContorno(esc, fuenteTexto);
 				SDL_RenderCopy(renderer,imagenRelieve->getTexture(),NULL,&rectRelieve);
 				Tile* tile = esc->getTile(i,j);
 				vector<Entidad*> entidades = tile->getEntidades();
@@ -224,6 +225,92 @@ void Dibujador::dibujarEscenario(Escenario* esc){
 	}
 }
 
+
+/********************************************************************************/
+bool Dibujador::dibujarContorno(Escenario* esc, TTF_Font* fuenteTexto){
+	for (unsigned i = 0; i < imagenesBasura.size(); i++){
+		delete imagenesBasura[i];
+	}
+	imagenesBasura.clear();
+
+	Imagen* contorno = contenedor->getImagenTipo(CONTORNO);
+	Imagen* contornoxl = contenedor->getImagenTipo(CONTORNOXL);
+
+	Tile* tile = esc->getTileClic();
+	if (tile == NULL) return false;
+
+	CapaFog* capaFog = esc->getCapa();
+	Coordenada c_tile = esc->getCoordTileClic();
+	if (capaFog->getEstadoTile(c_tile.x, c_tile.y) == ESTADO_NEGRO){
+		esc->setearTileClic(NULL);
+		return false;
+	}
+
+	vector<Entidad*> entidades = tile->getEntidades();
+	if (entidades.size() == 0) esc->setearTileClic(NULL);
+
+	for (unsigned k = 0; k < entidades.size(); k++){
+		Entidad* entidad = entidades[k];
+		InfoEntidad info = contenedor->getInfoTipo(entidad->getTipo());
+		string descripcion = info.descripcion;
+		Sprite* sprite = contenedor->getSpriteDeEntidad(entidad);
+		SDL_Rect pos = sprite->getPosicion();
+		pos.w = ANCHO_PIXEL_PASTO;
+		pos.h = ALTO_PIXEL_PASTO;
+
+		SDL_Rect rect_desc;
+		int width_window;
+		int height_window;
+		SDL_GetRendererOutputSize(renderer,&width_window,&height_window);
+		rect_desc.x = 250;
+		rect_desc.y = height_window - 110; // Barra arranca en 150
+		rect_desc.h = 15;
+		rect_desc.w = 10 * descripcion.size();
+
+		Imagen* image_desc = Loader::cargarTextoConFondo(renderer,fuenteTexto,descripcion,SDL_Color{255,255,255});
+		imagenesBasura.push_back(image_desc);
+
+		bool realizar;
+		switch (entidad->getTipo()){
+			case SOLDADO:
+				pos.x -= 14;
+				pos.y += 10;
+				realizar = true;
+				break;
+			case ARBOL:
+				pos.y += 23;
+				realizar = true;
+				break;
+			case ANIMAL:
+				pos.x -= 5;
+				pos.y += 15;
+				realizar = true;
+				break;
+			case CASTILLO:
+				pos.w = entidad->getTam().first + 250;
+				pos.h = entidad->getTam().second + 120;
+				pos.x -= 5;
+				pos.y += 5;
+				contorno = contornoxl;
+				realizar = true;
+				break;
+			case TIERRA:
+				if (entidades.size() == 1) esc->setearTileClic(NULL);
+				realizar = false;
+				break;
+			default :
+				realizar = false;
+				break;
+		}
+		// Dibujo contorno de tile y descripcion en barra:
+		if (realizar == true){
+			SDL_RenderCopy(this->renderer,contorno->getTexture(),NULL,&pos);
+			SDL_RenderCopy(renderer, image_desc->getTexture(), NULL, &rect_desc);
+		}
+
+	}
+	return true; //agregado por MC
+}
 /********************************************************************************/
 void Dibujador::dibujarBarraEstado(Escenario* esc, BarraEstado* barraEstado, TTF_Font* fuenteTexto){
 	for (unsigned i = 0; i < imagenesBasura.size(); i++){
@@ -390,39 +477,6 @@ void Dibujador::dibujarMiniMapa(Escenario* esc, SDL_Rect rect){
 		cero_relativo_y += 0.5 * ALTO;
 	}
 }
-
-
-///para pruebas
-void Dibujador::repintarOcupado(Escenario* esc) {
-	Imagen *imagenRelievePASTO = this->contenedor->getImagenTipo(PASTO);
-	Imagen *imagenRelieveAGUA  = this->contenedor->getImagenTipo(AGUA);
-
-	int cero_relativo_x = *this->cero_x;
-	int cero_relativo_y = *this->cero_y;
-
-	rectRelieve.w = ANCHO_PIXEL_PASTO;
-	rectRelieve.h = ALTO_PIXEL_PASTO;
-
-	/* Dibujamos el relieve por Default */
-	for(int j = 0; j < 50; j++){
-
-		rectRelieve.x = cero_relativo_x;
-		rectRelieve.y = cero_relativo_y;
-
-		for(int i = 0; i < 50; i++){
-			if (esc->tileEsOcupable(Coordenada(i,j)))
-				SDL_RenderCopy(this->renderer,imagenRelievePASTO->getTexture(),NULL,&rectRelieve);
-			else
-				SDL_RenderCopy(this->renderer,imagenRelieveAGUA->getTexture(), NULL,&rectRelieve);
-
-			rectRelieve.x += DISTANCIA_ENTRE_X;
-			rectRelieve.y += DISTANCIA_ENTRE_Y;
-		}
-		cero_relativo_x -= DISTANCIA_ENTRE_X;
-		cero_relativo_y += DISTANCIA_ENTRE_Y;
-	}
-}
-
 
 /********************************************************************************/
 Dibujador::~Dibujador() {

@@ -8,9 +8,8 @@
 #include "Tile.h"
 #include <algorithm>
 
-Tile::Tile() {
 
-}
+Tile::Tile() {}
 
 bool Tile::estaLibre(){
 	if (entidades.size() == 0) return true;
@@ -36,4 +35,3 @@ void Tile::eliminarEntidad(Entidad* entidad){
 Tile::~Tile() {
 	entidades.clear();
 }
-

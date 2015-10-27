@@ -34,6 +34,8 @@ public:
 
 	map<TipoEntidad, InfoEntidad> getInfoEntidades();
 
+	InfoEntidad getInfoTipo(TipoEntidad tipo);
+
 	Map<Entidad*, Sprite*>* getMapaSpritesEntidades();
 
 	Sprite* getSpriteDeEntidad(Entidad *entidad);

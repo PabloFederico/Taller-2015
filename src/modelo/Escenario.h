@@ -36,6 +36,9 @@ private:
 
 	Coordenada c_protagonista;
 
+	Tile* tile_clic;
+	Coordenada c_tile_clic;
+
 	void quitarEntidad(Coordenada pos, Entidad* entidad);
 
 	/* Agrega una entidad en una posición indicada como parámetro */
@@ -52,6 +55,12 @@ public:
 	vector<PosEntidad>* getVectorEntidades();
 
 	Entidad* getProtagonista();
+
+	void setearTileClic(Tile* tile);
+	void setearCoordTileClic(Coordenada c);
+
+	Tile* getTileClic();
+	Coordenada getCoordTileClic();
 
 	bool tileEsOcupable(Coordenada c);
 

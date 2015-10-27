@@ -21,7 +21,6 @@
 #include "../modelo/Escenario.h"
 #include "../modelo/Exceptions.h"
 #include "../red/Connection.h"
-#include "../red/Server.h"
 #include "../red/Client.h"
 #include "../vista/Sprite.h"
 
@@ -46,7 +45,7 @@ private:
 
 	/* Carga la configuración inicial del juego a traves
 	 * de un archivo de configuración */
-	void cargarJuego();
+	void cargarJuego(InfoEscenario* infoEscRed);
 
 	void cargarImagenes();
 
@@ -65,41 +64,33 @@ private:
 	BarraEstado *barraEstado;
 
 public:
-	Juego(Connection* lan);
-	int getVelocidad();
-	pair<int,int> dimensionVentana();
+	Juego(Connection* lan, InfoEscenario* infoEscRed);
 
-	Escenario* getEscenario();
-
-	vector<InfoEntidad> getInfoTiposEntidades();
-	//map<std::string,VistaEntidad*>* getMapEntidades();
-
-	Camino recibirCamino(); //cambiar nombre por uno mejor
-	void enviar(Camino cam);
-
-	Entidad* getProtagonista();
-
-	int getMargenScroll();
-
-	void agregarContenedorDeRecursos(ContenedorDeRecursos *container);
+	Connection* const getConnection();
+	bool esCliente();
 
 	Map<Entidad*, Sprite*>* getSpritesEntidades();
-
+	vector<InfoEntidad> getInfoTiposEntidades();
+	Entidad* getProtagonista();
 	Sprite* getSpritePlayer();
+	pair<int,int> getDimensionVentana();
+	int getVelocidad();
+	int getMargenScroll();
+	BarraEstado* getBarraEstado();
+	Escenario* getEscenario();
 
 	void setCeros(int *x, int *y);
-
+	Coordenada getCoordCeros();
 	std::pair<int*,int*> getCeros();
 
-	void reiniciar();
-
 	void actualizarPosicionesEntidades(int cant_x, int cant_y);
+
+	void agregarContenedorDeRecursos(ContenedorDeRecursos *container);
 
 	/* El nombre del método lo dice \TODO\ */
 	void generarRecursosAleatoriosParaElEscenario();
 
-	BarraEstado* getBarraEstado();
-
+	void reiniciar();
 	virtual ~Juego();
 };
 

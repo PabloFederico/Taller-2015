@@ -37,6 +37,7 @@ public:
 	void dibujarCapaNegra(CapaFog* capa);
 	void dibujarEscenario(Escenario* esc);
 	void dibujarBarraEstado(Escenario* esc, BarraEstado* barraEstado, TTF_Font *fuenteTexto);
+	bool dibujarContorno(Escenario* esc, TTF_Font* fuenteTexto);
 
 	///
 	void repintarOcupado(Escenario* esc);

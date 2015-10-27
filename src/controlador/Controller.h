@@ -9,9 +9,10 @@
 #define CONTROLADOR_CONTROLLER_H_
 #include <SDL2/SDL.h>
 #include "../modelo/Juego.h"
-#include "../red/Connection.h"
+#include "../red/Proxy.h"
 #include "ControladorMouse.h"
 #include "ControladorCamara.h"
+
 
 class Controller {
 private:

@@ -17,12 +17,10 @@ private:
 public:
 	Tile();
 
+	vector<Entidad*> getEntidades();
 	bool estaLibre();
 
-	vector<Entidad*> getEntidades();
-
 	void agregarEntidad(Entidad* entidad);
-
 	void eliminarEntidad(Entidad* entidad);
 
 	virtual ~Tile();

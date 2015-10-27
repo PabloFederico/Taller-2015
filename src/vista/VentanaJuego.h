@@ -24,24 +24,20 @@ class VentanaJuego : public Ventana {
 private:
 	Dibujador *dibujador;
 
+	void cargarJuego(Juego *juego);
 	void cargarImagenesYSprites(Juego *juego);
+
 	/* Dibuja el escenario*/
 	void dibujar();
 
-	void reiniciar();
-
-	void cargarJuego(Juego *juego);
-
 	void liberarRecursos();
-
-	///para pruebas
-	Escenario* esc;
+	void reiniciar();
 
 public:
 	VentanaJuego(Controller *controlador);
 
 	/* Muestra la ventana principal */
-	void mostrar(Server* server);
+	void mostrar();
 
 	virtual ~VentanaJuego();
 

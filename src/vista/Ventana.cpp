@@ -11,7 +11,7 @@
 #include "../utils/Constantes.h"
 
 Ventana::Ventana(Controller *controlador) {
-	pair<int,int> dimensionVentana = controlador->getJuego()->dimensionVentana();
+	pair<int,int> dimensionVentana = controlador->getJuego()->getDimensionVentana();
 	this->SCREEN_WIDTH = dimensionVentana.first;
 	this->SCREEN_HEIGHT = dimensionVentana.second;
 	this->window = NULL;

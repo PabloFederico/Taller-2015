@@ -23,17 +23,13 @@ protected:
 
 public:
 	Socket();
-
 	Socket(std::string string_IP);
 
 	bool creadoCorrectamente();
-
 	int getDescriptor();
-
 	sockaddr_in* getpInfoDir();
 
 	void cerrarSocket(int fd);
-
 	virtual ~Socket();
 };
 
