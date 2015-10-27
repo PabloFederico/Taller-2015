@@ -253,7 +253,7 @@ InfoEscenario Juego::infoEscenarioDefault() {
 }
 
 /********************************************************************************/
-pair<int,int> Juego::dimensionVentana(){
+pair<int,int> Juego::getDimensionVentana(){
 	return make_pair(this->screenWidth,this->screenHeight);
 }
 
@@ -391,20 +391,6 @@ BarraEstado* Juego::getBarraEstado(){
 /***************************************************/
 Connection* const Juego::getConnection() {
 	return this->connection;
-}
-
-/***************************************************/
-//void Juego::multiplayer() {
-//	if (!esCliente()) return;
-//	try {
-//		TipoMensajeRed tipo = Proxy::actualizarMultiplayer(this);
-//	} catch ( NoSeRecibio &e ) {}
-//}
-
-/***************************************************/
-void Juego::enviar(Camino cam) {
-//	if (esCliente())
-//		Proxy::enviar(this->connection, cam);
 }
 
 /********************************************************************************/

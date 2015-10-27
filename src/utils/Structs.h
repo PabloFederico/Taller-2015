@@ -27,7 +27,7 @@ struct PosTipoEntidad{
 		this->tipo = tipo;
 	};
 
-	// "tipo(x;y)"
+	// Encodeado: "tipo(x;y)"
 	std::string enc() {
 		ostringstream Encode;
 		Encode << tipo<<"("<<x<<";"<<y<<")";
@@ -75,7 +75,7 @@ struct InfoEscenario{
 		return !((size_x > 0) && (size_y > 0) && (posX_protagonista >= 0) && (posY_protagonista >= 0));
 	}
 
-	// "x;y|[...,PTE,...,]|protTE"
+	// Encodeado: "x;y|[...,PTE,...,]|protTE"
 	std::string enc() {
 		ostringstream Encode;
 		Encode << size_x << ";" << size_y << "|[";
@@ -224,7 +224,7 @@ struct Coordenada{
 		return (this->x < c.x || this->y < c.y);	//Adivino que esto está bien
 	}
 
-	// "x;y"
+	// Encodeado: "x;y"
 	std::string enc() {
 		ostringstream Encode;
 		Encode << x << ";" << y;
@@ -270,17 +270,14 @@ struct Camino {
 	}
 	Coordenada operator[](int k) { return v[k]; }
 
-	// "c1|c2|c3|...|cn"
+	// Encodeado: "c1|c2|c3|...|cn"
 	std::string enc() {
 		ostringstream Encode;
-		//Encode << "[";
 		for (std::vector<Coordenada>::iterator it = v.begin(); it < v.end(); ++it) {
 			if (it != v.begin())
 				Encode << "|";
 			Encode << it->enc().c_str();
 		}
-		//Encode << "]";
-		//Encode << '\n';
 		return Encode.str();
 	}
 	static Camino dec(std::string s) {
@@ -295,7 +292,7 @@ struct Camino {
 		return cam;
 	}
 
-	//Copipeisteado de Calculador.cpp para evitar redundancia. Atrapar FueraDeEscenario.
+	// Copipeisteado de Calculador.cpp para evitar redundancia.
 	static Coordenada pixelCentralDeTile(Coordenada coord_tile, Coordenada coord_ceros) {
 		if (coord_tile.x < 0 || coord_tile.y < 0)// || tile_x >= this->tiles_x || tile_y >= this->tiles_y)
 			throw FueraDeEscenario();

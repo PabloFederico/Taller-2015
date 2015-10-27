@@ -81,21 +81,6 @@ Tile* Escenario::getTile(int x, int y){
 }
 /********************************************************************************/
 void Escenario::agregarEntidad(Coordenada pos, Entidad* entidad){
-/*
-	try {
-		if (entidad->ocupaSuTile()) {
-			pair<int,int> dim = entidad->getTam();
-			for (int j = 0; j < dim.second; j++)
-				for (int i = 0; i < dim.first; i++)
-					if (!tileEsOcupable(Coordenada(pos.x + i, pos.y + j)))
-						throw TileEstaOcupado();
-			for (int j = 0; j < dim.second; j++)
-				for (int i = 0; i < dim.first; i++)
-					ocuparTile(Coordenada(pos.x + i, pos.y + j));
-		}
-		PosEntidad posEntidad(pos.x, pos.y, entidad);
-		this->posicionesEntidades->push_back(posEntidad);
-*/
 	try {
 		pair<int,int> dim = entidad->getTam();
 		for (int j = 0; j < dim.second; j++)
@@ -159,21 +144,8 @@ Tile* Escenario::getTileClic(){
 	return this->tile_clic;
 }
 
-/********************************************************************************
-void Escenario::ocuparTile(Coordenada c) {
-	bool* oc = &this->estadoOcupadoDeTiles[c];
-	if (*oc == true)
-		throw TileEstaOcupado();
-	*oc = true;
-}
 
-********************************************************************************
-// No avisa si no estaba ocupado.
-void Escenario::desocuparTile(Coordenada c) {
-	this->estadoOcupadoDeTiles[c] = false;
-}
-
-********************************************************************************/
+/********************************************************************************/
 CapaFog* Escenario::getCapa() {
 	return this->capa;
 }

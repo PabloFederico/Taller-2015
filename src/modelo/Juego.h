@@ -66,51 +66,31 @@ private:
 public:
 	Juego(Connection* lan, InfoEscenario* infoEscRed);
 
-	int getVelocidad();
-
-	pair<int,int> dimensionVentana();
-
-	Escenario* getEscenario();
-
+	Connection* const getConnection();
 	bool esCliente();
 
-	void comenzar();
-
-	vector<InfoEntidad> getInfoTiposEntidades();
-	//map<std::string,VistaEntidad*>* getMapEntidades();
-
-	Camino recibirCamino(); //cambiar nombre por uno mejor
-	void enviar(Camino cam);
-
-	Entidad* getProtagonista();
-
-	int getMargenScroll();
-
-	Coordenada getCoordCeros();
-
-	void agregarContenedorDeRecursos(ContenedorDeRecursos *container);
-
 	Map<Entidad*, Sprite*>* getSpritesEntidades();
-
+	vector<InfoEntidad> getInfoTiposEntidades();
+	Entidad* getProtagonista();
 	Sprite* getSpritePlayer();
+	pair<int,int> getDimensionVentana();
+	int getVelocidad();
+	int getMargenScroll();
+	BarraEstado* getBarraEstado();
+	Escenario* getEscenario();
 
 	void setCeros(int *x, int *y);
-
+	Coordenada getCoordCeros();
 	std::pair<int*,int*> getCeros();
 
-	void reiniciar();
-
 	void actualizarPosicionesEntidades(int cant_x, int cant_y);
+
+	void agregarContenedorDeRecursos(ContenedorDeRecursos *container);
 
 	/* El nombre del método lo dice \TODO\ */
 	void generarRecursosAleatoriosParaElEscenario();
 
-	BarraEstado* getBarraEstado();
-
-	Connection* const getConnection();
-
-	void multiplayer();
-
+	void reiniciar();
 	virtual ~Juego();
 };
 

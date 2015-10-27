@@ -13,14 +13,14 @@ void Connection::enviar(std::string s) {
 		//Log::imprimirALog(ERR, "ERROR: send failed.");
 		std::cout << "ERROR: send failed." << std::endl;
 	} else
-		std::cout << "Enviado:"<<std::endl << s<<std::endl << "-----";//
+		std::cout << "Enviado:"<<std::endl << s<<std::endl;//
 }
 
 std::string Connection::recibir() {
 	char buffer[MAX_BYTES_LECTURA];
 	if (Red::recibirInformacion(this->lastDescriptor, buffer) < 0)
 		throw NoSeRecibio();
-	std::cout << "Recibido:"<<std::endl << buffer<<std::endl << "-----";//
+	std::cout << "Recibido:"<<std::endl << buffer<<std::endl;//
 	return buffer;
 }
 

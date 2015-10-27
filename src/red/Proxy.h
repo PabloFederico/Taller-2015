@@ -21,7 +21,7 @@ private:
 	static void procesarEscenario(Juego* juego, string encodeado);
 	static void procesarCamino(Juego* juego, string encodeado);
 	//static procesarNuevaEntidad(Juego* juego, string encodeado)
-	//static prcoesarAtaque(Juego* juego, string encodeado)
+	//static procesarAtaque(Juego* juego, string encodeado)
 
 public:
 	static TipoMensajeRed esperarComienzo(Connection* lan);
@@ -35,6 +35,6 @@ public:
 	//static void enviar(Entidad*)
 	//static void enviar(Ataque)
 
-};		//sin chequeos
+};
 
 #endif /* RED_PROXY_H_ */

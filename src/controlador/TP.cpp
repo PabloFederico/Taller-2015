@@ -36,7 +36,6 @@ int main(int argc, char** argv) {
 		SDL_Quit();
 		IMG_Quit();
 		TTF_Quit();
-		lan->~Client();
 		delete lan;
 	}
 

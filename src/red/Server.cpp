@@ -90,7 +90,8 @@ void Server::correr() {
 
 	if (cantConectados < 2) {
 		std::cout << "No se conectaron suficientes jugadores para una partida en red."<<std::endl;
-		std::cout << "Hazte algunos amigos y vuelve a intentarlo"<<std::endl;
+		std::cout << "Hazte algunos amigos y vuelve a intentarlo..."<<std::endl;
+		sleep(5);
 		return;
 	}
 
@@ -142,7 +143,8 @@ void Server::correr() {
 			} // end if (FD_ISSET(j, &readset))
 		} // rof
 	} // end while
-	std::cout << std::endl<<"Se han desconectado todos los jugadores. Fin de la partida."<<std::endl;
+
+	std::cout << std::endl << "Se han desconectado todos los jugadores. Fin de la partida."<<std::endl;
 	sleep(5);
 }
 
