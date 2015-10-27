@@ -27,6 +27,14 @@ std::map<TipoEntidad, int> BarraEstado::getRecursosEconomicos(){
 	return mapRecursosEconomicos;
 }
 
+std::string BarraEstado::getDescripcion(){
+	return infoDescripcion;
+}
+
+void BarraEstado::setInformacion(std::string nuevaDescripcion){
+	this->infoDescripcion = nuevaDescripcion;
+}
+
 BarraEstado::~BarraEstado() {
 	mapRecursosEconomicos.clear();
 }

@@ -396,5 +396,6 @@ Connection* const Juego::getConnection() {
 /********************************************************************************/
 Juego::~Juego() {
 	delete this->escenario;
+	delete this->contenedor;
 	delete this->barraEstado;
 }

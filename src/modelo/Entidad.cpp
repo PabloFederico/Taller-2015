@@ -14,23 +14,49 @@ Entidad::Entidad(TipoEntidad tipo) {
 	this->tipo = tipo;
 	switch (tipo) {
 		case PASTO:
+			movible = false;
+			ocupador = false;
+			info = "";
+			break;
 		case TIERRA:
 				movible = false;
 				ocupador = false;
+				info = "";
 				break;
 		case AGUA:
 				movible = false;
 				ocupador = true;
+				info = "Agua";
 				break;
 		case SOLDADO:
+			movible = true;
+			ocupador = true;
+			info = "Soldado";
+			break;
 		case JUANA_DE_ARCO:
+			movible = true;
+			ocupador = true;
+			info = "Juana De Arco";
+			break;
 		case ANIMAL:
 				movible = true;
 				ocupador = true;
+				info = "Animal";
+				break;
+		case CASTILLO:
+				movible = false;
+				ocupador = true;
+				info = "Castillo";
+				break;
+		case ARBOL:
+				movible = false;
+				ocupador = true;
+				info = "Arbol";
 				break;
 		default:
 				movible = false;
 				ocupador = true;
+				info = "";
 				break;
 	}
 }
@@ -55,6 +81,10 @@ bool Entidad::esMovible(){
 
 bool Entidad::ocupaSuTile() {
 	return this->ocupador;
+}
+
+std::string Entidad::getInfo(){
+	return info;
 }
 
 Entidad::~Entidad() {

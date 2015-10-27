@@ -13,7 +13,7 @@ tipos:
   - nombre: castillo
     alto_base: 4
     ancho_base: 4
-    imagen: images/castillo.png
+    imagen: images/casss.png
     pixel_ref_x: 30
     pixel_ref_y: 40
 

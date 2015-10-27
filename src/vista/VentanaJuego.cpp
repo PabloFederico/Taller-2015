@@ -69,18 +69,12 @@ void VentanaJuego::cargarImagenesYSprites(Juego* juego){
 void VentanaJuego::dibujar(){
 	SDL_RenderClear(this->renderer);
 
-	//int ancho = controlador->getJuego()->getEscenario()->getDimension().first;
-	//int largo = controlador->getJuego()->getEscenario()->getDimension().second;
 	Escenario* escenario = controlador->getJuego()->getEscenario();
-	//CapaFog* capa = escenario->getCapa();
 	BarraEstado* barraEstado = controlador->getJuego()->getBarraEstado();
 
-	//dibujador->dibujarRelieve(ancho,largo);
-	//dibujador->dibujarEntidades();
-	//dibujador->dibujarCapaNegra(capa);
 	dibujador->dibujarEscenario(escenario);
 	dibujador->dibujarBarraEstado(escenario, barraEstado, fuenteTexto);
-	dibujador->dibujarContorno(escenario, fuenteTexto);
+	//dibujador->dibujarContorno(escenario, fuenteTexto);
 
 	SDL_RenderPresent(this->renderer);
 }

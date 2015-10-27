@@ -33,6 +33,7 @@ private:
 	EntidadFactory* fabricaDeEntidades;
 
 	Entidad* protagonista;
+	Entidad* entidadSeleccionada;
 
 	Coordenada c_protagonista;
 
@@ -56,7 +57,9 @@ public:
 
 	Entidad* getProtagonista();
 
-	void setearTileClic(Tile* tile);
+	Entidad* getEntidadSeleccionada();
+
+	void setearTileClic(Tile* tile, Coordenada c_tile);
 	void setearCoordTileClic(Coordenada c);
 
 	Tile* getTileClic();

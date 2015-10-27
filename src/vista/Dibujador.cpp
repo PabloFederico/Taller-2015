@@ -166,6 +166,7 @@ void Dibujador::dibujarEscenario(Escenario* esc){
 	CapaFog* capaFog = esc->getCapa();
 	Imagen *imagenRelieve = this->contenedor->getImagenTipo(PASTO);
 	Imagen *imagenGris = this->contenedor->getImagenUtilTipo(CAPA_GRIS);
+	Imagen *imagenSelector = this->contenedor->getImagenUtilTipo(SELECT_TILE);
 
 	int cero_relativo_x = *this->cero_x;
 	int cero_relativo_y = *this->cero_y;
@@ -189,6 +190,11 @@ void Dibujador::dibujarEscenario(Escenario* esc){
 				vector<Entidad*> entidades = tile->getEntidades();
 				for (unsigned k = 0; k < entidades.size(); k++){
 					Entidad* entidad = entidades[k];
+
+					if (entidad == esc->getEntidadSeleccionada()){
+						SDL_RenderCopy(renderer,imagenSelector->getTexture(),NULL,&rectRelieve);
+					}
+
 					Sprite* sprite = this->contenedor->getSpriteDeEntidad(entidad);
 					SDL_Rect pos = sprite->getPosicion();
 					//Entidades con movimiento:
@@ -242,12 +248,12 @@ bool Dibujador::dibujarContorno(Escenario* esc, TTF_Font* fuenteTexto){
 	CapaFog* capaFog = esc->getCapa();
 	Coordenada c_tile = esc->getCoordTileClic();
 	if (capaFog->getEstadoTile(c_tile.x, c_tile.y) == ESTADO_NEGRO){
-		esc->setearTileClic(NULL);
+		esc->setearTileClic(NULL,Coordenada(0,0));
 		return false;
 	}
 
 	vector<Entidad*> entidades = tile->getEntidades();
-	if (entidades.size() == 0) esc->setearTileClic(NULL);
+	if (entidades.size() == 0) esc->setearTileClic(NULL,Coordenada(0,0));
 
 	for (unsigned k = 0; k < entidades.size(); k++){
 		Entidad* entidad = entidades[k];
@@ -267,7 +273,7 @@ bool Dibujador::dibujarContorno(Escenario* esc, TTF_Font* fuenteTexto){
 		rect_desc.h = 15;
 		rect_desc.w = 10 * descripcion.size();
 
-		Imagen* image_desc = Loader::cargarTextoConFondo(renderer,fuenteTexto,descripcion,SDL_Color{255,255,255});
+		Imagen* image_desc = Loader::cargarTexto(renderer,fuenteTexto,descripcion);
 		imagenesBasura.push_back(image_desc);
 
 		bool realizar;
@@ -295,7 +301,7 @@ bool Dibujador::dibujarContorno(Escenario* esc, TTF_Font* fuenteTexto){
 				realizar = true;
 				break;
 			case TIERRA:
-				if (entidades.size() == 1) esc->setearTileClic(NULL);
+				if (entidades.size() == 1) esc->setearTileClic(NULL,Coordenada(0,0));
 				realizar = false;
 				break;
 			default :
@@ -340,6 +346,18 @@ void Dibujador::dibujarBarraEstado(Escenario* esc, BarraEstado* barraEstado, TTF
 	rect_barra.w = 0.4 * dim.first;
 	imagen = this->contenedor->getImagenUtilTipo(BARRA_DESCRIPCION);
 	SDL_RenderCopy(renderer,imagen->getTexture(),NULL,&rect_barra);
+
+	if (barraEstado->getDescripcion() != ""){
+		Imagen* imagenDescripcion = Loader::cargarTexto(renderer,fuenteTexto,barraEstado->getDescripcion());
+		SDL_Rect rect_descripcion;
+		rect_descripcion.x = rect_barra.x + 20;
+		rect_descripcion.y = rect_barra.y + 40;
+		rect_descripcion.w = imagenDescripcion->getPixelsX();
+		rect_descripcion.h = imagenDescripcion->getPixelsY();
+
+		SDL_RenderCopy(renderer,imagenDescripcion->getTexture(),NULL,&rect_descripcion);
+		imagenesBasura.push_back(imagenDescripcion);
+	}
 
 	/* Dibujamos el fondo del minimapa */
 	rect_barra.x += rect_barra.w;
@@ -399,6 +417,8 @@ void Dibujador::dibujarBarraEstado(Escenario* esc, BarraEstado* barraEstado, TTF
 void Dibujador::dibujarMiniMapa(Escenario* esc, SDL_Rect rect){
 	Imagen *imagenRelieve = contenedor->getImagenTipo(PASTO);
 	Imagen* imagenNegra = contenedor->getImagenUtilTipo(CAPA_NEGRA);
+	Imagen* imagenCuadro = contenedor->getImagenUtilTipo(CUADRO_UBICACION);
+	SDL_Rect rect_ubicacion;
 
 	SDL_RenderCopy(renderer,imagenNegra->getTexture(),NULL,&rect);
 
@@ -433,6 +453,11 @@ void Dibujador::dibujarMiniMapa(Escenario* esc, SDL_Rect rect){
 				Imagen* image = NULL;
 				for (unsigned k = 0; k < entidades.size(); k++){
 					Entidad* entidad = entidades[k];
+
+					if (entidad == esc->getProtagonista()){
+						rect_ubicacion = rectRelieve;
+					}
+
 					switch (entidad->getTipo()){
 						case SOLDADO:
 						case JUANA_DE_ARCO:
@@ -476,6 +501,14 @@ void Dibujador::dibujarMiniMapa(Escenario* esc, SDL_Rect rect){
 		cero_relativo_x -= 0.5 * ANCHO;
 		cero_relativo_y += 0.5 * ALTO;
 	}
+
+	/* Dibuja el recuadro de la ubicación en el minimapa */
+	rect_ubicacion.w = 10*ANCHO;
+	rect_ubicacion.h = 10*ALTO;
+	rect_ubicacion.x -= rect_ubicacion.w / 2;
+	rect_ubicacion.y -= rect_ubicacion.h / 2;
+	SDL_RenderCopy(renderer,imagenCuadro->getTexture(),NULL,&rect_ubicacion);
+
 }
 
 /********************************************************************************/

@@ -14,6 +14,7 @@ class BarraEstado {
 private:
 	int height;
 	int width;
+	std::string infoDescripcion;
 	std::map<TipoEntidad, int> mapRecursosEconomicos;
 
 public:
@@ -24,6 +25,10 @@ public:
 	std::pair<int,int> getDimension();
 
 	std::map<TipoEntidad, int> getRecursosEconomicos();
+
+	std::string getDescripcion();
+
+	void setInformacion(std::string infoDescripcion);
 
 	virtual ~BarraEstado();
 };

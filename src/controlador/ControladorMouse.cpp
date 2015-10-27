@@ -41,12 +41,12 @@ void ControladorMouse::procesarEvento(SDL_Event &event, int MouseX, int MouseY){
 				clicValido = Calculador::puntoContenidoEnEscenario(c_tile_clic, escenario);
 				//Seteo tile clic:
 				Tile* tile_clic = escenario->getTile(c_tile_clic.x, c_tile_clic.y);
-				escenario->setearTileClic(tile_clic);
+				escenario->setearTileClic(tile_clic, c_tile_clic);
 				escenario->setearCoordTileClic(c_tile_clic);
 
 			}catch(FueraDeEscenario &e) {
 				clicValido = false;
-				escenario->setearTileClic(NULL);
+				escenario->setearTileClic(NULL, Coordenada(0,0));
 			}
 
 			/* Si el clic es válido, buscamos el camino mínimo. */
@@ -54,19 +54,24 @@ void ControladorMouse::procesarEvento(SDL_Event &event, int MouseX, int MouseY){
 	            ///pruebas
 	            //Coordenada mouse = Calculador::tileParaPixel(Coordenada(MouseX,MouseY),coord_pixel_ceros);
 	            //std::cout << "mouse: "<<mouse.x<<";"<<mouse.y<<'\t'<<"follow: "<<follow.x<<";"<<follow.y<<std::endl;
+				if (escenario->getEntidadSeleccionada() == escenario->getProtagonista()){
+					try {
+						Camino camino = Calculador::obtenerCaminoMin(escenario, coord_pixel_sprite, Coordenada(MouseX, MouseY), coord_pixel_ceros);
 
-	            try {
-	        		Camino camino = Calculador::obtenerCaminoMin(escenario, coord_pixel_sprite, Coordenada(MouseX, MouseY), coord_pixel_ceros);
+						if (camino.size() > 0) {
+							/* Si se está jugando en red, enviar el movimiento a los demás jugadores. */
+							if (juego->esCliente())
+								Proxy::enviar(juego->getConnection(), camino);
+							/* Activamos el movimiento del sprite y seteamos el nuevo camino que debe recorrer. */
+							sprite->setearNuevoCamino(camino, coord_pixel_ceros);
+						}
+					} catch ( FueraDeEscenario &e ) {}
+				}
 
-					if (camino.size() > 0) {
-						/* Si se está jugando en red, enviar el movimiento a los demás jugadores. */
-						if (juego->esCliente())
-							Proxy::enviar(juego->getConnection(), camino);
-						/* Activamos el movimiento del sprite y seteamos el nuevo camino que debe recorrer. */
-						sprite->setearNuevoCamino(camino, coord_pixel_ceros);
-					}
-				} catch ( FueraDeEscenario &e ) {}
-			}
+				if (escenario->getEntidadSeleccionada() != NULL){
+					juego->getBarraEstado()->setInformacion(escenario->getEntidadSeleccionada()->getInfo());
+				}
+			}/* Fin clicValido */
 		}
 	} /* Fin if SDL_MOUSEBUTTONDOWN */
 

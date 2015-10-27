@@ -41,7 +41,7 @@ Escenario::Escenario(InfoEscenario infoEsc, EntidadFactory *fabrica): fabricaDeE
 	this->agregarEntidad(pos, this->protagonista);
 	this->c_protagonista = pos;
 	this->tile_clic = NULL;
-
+	this->entidadSeleccionada = NULL;
 	//PosEntidad posEntidad(pos.x, pos.y, this->protagonista);
 	//this->posicionesEntidades->push_back(posEntidad);
 }
@@ -136,13 +136,25 @@ bool Escenario::tileEsOcupable(Coordenada c) {
 }
 
 /********************************************************************************/
-void Escenario::setearTileClic(Tile* tile){
+void Escenario::setearTileClic(Tile* tile, Coordenada c_tile){
 	this->tile_clic = tile;
+	if (capa->getEstadoTile(c_tile.x, c_tile.y) == ESTADO_COLOR){
+		vector<Entidad*> entidades = tile->getEntidades();
+		for (unsigned i = 0; i < entidades.size(); i++){
+			if (entidades[i]->ocupaSuTile()){
+				this->entidadSeleccionada = entidades[i];
+			}
+		}
+	}
 }
 
 /********************************************************************************/
 Tile* Escenario::getTileClic(){
 	return this->tile_clic;
+}
+
+Entidad* Escenario::getEntidadSeleccionada(){
+	return this->entidadSeleccionada;
 }
 
 void Escenario::setearCoordTileClic(Coordenada c){

@@ -83,7 +83,7 @@ void ContenedorDeRecursos::generarYGuardarSpritesEntidades(vector<PosEntidad> *p
 						    //posicion.h = (ALTO_PIXEL_PASTO * this->mapInfoEntidades[CASTILLO].ancho + ALTO_PIXEL_PASTO) / this->mapInfoEntidades[CASTILLO].ancho;
 						    //sprite = new Sprite(mapInfoEntidades[CASTILLO].ancho,mapInfoEntidades[CASTILLO].ancho,this->getImagenTipo(CASTILLO),posicion);
 						    posicion.w = ANCHO_PIXEL_PASTO * this->mapInfoEntidades[CASTILLO].ancho;
-						    posicion.h = ALTO_PIXEL_PASTO * this->mapInfoEntidades[CASTILLO].alto + (ALTO_PIXEL_PASTO -  DISTANCIA_ENTRE_Y / 4);
+						    posicion.h = ALTO_PIXEL_PASTO * this->mapInfoEntidades[CASTILLO].alto + (ALTO_PIXEL_PASTO -  DISTANCIA_ENTRE_Y / 2);
 						    sprite = new Sprite(1,1,this->getImagenTipo(CASTILLO),posicion,escenario,coord_ceros);
 
 						    int x_ini = posicion.x;
@@ -181,8 +181,11 @@ void ContenedorDeRecursos::cargarImagenesUtil(){
 	imagen = Loader::cargarImagen(this->renderer,"images/barra_negra.png");
 	this->mapImagenesUtil->insert(BARRA_NEGRA,imagen);
 
-	imagen = Loader::cargarImagen(this->renderer,"images/selector_tile.png");
+	imagen = Loader::cargarImagen(this->renderer,"images/selector_tile_0.png");
 	this->mapImagenesUtil->insert(SELECT_TILE,imagen);
+
+	imagen = Loader::cargarImagen(this->renderer,"images/ubicacion_minimapa.png");
+	this->mapImagenesUtil->insert(CUADRO_UBICACION,imagen);
 
 	imagen = Loader::cargarImagen(this->renderer,"images/icono_rojo_1.png");
 	this->mapImagenesUtil->insert(ICONO_ROJO,imagen);
