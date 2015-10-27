@@ -341,6 +341,17 @@ void Dibujador::dibujarBarraEstado(Escenario* esc, BarraEstado* barraEstado, TTF
 	imagen = this->contenedor->getImagenUtilTipo(BARRA_FONDO);
 	SDL_RenderCopy(renderer,imagen->getTexture(),NULL,&rect_barra);
 
+	if (esc->getEntidadSeleccionada() != NULL){
+		Imagen* imagen_Select = contenedor->getSpriteDeEntidad(esc->getEntidadSeleccionada())->getImagen();
+		SDL_Rect frameActual = contenedor->getSpriteDeEntidad(esc->getEntidadSeleccionada())->getFrameActual();
+		SDL_Rect rect_image_select;
+		rect_image_select.x = rect_barra.x + 30;
+		rect_image_select.y = rect_barra.y + 40;
+		rect_image_select.w = 40;
+		rect_image_select.h = 50;
+		SDL_RenderCopy(renderer,imagen_Select->getTexture(),&frameActual,&rect_image_select);
+	}
+
 	/* Dibujamos el descriptor (Para la descripción de los elementos seleccionados) */
 	rect_barra.x += rect_barra.w;
 	rect_barra.w = 0.4 * dim.first;
