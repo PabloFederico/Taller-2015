@@ -173,6 +173,8 @@ void Dibujador::dibujarEscenario(Escenario* esc){
 	rectRelieve.w = ANCHO_PIXEL_PASTO;
 	rectRelieve.h = ALTO_PIXEL_PASTO;
 
+	//vector<Entidad*> entidadesDibujadas;
+
 	/* Recorremos tile por tile */
 	for (int j = 0; j < dimension.second; j++){
 		rectRelieve.x = cero_relativo_x;
@@ -202,8 +204,13 @@ void Dibujador::dibujarEscenario(Escenario* esc){
 					}
 					//Entidades sin movimiento:
 					else{
-						SDL_Rect rect = sprite->getFrameActual();
-						SDL_RenderCopy(this->renderer,sprite->getImagen()->getTexture(),&rect,&pos);
+						 //vector<Entidad*>::iterator it = find(entidadesDibujadas.begin(), entidadesDibujadas.end(), entidad);
+						 //bool fueDibujado = (it != entidadesDibujadas.end());
+						 //if (!fueDibujado){
+							 SDL_Rect rect = sprite->getFrameActual();
+							 SDL_RenderCopy(this->renderer,sprite->getImagen()->getTexture(),&rect,&pos);
+							// entidadesDibujadas.push_back(entidad);
+						 //}
 					}
 				}
 			}

@@ -31,8 +31,6 @@ bool Ventana::init(){
 		  SDL_RenderSetLogicalSize(this->renderer,SCREEN_WIDTH,SCREEN_HEIGHT);
 		  SDL_SetRenderDrawColor(this->renderer,0,0,0,0);
 		 }
-	 this->fuenteTexto = TTF_OpenFont("censcbk.ttf",TAM_LETRA_JUEGO);
-	 if (fuenteTexto == NULL) return false;
 
 	return true;
 }
