@@ -17,7 +17,7 @@ void Connection::enviar(std::string s) {
 		//Log::imprimirALog(ERR, "ERROR: send failed.");
 		std::cout << "ERROR: send failed." << std::endl;
 	} else
-		std::cout << "Enviado: "<<s<<std::endl;//
+		std::cout << "Enviando: "<<s<<std::endl;//
 }
 
 std::string Connection::recibir() {

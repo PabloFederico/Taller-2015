@@ -7,9 +7,9 @@
 
 #ifndef UTILS_CONSTANTES_H_
 #define UTILS_CONSTANTES_H_
-/* Los tamanios de pixeles son lineales, en caso de cambiar algún valor,
+/* Los tamaños de pixeles son lineales, en caso de cambiar algún valor,
  * se debería cambiar el valor de algunas constantes según la relación que
- *  corresponda, salvo las cantidades de direcciones e imagenes que son
+ *  corresponda, salvo las cantidades de direcciones e imágenes que son
  *  independientes de las demás */
 
 #define ANCHO_PIXEL_PASTO	60
@@ -22,8 +22,9 @@
 #define IMAGENES_DIFERENTES	8
 
 #define PUERTO_SERVIDOR		4050
-#define IP_SERVIDOR			"127.0.0.1" /* Creo que acá van a tener que cambiar su IP */
+#define IP_SERVIDOR			"127.0.0.1"
 
+#define MAX_ESPERA_CONEXION 10 // segundos
 #define MAX_CONEXIONES		3 //5
 #define MAX_BYTES_LECTURA	2000
 

@@ -9,14 +9,17 @@
 
 
 Controller::Controller(Connection* lan = NULL) {
+	Coordenada* posInicial = NULL;
 	try {
 		if (lan != NULL)
-			Proxy::esperarComienzo(lan);
+			posInicial = Proxy::esperarComienzo(lan);
 	} catch ( Disconnected &e ) { lan = NULL; }
 
-	this->juego = new Juego(lan, NULL);
-	if (lan != NULL)
+	this->juego = new Juego(lan, posInicial, NULL);
+	if (lan != NULL) {
+		Proxy::enviarNombre(lan, juego->getNombreJugador());
 		Proxy::enviar(lan, juego->getPosEntDeProtagonista());
+	}
 
 	this->controladorMouse = new ControladorMouse(juego);
 	this->controladorCamara = new ControladorCamara(juego);
@@ -69,11 +72,12 @@ void Controller::procesarEvento(SDL_Event &event){
 	if (this->juego->esCliente()) {
 		try {
 			TipoMensajeRed tipo = Proxy::actualizarMultiplayer(this->juego);
-			std::cout << "Mensaje recibido y procesado de tipo "<<tipo<<std::endl;//
+			if (tipo != 0)//
+				std::cout << "Mensaje recibido y procesado de tipo "<<tipo<<std::endl;//
 		} catch ( NoSeRecibio &e ) {
 		} catch ( Disconnected &e ) {
-			juego->olvidarConnection();
-		}
+			juego->olvidarConnection();	// No está funcionando siempre... Hacerlo de otra forma.
+		}	// Podría poner q lo olvide al recibir vacío (""), y contar con lo que reconecte después.
 	}
 }
 

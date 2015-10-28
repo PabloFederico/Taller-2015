@@ -8,9 +8,8 @@
 #include "ControladorMouse.h"
 #include "../utils/Calculador.h"
 #include "../modelo/DetectorDeColisiones.h"
-
-#include "../red/Server.h"
 #include "../red/Connection.h"
+
 
 ControladorMouse::ControladorMouse(Juego *juego) {
 	this->juego = juego;

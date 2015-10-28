@@ -18,9 +18,9 @@ enum TipoImagenUtil { BARRA_FONDO , BARRA_DESCRIPCION, BARRA_NEGRA, SELECT_TILE,
 					ICONO_GRIS, ICONO_NARANJA, ICONO_VIOLETA, ICONO_BLANCO, ICONO_MAGENTA,
 					CAPA_GRIS, CAPA_NEGRA, CUADRO_UBICACION };
 
-enum TipoMensajeRed { MENSAJE, COMIENZO, ESCENARIO, MOVIMIENTO, NUEVA_ENTIDAD, ATAQUE, FIN /*...*/};
+enum TipoMensajeRed { MENSAJE, COMIENZO, ESCENARIO, MOVIMIENTO, NUEVA_ENTIDAD, TOGGLE, ATAQUE, FIN /*...*/};
 
-enum TipoBoton { BOTON_NADA, BOTON_NAME, BOTON_NUEVA_PARTIDA, BOTON_SELECTOR_ESCENARIO, BOTON_CARGAR_PARTIDA ,BOTON_EXIT };
+enum TipoBoton { BOTON_NADA, BOTON_NAME, BOTON_NUEVA_PARTIDA, BOTON_SELECTOR_ESCENARIO, BOTON_CARGAR_PARTIDA, BOTON_EXIT };
 
 /* Tipos de Log:
  * * INFO = Error Informátivo
@@ -47,7 +47,9 @@ inline const TipoMensajeRed StringToTipoMensajeRed(std::string s) {
 	if (s == "ESC")	return ESCENARIO;
 	if (s == "MOV")	return MOVIMIENTO;
 	if (s == "ENT")	return NUEVA_ENTIDAD;
+	if (s == "TOG") return TOGGLE;
 	if (s == "ATQ")	return ATAQUE;
+	if (s == "FIN") return FIN;
 	else return MENSAJE;
 }
 

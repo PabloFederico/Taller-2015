@@ -73,11 +73,17 @@ Entidad::Entidad(TipoEntidad tipo, int num_jug): idJug(num_jug)  {
 				info = "";
 				break;
 	}
+	petrificado = false;
+
 	if (idJug != 0) {
 		ostringstream ssInfo;
 		ssInfo << info<<" (Jugador "<<idJug<<")";
 		info = ssInfo.str();
 	}
+}
+
+bool Entidad::estaPetrificado(){
+	return petrificado;
 }
 
 TipoEntidad Entidad::getTipo(){

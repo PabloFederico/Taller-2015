@@ -251,6 +251,12 @@ InfoEntidad ContenedorDeRecursos::getInfoTipo(TipoEntidad tipo){
 }
 
 /********************************************************************************/
+void ContenedorDeRecursos::setearCanalAlphaParaEntidad(Entidad* entidad, int canalAlpha){
+	Sprite* spriteEntidad = this->getSpriteDeEntidad(entidad);
+	SDL_SetTextureAlphaMod(spriteEntidad->getImagen()->getTexture(),canalAlpha);
+}
+
+/********************************************************************************/
 ContenedorDeRecursos::~ContenedorDeRecursos() {
 	this->mapInfoEntidades.clear();
 
