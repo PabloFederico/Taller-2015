@@ -131,6 +131,7 @@ void Dibujador::dibujarEscenario(Escenario* esc, TTF_Font* fuenteTexto){
 						SDL_RenderCopy(renderer,image_id->getTexture(),NULL,&rect_id);
 						imagenesBasura.push_back(image_id);
 					}
+
 					//Entidades con movimiento:
 					if (entidad->esMovible()) {
 						if (sprite->estaEnMovimiento()){
