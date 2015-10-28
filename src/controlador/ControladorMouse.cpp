@@ -36,19 +36,24 @@ void ControladorMouse::procesarEvento(SDL_Event &event, int MouseX, int MouseY){
 			bool clicValido;
 			Escenario *escenario = juego->getEscenario();
 
-			try{
-				Coordenada c_tile_clic = Calculador::tileParaPixel(Coordenada(MouseX,MouseY), coord_pixel_ceros);
-				clicValido = Calculador::puntoContenidoEnEscenario(c_tile_clic, escenario);
-				//Seteo tile clic:
-				Tile* tile_clic = escenario->getTile(c_tile_clic.x, c_tile_clic.y);
-				escenario->setearTileClic(tile_clic, c_tile_clic);
-				escenario->setearCoordTileClic(c_tile_clic);
+			int limiteY_camara = juego->getDimensionVentana().second - juego->getBarraEstado()->getDimension().second;
 
-			}catch(FueraDeEscenario &e) {
-				clicValido = false;
-				escenario->setearTileClic(NULL, Coordenada(0,0));
+			/* Para que no cliquee fuera de la camara */
+			if (limiteY_camara < MouseY) clicValido = false;
+			else{
+					try{
+						Coordenada c_tile_clic = Calculador::tileParaPixel(Coordenada(MouseX,MouseY), coord_pixel_ceros);
+						clicValido = Calculador::puntoContenidoEnEscenario(c_tile_clic, escenario);
+						//Seteo tile clic:
+						Tile* tile_clic = escenario->getTile(c_tile_clic.x, c_tile_clic.y);
+						escenario->setearTileClic(tile_clic, c_tile_clic);
+						escenario->setearCoordTileClic(c_tile_clic);
+
+					}catch(FueraDeEscenario &e) {
+						clicValido = false;
+						escenario->setearTileClic(NULL, Coordenada(0,0));
+					}
 			}
-
 			/* Si el clic es válido, buscamos el camino mínimo. */
 			if (clicValido){
 	            ///pruebas

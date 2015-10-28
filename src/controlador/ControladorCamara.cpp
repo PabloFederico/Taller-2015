@@ -78,6 +78,11 @@ void ControladorCamara::procesarPosicionMouse(int mouseX, int mouseY){
 	}
 }
 
+void ControladorCamara::moverCamara(int cant_x, int cant_y){
+	camara->mover(cant_x,cant_y);
+	juego->actualizarPosicionesEntidades(cant_x,cant_y);
+}
+
 ControladorCamara::~ControladorCamara() {
 	delete this->camara;
 }

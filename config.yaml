@@ -72,5 +72,5 @@ escenario:
       - {x: 12, y: 14, tipo: animal}
     protagonista:
       - tipo: soldado
-        x: 15
-        y: 15
+        x: 20
+        y: 20

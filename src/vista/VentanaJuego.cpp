@@ -48,6 +48,8 @@ void VentanaJuego::cargarJuego(Juego *juego){
 		 * se cargar en el contenedor */
 
 		this->cargarImagenesYSprites(juego);
+
+		controlador->posicionarCamaraEnProtagonista();
 	}
 }
 

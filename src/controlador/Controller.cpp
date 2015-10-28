@@ -26,6 +26,40 @@ Juego* Controller::getJuego(){
 	return this->juego;
 }
 
+void Controller::posicionarCamaraEnProtagonista(){
+	bool playerEstaEnElCentro = false;
+	int cant_mover = 10;
+	int width_camera = juego->getDimensionVentana().first;
+	int height_camera = juego->getDimensionVentana().second - juego->getBarraEstado()->getDimension().second;
+	while (!playerEstaEnElCentro){
+		SDL_Rect posicion = juego->getSpritePlayer()->getPosicion();
+
+		if (posicion.x < (width_camera/2 - 30)){
+			controladorCamara->moverCamara(cant_mover,0);
+		}
+		posicion = juego->getSpritePlayer()->getPosicion();
+		if (posicion.x > (width_camera/2 + 30)){
+			controladorCamara->moverCamara(-cant_mover,0);
+		}
+		posicion = juego->getSpritePlayer()->getPosicion();
+		if (posicion.y < (height_camera/2 - 30)){
+			controladorCamara->moverCamara(0,cant_mover);
+		}
+		posicion = juego->getSpritePlayer()->getPosicion();
+		if (posicion.y > (height_camera/2 + 30)){
+			controladorCamara->moverCamara(0,-cant_mover);
+		}
+		posicion = juego->getSpritePlayer()->getPosicion();
+
+		if (posicion.x > 0 &&
+			posicion.x < width_camera &&
+			posicion.y > 0 &&
+			posicion.y < height_camera){
+			playerEstaEnElCentro = true;
+		}
+	}
+}
+
 void Controller::procesarEvento(SDL_Event &event){
 	int x,y;
 	SDL_GetMouseState(&x,&y);
