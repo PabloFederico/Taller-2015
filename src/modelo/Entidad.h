@@ -32,6 +32,8 @@ public:
 	void petrificar();
 	void despetrificar();
 
+	bool esRecurso();
+
 	void setTam(int ancho, int alto);
 	std::pair<int,int> getTam();
 

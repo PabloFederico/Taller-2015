@@ -97,6 +97,10 @@ TipoEntidad Entidad::getTipo(){
 	return this->tipo;
 }
 
+bool Entidad::esRecurso(){
+	return (tipo == ORO || tipo == MADERA || tipo == COMIDA);
+}
+
 int Entidad::getIDJug() {
 	return this->idJug;
 }

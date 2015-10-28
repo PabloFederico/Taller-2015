@@ -95,6 +95,10 @@ void Dibujador::dibujarEscenario(Escenario* esc, TTF_Font* fuenteTexto){
 	CapaFog* capaFog = esc->getCapa();
 	Imagen *imagenGris = this->contenedor->getImagenUtilTipo(CAPA_GRIS);
 
+	SDL_Rect rectRecurso;
+	rectRecurso.w = 20;
+	rectRecurso.h = 20;
+
 	int cero_relativo_x = *this->cero_x;
 	int cero_relativo_y = *this->cero_y;
 
@@ -147,14 +151,20 @@ void Dibujador::dibujarEscenario(Escenario* esc, TTF_Font* fuenteTexto){
 					}
 					//Entidades sin movimiento:
 					else{
-						/* Se busca que no haya sido dibujado (caso CASTILLO) */
-						 vector<Entidad*>::iterator it = find(entidadesDibujadas.begin(), entidadesDibujadas.end(), entidad);
-						 bool fueDibujado = (it != entidadesDibujadas.end());
-						 if (!fueDibujado){
-							 SDL_Rect rect = sprite->getFrameActual();
-							 SDL_RenderCopy(this->renderer,sprite->getImagen()->getTexture(),&rect,&pos);
-							 entidadesDibujadas.push_back(entidad);
-						 }
+						if (entidad->esRecurso() && ec == ESTADO_COLOR){
+							rectRecurso.x = pos.x + pos.w / 3;
+							rectRecurso.y = pos.y + pos.h / 4;
+							SDL_RenderCopy(this->renderer,sprite->getImagen()->getTexture(),NULL,&rectRecurso);
+						}else{
+							/* Se busca que no haya sido dibujado (caso CASTILLO) */
+							 vector<Entidad*>::iterator it = find(entidadesDibujadas.begin(), entidadesDibujadas.end(), entidad);
+							 bool fueDibujado = (it != entidadesDibujadas.end());
+							 if (!fueDibujado && !entidad->esRecurso()){
+								 SDL_Rect rect = sprite->getFrameActual();
+								 SDL_RenderCopy(this->renderer,sprite->getImagen()->getTexture(),&rect,&pos);
+								 entidadesDibujadas.push_back(entidad);
+							 }
+						}
 					}
 				}
 			}
