@@ -92,6 +92,13 @@ bool Server::mensajeParaElServidor(int sockfd, string s) {
 }
 
 
+TipoEntidad generarRecursoYCoordRandom(Coordenada* c) {
+	*c = Calculador::generarPosRandom(50,0,50,0,0);
+	Coordenada aux = Calculador::generarPosRandom(11,9,1,0,0);
+	return TipoEntidad(aux.x);
+}
+
+
 void Server::intentarNuevaConexion(fd_set* p_tempset, int segundosDeEspera) {
 	int result, srvsock, peersock;
 	sockaddr_in* p_addr = this->socket->getpInfoDir();
@@ -188,9 +195,21 @@ void Server::correr() {
 	std::cout << "Comenzando juego..."<<std::endl<<std::endl;
 	sleep(1);
 
-
-	int result, sent, justsent;;
+	clock_t t;
+	int result, sent, justsent;
 	while (cantConectados > 0) {
+
+		t = clock();
+		// Generación de recursos random
+		if (int(((float)t/CLOCKS_PER_SEC)) % DELAY_RECURSOS == 0) {
+			Coordenada c; ostringstream encode;
+			TipoEntidad tipoRecurso = generarRecursoYCoordRandom(&c);
+			encode << "<REC>"<<tipoRecurso<<","<<c.enc()<<"~";
+			for (int j = 0; j < maxfd+1; j++)
+				if (FD_ISSET(j, &readset))
+					send(j, encode.str().c_str(), 20, MSG_NOSIGNAL);
+		}
+
 		for (int j = 0; j < maxfd+1; j++) {
 			if (FD_ISSET(j, &readset)) {
 
@@ -216,6 +235,7 @@ void Server::correr() {
 							}
 						}
 					}
+
 				} else if (result == 0/* && errno != EWOULDBLOCK*/) {
 					close(j);
 					FD_CLR(j, &readset);

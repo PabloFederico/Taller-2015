@@ -74,6 +74,8 @@ TipoMensajeRed Proxy::actualizarMultiplayer(Juego* juego) {
 			break;
 		case NUEVA_ENTIDAD: procesarNuevaEntidad(juego, unContenido);
 			break;
+		case RECURSO: procesarRecurso(juego, unContenido);
+			break;
 		case TOGGLE: procesarToggle(juego, unContenido);
 			break;
 		case ATAQUE:
@@ -124,6 +126,14 @@ void Proxy::procesarCamino(Juego* juego, string encodeado) {
 
 void Proxy::procesarNuevaEntidad(Juego* juego, string encodeado) {
 	juego->cargarEnemigo(PosEntidad::dec(encodeado));
+}
+
+void Proxy::procesarRecurso(Juego* juego, string encodeado) {
+	stringstream ss(encodeado);
+	int nTipo; ss >> nTipo; ss.ignore(); // ','
+	char posEnc[MAX_BYTES_LECTURA];
+	ss.get(posEnc, MAX_BYTES_LECTURA, '~');
+	//juego->agregarRecurso(TipoEntidad(nTipo), Coordenada::dec(posEnc));
 }
 
 void Proxy::procesarToggle(Juego* juego, string encodeado) {

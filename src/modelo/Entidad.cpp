@@ -86,6 +86,13 @@ bool Entidad::estaPetrificado(){
 	return petrificado;
 }
 
+void Entidad::petrificar() {
+	this->petrificado = true;
+}
+void Entidad::despetrificar() {
+	this->petrificado = false;
+}
+
 TipoEntidad Entidad::getTipo(){
 	return this->tipo;
 }

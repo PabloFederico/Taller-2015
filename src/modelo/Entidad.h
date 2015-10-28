@@ -29,6 +29,8 @@ public:
 	int getIDJug();
 
 	bool estaPetrificado();
+	void petrificar();
+	void despetrificar();
 
 	void setTam(int ancho, int alto);
 	std::pair<int,int> getTam();

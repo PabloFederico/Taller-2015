@@ -13,6 +13,7 @@
 #include "../utils/Constantes.h"
 #include "Proxy.h"
 #include <cerrno>
+#include <time.h>
 
 
 struct DataCliente {

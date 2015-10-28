@@ -22,6 +22,7 @@ private:
 	static void procesarEscenario(Juego* juego, string encodeado);
 	static void procesarCamino(Juego* juego, string encodeado);
 	static void procesarNuevaEntidad(Juego* juego, string encodeado);
+	static void procesarRecurso(Juego* juego, string encodeado);
 	static void procesarToggle(Juego* juego, string encodeado);
 	//static void procesarAtaque(Juego* juego, string encodeado)
 

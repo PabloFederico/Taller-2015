@@ -28,6 +28,8 @@
 #define MAX_CONEXIONES		3 //5
 #define MAX_BYTES_LECTURA	2000
 
+#define DELAY_RECURSOS		15 // segundos
+
 #define KEY_RESET 'r'
 
 #define TAM_LETRA_CONEXION  30

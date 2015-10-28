@@ -80,9 +80,9 @@ void ControladorMouse::procesarEvento(SDL_Event &event, int MouseX, int MouseY){
 		}
 	} /* Fin if SDL_MOUSEBUTTONDOWN */
 
-		Escenario* escenario = juego->getEscenario();
-		BarraEstado* barra = juego->getBarraEstado();
-		Coordenada pos_jug = escenario->getPosProtagonista();
+	Escenario* escenario = juego->getEscenario();
+	BarraEstado* barra = juego->getBarraEstado();
+	Coordenada pos_jug = escenario->getPosProtagonista();
 
 	vector<Sprite*> spritesProtagonistas = juego->getSpritesProtagonistas();
 	for (vector<Sprite*>::iterator it = spritesProtagonistas.begin(); it < spritesProtagonistas.end(); ++it) {

@@ -484,19 +484,20 @@ void Juego::toggleEnemigo(int id_jug) {
 	Entidad* entidadEnemigo = NULL;
 
 	for (vector<PosEntidad>::iterator it = enemigos->begin(); it < enemigos->end(); ++it)
-		if (it->entidad->getIDJug() == id_jug)
+		if (it->entidad->getIDJug() == id_jug) {
+
 			entidadEnemigo = it->entidad;
+			if (entidadEnemigo->estaPetrificado()){
+				// Si está congelado, lo pasamos a color
+				contenedor->setearCanalAlphaParaEntidad(entidadEnemigo,ALPHA_COLOR);
+				entidadEnemigo->despetrificar();
+			}else{
+				// Si no, lo pasamos a gris
+				contenedor->setearCanalAlphaParaEntidad(entidadEnemigo,ALPHA_GRIS);
+				entidadEnemigo->petrificar();
+			}
 
-	if (entidadEnemigo != NULL){
-		// Si esta congelado, lo pasamos a color
-		if (entidadEnemigo->estaPetrificado()){
-			contenedor->setearCanalAlphaParaEntidad(entidadEnemigo,ALPHA_COLOR);
-		}else{
-			// Sino, lo pasamos a gris
-			contenedor->setearCanalAlphaParaEntidad(entidadEnemigo,ALPHA_GRIS);
 		}
-	}
-
 }
 
 /***************************************************/
