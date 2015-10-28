@@ -39,6 +39,7 @@ bool Tile::tieneRecurso(){
 	printf( "GENERO ITERADOR\n");
 
 	for (it = entidades.begin();it < entidades.end();++it)
+	{
 		printf( "ENTRO AL ITERADOR \n");
 		if (it == entidades.end()){
 			printf( "NO ENCONTRE NADA, DEVUELVO FALSE \n");
@@ -46,11 +47,11 @@ bool Tile::tieneRecurso(){
 		}
 		if (EsRecurso((*it)->getTipo())){
 			printf( "ENCONTRE UN RECURSO \n");
-			entidades.erase(it);
+			//entidades.erase(it);
 			return true;
 		}
+	}
 	printf( "NO ENCONTRE NADA, DEVUELVO FALSE \n");
-	entidades.erase(it);
 	return false;
 }
 Entidad* Tile::devolverRecurso(){
