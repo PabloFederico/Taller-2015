@@ -51,6 +51,8 @@ public:
 
 	void cargarImagenesRecursos();
 
+	void setearCanalAlphaParaEntidad(Entidad* entidad, int canalAlpha);
+
 	virtual ~ContenedorDeRecursos();
 };
 

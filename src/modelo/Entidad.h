@@ -20,12 +20,15 @@ private:
 	bool movible,ocupador;
 	int ancho,alto;
 	std::string info;
+	bool petrificado;
 
 public:
 	Entidad(TipoEntidad tipo, int num_jug = 0);
 
 	TipoEntidad getTipo();
 	int getIDJug();
+
+	bool estaPetrificado();
 
 	void setTam(int ancho, int alto);
 	std::pair<int,int> getTam();

@@ -411,7 +411,7 @@ void Juego::reiniciar(){
 	delete this->escenario;
 	delete this->contenedor;
 	delete this->barraEstado;
-	cargarJuego(NULL);
+	//cargarJuego(NULL);
 }
 
 /***************************************************/
@@ -481,6 +481,22 @@ void Juego::cargarEnemigo(PosEntidad posEnt) {
 void Juego::toggleEnemigo(int id_jug) {
 	// si el enemigo id_jug estaba gris, pasarlo a color; y viceversa.
 	// Creo que con eso alcanzaría.
+	Entidad* entidadEnemigo = NULL;
+
+	for (vector<PosEntidad>::iterator it = enemigos->begin(); it < enemigos->end(); ++it)
+		if (it->entidad->getIDJug() == id_jug)
+			entidadEnemigo = it->entidad;
+
+	if (entidadEnemigo != NULL){
+		// Si esta congelado, lo pasamos a color
+		if (entidadEnemigo->estaPetrificado()){
+			contenedor->setearCanalAlphaParaEntidad(entidadEnemigo,ALPHA_COLOR);
+		}else{
+			// Sino, lo pasamos a gris
+			contenedor->setearCanalAlphaParaEntidad(entidadEnemigo,ALPHA_GRIS);
+		}
+	}
+
 }
 
 /***************************************************/
