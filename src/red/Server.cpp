@@ -94,7 +94,7 @@ bool Server::mensajeParaElServidor(int sockfd, string s) {
 
 TipoEntidad generarRecursoYCoordRandom(Coordenada* c) {
 	*c = Calculador::generarPosRandom(50,0,50,0,0);
-	Coordenada aux = Calculador::generarPosRandom(ORO,MADERA+1,1,0,42);
+	Coordenada aux = Calculador::generarPosRandom(ORO+1,MADERA,1,0,42);
 	return TipoEntidad(aux.x);	// último recurso, primer recurso
 }
 
