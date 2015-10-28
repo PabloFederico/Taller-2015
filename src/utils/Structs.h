@@ -137,6 +137,9 @@ struct Coordenada{
 	bool operator==(const Coordenada & c) const {
 		return (this->x == c.x && this->y == c.y);
 	}
+	bool operator!=(const Coordenada & c) const {
+		return (this->x != c.x || this->y != c.y);
+	}
 
 	bool operator<(const Coordenada & c) const {
 		return (this->x < c.x || this->y < c.y);	//Adivino que esto está bien

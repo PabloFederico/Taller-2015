@@ -9,7 +9,7 @@
 
 /********************************************************************************/
 Sprite::Sprite(int cant_Direcciones, Uint32 cant_Img_Distintas, Imagen* imagen,
-				SDL_Rect posicion, Escenario* escen, Coordenada c_ceros){
+				SDL_Rect posicion, Escenario* escen, Coordenada c_ceros, Entidad* ent): entidad(ent){
 	this->cant_Direcciones = cant_Direcciones;
 	this->cant_Img_Distintas = cant_Img_Distintas;
 	this->imagen = imagen;
@@ -70,6 +70,11 @@ Imagen* Sprite::getImagen(){
 /********************************************************************************/
 SDL_Rect Sprite::getPosicion(){
 	return this->posicion;
+}
+
+/********************************************************************************/
+Entidad* Sprite::getEntidad(){
+	return this->entidad;
 }
 
 /********************************************************************************/

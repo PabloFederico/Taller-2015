@@ -34,6 +34,7 @@ private:
 	EntidadFactory* fabricaDeEntidades;
 
 	Entidad* protagonista;
+	vector<PosEntidad>* enemigos;
 	Entidad* entidadSeleccionada;
 
 	Coordenada c_protagonista;
@@ -44,7 +45,7 @@ private:
 	void inicializarMatrizTiles();
 
 public:
-	Escenario(InfoEscenario info, EntidadFactory* fabrica);
+	Escenario(InfoEscenario info, EntidadFactory* fabrica, vector<PosEntidad>* enemigos = NULL);
 
 	/* Devuelve las dimensiones del escenario en un par (x,y) */
 	pair<int,int> getDimension();
@@ -76,10 +77,12 @@ public:
 	void desocuparTile(Coordenada c);
 
 	Tile* getTile(int x, int y);
+	Tile* getTile(Coordenada c);
 
 	static Coordenada generarCoordenadaRandom(int size_x , int size_y);
 
 	void actualizarPosicionProtagonista(Coordenada c);
+	void actualizarPosicionEnemigo(Entidad* ent, Coordenada c);
 
 	CapaFog* getCapa();
 

@@ -54,7 +54,8 @@ TipoMensajeRed Proxy::actualizarMultiplayer(Juego* juego) {
 
 	stringstream ss(recibido);
 	char charUnMensaje[MAX_BYTES_LECTURA];
-	ss.get(charUnMensaje, MAX_BYTES_LECTURA, '<'); // Me deshago de posible basura.
+	if (ss.peek() != '<') // Me deshago de posible basura.
+		ss.get(charUnMensaje, MAX_BYTES_LECTURA, '<');
 	ss.get(charUnMensaje, MAX_BYTES_LECTURA, '~');
 
 	while (charUnMensaje[0] == '<') {

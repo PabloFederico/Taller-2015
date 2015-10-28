@@ -30,6 +30,19 @@ void Tile::eliminarEntidad(Entidad* entidad){
 	vector<Entidad*>::iterator it = find(entidades.begin(), entidades.end(), entidad);
 	if (it != entidades.end())
 		entidades.erase(it);
+	else throw NoSeRecibio();
+}
+
+Entidad* Tile::quitarEntidad(int id_jug) {
+	vector<Entidad*>::iterator it;
+	for (it = entidades.begin(); it < entidades.end(); ++it)
+		if ((*it)->getIDJug() == id_jug)
+			break;
+	if (it == entidades.end())
+		throw NoSeRecibio();
+	Entidad* ent = *it;
+	entidades.erase(it);
+	return ent;
 }
 
 Tile::~Tile() {

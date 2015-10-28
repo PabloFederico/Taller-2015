@@ -19,6 +19,7 @@ Juego::Juego(Connection* lan = NULL, InfoEscenario* infoEscRed = NULL): connecti
 	this->escenario = NULL;
 	this->fabricaDeEntidades = NULL;
 	this->protagonista = NULL;
+	this->enemigos = new vector<PosEntidad>;
 
 	// Valores por defecto
 	this->screenWidth = 800;
@@ -70,7 +71,7 @@ void Juego::cargarJuego(InfoEscenario* infoEscRed = NULL) {
 		infoEsc.setPosProtag(Escenario::generarCoordenadaRandom(infoEsc.size_x, infoEsc.size_y));
 	}
 	this->fabricaDeEntidades = new EntidadFactory(this->idJug, this->vectorInfoTiposEntidades);
-	this->escenario = new Escenario(infoEsc, this->fabricaDeEntidades);
+	this->escenario = new Escenario(infoEsc, this->fabricaDeEntidades, this->enemigos);
 	this->protagonista = this->escenario->getProtagonista();
 	this->barraEstado = new BarraEstado(this->screenWidth, 150);
 }
@@ -360,7 +361,7 @@ Sprite* Juego::getSpritePlayer(){
 // Devuelve Sprite protagonista de jugador idJug; en caso de no encontrarlo devuelve el propio.
 // Solo para una entidad de adversario; no chequea tipo.
 Sprite* Juego::getSpritePlayer(int id_jug) {
-	for (vector<PosEntidad>::iterator it = enemigos.begin(); it < enemigos.end(); ++it)
+	for (vector<PosEntidad>::iterator it = enemigos->begin(); it < enemigos->end(); ++it)
 		if (it->entidad->getIDJug() == id_jug)
 			return this->contenedor->getSpriteDeEntidad(it->entidad);
 	return this->contenedor->getSpriteDeEntidad(protagonista);
@@ -369,7 +370,7 @@ Sprite* Juego::getSpritePlayer(int id_jug) {
 /***************************************************/
 vector<Sprite*> Juego::getSpritesProtagonistas() {
 	vector<Sprite*> v;
-	for (vector<PosEntidad>::iterator it = enemigos.begin(); it < enemigos.end(); ++it)
+	for (vector<PosEntidad>::iterator it = enemigos->begin(); it < enemigos->end(); ++it)
 		v.push_back(this->contenedor->getSpriteDeEntidad(it->entidad)); // ajenos
 	v.push_back(this->getSpritePlayer()); // propio
 	return v;
@@ -452,14 +453,14 @@ void Juego::cargarEnemigo(PosEntidad posEnt) {
 			d = &posEnt.y;
 		}
 	}
-	enemigos.push_back(posEnt);
+	enemigos->push_back(posEnt);
 
 	this->contenedor->generarYGuardarSpriteEntidad(posEnt, Coordenada(*cero_x, *cero_y), escenario);
 }
 
 /***************************************************/
 Juego::~Juego() {
-	this->enemigos.clear();
+	this->enemigos->clear();
 	delete this->escenario;
 	delete this->contenedor;
 	delete this->barraEstado;

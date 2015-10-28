@@ -38,7 +38,7 @@ private:
 	
 	Escenario *escenario;
 	Entidad *protagonista;
-	vector<PosEntidad> enemigos;
+	vector<PosEntidad>* enemigos;
 
 	Connection* connection;
 
@@ -78,6 +78,7 @@ public:
 	Entidad* getProtagonista();
 	Sprite* getSpritePlayer();
 	Sprite* getSpritePlayer(int idJug);
+	Entidad* getEntidadDeSprite(Sprite* spr);
 	vector<Sprite*> getSpritesProtagonistas();
 	PosEntidad getPosEntDeProtagonista();
 	pair<int,int> getDimensionVentana();

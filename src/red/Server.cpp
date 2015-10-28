@@ -42,6 +42,8 @@ bool Server::iniciar() {
 
 void Server::correr() {
 
+	int MAX_TIEMPO_CONEXION = 10;
+
 	fd_set readset, tempset;
 	int srvsock, maxfd, result, peersock, sent, justsent, cantConectados = 0;
 	unsigned int len;
@@ -55,12 +57,12 @@ void Server::correr() {
 	maxfd = srvsock;
 
 	std::cout << "Aceptando hasta "<<MAX_CONEXIONES<<" jugadores."<<std::endl;
-	std::cout << "Cada jugador tiene 20 segundos para conectarse."<<std::endl;
+	std::cout << "Cada jugador tiene "<<MAX_TIEMPO_CONEXION<<" segundos para conectarse."<<std::endl;
 
 	for (int i = 0; i < MAX_CONEXIONES; i++) {
 		std::cout << "#"<<i+1<<" ... ";
 		memcpy(&tempset, &readset, sizeof(tempset));
-		tv.tv_sec = 20;//
+		tv.tv_sec = MAX_TIEMPO_CONEXION;
 		tv.tv_usec = 0;
 		// Espera 30 segundos a aparezca una conexión.
 		result = select(maxfd+1, &tempset, NULL, NULL, &tv);

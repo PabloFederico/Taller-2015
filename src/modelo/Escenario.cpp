@@ -7,7 +7,8 @@
 #include "../modelo/Escenario.h"
 
 
-Escenario::Escenario(InfoEscenario infoEsc, EntidadFactory *fabrica): fabricaDeEntidades(fabrica) {
+Escenario::Escenario(InfoEscenario infoEsc, EntidadFactory *fabrica, vector<PosEntidad>* malvados):
+		fabricaDeEntidades(fabrica), enemigos(malvados) {
 	this->size_x = infoEsc.size_x;
 	this->size_y = infoEsc.size_y;
 
@@ -79,10 +80,10 @@ vector<PosEntidad>* Escenario::getVectorEntidades(){
 void Escenario::actualizarPosicionProtagonista(Coordenada c){
 	/* Si las coordenadas no son iguales, actualizar la coordenada del protagonista */
 	if (!(c_protagonista == c)){
-		Tile* tile = getTile(c_protagonista.x, c_protagonista.y);
+		Tile* tile = getTile(c_protagonista);
 		tile->eliminarEntidad(protagonista);
 
-		/* agregamos al protagonista a su nuevo tile */
+		/* agregamos el protagonista a su nuevo tile */
 		tile = getTile(c.x, c.y);
 		tile->agregarEntidad(protagonista);
 		c_protagonista = c;
@@ -90,10 +91,41 @@ void Escenario::actualizarPosicionProtagonista(Coordenada c){
 }
 
 /********************************************************************************/
+void Escenario::actualizarPosicionEnemigo(Entidad* ent, Coordenada c) {
+	/* Si las coordenadas no son iguales, actualizar la coordenada del enemigo */
+	if (!coordEnEscenario(c))
+		throw FueraDeEscenario();
+	vector<PosEntidad>::iterator it;
+	for (it = enemigos->begin(); it < enemigos->end(); ++it)
+		if (it->entidad == ent)
+			break;
+	if (it != enemigos->end() && it->coord() != c) {
+		try {
+			Tile* tile = getTile(it->coord());
+			if (!tile) return;
+			tile->eliminarEntidad(ent);
+			tile = getTile(c.x, c.y);
+			tile->agregarEntidad(ent);
+			it->x = c.x;
+			it->y = c.y;
+		} catch ( NoSeRecibio &e ) {
+			std::cerr << "No estaba ahí, campeón."<<std::endl;
+		}
+	}
+}
+
+/********************************************************************************/
 Tile* Escenario::getTile(int x, int y){
-	if (x < 0 || y < 0 || x >= this->size_x || y >= this->size_y)
+	if (!coordEnEscenario(Coordenada(x,y)))
 		return NULL;
 	return this->matriz_tiles[x][y];
+}
+
+/********************************************************************************/
+Tile* Escenario::getTile(Coordenada c) {
+	if (!coordEnEscenario(c))
+		return NULL;
+	return this->matriz_tiles[c.x][c.y];
 }
 
 /********************************************************************************/

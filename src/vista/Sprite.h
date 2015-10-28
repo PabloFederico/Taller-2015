@@ -15,6 +15,8 @@
 
 class Sprite {
 private:
+	Entidad* entidad;
+
 	int cant_Direcciones;
 	int cant_Img_Distintas;
 	Imagen* imagen;
@@ -50,7 +52,7 @@ public:
 	RegistroPosicion regPos;
 
 public:
-	Sprite(int cant_Direcciones, Uint32 cant_Img_Distintas, Imagen* imagen, SDL_Rect posicion, Escenario* escen, Coordenada c_ceros);
+	Sprite(int cant_Direcciones, Uint32 cant_Img_Distintas, Imagen* imagen, SDL_Rect posicion, Escenario* escen, Coordenada c_ceros, Entidad* ent = NULL);
 
 	void setDireccion(int direccion);
 
@@ -63,6 +65,8 @@ public:
 	Imagen* getImagen();
 
 	SDL_Rect getPosicion();
+
+	Entidad* getEntidad();
 
 	Coordenada getPosPies();
 
