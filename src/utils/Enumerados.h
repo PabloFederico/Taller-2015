@@ -54,6 +54,12 @@ inline const TipoMensajeRed StringToTipoMensajeRed(std::string s) {
 	else return MENSAJE;
 }
 
+inline const bool EsRecurso(TipoEntidad tipo) {
+	if (tipo == MADERA || tipo == COMIDA || tipo == ORO)
+		return true;
+	return false;
+}
+
 enum EstadoCapa { ESTADO_NEGRO, ESTADO_GRIS, ESTADO_COLOR};
 
 #endif /* UTILS_ENUMERADOS_H_ */

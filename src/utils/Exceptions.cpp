@@ -17,6 +17,7 @@ const char* bad_nombreTipoEntidad::what() const throw()
 
 DestinoEncontrado::DestinoEncontrado() {}
 
+NoTieneRecurso::NoTieneRecurso() {}
 FueraDeEscenario::FueraDeEscenario() {}
 
 TileEstaOcupado::TileEstaOcupado() {}

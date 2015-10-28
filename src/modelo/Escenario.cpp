@@ -7,6 +7,7 @@
 #include "../modelo/Escenario.h"
 
 
+
 Escenario::Escenario(InfoEscenario infoEsc, EntidadFactory *fabrica, vector<PosEntidad>* malvados):
 		fabricaDeEntidades(fabrica), enemigos(malvados) {
 	this->size_x = infoEsc.size_x;
@@ -134,14 +135,7 @@ Tile* Escenario::getTile(Coordenada c) {
 }
 
 /********************************************************************************/
-Coordenada Escenario::generarCoordenadaRandom(int size_x_final, int size_x_inicial, int size_y_final, int size_y_inicial) {
-	int x_rand, y_rand;
-	srand((int) time(0)); //seedeo el random bien
-	x_rand = (rand() % size_x_final) + size_x_inicial;
-	y_rand = (rand() % size_y_final) + size_y_inicial;
 
-	return Coordenada(x_rand,y_rand);
-}
 
 /********************************************************************************/
 bool Escenario::agregarEntidad(Coordenada pos, Entidad* entidad){
@@ -162,8 +156,11 @@ bool Escenario::agregarEntidad(Coordenada pos, Entidad* entidad){
 				tile->agregarEntidad(entidad);
 			}
 		}
-		PosEntidad posEntidad(pos, entidad);
-		this->posicionesEntidades->push_back(posEntidad);
+		// Los recursos se manejan por separado, no se agregan y se borran desde el tile.
+		if (!EsRecurso(entidad->getTipo())) {
+			PosEntidad posEntidad(pos, entidad);
+			this->posicionesEntidades->push_back(posEntidad);
+		}
 	} catch ( TileEstaOcupado &e ) {
 		Log::imprimirALog(ERR,"Se intentó agregar una entidad en un tile ocupado");
 		return false;
@@ -243,22 +240,16 @@ CapaFog* Escenario::getCapa() {
 	return this->capa;
 }
 
-void Escenario::agregarRecurso(){
-	bool valido = false;
-	Coordenada coord_random;
-	while (!valido){
-		coord_random = generarCoordenadaRandom(this->size_x,0,this->size_y,0);
-		if (tileEsOcupable(coord_random)) valido = true;
-		cout << coord_random.x << " y " << coord_random.y;
-	}
-	int vector_recursos[] = {9,10,11};
-	int num_rand;
-	num_rand = generarCoordenadaRandom(2,0,0,0).x;
-	int index_recurso = vector_recursos[num_rand];
-	Entidad* recurso = new Entidad((TipoEntidad)index_recurso);
-	Tile* tile_recurso = getTile(coord_random);
-	tile_recurso->agregarEntidad(recurso);
+Coordenada Escenario::generarCoordenadaRandom(int size_x_final, int size_x_inicial, int size_y_final, int size_y_inicial){
+	int x_rand, y_rand;
+	srand((int) time(0)); //seedeo el random bien
+	x_rand = (rand() % size_x_final) + size_x_inicial;
+	y_rand = (rand() % size_y_final) + size_y_inicial;
+
+	return Coordenada(x_rand,y_rand);
 }
+
+
 void Escenario::quitarRecurso(Coordenada c,Entidad* entidad){
 	Entidad* aux = entidad;
 	quitarEntidad(c,entidad);

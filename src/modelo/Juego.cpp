@@ -425,14 +425,6 @@ Map<Entidad*, Sprite*>* Juego::getSpritesEntidades(){
 }
 
 /***************************************************/
-void Juego::generarRecursosAleatoriosParaElEscenario(){
-	/* Generar algunos recursos (madera, oro, comida, etc)
-	 * y asignarles algunas posiciones en el escenario
-	 * (posiciones libres)
-	 * */
-}
-
-/***************************************************/
 BarraEstado* Juego::getBarraEstado(){
 	return barraEstado;
 }
@@ -455,6 +447,15 @@ void Juego::olvidarConnection() {
 /***************************************************/
 PosEntidad Juego::getPosEntDeProtagonista() {
 	return PosEntidad(this->escenario->getPosProtagonista(), this->protagonista);
+}
+
+/***************************************************/
+void Juego::agregarRecurso(TipoEntidad recurso, Coordenada coord) {
+	Entidad* recurso_a_agregar = new Entidad(recurso); // AGHH MI FACTORYY
+	//printf("GENERO UN RECURSO NUEVO %s\n",recurso->getInfo().c_str());
+	escenario->agregarEntidad(coord, recurso_a_agregar);
+	//printf("TERMINO EL agregarRecurso, ME VOY \n");
+	this->contenedor->generarYGuardarSpriteEntidad(PosEntidad(coord, recurso_a_agregar), Coordenada(*cero_x, *cero_y), escenario);
 }
 
 /***************************************************/

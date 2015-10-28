@@ -48,6 +48,12 @@ public:
 	NoSeRecibio();
 };
 
+class NoTieneRecurso: public std::exception
+{
+public:
+	NoTieneRecurso();
+};
+
 class ConnectionProblem: public std::exception
 {
 public:

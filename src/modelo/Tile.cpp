@@ -7,7 +7,7 @@
 
 #include "Tile.h"
 #include <algorithm>
-
+#include <stdio.h>
 
 Tile::Tile() {}
 
@@ -33,6 +33,37 @@ void Tile::eliminarEntidad(Entidad* entidad){
 	else throw NoSeRecibio();
 }
 
+bool Tile::tieneRecurso(){
+	printf( "ENTRO A TIENE RECURSO\n");
+	vector<Entidad*>::iterator it;
+	printf( "GENERO ITERADOR\n");
+
+	for (it = entidades.begin();it < entidades.end();++it)
+		printf( "ENTRO AL ITERADOR \n");
+		if (it == entidades.end()){
+			printf( "NO ENCONTRE NADA, DEVUELVO FALSE \n");
+			return false;
+		}
+		if (EsRecurso((*it)->getTipo())){
+			printf( "ENCONTRE UN RECURSO \n");
+			entidades.erase(it);
+			return true;
+		}
+	printf( "NO ENCONTRE NADA, DEVUELVO FALSE \n");
+	entidades.erase(it);
+	return false;
+}
+Entidad* Tile::devolverRecurso(){
+	vector<Entidad*>::iterator it;
+	for (it = entidades.begin();it < entidades.end();++it)
+		if (EsRecurso((*it)->getTipo())){
+			Entidad* ent = *it;
+			entidades.erase(it);
+			return ent;
+		}
+	entidades.erase(it);
+	throw NoTieneRecurso();
+}
 Entidad* Tile::quitarEntidad(int id_jug) {
 	vector<Entidad*>::iterator it;
 	for (it = entidades.begin(); it < entidades.end(); ++it)

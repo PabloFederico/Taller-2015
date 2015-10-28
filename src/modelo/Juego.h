@@ -100,8 +100,7 @@ public:
 
 	void agregarContenedorDeRecursos(ContenedorDeRecursos *container);
 
-	/* El nombre del método lo dice \TODO\ */
-	void generarRecursosAleatoriosParaElEscenario();
+	void agregarRecurso(TipoEntidad recurso, Coordenada coord);
 
 	void toggleEnemigo(int id_jug);
 

@@ -28,7 +28,16 @@ void ControladorMouse::procesarEvento(SDL_Event &event, int MouseX, int MouseY){
 		juego->getEscenario()->getCapa()->descubrirDesdePunto(coord_tile_sprite.x, coord_tile_sprite.y);
 	}catch (FueraDeEscenario &e) {}
 
-
+	 /*Chequeo de si se come un recurso */
+		/*Escenario* escenario = juego->getEscenario();
+		BarraEstado* barra = juego->getBarraEstado();
+		Coordenada pos_jug = escenario->getPosProtagonista();
+		Tile* tile = escenario->getTile(pos_jug);
+		if (tile->tieneRecurso()){
+			Entidad* recurso = tile->devolverRecurso();
+			barra->agregarRecursoEconomico(recurso->getTipo());
+			escenario->quitarRecurso(pos_jug,recurso);
+		}*/
 	/*********** Análisis del clic del mouse *************/
 	if (event.type == SDL_MOUSEBUTTONDOWN){
 		if (event.button.button == SDL_BUTTON_LEFT){
@@ -80,9 +89,6 @@ void ControladorMouse::procesarEvento(SDL_Event &event, int MouseX, int MouseY){
 		}
 	} /* Fin if SDL_MOUSEBUTTONDOWN */
 
-	Escenario* escenario = juego->getEscenario();
-	BarraEstado* barra = juego->getBarraEstado();
-	Coordenada pos_jug = escenario->getPosProtagonista();
 
 	vector<Sprite*> spritesProtagonistas = juego->getSpritesProtagonistas();
 	for (vector<Sprite*>::iterator it = spritesProtagonistas.begin(); it < spritesProtagonistas.end(); ++it) {

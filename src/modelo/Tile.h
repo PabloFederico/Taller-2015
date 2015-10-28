@@ -20,10 +20,14 @@ public:
 
 	vector<Entidad*> getEntidades();
 	bool estaLibre();
+	bool tieneRecurso();
+
 
 	void agregarEntidad(Entidad* entidad);
 	void eliminarEntidad(Entidad* entidad);
+
 	Entidad* quitarEntidad(int id_jug);
+	Entidad* devolverRecurso();
 
 	virtual ~Tile();
 };

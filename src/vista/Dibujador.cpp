@@ -111,7 +111,7 @@ void Dibujador::dibujarEscenario(Escenario* esc, TTF_Font* fuenteTexto){
 
 			/* Solo dibujamos para las zonas visibles (GRISES ó COLOR) */
 			EstadoCapa ec = capaFog->getEstadoTile(i,j);
-			if (ec != ESTADO_NEGRO) {
+			////////////////////////////////if (ec != ESTADO_NEGRO) {
 
 				Tile* tile = esc->getTile(i,j);
 				vector<Entidad*> entidades = tile->getEntidades();
@@ -140,10 +140,10 @@ void Dibujador::dibujarEscenario(Escenario* esc, TTF_Font* fuenteTexto){
 							}
 						}
 						/* Si la entidad esta dentro del campo de visón, lo dibujamos */
-						if (ec == ESTADO_COLOR){
+						////////////////////////////////if (ec == ESTADO_COLOR){
 							SDL_Rect frame = sprite->getFrameActual();
 							SDL_RenderCopy(this->renderer,sprite->getImagen()->getTexture(),&frame,&pos);
-							}
+						////////////////////////////////}
 					}
 					//Entidades sin movimiento:
 					else{
@@ -157,9 +157,9 @@ void Dibujador::dibujarEscenario(Escenario* esc, TTF_Font* fuenteTexto){
 						 }
 					}
 				}
-			}
+			////////////////////////////////}
 			if (ec == ESTADO_GRIS) {
-				SDL_RenderCopy(renderer,imagenGris->getTexture(),NULL,&rectRelieve);
+				////////////////////////////////SDL_RenderCopy(renderer,imagenGris->getTexture(),NULL,&rectRelieve);
 			}
 			rectRelieve.x += DISTANCIA_ENTRE_X;
 			rectRelieve.y += DISTANCIA_ENTRE_Y;

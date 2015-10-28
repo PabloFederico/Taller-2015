@@ -39,7 +39,7 @@ public:
 	Server();
 	bool iniciar();
 
-	void intentarNuevaConexion(fd_set* tempset, int segundosDeEspera);
+	int intentarNuevaConexion(fd_set* tempset, int segundosDeEspera);
 	bool mensajeParaElServidor(int idJug, string s);
 
 	void correr();

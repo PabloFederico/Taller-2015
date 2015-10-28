@@ -94,12 +94,12 @@ bool Server::mensajeParaElServidor(int sockfd, string s) {
 
 TipoEntidad generarRecursoYCoordRandom(Coordenada* c) {
 	*c = Calculador::generarPosRandom(50,0,50,0,0);
-	Coordenada aux = Calculador::generarPosRandom(11,9,1,0,0);
-	return TipoEntidad(aux.x);
+	Coordenada aux = Calculador::generarPosRandom(ORO,MADERA,1,0,0);
+	return TipoEntidad(aux.x);	// último recurso, primer recurso
 }
 
 
-void Server::intentarNuevaConexion(fd_set* p_tempset, int segundosDeEspera) {
+int Server::intentarNuevaConexion(fd_set* p_tempset, int segundosDeEspera) {
 	int result, srvsock, peersock;
 	sockaddr_in* p_addr = this->socket->getpInfoDir();
 	srvsock = this->socket->getDescriptor();
@@ -145,9 +145,11 @@ void Server::intentarNuevaConexion(fd_set* p_tempset, int segundosDeEspera) {
 				FD_SET(peersock, &readset);
 				maxfd = (maxfd > peersock)?maxfd:peersock;
 				std::cout << "Jugador "<<cantConectados<<" conectado!"<<std::endl;
+				return peersock;
 			}
 		}
 	}
+	return -1;
 }
 
 
@@ -192,16 +194,17 @@ void Server::correr() {
 		}	// NO FUNCIONANDO PARA EL MAX_CONEXIONES-ésimo!
 	}
 
-	std::cout << "Comenzando juego..."<<std::endl<<std::endl;
+	std::cout << "Comenzando juego..."<<CLOCKS_PER_SEC<<std::endl<<std::endl;
 	sleep(1);
 
-	clock_t t;
+	clock_t t = clock();
 	int result, sent, justsent;
 	while (cantConectados > 0) {
 
-		t = clock();
 		// Generación de recursos random
-		if (int(((float)t/CLOCKS_PER_SEC)) % DELAY_RECURSOS == 0) {
+		//if (int(1000000*((float)t/CLOCKS_PER_SEC)) % DELAY_RECURSOS == 0) {
+		if ((clock()-t) > CLOCKS_PER_SEC*DELAY_RECURSOS) {
+			t = clock();
 			Coordenada c; ostringstream encode;
 			TipoEntidad tipoRecurso = generarRecursoYCoordRandom(&c);
 			encode << "<REC>"<<tipoRecurso<<","<<c.enc()<<"~";
@@ -258,9 +261,14 @@ void Server::correr() {
 		if (cantConectados < MAX_CONEXIONES) {
 			FD_SET(srvsock, &readset);
 			memcpy(&tempset, &readset, sizeof(tempset));
-			intentarNuevaConexion(&tempset, 0);
+			int peersock = intentarNuevaConexion(&tempset, 0);
 			memcpy(&tempset, &readset, sizeof(tempset));
 			FD_CLR(srvsock, &readset);
+			if (peersock!=-1) {
+				ostringstream encode;
+				encode << "<COM>"<<clientes[peersock].posProtag.enc()<<"~";
+				send(peersock, encode.str().c_str(), 16, MSG_NOSIGNAL);
+			}
 		}
 	} // end while
 
