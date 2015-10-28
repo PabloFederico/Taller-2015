@@ -35,6 +35,8 @@ public:
 
 	int verificarConexion(std::string string_IP);
 
+	void posicionarCamaraEnProtagonista();
+
 	virtual ~Controller();
 };
 
