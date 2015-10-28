@@ -29,15 +29,16 @@ void ControladorMouse::procesarEvento(SDL_Event &event, int MouseX, int MouseY){
 	}catch (FueraDeEscenario &e) {}
 
 	 /*Chequeo de si se come un recurso */
-		Escenario* escenario = juego->getEscenario();
-		BarraEstado* barra = juego->getBarraEstado();
-		Coordenada pos_jug = escenario->getPosProtagonista();
-		Tile* tile = escenario->getTile(pos_jug);
-		if (tile->tieneRecurso()){
-			Entidad* recurso = tile->devolverRecurso();
-			barra->agregarRecursoEconomico(recurso->getTipo());
-			escenario->quitarRecurso(pos_jug,recurso);
-		}
+	Escenario* escenario = juego->getEscenario();
+	BarraEstado* barra = juego->getBarraEstado();
+	Coordenada pos_jug = escenario->getPosProtagonista();
+	Tile* tile = escenario->getTile(pos_jug);
+	if (tile->tieneRecurso()){
+		Entidad* recurso = tile->devolverRecurso();
+		barra->agregarRecursoEconomico(recurso->getTipo());
+		escenario->quitarRecurso(pos_jug,recurso);
+	}
+
 	/*********** Análisis del clic del mouse *************/
 	if (event.type == SDL_MOUSEBUTTONDOWN){
 		if (event.button.button == SDL_BUTTON_LEFT){
