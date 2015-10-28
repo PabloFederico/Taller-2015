@@ -480,23 +480,21 @@ void Juego::cargarEnemigo(PosEntidad posEnt) {
 
 /***************************************************/
 void Juego::toggleEnemigo(int id_jug) {
-	// si el enemigo id_jug estaba gris, pasarlo a color; y viceversa.
-	// Creo que con eso alcanzaría.
 	Entidad* entidadEnemigo = NULL;
-
 	for (vector<PosEntidad>::iterator it = enemigos->begin(); it < enemigos->end(); ++it)
 		if (it->entidad->getIDJug() == id_jug) {
-
 			entidadEnemigo = it->entidad;
-			if (entidadEnemigo->estaPetrificado()){
+			if (entidadEnemigo->estaPetrificado()) {
 				// Si está congelado, lo pasamos a color
 				entidadEnemigo->despetrificar();
-			}else{
+			} else {
 				// Si no, lo pasamos a gris
 
 				entidadEnemigo->petrificar();
+
 			}
 			contenedor->getSpriteDeEntidad(entidadEnemigo)->cambiarTexture();
+			break;
 		}
 }
 

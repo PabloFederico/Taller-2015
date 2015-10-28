@@ -6,6 +6,33 @@
  */
 
 #include "../red/Client.h"
+#include <yaml-cpp/yaml.h>
+
+
+string parsearIP() {
+	string ip = IP_SERVIDOR;
+	YAML::Node config;
+	try {
+		config = YAML::LoadFile("config.yaml");
+		if (config["direccion_ip"])
+			ip = config["direccion_ip"].as<string>();
+	} catch (YAML::BadFile &e) {}
+	return ip;
+}
+
+string parsearNombreJugador() {
+	string nombre;
+	YAML::Node config;
+	try {
+		config = YAML::LoadFile("config.yaml");
+		if (config["nombre_jugador"])
+			nombre = config["nombre_jugador"].as<string>();
+		else nombre = "Octai";
+	} catch (YAML::BadFile &e) {
+		nombre = "Guido";
+	}
+	return nombre;
+}
 
 
 Client::Client() {
@@ -18,11 +45,12 @@ Client::Client() {
 }
 
 bool Client::iniciar() {
-	//this->Connection::finalizar();
+	string ip = parsearIP();
+
 	/* código que debería ejecutar el cliente */
 	std::cout << "======= CLIENTE =======" << std::endl;
 
-	this->socket = new SocketCliente();
+	this->socket = new SocketCliente(ip);
 
 	if (this->socket->creadoCorrectamente() < 0) {
 		std::cout << "ERROR: No se puede crear socket."<<std::endl;
@@ -30,11 +58,26 @@ bool Client::iniciar() {
 	}
 
 	/* connect() */
-	if (Red::crearConexion(this->socket) < 0) {
-		std::cout << "ERROR: connect failed."<<std::endl;
+	bool res = -1;
+	std::cout << "Intentado conectarse..."<<std::endl;
+	for (int i = 0; i < MAX_CONEXIONES; i++) {
+		res = Red::crearConexion(this->socket);
+		if (res >= 0)
+			break;
+		sleep(5);
+	}
+	if (res < 0) {
+		std::cout << "ERROR: Tras "<<MAX_CONEXIONES<<" intentos, connect failed."<<std::endl;
 		return false;
 	}
 	this->lastDescriptor = this->socket->getDescriptor();
+
+	std::cout << "Success."<<std::endl;
+
+	// Envía el nombre de jugador.
+	ostringstream encode;
+	encode << "<COM>"<<parsearNombreJugador()<<"~";
+	send(this->lastDescriptor, encode.str().c_str(), MAX_BYTES_LECTURA, 0);
 
 	// Recibir # de jugador.
 	this->idJug = 0;

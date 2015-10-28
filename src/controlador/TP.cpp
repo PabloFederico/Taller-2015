@@ -19,12 +19,12 @@ int main(int argc, char** argv) {
 				delete server;
 			} else if (argv[1][0] == 'c')
 				lan = new Client();
-		} catch ( ConnectionProblem &e ) { lan = NULL; }
+		} catch ( ConnectionProblem &e ) { return -1; }
 	}
 
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
 		return -1;
-	} else if ((server != NULL) || lan != NULL) {
+	} else if (server == NULL) {
 		TTF_Init();
 
 		Controller *controller = new Controller(lan);

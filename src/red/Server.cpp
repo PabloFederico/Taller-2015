@@ -70,7 +70,7 @@ bool Server::mensajeParaElServidor(int sockfd, string s) {
 								send(sockfd, &enviar, sizeof(enviar), MSG_NOSIGNAL);
 							}
 						} while (late == true);
-						res = true; // El mensajes es SOLO para el servidor
+						res = true; // El mensaje es SOLO para el servidor
 					} break;
 		case MOVIMIENTO: { stringstream ss(unContenido);
 						int jug; ss >> jug; ss.ignore(); // ':'
@@ -119,14 +119,40 @@ int Server::intentarNuevaConexion(fd_set* p_tempset, int segundosDeEspera) {
 				std::cout << "Error in accept(): "<<strerror(errno)<<std::endl;
 			} else {
 				cantConectados++;
-				ostringstream ss;
 
-				map<int,DataCliente>::iterator it = clientes.find(peersock);
-				if (it != clientes.end()) { // asumo q mismo peersock, mismo cliente // PARECERÍA SERLO...
+				ostringstream ss; string nombreJug;
+				char buffer[MAX_BYTES_LECTURA];
+				recv(peersock, buffer, sizeof(buffer), 0);
+				Proxy::extraerPrefijoYMensaje(buffer, &nombreJug);
+				map<int,DataCliente>::iterator it;// = clientes.find(peersock);
+				for (it = clientes.begin(); it != clientes.end(); ++it)
+					if ((it->second.nombre == nombreJug) && (!it->second.conectado))
+						break;
+				if (it != clientes.end()) {
+					ss << it->second.id<<"~";
+					it->second.conectado = true;
+					send(peersock, ss.str().c_str(), 10, MSG_NOSIGNAL);
+					//ss.str( std::string() ); ss.clear();
+					//ss << "<COM>"<<it->second.nombre<<"~";
+					//send(peersock, ss.str().c_str(), 10, MSG_NOSIGNAL);
+					ss.str( std::string() ); ss.clear();
 					ss << "<TOG>"<<it->second.id<<"~";
 					for (int j = 0; j < maxfd+1; j++)
 						if (j != peersock && FD_ISSET(j, &readset))
 							send(j, ss.str().c_str(), 10, MSG_NOSIGNAL);
+					ss.str( std::string() ); ss.clear();
+					sleep(1);
+					ss << "<COM>"<<it->second.posProtag.enc()<<"~";
+					// Le recuerdo su posición inicial.
+					send(peersock, ss.str().c_str(), MAX_BYTES_LECTURA, MSG_NOSIGNAL);
+					ss.str( std::string() ); ss.clear();
+					sleep(5);
+					for (it = clientes.begin(); it != clientes.end(); ++it)
+						if ((it->second.nombre != nombreJug) && (it->second.conectado)) {
+							ss.str( std::string() ); ss.clear();
+							ss << "<ENT>"<<it->second.posProtag.enc()<<"["<<it->second.id<<","<<SOLDADO<<","<<1<<","<<1<<"]"<<"~";
+							send(peersock, ss.str().c_str(), MAX_BYTES_LECTURA, MSG_NOSIGNAL);
+						}
 				} else {
 					string nomTemp = "Jugador"+cantConectados;	// alto hardcodeo
 					// Adaptable a secciones del mapa basado en MAX_CONEXIONES y cantConectados
@@ -251,6 +277,7 @@ void Server::correr() {
 							send(j, buffer, sizeof(buffer), MSG_NOSIGNAL);
 						}
 					}
+					clientes[j].conectado = false;
 					cantConectados--;
 				} else if (errno != EWOULDBLOCK) {
 					std::cout << "Error in recv(): "<<strerror(errno)<<std::endl;

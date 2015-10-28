@@ -18,12 +18,15 @@
 
 struct DataCliente {
 	int id;
+	bool conectado;
 	string nombre;
 	Coordenada posProtag;
 
-	DataCliente(): id(0), nombre(""), posProtag(Coordenada(0,0)) {};
+	DataCliente(): id(0), conectado(false), nombre(""), posProtag(Coordenada(0,0)) {};
 	DataCliente(int idJug, string nom, Coordenada posicionInicial):
-		id(idJug), nombre(nom), posProtag(posicionInicial) {}
+		id(idJug), nombre(nom), posProtag(posicionInicial) {
+		conectado = true;
+	}
 };
 
 

@@ -1,5 +1,7 @@
 nombre_jugador: EnriqueIII
 
+direccion_ip: 127.0.0.1
+
 pantalla:
   ancho: 900
   alto: 600
