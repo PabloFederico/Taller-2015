@@ -36,7 +36,7 @@ public:
 	//void dibujarEntidades();
 	//void dibujarProtagonista(Sprite* sprite);
 	//void dibujarCapaNegra(CapaFog* capa);
-	void dibujarEscenario(Escenario* esc);
+	void dibujarEscenario(Escenario* esc, TTF_Font* fuenteTexto);
 	void dibujarBarraEstado(Escenario* esc, BarraEstado* barraEstado, TTF_Font *fuenteTexto);
 	bool dibujarContorno(Escenario* esc, TTF_Font* fuenteTexto);
 

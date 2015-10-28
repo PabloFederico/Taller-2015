@@ -243,6 +243,27 @@ CapaFog* Escenario::getCapa() {
 	return this->capa;
 }
 
+void Escenario::agregarRecurso(){
+	bool valido = false;
+	Coordenada coord_random;
+	while (!valido){
+		coord_random = generarCoordenadaRandom(this->size_x,0,this->size_y,0);
+		if (tileEsOcupable(coord_random)) valido = true;
+		cout << coord_random.x << " y " << coord_random.y;
+	}
+	int vector_recursos[] = {9,10,11};
+	int num_rand;
+	num_rand = generarCoordenadaRandom(2,0,0,0).x;
+	int index_recurso = vector_recursos[num_rand];
+	Entidad* recurso = new Entidad((TipoEntidad)index_recurso);
+	Tile* tile_recurso = getTile(coord_random);
+	tile_recurso->agregarEntidad(recurso);
+}
+void Escenario::quitarRecurso(Coordenada c,Entidad* entidad){
+	Entidad* aux = entidad;
+	quitarEntidad(c,entidad);
+	aux->~Entidad();
+}
 /********************************************************************************/
 Escenario::~Escenario() {
 	for (unsigned i = 0; i < posicionesEntidades->size(); i++){

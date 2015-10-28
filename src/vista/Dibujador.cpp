@@ -83,15 +83,17 @@ void Dibujador::dibujarProtagonista(Sprite* sprite){
 */
 
 /********************************************************************************/
-void Dibujador::dibujarEscenario(Escenario* esc){
+void Dibujador::dibujarEscenario(Escenario* esc, TTF_Font* fuenteTexto){
+	for (unsigned i = 0; i < imagenesBasura.size(); i++){
+		delete imagenesBasura[i];
+	}
+	imagenesBasura.clear();
 	/* Dibujar pasto en otro método para resolver cabeza del chabon*/
 	this->dibujarRelieve(esc);
 
 	pair<int,int> dimension = esc->getDimension();
 	CapaFog* capaFog = esc->getCapa();
-	//Imagen *imagenRelieve = this->contenedor->getImagenTipo(PASTO);
 	Imagen *imagenGris = this->contenedor->getImagenUtilTipo(CAPA_GRIS);
-	//Imagen *imagenSelector = this->contenedor->getImagenUtilTipo(SELECT_TILE);
 
 	int cero_relativo_x = *this->cero_x;
 	int cero_relativo_y = *this->cero_y;
@@ -110,24 +112,32 @@ void Dibujador::dibujarEscenario(Escenario* esc){
 			/* Solo dibujamos para las zonas visibles (GRISES ó COLOR) */
 			EstadoCapa ec = capaFog->getEstadoTile(i,j);
 			if (ec != ESTADO_NEGRO) {
-				//this->dibujarContorno(esc, fuenteTexto);
-				//SDL_RenderCopy(renderer,imagenRelieve->getTexture(),NULL,&rectRelieve);
+
 				Tile* tile = esc->getTile(i,j);
 				vector<Entidad*> entidades = tile->getEntidades();
 				for (unsigned k = 0; k < entidades.size(); k++){
 					Entidad* entidad = entidades[k];
 
-					//if (entidad == esc->getEntidadSeleccionada()){
-					//	SDL_RenderCopy(renderer,imagenSelector->getTexture(),NULL,&rectRelieve);
-					//}
-
 					Sprite* sprite = this->contenedor->getSpriteDeEntidad(entidad);
 					SDL_Rect pos = sprite->getPosicion();
 
+					if ( entidad->getIDJug() != 0 && entidad != esc->getProtagonista() && ec == ESTADO_COLOR){
+						Imagen* image_id = Loader::cargarTexto(renderer,fuenteTexto,entidad->getInfo());
+						SDL_Rect rect_id;
+						rect_id.w = image_id->getPixelsX();
+						rect_id.h = image_id->getPixelsY();
+						rect_id.x = pos.x - 10;
+						rect_id.y = pos.y - 10;
+						SDL_RenderCopy(renderer,image_id->getTexture(),NULL,&rect_id);
+						imagenesBasura.push_back(image_id);
+					}
+
 					//Entidades con movimiento:
-					if (entidad->esMovible() && sprite->estaEnMovimiento()){
-						if (sprite->currentTime() > (1000/sprite->getFps())){
-							sprite->efectuarMovimiento();
+					if (entidad->esMovible()) {
+						if (sprite->estaEnMovimiento()){
+							if (sprite->currentTime() > (1000/sprite->getFps())){
+								sprite->efectuarMovimiento();
+							}
 						}
 						/* Si la entidad esta dentro del campo de visón, lo dibujamos */
 						if (ec == ESTADO_COLOR){
@@ -269,6 +279,7 @@ void Dibujador::dibujarBarraEstado(Escenario* esc, BarraEstado* barraEstado, TTF
 	imagen = this->contenedor->getImagenUtilTipo(BARRA_FONDO);
 	SDL_RenderCopy(renderer,imagen->getTexture(),NULL,&rect_barra);
 
+	/* Muestra en el primer fondo la imagen seleccionada */
 	if (esc->getEntidadSeleccionada() != NULL){
 		Imagen* imagen_Select = contenedor->getSpriteDeEntidad(esc->getEntidadSeleccionada())->getImagen();
 		SDL_Rect frameActual = contenedor->getSpriteDeEntidad(esc->getEntidadSeleccionada())->getFrameActual();
@@ -286,6 +297,7 @@ void Dibujador::dibujarBarraEstado(Escenario* esc, BarraEstado* barraEstado, TTF
 	imagen = this->contenedor->getImagenUtilTipo(BARRA_DESCRIPCION);
 	SDL_RenderCopy(renderer,imagen->getTexture(),NULL,&rect_barra);
 
+	/* Muestra la descripción de la entidad seleccionada */
 	if (barraEstado->getDescripcion() != ""){
 		Imagen* imagenDescripcion = Loader::cargarTexto(renderer,fuenteTexto,barraEstado->getDescripcion());
 		SDL_Rect rect_descripcion;
