@@ -133,7 +133,8 @@ void Proxy::procesarRecurso(Juego* juego, string encodeado) {
 	int nTipo; ss >> nTipo; ss.ignore(); // ','
 	char posEnc[MAX_BYTES_LECTURA];
 	ss.get(posEnc, MAX_BYTES_LECTURA, '~');
-	//juego->agregarRecurso(TipoEntidad(nTipo), Coordenada::dec(posEnc));
+	//std::cout << nTipo<<" es "<<TipoEntidad(nTipo)<<std::endl;//
+	juego->agregarRecurso(TipoEntidad(nTipo), Coordenada::dec(posEnc));
 }
 
 void Proxy::procesarToggle(Juego* juego, string encodeado) {

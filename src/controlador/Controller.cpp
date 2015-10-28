@@ -72,8 +72,8 @@ void Controller::procesarEvento(SDL_Event &event){
 	if (this->juego->esCliente()) {
 		try {
 			TipoMensajeRed tipo = Proxy::actualizarMultiplayer(this->juego);
-			if (tipo != 0)//
-				std::cout << "Mensaje recibido y procesado de tipo "<<tipo<<std::endl;//
+			//if (tipo != 0)//
+			//	std::cout << "Mensaje recibido y procesado de tipo "<<tipo<<std::endl;//
 		} catch ( NoSeRecibio &e ) {
 		} catch ( Disconnected &e ) {
 			juego->olvidarConnection();	// No está funcionando siempre... Hacerlo de otra forma.

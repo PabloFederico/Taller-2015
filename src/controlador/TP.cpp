@@ -10,7 +10,7 @@
 int main(int argc, char** argv) {
 
 	Server* server = NULL;
-	Client* lan = NULL;//
+	Client* lan = NULL;
 	if (argc > 1) {
 		try {
 			if (argv[1][0] == 's') {

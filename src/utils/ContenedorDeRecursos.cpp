@@ -68,7 +68,8 @@ void ContenedorDeRecursos::generarYGuardarSpriteEntidad(PosEntidad posEnt, Coord
 	Sprite *sprite;
 
 	switch (entidad->getTipo()){
-		case ARBOL 	  : {posicion.y -= (1.5 * DISTANCIA_ENTRE_Y);
+		case ARBOL 	  : {
+						posicion.y -= (1.5 * DISTANCIA_ENTRE_Y);
 						posicion.w = ANCHO_PIXEL_PASTO;
 						posicion.h = 2 * ALTO_PIXEL_PASTO;
 						sprite = new Sprite(1,1,this->getImagenTipo(ARBOL),posicion,escenario,coord_ceros);
@@ -81,7 +82,8 @@ void ContenedorDeRecursos::generarYGuardarSpriteEntidad(PosEntidad posEnt, Coord
 						break;
 			/* Modificamos los tamanios de la imagen castillo para que ocupe
 			 * los tiles que le corresponden */
-		case CASTILLO : {posicion.x -= DISTANCIA_ENTRE_X * (this->mapInfoEntidades[CASTILLO].ancho - 1);
+		case CASTILLO : {
+						posicion.x -= DISTANCIA_ENTRE_X * (this->mapInfoEntidades[CASTILLO].ancho - 1);
 						posicion.y = posicion.y - ALTO_PIXEL_PASTO +  DISTANCIA_ENTRE_Y / 4;
 						//posicion.w = ANCHO_PIXEL_PASTO;
 						//posicion.h = (ALTO_PIXEL_PASTO * this->mapInfoEntidades[CASTILLO].ancho + ALTO_PIXEL_PASTO) / this->mapInfoEntidades[CASTILLO].ancho;

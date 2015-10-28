@@ -38,14 +38,14 @@ tipos:
   - nombre: agua
     imagen: images/agua.png
 
-  - nombre: comida
-    imagen: images/comida.png
+#  - nombre: comida
+#    imagen: images/comida.png
 
-  - nombre: madera
-    imagen: images/madera.png
+#  - nombre: madera
+#    imagen: images/madera.png
 
-  - nombre: oro
-    imagen: images/moneda.png
+#  - nombre: oro
+#    imagen: images/moneda.png
 
   - nombre: juana_de_arco
     fps: 40

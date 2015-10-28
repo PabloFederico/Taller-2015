@@ -94,7 +94,7 @@ bool Server::mensajeParaElServidor(int sockfd, string s) {
 
 TipoEntidad generarRecursoYCoordRandom(Coordenada* c) {
 	*c = Calculador::generarPosRandom(50,0,50,0,0);
-	Coordenada aux = Calculador::generarPosRandom(ORO,MADERA,1,0,0);
+	Coordenada aux = Calculador::generarPosRandom(ORO,MADERA+1,1,0,42);
 	return TipoEntidad(aux.x);	// último recurso, primer recurso
 }
 
@@ -208,6 +208,7 @@ void Server::correr() {
 			Coordenada c; ostringstream encode;
 			TipoEntidad tipoRecurso = generarRecursoYCoordRandom(&c);
 			encode << "<REC>"<<tipoRecurso<<","<<c.enc()<<"~";
+			//std::cout << "Recurso "<<encode.str()<<std::endl;//
 			for (int j = 0; j < maxfd+1; j++)
 				if (FD_ISSET(j, &readset))
 					send(j, encode.str().c_str(), 20, MSG_NOSIGNAL);

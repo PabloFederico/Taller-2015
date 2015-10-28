@@ -62,7 +62,7 @@ double Calculador::calcularDistanciaEntrePixeles(Coordenada pixel1, Coordenada p
 Direccion Calculador::calcularDireccion(Coordenada coord_pixel_dest, Coordenada coord_pixel_orig){
 	Direccion direccion;
 	int x_result = coord_pixel_dest.x - coord_pixel_orig.x; //x_dest - x_orig;
-	int y_result = coord_pixel_dest.y - coord_pixel_orig.y;//y_dest - y_orig;
+	int y_result = coord_pixel_dest.y - coord_pixel_orig.y; //y_dest - y_orig;
 
 	if (abs(x_result) < 15){
 		if (y_result < 0) direccion = NORTE;
@@ -310,8 +310,8 @@ Camino Calculador::obtenerCaminoMin(Escenario *esc, Coordenada coord_pixel_orig,
 Coordenada Calculador::generarPosRandom(int size_x_final, int size_x_inicial, int size_y_final, int size_y_inicial, int seed = 0){
 	int x_rand, y_rand;
 	srand(((int)time(0)) + seed); //seedeo el random bien
-	x_rand = (rand() % size_x_final) + size_x_inicial;
-	y_rand = (rand() % size_y_final) + size_y_inicial;
+	x_rand = (rand() % (size_x_final-size_x_inicial)) + size_x_inicial;
+	y_rand = (rand() % (size_y_final-size_y_inicial)) + size_y_inicial;
 
 	return Coordenada(x_rand,y_rand);
 }
