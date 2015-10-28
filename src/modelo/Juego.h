@@ -27,6 +27,8 @@
 class Juego {
 private:
 	int idJug;
+	string nombreJug;
+
 	int *cero_x;
 	int *cero_y;
 
@@ -47,7 +49,7 @@ private:
 
 	/* Carga la configuración inicial del juego a traves
 	 * de un archivo de configuración */
-	void cargarJuego(InfoEscenario* infoEscRed);
+	void cargarJuego(InfoEscenario* infoEscRed, Coordenada *posInicial);
 
 	void cargarImagenes();
 
@@ -64,12 +66,15 @@ private:
 	BarraEstado *barraEstado;
 
 public:
-	Juego(Connection* lan, InfoEscenario* infoEscRed);
+	Juego(Connection* lan, Coordenada* posInicial, InfoEscenario* infoEscRed);
 
 	Connection* const getConnection();
 	void olvidarConnection();
 	bool esCliente();
 
+	void setNombreJugador(string nom);
+	string getNombreJugador();
+	int getIDJugador();
 	void cargarNumJugador();
 	void cargarEnemigo(PosEntidad posEnt);
 
@@ -97,6 +102,8 @@ public:
 
 	/* El nombre del método lo dice \TODO\ */
 	void generarRecursosAleatoriosParaElEscenario();
+
+	void toggleEnemigo(int id_jug);
 
 	void reiniciar();
 	virtual ~Juego();

@@ -273,11 +273,12 @@ Camino Calculador::obtenerCaminoMin(Escenario *esc, Coordenada coord_pixel_orig,
 	return camino;
 }
 
-Coordenada generarPosRandom(int size_x_final, int size_x_inicial, int size_y_final, int size_y_inicial){
+Coordenada Calculador::generarPosRandom(int size_x_final, int size_x_inicial, int size_y_final, int size_y_inicial, int seed = 0){
 	int x_rand, y_rand;
-	srand((int) time(0)); //seedeo el random bien
+	srand(((int)time(0)) + seed); //seedeo el random bien
 	x_rand = (rand() % size_x_final) + size_x_inicial;
 	y_rand = (rand() % size_y_final) + size_y_inicial;
 
 	return Coordenada(x_rand,y_rand);
 }
+

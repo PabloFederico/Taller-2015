@@ -10,8 +10,10 @@
 #include "../utils/Log.h"
 
 
-Juego::Juego(Connection* lan = NULL, InfoEscenario* infoEscRed = NULL): connection(lan) {
+Juego::Juego(Connection* lan = NULL, Coordenada* posInicial = NULL, InfoEscenario* infoEscRed = NULL):
+			connection(lan) {
 	this->idJug = 0;
+	this->nombreJug = "JugadorGenerico";
 	this->cero_x = NULL;
 	this->cero_y = NULL;
 	this->contenedor = NULL;
@@ -28,12 +30,22 @@ Juego::Juego(Connection* lan = NULL, InfoEscenario* infoEscRed = NULL): connecti
 	this->margen_scroll = 30;
 
 	this->cargarNumJugador();
-	this->cargarJuego(infoEscRed);
+	this->cargarJuego(infoEscRed, posInicial);
 }
 
 /********************************************************************************/
 vector<InfoEntidad> Juego::getInfoTiposEntidades(){
 	return this->vectorInfoTiposEntidades;
+}
+
+/********************************************************************************/
+void Juego::setNombreJugador(string nom) {
+	this->nombreJug = nom;
+}
+
+/********************************************************************************/
+string Juego::getNombreJugador(){
+	return this->nombreJug;
 }
 
 /********************************************************************************/
@@ -47,6 +59,11 @@ Entidad* Juego::getProtagonista(){
 }
 
 /********************************************************************************/
+int Juego::getIDJugador() {
+	return this->idJug;
+}
+
+/********************************************************************************/
 void Juego::cargarNumJugador() {
 	if (connection != NULL)
 		 this->idJug = connection->getIDJugador();
@@ -54,7 +71,7 @@ void Juego::cargarNumJugador() {
 }
 
 /********************************************************************************/
-void Juego::cargarJuego(InfoEscenario* infoEscRed = NULL) {
+void Juego::cargarJuego(InfoEscenario* infoEscRed = NULL, Coordenada *posInicial = NULL) {
 	//	std::vector<InfoEscenario> vecEscenarios;
 
 	//----------------------------------------------------------------------------------------!!
@@ -68,7 +85,8 @@ void Juego::cargarJuego(InfoEscenario* infoEscRed = NULL) {
 	// Acá me imagino la posibilidad de un selector de escenarios.
 	if (esCliente()) {
 		this->vel_personaje = 50; // Misma velocidad para todos.
-		infoEsc.setPosProtag(Escenario::generarCoordenadaRandom(infoEsc.size_x, 0, infoEsc.size_y, 0));
+		//infoEsc.setPosProtag(Escenario::generarCoordenadaRandom(infoEsc.size_x, 0, infoEsc.size_y, 0));
+		infoEsc.setPosProtag(*posInicial);
 	}
 	this->fabricaDeEntidades = new EntidadFactory(this->idJug, this->vectorInfoTiposEntidades);
 	this->escenario = new Escenario(infoEsc, this->fabricaDeEntidades, this->enemigos);
@@ -456,6 +474,12 @@ void Juego::cargarEnemigo(PosEntidad posEnt) {
 	enemigos->push_back(posEnt);
 
 	this->contenedor->generarYGuardarSpriteEntidad(posEnt, Coordenada(*cero_x, *cero_y), escenario);
+}
+
+/***************************************************/
+void Juego::toggleEnemigo(int id_jug) {
+	// si el enemigo id_jug estaba gris, pasarlo a color; y viceversa.
+	// Creo que con eso alcanzaría.
 }
 
 /***************************************************/

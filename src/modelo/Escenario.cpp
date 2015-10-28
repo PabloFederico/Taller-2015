@@ -32,10 +32,15 @@ Escenario::Escenario(InfoEscenario infoEsc, EntidadFactory *fabrica, vector<PosE
 
 	this->protagonista = this->fabricaDeEntidades->nuevaEntidad(infoEsc.protagonista);
 	Coordenada posProtag(infoEsc.posX_protagonista, infoEsc.posY_protagonista);
-	bool resPosicionar = this->agregarEntidad(posProtag, this->protagonista);
-	while (resPosicionar == false) {	// Genera posiciones random hasta poder agregar al protagonista.
-		Coordenada posProtag = generarCoordenadaRandom(size_x, 0, size_y, 0);
+	bool resPosicionar = false;
+	try {
 		resPosicionar = this->agregarEntidad(posProtag, this->protagonista);
+	} catch ( FueraDeEscenario &e ) {}
+	while (resPosicionar == false) {	// Genera posiciones random hasta poder agregar al protagonista.
+		try {
+			Coordenada posProtag = generarCoordenadaRandom(size_x, 0, size_y, 0);
+			resPosicionar = this->agregarEntidad(posProtag, this->protagonista);
+		} catch ( FueraDeEscenario &e ) {}
 	}
 	this->c_protagonista = posProtag;
 	this->tile_clic = NULL;
