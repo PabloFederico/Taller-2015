@@ -88,6 +88,7 @@ void VentanaJuego::dibujar(){
 /********************************************************************************/
 void VentanaJuego::mostrar(){
 		bool run = true;
+
 		SDL_Event event;
 		uint32_t tiempo;
 		SDL_Cursor* cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_HAND);
@@ -99,9 +100,8 @@ void VentanaJuego::mostrar(){
 				SDL_PollEvent(&event);
 
 				if (event.type == SDL_QUIT) run = false;
-				/*if (tiempo > 10000){
-					tiempo = 0;
-					controlador->getJuego()->getEscenario()->agregarRecurso();
+				/*if ((tiempo % 10000) == 0){
+					controlador->getJuego()->getEscenario()->agregarRecurso(coord_random);
 				}*/
 				controlador->procesarEvento(event);
 

@@ -80,7 +80,7 @@ public:
 	Tile* getTile(Coordenada c);
 
 	static Coordenada generarCoordenadaRandom(int size_x_final, int size_x_inicial, int size_y_final, int size_y_inicial);
-	void agregarRecurso();
+	void agregarRecurso(TipoEntidad recurso,Coordenada coord_random);
 	void quitarRecurso(Coordenada c,Entidad* entidad);
 	void actualizarPosicionProtagonista(Coordenada c);
 	void actualizarPosicionEnemigo(Entidad* ent, Coordenada c);

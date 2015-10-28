@@ -7,6 +7,7 @@
 #include "../modelo/Escenario.h"
 
 
+
 Escenario::Escenario(InfoEscenario infoEsc, EntidadFactory *fabrica, vector<PosEntidad>* malvados):
 		fabricaDeEntidades(fabrica), enemigos(malvados) {
 	this->size_x = infoEsc.size_x;
@@ -129,14 +130,7 @@ Tile* Escenario::getTile(Coordenada c) {
 }
 
 /********************************************************************************/
-Coordenada Escenario::generarCoordenadaRandom(int size_x_final, int size_x_inicial, int size_y_final, int size_y_inicial) {
-	int x_rand, y_rand;
-	srand((int) time(0)); //seedeo el random bien
-	x_rand = (rand() % size_x_final) + size_x_inicial;
-	y_rand = (rand() % size_y_final) + size_y_inicial;
 
-	return Coordenada(x_rand,y_rand);
-}
 
 /********************************************************************************/
 bool Escenario::agregarEntidad(Coordenada pos, Entidad* entidad){
@@ -238,21 +232,51 @@ CapaFog* Escenario::getCapa() {
 	return this->capa;
 }
 
-void Escenario::agregarRecurso(){
-	bool valido = false;
+Coordenada Escenario::generarCoordenadaRandom(int size_x_final, int size_x_inicial, int size_y_final, int size_y_inicial){
+	int x_rand, y_rand;
+	srand((int) time(0)); //seedeo el random bien
+	x_rand = (rand() % size_x_final) + size_x_inicial;
+	y_rand = (rand() % size_y_final) + size_y_inicial;
+
+	return Coordenada(x_rand,y_rand);
+}
+void Escenario::agregarRecurso(TipoEntidad recurso, Coordenada coord_random){
+	/*bool valido = false;
 	Coordenada coord_random;
+	int i = 1;
 	while (!valido){
+		cout << "ENTRO AL RANDOM PARA GENERAR COORDENADA" << endl;
+		srand(SDL_GetTicks() * i);
+		cout << "GENERO LA COORDENADA" << endl;
 		coord_random = generarCoordenadaRandom(this->size_x,0,this->size_y,0);
-		if (tileEsOcupable(coord_random)) valido = true;
-		cout << coord_random.x << " y " << coord_random.y;
-	}
+		cout << "GENERE LA COORDENADA" << endl;
+		Tile* tile = getTile(coord_random);
+		cout << "SACO EL TILE" << endl;
+		if ((!tile->tieneRecurso()) && (tile->estaLibre())){
+			valido = true;
+			cout << "LA COORDENADA ES VALIDA, ME VOY DEL WHILE" << endl;
+			printf("LA COORDENADA ES: X %d, Y %d  \n",coord_random.x,coord_random.y);
+		}
+		if (!valido){
+			cout << "COORDENADA INVALIDA, SIGO GENERANDO" << endl;
+			i +=10;
+		}
+
+	}*/
+	/*printf("GENERO VECTOR DE RECURSOS\n");
 	int vector_recursos[] = {9,10,11};
+	printf("GENERE VECTOR DE RECURSOS\n");
 	int num_rand;
-	num_rand = generarCoordenadaRandom(2,0,0,0).x;
+	printf("VOY A GENERAR NUMERO RANDOM\n");
+	printf("GENERO NUMERO RANDOM\n");
+	printf("EL NUMERO ES %d \n",num_rand);
 	int index_recurso = vector_recursos[num_rand];
-	Entidad* recurso = new Entidad((TipoEntidad)index_recurso);
-	Tile* tile_recurso = getTile(coord_random);
-	tile_recurso->agregarEntidad(recurso);
+	printf("TOMO UN RECURSO DEL VECTOR\n");
+	*/
+	Entidad* recurso_a_agregar = new Entidad(recurso);
+	//printf("GENERO UN RECURSO NUEVO %s\n",recurso->getInfo().c_str());
+	agregarEntidad(coord_random,recurso_a_agregar);
+	//printf("TERMINO EL agregarRecurso, ME VOY \n");
 }
 void Escenario::quitarRecurso(Coordenada c,Entidad* entidad){
 	Entidad* aux = entidad;
