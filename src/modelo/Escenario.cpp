@@ -143,7 +143,7 @@ bool Escenario::tileEsOcupable(Coordenada c) {
 /********************************************************************************/
 void Escenario::setearTileClic(Tile* tile, Coordenada c_tile){
 	this->tile_clic = tile;
-	if (capa->getEstadoTile(c_tile.x, c_tile.y) == ESTADO_COLOR){
+	if ((tile != NULL) && (capa->getEstadoTile(c_tile.x, c_tile.y) == ESTADO_COLOR)) {
 		vector<Entidad*> entidades = tile->getEntidades();
 		for (unsigned i = 0; i < entidades.size(); i++){
 			if (entidades[i]->ocupaSuTile()){
