@@ -32,4 +32,7 @@
 #define TAM_LETRA_CONEXION  30
 #define TAM_LETRA_JUEGO     10
 
+#define ALPHA_GRIS 		   140
+#define ALPHA_COLOR		   255
+
 #endif /* UTILS_CONSTANTES_H_ */
