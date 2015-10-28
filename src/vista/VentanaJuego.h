@@ -13,10 +13,10 @@
 #include "../utils/ContenedorDeRecursos.h"
 #include "../utils/Map.h"
 #include "../utils/Structs.h"
-#include "CapaNegra.h"
 #include "Dibujador.h"
 #include "../vista/Sprite.h"
 #include "../vista/Ventana.h"
+#include "CapaFog.h"
 using namespace std;
 
 
@@ -24,15 +24,14 @@ class VentanaJuego : public Ventana {
 private:
 	Dibujador *dibujador;
 
+	void cargarJuego(Juego *juego);
 	void cargarImagenesYSprites(Juego *juego);
+
 	/* Dibuja el escenario*/
 	void dibujar();
 
-	void reiniciar();
-
-	void cargarJuego(Juego *juego);
-
 	void liberarRecursos();
+	void reiniciar();
 
 public:
 	VentanaJuego(Controller *controlador);

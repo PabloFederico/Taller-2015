@@ -6,7 +6,8 @@
  */
 
 #include "../vista/VistaEntidad.h"
-#include "../modelo/Exceptions.h"
+
+#include "../utils/Exceptions.h"
 
 
 VistaEntidad::VistaEntidad(string nombre, string path,

@@ -18,24 +18,23 @@ void crearConfigDefault () {
 
 	std::map<std::string, std::string> castillo;
 	castillo.insert(std::make_pair("nombre", "castillo"));
-	castillo.insert(std::make_pair("imagen", "images/castle.png"));
-	castillo.insert(std::make_pair("ancho_base", "2"));
-	castillo.insert(std::make_pair("alto_base", "2"));
+	castillo.insert(std::make_pair("imagen", "images/castillo.png"));
+	castillo.insert(std::make_pair("ancho_base", "4"));
+	castillo.insert(std::make_pair("alto_base", "4"));
 	castillo.insert(std::make_pair("pixel_ref_x", "30"));
 	castillo.insert(std::make_pair("pixel_ref_y", "40"));
 	vec.push_back(castillo);
 
 	std::map<std::string, std::string> soldado;
 	soldado.insert(std::make_pair("nombre", "soldado"));
-	soldado.insert(std::make_pair("imagen", "images/soldado.png"));
-	soldado.insert(std::make_pair("fps", "10"));
-	soldado.insert(std::make_pair("delay", "0"));
+	soldado.insert(std::make_pair("imagen", "images/chabon000.png"));
+	soldado.insert(std::make_pair("fps", "40"));
 	vec.push_back(soldado);
 
 	std::map<std::string, std::string> juana_de_arco;
 	juana_de_arco.insert(std::make_pair("nombre", "juana_de_arco"));
-	juana_de_arco.insert(std::make_pair("imagen", "images/juana.png"));
-	juana_de_arco.insert(std::make_pair("fps", "10"));
+	juana_de_arco.insert(std::make_pair("imagen", "images/juanita.png"));
+	juana_de_arco.insert(std::make_pair("fps", "40"));
 	vec.push_back(juana_de_arco);
 
 	std::map<std::string, std::string> tierra;
@@ -48,9 +47,15 @@ void crearConfigDefault () {
 	agua.insert(std::make_pair("imagen", "images/agua.png"));
 	vec.push_back(agua);
 
+	std::map<std::string, std::string> animal;
+	animal.insert(std::make_pair("nombre", "animal"));
+	animal.insert(std::make_pair("imagen", "images/animal1.png"));
+	animal.insert(std::make_pair("fps", "10"));
+	animal.insert(std::make_pair("delay", "3000"));
+	vec.push_back(animal);
+
 
 	YAML::Emitter out;
-	//out.SetIndent(5);
 
 	out << YAML::BeginMap;
 
@@ -95,8 +100,8 @@ void crearConfigDefault () {
 
 			out << YAML::BeginMap;
 				out << YAML::Key << "nombre" << YAML::Value << "orleans";
-				out << YAML::Key << "size_x" << YAML::Value << 100;
-				out << YAML::Key << "size_y" << YAML::Value << 100;
+				out << YAML::Key << "size_x" << YAML::Value << 50;
+				out << YAML::Key << "size_y" << YAML::Value << 50;
 				out << YAML::Key << "entidades";
 				out << YAML::Value << YAML::BeginSeq;
 					out << YAML::Load("{x: 10, y: 15, tipo: tierra}");
@@ -107,9 +112,9 @@ void crearConfigDefault () {
 				// Único protagonista
 				out << YAML::Key << "protagonista";
 				out << YAML::Value << YAML::BeginSeq << YAML::BeginMap;
-					out << YAML::Key << "tipo" << YAML::Value << "juana_de_arco";
-					out << YAML::Key << "x" << YAML::Value << 50;
-					out << YAML::Key << "y" << YAML::Value << 50;
+					out << YAML::Key << "tipo" << YAML::Value << "soldado";
+					out << YAML::Key << "x" << YAML::Value << 15;
+					out << YAML::Key << "y" << YAML::Value << 15;
 				out << YAML::EndMap << YAML::EndSeq;
 			out << YAML::EndMap;
 

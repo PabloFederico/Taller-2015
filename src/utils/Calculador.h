@@ -11,19 +11,19 @@
 #include <math.h>
 #include <stdlib.h>
 #include <vector>
-#include <algorithm>
 
 #include "Direccion.h"
 #include "../utils/Constantes.h"
-#include "../modelo/Exceptions.h"
 #include "../modelo/Escenario.h"
+#include "Exceptions.h"
+
 
 class Calculador {
 
 public:
 	static double calcularDistanciaEntrePixeles(Coordenada coord_pixel1, Coordenada coord_pixel2);
 
-	static Coordenada calcularPosicionRelativa(Coordenada coord_tile, Coordenada coord_ceros_pixel, Escenario *escenario);
+	static Coordenada calcularPosicionRelativa(Coordenada coord_tile, Coordenada coord_ceros_pixel);
 
 	static Coordenada calcularPosicionInversa(Coordenada coord_pixel, Coordenada coord_ceros_pixel, Escenario *escenario);
 
@@ -36,8 +36,9 @@ public:
 
 	static Coordenada pixelCentralDeTile(Coordenada coord_tile, Coordenada coord_ceros);
 
-	static std::vector< Coordenada > obtenerCaminoMin(Escenario *esc, Coordenada coord_pixel_orig, Coordenada coord_pixel_dest, Coordenada coord_ceros_pixel);
+	static Camino obtenerCaminoMin(Escenario *esc, Coordenada coord_pixel_orig, Coordenada coord_pixel_dest, Coordenada coord_ceros_pixel);
 
+	static Coordenada generarPosRandom(int size_x_final, int size_x_inicial, int size_y_final, int size_y_inicial);
 };
 
 #endif /* UTILS_CALCULADOR_H_ */

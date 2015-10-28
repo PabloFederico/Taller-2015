@@ -8,7 +8,8 @@
 #include "../vista/Sprite.h"
 
 /********************************************************************************/
-Sprite::Sprite(int cant_Direcciones, Uint32 cant_Img_Distintas, Imagen* imagen, SDL_Rect posicion){
+Sprite::Sprite(int cant_Direcciones, Uint32 cant_Img_Distintas, Imagen* imagen,
+				SDL_Rect posicion, Escenario* escen, Coordenada c_ceros, Entidad* ent): entidad(ent){
 	this->cant_Direcciones = cant_Direcciones;
 	this->cant_Img_Distintas = cant_Img_Distintas;
 	this->imagen = imagen;
@@ -18,6 +19,8 @@ Sprite::Sprite(int cant_Direcciones, Uint32 cant_Img_Distintas, Imagen* imagen, 
 	this->regPos.posY_player =(float)posicion.y;
 	this->regPos.x_anterior = posicion.x;
 	this->regPos.y_anterior = posicion.y;
+	this->escenario = escen;
+	this->coord_ceros = c_ceros;
 
 	this->frames = new SDL_Rect*[cant_Direcciones];
 
@@ -67,6 +70,16 @@ Imagen* Sprite::getImagen(){
 /********************************************************************************/
 SDL_Rect Sprite::getPosicion(){
 	return this->posicion;
+}
+
+/********************************************************************************/
+Entidad* Sprite::getEntidad(){
+	return this->entidad;
+}
+
+/********************************************************************************/
+Coordenada Sprite::getPosPies() {
+	return Coordenada( posicion.x + (posicion.w / 2), posicion.y + posicion.h );
 }
 
 /********************************************************************************/
@@ -158,11 +171,6 @@ int Sprite::getFps(){
 }
 
 /********************************************************************************/
-//SDL_Rect Sprite::getSDLRect(int i, int j){
-//	return this->frames[i][j];
-//}
-
-/********************************************************************************/
 void Sprite::setDelay(int delay){
 	this->delay = delay;
 }
@@ -199,19 +207,35 @@ bool Sprite::checkColision(Sprite* otro){
 }
 
 /********************************************************************************/
-void Sprite::setearNuevoCamino(vector<Coordenada> nuevoCamino){
+Coordenada Sprite::coordPixelSprite() {
+	int x = this->getPosicion().x + this->getPosicion().w / 2;
+	int y = this->getPosicion().y + this->getPosicion().h / 2;
+	return Coordenada(x,y);
+}
+
+/********************************************************************************/
+void Sprite::setearNuevoCamino(Camino nuevoCamino, Coordenada coord_ceros){
+	this->coord_ceros = coord_ceros;
 	this->caminoARecorrer.clear();
-	this->caminoARecorrer = nuevoCamino;
-	/*
-	for(unsigned i = 0; i < caminoARecorrer.size()-1; i++){
-		if (nuevoCamino[i].x != nuevoCamino[i+1].x &&
-			nuevoCamino[i].y != nuevoCamino[i+1].y &&
-			nuevoCamino[i].x != nuevoCamino[i].y   &&
-			nuevoCamino[i+1].y != nuevoCamino[i+1].y){
-			caminoARecorrer.push_back(nuevoCamino[i]);
-		}
+	if (nuevoCamino.size() == 0) {
+		this->caminoARecorrer = nuevoCamino.v;
+		return;
 	}
-	*/
+
+	try {
+		nuevoCamino.convertirTilesAPixeles(coord_ceros);
+		Coordenada c_prox_punto = nuevoCamino[0];
+		// Coordenada para posicionar el sprite.
+		c_prox_punto.x -= this->getPosicion().w / 2;
+		c_prox_punto.y -= this->getPosicion().h;// / 2;
+
+		Direccion direccion = Calculador::calcularDireccion(c_prox_punto, coordPixelSprite());
+		this->setDireccion(direccion);
+		this->activarMovimiento(true);
+
+		this->caminoARecorrer = nuevoCamino.v;
+	} catch ( FueraDeEscenario &e ) { /* Hacer algo!? */
+	} catch ( TileEstaOcupado &e ) { }
 }
 
 /********************************************************************************/
@@ -230,9 +254,94 @@ bool Sprite::quedaCaminoPorRecorrer(){
 }
 
 /********************************************************************************/
+// PRE: queda camino por recorrer.
+bool Sprite::revisarCamino(Coordenada c_punto_actual) {
+	Coordenada c_prox_punto = this->getCaminoARecorrer()[0];
+	try {
+		Coordenada   c_prox_tile = Calculador::tileParaPixel(  c_prox_punto, coord_ceros);
+		if (!(this->escenario->tileEsOcupable(c_prox_tile))) {
+			Coordenada c_pix_destino = getCaminoARecorrer().back();
+			Coordenada c_tile_destino = Calculador::tileParaPixel(c_pix_destino, coord_ceros);
+			// Si el tile que fue ocupado por otra entidad es el de destino, quedarse donde está.
+			if (c_prox_tile == c_tile_destino) throw TileEstaOcupado();
+			// Caso contrario, con el siguiente tile del camino ahora ocupado, crear nuevo camino para esquivarlo.
+			else setearNuevoCamino(Calculador::obtenerCaminoMin(escenario, c_punto_actual, c_pix_destino, coord_ceros), coord_ceros);
+		}
+		if (quedaCaminoPorRecorrer())
+			return true;
+	} catch ( FueraDeEscenario &e ) {} catch ( TileEstaOcupado &e ) {}
+	setearNuevoCamino(Camino(), coord_ceros);
+	return false;
+}
+
+/********************************************************************************/
 void Sprite::acomodar(){
 	this->frameActual = this->frames[this->direccion][cant_Direcciones-1];
 }
+
+
+/********************************************************************************/
+void Sprite::update(int vel_personaje) {
+	if (this->quedaCaminoPorRecorrer()) {
+
+		/*	- calcular distancia al sig punto
+		 *  - si es mayor a 1, seguir moviendo la posicion
+		 *    sino cambiar al siguiente punto del camino (analizando la dirección)
+		 *  - si ya no quedan camino a recorrer, cambiar estado de activar movimiento y acomodar
+		 * */
+		Coordenada c_prox_pixel = this->getCaminoARecorrer()[0];
+
+		///* Esta condición es para que el chabón se ubique en el centro del tile,
+		// * pero no se aplica para el último punto destino. */
+		//if (this->getCaminoARecorrer().size() > 1){
+		c_prox_pixel.x -= this->getPosicion().w / 2;
+		c_prox_pixel.y -= this->getPosicion().h;// / 2;
+		//}
+
+		float distancia = Calculador::calcularDistanciaEntrePixeles(Coordenada(this->regPos.posX_player, this->regPos.posY_player), c_prox_pixel);
+
+		if (distancia > 1){
+            if (this->regPos.posX_player != c_prox_pixel.x) {
+            	float x_result = (this->regPos.posX_player - ((this->regPos.posX_player - c_prox_pixel.x) / distancia) * vel_personaje  * 0.05);
+            	this->setPosX(int(x_result));
+            	this->regPos.posX_player = x_result;
+            }
+            if (this->regPos.posY_player != c_prox_pixel.y) {
+                float y_result = (this->regPos.posY_player - ((this->regPos.posY_player - c_prox_pixel.y) / distancia) * vel_personaje * 0.05);
+                this->setPosY(int(y_result));
+                this->regPos.posY_player = y_result;
+            }
+		} else {
+			/* guardar última coordenada para desocuparla y cambiar a la próxima */
+			Coordenada c_ult_punto = this->getCaminoARecorrer()[0];
+			this->quitarPrimeraCoordenada();
+
+			/* Seteamos la dirección para el siguiente punto. */
+			if (this->getCaminoARecorrer().size() > 0){
+				try {
+					//this->escenario->desocuparTile(Calculador::tileParaPixel(c_ult_punto, coord_ceros));
+					if (this->revisarCamino(c_ult_punto)) {
+						Coordenada c_prox_punto = this->getCaminoARecorrer()[0];
+						c_prox_punto.x -= this->getPosicion().w / 2;
+						c_prox_punto.y -= this->getPosicion().h / 2;
+						Direccion direccion = Calculador::calcularDireccion(c_prox_punto, coordPixelSprite());
+						this->setDireccion(direccion);
+					}
+				} catch ( FueraDeEscenario &e ) { setearNuevoCamino(Camino(), coord_ceros); }
+			}
+		}
+
+	} else {
+		/* Cuando se deja de mover, se debería quedar en
+		 * una posición firme correspondiente a su dirección. */
+		 this->activarMovimiento(false);
+		 this->acomodar();
+	}
+
+           // bool hayColision = DetectorDeColisiones::verificarColisiones(this,juego->getSpritesEntidades());
+           // if (hayColision) this->activarMovimiento(false);
+}
+
 /********************************************************************************/
 Sprite::~Sprite() {
 	for (int i = 0; i < this->cant_Direcciones; i++){

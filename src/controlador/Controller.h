@@ -9,8 +9,10 @@
 #define CONTROLADOR_CONTROLLER_H_
 #include <SDL2/SDL.h>
 #include "../modelo/Juego.h"
+#include "../red/Proxy.h"
 #include "ControladorMouse.h"
 #include "ControladorCamara.h"
+
 
 class Controller {
 private:
@@ -19,7 +21,8 @@ private:
 	ControladorCamara *controladorCamara;
 
 public:
-	Controller();
+	Controller(Connection* lan);
+
 	Juego* getJuego();
 
 	void iniciarJuego();
@@ -29,6 +32,11 @@ public:
 	void agregarCamara(Camara *cam);
 
 	void reiniciarJuego();
+
+	int verificarConexion(std::string string_IP);
+
+	void posicionarCamaraEnProtagonista();
+
 	virtual ~Controller();
 };
 

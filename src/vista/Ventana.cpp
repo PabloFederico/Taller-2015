@@ -11,17 +11,18 @@
 #include "../utils/Constantes.h"
 
 Ventana::Ventana(Controller *controlador) {
-	pair<int,int> dimensionVentana = controlador->getJuego()->dimensionVentana();
+	pair<int,int> dimensionVentana = controlador->getJuego()->getDimensionVentana();
 	this->SCREEN_WIDTH = dimensionVentana.first;
 	this->SCREEN_HEIGHT = dimensionVentana.second;
 	this->window = NULL;
 	this->renderer = NULL;
+	this->fuenteTexto = NULL;
 	this->controlador = controlador;
 }
 
 /********************************************************************************/
 bool Ventana::init(){
-	 this->window = SDL_CreateWindow("Taller de Programación I: AoF",60,60,SCREEN_WIDTH,SCREEN_HEIGHT,SDL_WINDOW_SHOWN);
+	 this->window = SDL_CreateWindow("Taller de Programación I: AoF",100,100,SCREEN_WIDTH,SCREEN_HEIGHT,SDL_WINDOW_SHOWN);
 	 if (this->window == NULL) return false;
 
 	 this->renderer = SDL_CreateRenderer(this->window,-1,SDL_RENDERER_ACCELERATED);
@@ -30,6 +31,7 @@ bool Ventana::init(){
 		  SDL_RenderSetLogicalSize(this->renderer,SCREEN_WIDTH,SCREEN_HEIGHT);
 		  SDL_SetRenderDrawColor(this->renderer,0,0,0,0);
 		 }
+
 	return true;
 }
 
@@ -40,6 +42,9 @@ void Ventana::close(){
 
 	SDL_DestroyWindow(this->window);
 	this->window = NULL;
+
+	TTF_CloseFont(fuenteTexto);
+	fuenteTexto = NULL;
 }
 
 /********************************************************************************/

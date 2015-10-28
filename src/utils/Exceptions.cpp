@@ -5,7 +5,7 @@
  *      Author: martin
  */
 
-#include "../modelo/Exceptions.h"
+#include "../utils/Exceptions.h"
 
 
 bad_nombreTipoEntidad::bad_nombreTipoEntidad(const std::string& message): std::invalid_argument(message) {}
@@ -18,3 +18,14 @@ const char* bad_nombreTipoEntidad::what() const throw()
 DestinoEncontrado::DestinoEncontrado() {}
 
 FueraDeEscenario::FueraDeEscenario() {}
+
+TileEstaOcupado::TileEstaOcupado() {}
+
+CaminoVacio::CaminoVacio() {}
+
+NoSeRecibio::NoSeRecibio() {}
+
+ConnectionProblem::ConnectionProblem() {}
+
+Disconnected::Disconnected() {}
+

@@ -23,6 +23,8 @@ private:
 	Map<Entidad*, Sprite*> *mapSpritesEntidades;
 	map<TipoEntidad, InfoEntidad> mapInfoEntidades;
 
+	Map<TipoImagenUtil, Imagen*> *mapImagenesUtil; /* para las imagenes de barra de estado */
+
 public:
 	ContenedorDeRecursos(SDL_Renderer *renderer);
 
@@ -32,13 +34,22 @@ public:
 
 	map<TipoEntidad, InfoEntidad> getInfoEntidades();
 
+	InfoEntidad getInfoTipo(TipoEntidad tipo);
+
 	Map<Entidad*, Sprite*>* getMapaSpritesEntidades();
 
 	Sprite* getSpriteDeEntidad(Entidad *entidad);
 
 	void generarYGuardarSpritesEntidades(vector<PosEntidad> *posEntidades,Coordenada coord_ceros, Escenario* escenario);
+	void generarYGuardarSpriteEntidad(PosEntidad posEnt, Coordenada coord_ceros, Escenario* escenario);
 
 	void actualizarPosicionesEntidades(int corrimiento_x, int corrimiento_y);
+
+	void cargarImagenesUtil();
+
+	Imagen* getImagenUtilTipo(TipoImagenUtil tipo);
+
+	void cargarImagenesRecursos();
 
 	virtual ~ContenedorDeRecursos();
 };

@@ -9,11 +9,14 @@
 #define VISTA_SPRITE_H_
 #include <SDL2/SDL.h>
 #include <vector>
+#include "../utils/Calculador.h"
 #include "../utils/Structs.h"
 #include "Imagen.h"
 
 class Sprite {
 private:
+	Entidad* entidad;
+
 	int cant_Direcciones;
 	int cant_Img_Distintas;
 	Imagen* imagen;
@@ -39,6 +42,9 @@ private:
 
 	vector<Coordenada> caminoARecorrer;
 
+	Escenario *escenario;
+	Coordenada coord_ceros;
+
 	void cargarFrames();
 
 	void resetTime();
@@ -46,7 +52,7 @@ public:
 	RegistroPosicion regPos;
 
 public:
-	Sprite(int cant_Direcciones, Uint32 cant_Img_Distintas, Imagen* imagen, SDL_Rect posicion);
+	Sprite(int cant_Direcciones, Uint32 cant_Img_Distintas, Imagen* imagen, SDL_Rect posicion, Escenario* escen, Coordenada c_ceros, Entidad* ent = NULL);
 
 	void setDireccion(int direccion);
 
@@ -59,6 +65,10 @@ public:
 	Imagen* getImagen();
 
 	SDL_Rect getPosicion();
+
+	Entidad* getEntidad();
+
+	Coordenada getPosPies();
 
 	void setPosX(int x);
 	void setPosY(int y);
@@ -73,15 +83,15 @@ public:
 
 	void setDelay(int delay);
 
-	//SDL_Rect getSDLRect(int i, int j);
-
 	int currentTime();
 
 	bool checkColision(Sprite* otro);
 
 	void agregarRectangulo(Rectangulo rectangulo);
 
-	void setearNuevoCamino(vector<Coordenada> nuevoCamino);
+	Coordenada coordPixelSprite();
+
+	void setearNuevoCamino(Camino nuevoCamino, Coordenada coord_ceros);
 
 	vector<Coordenada> getCaminoARecorrer();
 
@@ -89,7 +99,11 @@ public:
 
 	bool quedaCaminoPorRecorrer();
 
+	bool revisarCamino(Coordenada c_punto_actual);
+
 	void acomodar();
+
+	void update(int vel_personaje);
 
 	virtual ~Sprite();
 };

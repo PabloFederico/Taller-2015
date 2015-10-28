@@ -24,16 +24,18 @@ void VentanaJuego::cargarJuego(Juego *juego){
 	int LIMITE_DESPLAZAMIENTO_EN_Y = DISTANCIA_ENTRE_Y * TILES_Y;
 
 	if (init()){
+		this->fuenteTexto = TTF_OpenFont("censcbk.ttf",TAM_LETRA_JUEGO);
 		/* El (0,0) relativo del mapa respecto a la ventana principal */
-		int centro_x = SCREEN_WIDTH / 2;
-		int centro_y = SCREEN_HEIGHT / 2;
+		//PosEntidad protag = juego->getPosEntDeProtagonista();
+		int centro_x = SCREEN_WIDTH / 2;  //protag.x;
+		int centro_y = SCREEN_HEIGHT / 2; //protag.y;
 		int *cero_x = new int(centro_x);
 		int *cero_y = new int(centro_y - LIMITE_DESPLAZAMIENTO_EN_Y);
 
 		juego->setCeros(cero_x,cero_y);
 
 		Camara* camara = new Camara(cero_x,cero_y);
-		camara->setDimension(SCREEN_WIDTH,SCREEN_HEIGHT);
+		camara->setDimension(SCREEN_WIDTH,SCREEN_HEIGHT - controlador->getJuego()->getBarraEstado()->getDimension().second);
 		camara->setMargenScrolling(juego->getMargenScroll());
 		camara->setLimites(LIMITE_DESPLAZAMIENTO_EN_X,LIMITE_DESPLAZAMIENTO_EN_Y);
 
@@ -46,6 +48,8 @@ void VentanaJuego::cargarJuego(Juego *juego){
 		 * se cargar en el contenedor */
 
 		this->cargarImagenesYSprites(juego);
+
+		controlador->posicionarCamaraEnProtagonista();
 	}
 }
 
@@ -60,7 +64,7 @@ void VentanaJuego::cargarImagenesYSprites(Juego* juego){
 	Coordenada coord_ceros(*juego->getCeros().first, *juego->getCeros().second);
 	contenedor->generarYGuardarSpritesEntidades(posEntidades,coord_ceros,juego->getEscenario());
 
-	this->controlador->getJuego()->cargarRecursos(contenedor);
+	this->controlador->getJuego()->agregarContenedorDeRecursos(contenedor);
 	this->dibujador->setContenedorDeRecursos(contenedor);
 }
 
@@ -68,13 +72,14 @@ void VentanaJuego::cargarImagenesYSprites(Juego* juego){
 void VentanaJuego::dibujar(){
 	SDL_RenderClear(this->renderer);
 
-	int ancho = controlador->getJuego()->getEscenario()->getDimension().first;
-	int largo = controlador->getJuego()->getEscenario()->getDimension().second;
-	CapaNegra* capa = controlador->getJuego()->getEscenario()->getCapa();
+	Escenario* escenario = controlador->getJuego()->getEscenario();
+	BarraEstado* barraEstado = controlador->getJuego()->getBarraEstado();
 
-	dibujador->dibujarRelieve(ancho,largo);
-	dibujador->dibujarEntidades();
-	dibujador->dibujarCapaNegra(capa);
+	dibujador->dibujarEscenario(escenario);
+	dibujador->dibujarBarraEstado(escenario, barraEstado, fuenteTexto);
+	//dibujador->dibujarContorno(escenario, fuenteTexto);
+
+	SDL_RenderPresent(this->renderer);
 }
 
 /********************************************************************************/
@@ -96,8 +101,6 @@ void VentanaJuego::mostrar(){
 
 	            /* Actualiza el renderer */
 	            this->dibujar();
-
-	            SDL_RenderPresent(this->renderer);
 
 	            SDL_Delay(15);
 
