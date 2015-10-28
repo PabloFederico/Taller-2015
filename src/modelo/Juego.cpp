@@ -85,7 +85,6 @@ void Juego::cargarJuego(InfoEscenario* infoEscRed = NULL, Coordenada *posInicial
 	// Acá me imagino la posibilidad de un selector de escenarios.
 	if (esCliente()) {
 		this->vel_personaje = 50; // Misma velocidad para todos.
-		//infoEsc.setPosProtag(Escenario::generarCoordenadaRandom(infoEsc.size_x, 0, infoEsc.size_y, 0));
 		infoEsc.setPosProtag(*posInicial);
 	}
 	this->fabricaDeEntidades = new EntidadFactory(this->idJug, this->vectorInfoTiposEntidades);
@@ -124,6 +123,8 @@ InfoEscenario Juego::parsearConfig() {
 
 	try
 	{
+		if (config["nombre_jugador"]) this->nombreJug = config["nombre_jugador"].as<string>();
+
 		if (config["pantalla"]["alto"] && config["pantalla"]["alto"].as<int>() > 0)
 			this->screenHeight = config["pantalla"]["alto"].as<int>();
 		else Log::imprimirALog(WAR,"Alto de pantalla no definido, se tomará " + this->screenHeight);
