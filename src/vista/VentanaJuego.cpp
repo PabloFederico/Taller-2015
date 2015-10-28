@@ -50,6 +50,9 @@ void VentanaJuego::cargarJuego(Juego *juego){
 		this->cargarImagenesYSprites(juego);
 
 		controlador->posicionarCamaraEnProtagonista();
+
+		string nombreJugador = juego->getProtagonista()->getInfo();
+		SDL_SetWindowTitle(window,nombreJugador.c_str());
 	}
 }
 
@@ -75,7 +78,7 @@ void VentanaJuego::dibujar(){
 	Escenario* escenario = controlador->getJuego()->getEscenario();
 	BarraEstado* barraEstado = controlador->getJuego()->getBarraEstado();
 
-	dibujador->dibujarEscenario(escenario);
+	dibujador->dibujarEscenario(escenario, fuenteTexto);
 	dibujador->dibujarBarraEstado(escenario, barraEstado, fuenteTexto);
 	//dibujador->dibujarContorno(escenario, fuenteTexto);
 
