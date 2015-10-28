@@ -34,24 +34,17 @@ void Tile::eliminarEntidad(Entidad* entidad){
 }
 
 bool Tile::tieneRecurso(){
-	printf( "ENTRO A TIENE RECURSO\n");
 	vector<Entidad*>::iterator it;
-	printf( "GENERO ITERADOR\n");
 
 	for (it = entidades.begin();it < entidades.end();++it)
 	{
-		printf( "ENTRO AL ITERADOR \n");
 		if (it == entidades.end()){
-			printf( "NO ENCONTRE NADA, DEVUELVO FALSE \n");
 			return false;
 		}
 		if (EsRecurso((*it)->getTipo())){
-			printf( "ENCONTRE UN RECURSO \n");
-			//entidades.erase(it);
 			return true;
 		}
 	}
-	printf( "NO ENCONTRE NADA, DEVUELVO FALSE \n");
 	return false;
 }
 Entidad* Tile::devolverRecurso(){

@@ -28,7 +28,7 @@ pair<int,int> CapaFog::getDimension(){
 }
 
 vector<pair<int,int> > CapaFog::generarPuntos(int x, int y){
-	int cant_quitar = 3;
+	int cant_quitar = 10;
 	vector<pair<int,int> > puntos;
 	int x_relativo;
 	int y_relativo = y - cant_quitar;

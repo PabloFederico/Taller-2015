@@ -490,14 +490,13 @@ void Juego::toggleEnemigo(int id_jug) {
 			entidadEnemigo = it->entidad;
 			if (entidadEnemigo->estaPetrificado()){
 				// Si está congelado, lo pasamos a color
-				contenedor->setearCanalAlphaParaEntidad(entidadEnemigo,ALPHA_COLOR);
 				entidadEnemigo->despetrificar();
 			}else{
 				// Si no, lo pasamos a gris
-				contenedor->setearCanalAlphaParaEntidad(entidadEnemigo,ALPHA_GRIS);
+
 				entidadEnemigo->petrificar();
 			}
-
+			contenedor->getSpriteDeEntidad(entidadEnemigo)->cambiarTexture();
 		}
 }
 

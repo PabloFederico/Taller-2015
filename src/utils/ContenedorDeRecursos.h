@@ -22,8 +22,8 @@ private:
 	Map<TipoEntidad, Imagen*> *mapImagenes;
 	Map<Entidad*, Sprite*> *mapSpritesEntidades;
 	map<TipoEntidad, InfoEntidad> mapInfoEntidades;
-
 	Map<TipoImagenUtil, Imagen*> *mapImagenesUtil; /* para las imagenes de barra de estado */
+	Imagen* imagenPetrificadaSoldado;
 
 public:
 	ContenedorDeRecursos(SDL_Renderer *renderer);

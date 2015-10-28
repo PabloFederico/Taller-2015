@@ -16,6 +16,7 @@ ContenedorDeRecursos::ContenedorDeRecursos(SDL_Renderer *renderer) {
 	this->mapSpritesEntidades = new Map<Entidad*, Sprite*>();
 	this->mapImagenes = new Map<TipoEntidad, Imagen*>();
 	mapImagenesUtil = new Map<TipoImagenUtil, Imagen*>();
+	imagenPetrificadaSoldado = NULL;
 }
 
 /********************************************************************************/
@@ -29,10 +30,14 @@ void ContenedorDeRecursos::cargarImagenesEntidades(vector<InfoEntidad> infoEntid
 
 	Imagen *contorno_grande = Loader::cargarImagen(this->renderer,"images/selector_tile_2.png");
 	this->mapImagenes->insert(CONTORNOXL,contorno_grande);
-
+	string path_aux = "";
 	for (unsigned i = 0; i < infoEntidades.size(); i++){
 		TipoEntidad tipo = infoEntidades[i].tipo;
 		string path = infoEntidades[i].path;
+
+		if (tipo == SOLDADO){
+			path_aux = path;
+		}
 
 		/* Nos guardamos la información de las entidades */
 		this->mapInfoEntidades[tipo] = infoEntidades[i];
@@ -40,6 +45,10 @@ void ContenedorDeRecursos::cargarImagenesEntidades(vector<InfoEntidad> infoEntid
 		Imagen *imagen = Loader::cargarImagen(this->renderer,path);
 
 		this->mapImagenes->insert(tipo,imagen);
+	}
+
+	if (path_aux != ""){
+		imagenPetrificadaSoldado = Loader::cargarImagen(renderer,path_aux);
 	}
 }
 
@@ -104,7 +113,8 @@ void ContenedorDeRecursos::generarYGuardarSpriteEntidad(PosEntidad posEnt, Coord
 						posicion.w = ANCHO_PIXEL_PASTO / 2;
 						posicion.h = ALTO_PIXEL_PASTO * 3 / 4;
 						sprite = new Sprite(DIRECCIONES,14,this->getImagenTipo(entidad->getTipo()),posicion,escenario,coord_ceros,entidad);
-
+						SDL_SetTextureColorMod(imagenPetrificadaSoldado->getTexture(),150,150,150);
+						sprite->agregarImagenPetrificada(imagenPetrificadaSoldado);
 						int x_ini = posicion.x;
 						int y_ini = posicion.y;
 						Rectangulo rect1(x_ini + 0.3*posicion.w, 0.3*posicion.w, y_ini + 0.1 * posicion.h, 0.8*posicion.h);
@@ -223,6 +233,18 @@ void ContenedorDeRecursos::cargarImagenesUtil(){
 
 	imagen = Loader::cargarImagen(this->renderer,"images/capa_negra.png");
 	this->mapImagenesUtil->insert(CAPA_NEGRA,imagen);
+
+	imagen = Loader::cargarImagen(this->renderer,"images/cuadrado_magenta_1.png");
+	this->mapImagenesUtil->insert(CUADRADO_MAGENTA,imagen);
+
+	imagen = Loader::cargarImagen(this->renderer,"images/cuadrado_verde_1.png");
+	this->mapImagenesUtil->insert(CUADRADO_VERDE,imagen);
+
+	imagen = Loader::cargarImagen(this->renderer,"images/cuadrado_azul_1.png");
+	this->mapImagenesUtil->insert(CUADRADO_AZUL,imagen);
+
+	imagen = Loader::cargarImagen(this->renderer,"images/cuadrado_rojo_1.png");
+	this->mapImagenesUtil->insert(CUADRADO_ROJO,imagen);
 }
 
 
@@ -285,5 +307,7 @@ ContenedorDeRecursos::~ContenedorDeRecursos() {
 		delete sprite;
 	}
 	delete this->mapSpritesEntidades;
+
+	delete this->imagenPetrificadaSoldado;
 }
 

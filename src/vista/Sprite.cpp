@@ -34,6 +34,8 @@ Sprite::Sprite(int cant_Direcciones, Uint32 cant_Img_Distintas, Imagen* imagen,
 
 	this->cargarFrames();
 
+	imagenPetrificada = NULL;
+
 	this->direccion = 0;
 	this->indexSpriteActual = 0;
 
@@ -70,6 +72,18 @@ Imagen* Sprite::getImagen(){
 /********************************************************************************/
 SDL_Rect Sprite::getPosicion(){
 	return this->posicion;
+}
+
+/********************************************************************************/
+void Sprite::agregarImagenPetrificada(Imagen* image){
+	this->imagenPetrificada = image;
+}
+
+/********************************************************************************/
+void Sprite::cambiarTexture(){
+	Imagen* image_aux = this->imagen;
+	imagen = imagenPetrificada;
+	imagenPetrificada = image_aux;
 }
 
 /********************************************************************************/
@@ -312,6 +326,24 @@ void Sprite::update(int vel_personaje) {
                 this->regPos.posY_player = y_result;
             }
 		} else {
+/*
+			Coordenada c_tile_actual = Calculador::tileParaPixel(getCaminoARecorrer()[0],coord_ceros);
+			Tile* tile = escenario->getTile(c_tile_actual);
+			printf("holaaaaa\n");
+			if (tile->tieneRecurso()){
+
+				//this->entidad->getIDJug() != escenario->getProtagonista()->getIDJug()){
+				printf("hay recurso\n");
+				Entidad* auxRecurso = tile->devolverRecurso();
+				printf("%s \n",auxRecurso->getInfo().c_str());
+				printf("eliminado\n");
+				tile->eliminarEntidad(auxRecurso);
+				printf("elimindado\n");
+				//delete auxRecurso;
+			}else{
+				printf("no paso\n");
+			}
+*/
 			/* guardar última coordenada para desocuparla y cambiar a la próxima */
 			Coordenada c_ult_punto = this->getCaminoARecorrer()[0];
 			this->quitarPrimeraCoordenada();

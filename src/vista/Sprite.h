@@ -45,6 +45,8 @@ private:
 	Escenario *escenario;
 	Coordenada coord_ceros;
 
+	Imagen* imagenPetrificada;
+
 	void cargarFrames();
 
 	void resetTime();
@@ -57,6 +59,10 @@ public:
 	void setDireccion(int direccion);
 
 	void efectuarMovimiento();
+
+	void agregarImagenPetrificada(Imagen* image);
+
+	void cambiarTexture();
 
 	bool estaEnMovimiento();
 

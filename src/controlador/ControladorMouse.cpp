@@ -29,13 +29,11 @@ void ControladorMouse::procesarEvento(SDL_Event &event, int MouseX, int MouseY){
 	}catch (FueraDeEscenario &e) {}
 
 	 /*Chequeo de si se come un recurso */
-		printf("ESTOY FIJANDOME SI ESTAS EN UN RECURSO \n");
 		Escenario* escenario = juego->getEscenario();
 		BarraEstado* barra = juego->getBarraEstado();
 		Coordenada pos_jug = escenario->getPosProtagonista();
 		Tile* tile = escenario->getTile(pos_jug);
 		if (tile->tieneRecurso()){
-			printf("SI ESTOY ACA ES PORQUE SE QUE TENES UN RECURSO EN EL TILE \n");
 			Entidad* recurso = tile->devolverRecurso();
 			barra->agregarRecursoEconomico(recurso->getTipo());
 			escenario->quitarRecurso(pos_jug,recurso);

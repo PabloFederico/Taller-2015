@@ -56,8 +56,9 @@ void Dibujador::dibujarRelieve(Escenario* esc){
 				vector<Entidad*> entidades = tile->getEntidades();
 				for (unsigned k = 0; k < entidades.size(); k++){
 					Entidad* entidad = entidades[k];
+					Sprite* sprite = contenedor->getSpriteDeEntidad(entidad);
 
-					if (entidad == esc->getEntidadSeleccionada()){
+					if (entidad == esc->getEntidadSeleccionada() && !sprite->estaEnMovimiento()){
 						SDL_RenderCopy(renderer,imagenSelector->getTexture(),NULL,&rectRelieve);
 					}
 				}
@@ -421,7 +422,9 @@ void Dibujador::dibujarMiniMapa(Escenario* esc, SDL_Rect rect){
 					switch (entidad->getTipo()){
 						case SOLDADO:
 						case JUANA_DE_ARCO:
-								image = contenedor->getImagenUtilTipo(ICONO_ROJO);
+								image = contenedor->getImagenUtilTipo((TipoImagenUtil)entidad->getIDJug());
+								rect_aux.w = 3;
+								rect_aux.h = 3;
 								break;
 						case ANIMAL:
 								image = contenedor->getImagenUtilTipo(ICONO_BLANCO);
