@@ -17,6 +17,8 @@ private:
 	int tiles_x;
 	int tiles_y;
 
+	int rango_de_vision;
+
 	vector<pair<int,int> > generarPuntos(int x, int y);
 
 	void actualizarCapaGris();
@@ -29,6 +31,8 @@ public:
 	void descubrirDesdePunto(int x, int y);
 
 	EstadoCapa getEstadoTile(int x, int y);
+
+	void setRangoDeVision(int rango);
 
 	virtual ~CapaFog();
 };

@@ -23,6 +23,7 @@ private:
 	static void procesarCamino(Juego* juego, string encodeado);
 	static void procesarNuevaEntidad(Juego* juego, string encodeado);
 	static void procesarRecurso(Juego* juego, string encodeado);
+	static void procesarRecursoComido(Juego* juego, string encodeado);
 	static void procesarToggle(Juego* juego, string encodeado);
 	//static void procesarAtaque(Juego* juego, string encodeado)
 
@@ -36,6 +37,7 @@ public:
 	static void enviar(Connection* lan, InfoEscenario ie);		// Enviar datos iniciales de Escenario
 	static void enviar(Connection* lan, Camino cam);	// Enviar movimientos del protagonista
 	static void enviar(Connection* lan, PosEntidad ent);		// Enviar información de entidad
+	static void comiRecurso(Connection* lan, Coordenada c);
 	//static void enviar(Connection* lan, Ataque)
 
 	static string agregarPrefijoYJugYFinal(string prefijo, int jug, string mensaje);

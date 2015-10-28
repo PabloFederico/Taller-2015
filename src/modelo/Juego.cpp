@@ -28,6 +28,7 @@ Juego::Juego(Connection* lan = NULL, Coordenada* posInicial = NULL, InfoEscenari
 	this->screenHeight = 600;
 	this->vel_personaje = 50;
 	this->margen_scroll = 30;
+	this->rango_vision = 10;
 
 	this->cargarNumJugador();
 	this->cargarJuego(infoEscRed, posInicial);
@@ -89,6 +90,7 @@ void Juego::cargarJuego(InfoEscenario* infoEscRed = NULL, Coordenada *posInicial
 	}
 	this->fabricaDeEntidades = new EntidadFactory(this->idJug, this->vectorInfoTiposEntidades);
 	this->escenario = new Escenario(infoEsc, this->fabricaDeEntidades, this->enemigos);
+	escenario->getCapa()->setRangoDeVision(rango_vision);
 	this->protagonista = this->escenario->getProtagonista();
 	this->barraEstado = new BarraEstado(this->screenWidth, 150);
 }
@@ -140,6 +142,10 @@ InfoEscenario Juego::parsearConfig() {
 		if (config["configuracion"]["margen_scroll"] && config["configuracion"]["margen_scroll"].as<int>() >= 0)
 			margen_scroll = config["configuracion"]["margen_scroll"].as<int>();
 		else Log::imprimirALog(WAR,"Margen de scroll no definido, se usará: " + margen_scroll);
+
+		if (config["configuracion"]["rango_de_vision"] && config["configuracion"]["rango_de_vision"].as<int>() > 0)
+			rango_vision = config["configuracion"]["rango_de_vision"].as<int>();
+		else Log::imprimirALog(WAR,"Rango de visión no definido, se usará: " + rango_vision);
 
 		if (config["tipos"]) {
 			for(std::size_t i = 0; i < config["tipos"].size(); ++i) {
@@ -280,6 +286,10 @@ InfoEscenario Juego::infoEscenarioDefault() {
 	infoEscenario.posY_protagonista = 3;
 
 	return infoEscenario;
+}
+
+int Juego::getRangoDeVision(){
+	return this->rango_vision;
 }
 
 /********************************************************************************/

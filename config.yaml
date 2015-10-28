@@ -9,6 +9,7 @@ pantalla:
 configuracion:
   vel_personaje: 30
   margen_scroll: 8
+  rango_de_vision: 10
 
 tipos:
   - nombre: arbol

@@ -78,6 +78,8 @@ TipoMensajeRed Proxy::actualizarMultiplayer(Juego* juego) {
 			break;
 		case TOGGLE: procesarToggle(juego, unContenido);
 			break;
+		case GLOTON: procesarRecursoComido(juego, unContenido);
+			break;
 		case ATAQUE:
 			break;
 		case MENSAJE: procesarMensaje(unContenido);
@@ -137,6 +139,17 @@ void Proxy::procesarRecurso(Juego* juego, string encodeado) {
 	juego->agregarRecurso(TipoEntidad(nTipo), Coordenada::dec(posEnc));
 }
 
+void Proxy::procesarRecursoComido(Juego* juego, string encodeado) {
+	stringstream ss(encodeado);
+	char posEnc[MAX_BYTES_LECTURA];
+	ss.get(posEnc, MAX_BYTES_LECTURA, '~');
+	Coordenada coord = Coordenada::dec(posEnc);
+	try {
+		Entidad* recurso = juego->getEscenario()->getTile(coord)->devolverRecurso();
+		juego->getEscenario()->quitarRecurso(coord, recurso);
+	} catch ( NoTieneRecurso &e ) {}
+}
+
 void Proxy::procesarToggle(Juego* juego, string encodeado) {
 	stringstream ss(encodeado);
 	int jug; ss >> jug;
@@ -173,5 +186,9 @@ void Proxy::enviar(Connection* lan, PosEntidad ent) {
 	lan->enviar(t);
 }
 
+void Proxy::comiRecurso(Connection* lan, Coordenada c) {
+	string t = agregarPrefijoYFinal("GLO", c.enc());
+	lan->enviar(t);
+}
 
 //void Proxy::enviar(Ataque)

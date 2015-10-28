@@ -21,6 +21,7 @@ CapaFog::CapaFog(int tiles_x, int tiles_y) {
 			this->tiles[i][j] = ESTADO_NEGRO;
 		}
 	}
+	this->rango_de_vision = 5;
 }
 
 pair<int,int> CapaFog::getDimension(){
@@ -28,7 +29,7 @@ pair<int,int> CapaFog::getDimension(){
 }
 
 vector<pair<int,int> > CapaFog::generarPuntos(int x, int y){
-	int cant_quitar = 10;
+	int cant_quitar = rango_de_vision;
 	vector<pair<int,int> > puntos;
 	int x_relativo;
 	int y_relativo = y - cant_quitar;
@@ -55,6 +56,10 @@ void CapaFog::descubrirDesdePunto(int x, int y){
 		this->tiles[tileX][tileY] = ESTADO_COLOR;
 	}
 
+}
+
+void CapaFog::setRangoDeVision(int rango){
+	this->rango_de_vision = rango;
 }
 
 void CapaFog::actualizarCapaGris(){

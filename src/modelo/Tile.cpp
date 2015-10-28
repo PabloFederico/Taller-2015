@@ -55,7 +55,6 @@ Entidad* Tile::devolverRecurso(){
 			entidades.erase(it);
 			return ent;
 		}
-	entidades.erase(it);
 	throw NoTieneRecurso();
 }
 Entidad* Tile::quitarEntidad(int id_jug) {

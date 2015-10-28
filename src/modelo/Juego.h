@@ -46,6 +46,7 @@ private:
 
 	int vel_personaje;
 	int margen_scroll;
+	int rango_vision;
 
 	/* Carga la configuración inicial del juego a traves
 	 * de un archivo de configuración */
@@ -73,6 +74,9 @@ public:
 	bool esCliente();
 
 	void setNombreJugador(string nom);
+
+	int getRangoDeVision();
+
 	string getNombreJugador();
 	int getIDJugador();
 	void cargarNumJugador();
