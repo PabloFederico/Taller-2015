@@ -123,6 +123,7 @@ void Dibujador::dibujarEscenario(Escenario* esc){
 
 					Sprite* sprite = this->contenedor->getSpriteDeEntidad(entidad);
 					SDL_Rect pos = sprite->getPosicion();
+
 					//Entidades con movimiento:
 					if (entidad->esMovible() && sprite->estaEnMovimiento()){
 						if (sprite->currentTime() > (1000/sprite->getFps())){
