@@ -68,7 +68,7 @@ void Juego::cargarJuego(InfoEscenario* infoEscRed = NULL) {
 	// Acá me imagino la posibilidad de un selector de escenarios.
 	if (esCliente()) {
 		this->vel_personaje = 50; // Misma velocidad para todos.
-		infoEsc.setPosProtag(Escenario::generarCoordenadaRandom(infoEsc.size_x, infoEsc.size_y));
+		infoEsc.setPosProtag(Escenario::generarCoordenadaRandom(infoEsc.size_x, 0, infoEsc.size_y, 0));
 	}
 	this->fabricaDeEntidades = new EntidadFactory(this->idJug, this->vectorInfoTiposEntidades);
 	this->escenario = new Escenario(infoEsc, this->fabricaDeEntidades, this->enemigos);

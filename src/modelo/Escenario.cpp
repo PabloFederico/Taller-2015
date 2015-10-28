@@ -34,7 +34,7 @@ Escenario::Escenario(InfoEscenario infoEsc, EntidadFactory *fabrica, vector<PosE
 	Coordenada posProtag(infoEsc.posX_protagonista, infoEsc.posY_protagonista);
 	bool resPosicionar = this->agregarEntidad(posProtag, this->protagonista);
 	while (resPosicionar == false) {	// Genera posiciones random hasta poder agregar al protagonista.
-		Coordenada posProtag = generarCoordenadaRandom(size_x, size_y);
+		Coordenada posProtag = generarCoordenadaRandom(size_x, 0, size_y, 0);
 		resPosicionar = this->agregarEntidad(posProtag, this->protagonista);
 	}
 	this->c_protagonista = posProtag;
@@ -129,11 +129,11 @@ Tile* Escenario::getTile(Coordenada c) {
 }
 
 /********************************************************************************/
-Coordenada Escenario::generarCoordenadaRandom(int size_x , int size_y){
+Coordenada Escenario::generarCoordenadaRandom(int size_x_final, int size_x_inicial, int size_y_final, int size_y_inicial) {
 	int x_rand, y_rand;
 	srand((int) time(0)); //seedeo el random bien
-	x_rand = (rand() % size_x);
-	y_rand = (rand() % size_y);
+	x_rand = (rand() % size_x_final) + size_x_inicial;
+	y_rand = (rand() % size_y_final) + size_y_inicial;
 
 	return Coordenada(x_rand,y_rand);
 }
