@@ -115,7 +115,7 @@ void Server::intentarNuevaConexion(fd_set* p_tempset, int segundosDeEspera) {
 				ostringstream ss;
 
 				map<int,DataCliente>::iterator it = clientes.find(peersock);
-				if (it != clientes.end()) { // asumo q mismo peersock, mismo cliente
+				if (it != clientes.end()) { // asumo q mismo peersock, mismo cliente // PARECERÍA SERLO...
 					ss << "<TOG>"<<it->second.id<<"~";
 					for (int j = 0; j < maxfd+1; j++)
 						if (j != peersock && FD_ISSET(j, &readset))
@@ -123,9 +123,9 @@ void Server::intentarNuevaConexion(fd_set* p_tempset, int segundosDeEspera) {
 				} else {
 					string nomTemp = "Jugador"+cantConectados;	// alto hardcodeo
 					// Adaptable a secciones del mapa basado en MAX_CONEXIONES y cantConectados
-					// Caso contrario, deberííía verificarse que no sea una posición repetida
+					// Caso contrario, aunque improbable, deberííía verificarse que no sea una posición repetida
 					Coordenada coordRandom = Calculador::generarPosRandom(50,0,50,0, cantConectados);
-					std::cout << "Pos inicial para jugador "<<cantConectados<<" es: "<<coordRandom.x<<";"<<coordRandom.y<<std::endl;//
+					//std::cout << "Pos inicial para jugador "<<cantConectados<<" es: "<<coordRandom.x<<";"<<coordRandom.y<<std::endl;//
 					DataCliente cli = DataCliente(cantConectados, nomTemp, coordRandom);
 					clientes.insert(pair<int,DataCliente>(peersock,cli));
 
@@ -138,7 +138,6 @@ void Server::intentarNuevaConexion(fd_set* p_tempset, int segundosDeEspera) {
 				FD_SET(peersock, &readset);
 				maxfd = (maxfd > peersock)?maxfd:peersock;
 				std::cout << "Jugador "<<cantConectados<<" conectado!"<<std::endl;
-				std::cout << "socket "<<peersock<<std::endl;//
 			}
 		}
 	}
