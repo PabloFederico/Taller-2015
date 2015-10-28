@@ -52,6 +52,21 @@ Entidad::Entidad(TipoEntidad tipo, int num_jug): idJug(num_jug)  {
 				ocupador = true;
 				info = "Arbol";
 				break;
+		case ORO:
+				movible = false;
+				ocupador = false;
+				info = "Oro";
+				break;
+		case COMIDA:
+				movible = false;
+				ocupador = false;
+				info = "Comida";
+				break;
+		case MADERA:
+				movible = false;
+				ocupador = false;
+				info = "Madera";
+				break;
 		default:
 				movible = false;
 				ocupador = true;
