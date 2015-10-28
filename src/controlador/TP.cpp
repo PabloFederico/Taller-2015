@@ -24,7 +24,7 @@ int main(int argc, char** argv) {
 
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
 		return -1;
-	} else if (server == NULL) {
+	} else if ((server != NULL) || lan != NULL) {
 		TTF_Init();
 
 		Controller *controller = new Controller(lan);
