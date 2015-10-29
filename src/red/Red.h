@@ -9,8 +9,11 @@
 #define RED_RED_H_
 #include "../utils/Constantes.h"
 #include "../utils/Exceptions.h"
+#include "../utils/Enumerados.h"
 #include "../red/Socket.h"
 #include <string.h>
+#include <sstream>
+#include <iostream>
 #include <stdlib.h>
 #include <string>
 #include <cerrno>
@@ -23,16 +26,13 @@ public:
 	static int enlazarSocket(Socket *socket){
 		int descriptor = socket->getDescriptor();
 		sockaddr_in* infoDir = socket->getpInfoDir();
-
-		int success = bind(descriptor, (sockaddr*)infoDir, sizeof(*infoDir));
-		return success;
+		return bind(descriptor, (sockaddr*)infoDir, sizeof(*infoDir));
 	};
 
 
 	/* listen() */
 	static int escucharConexiones(int descriptor, int cantidadConexiones){
-		int success = listen(descriptor, cantidadConexiones);
-		return success;
+		return listen(descriptor, cantidadConexiones);
 	};
 
 
@@ -51,15 +51,13 @@ public:
 	static int crearConexion(Socket* socket){
 		int descriptor = socket->getDescriptor();
 		sockaddr_in* infoDir = socket->getpInfoDir();
-		int success = connect(descriptor, (sockaddr*)infoDir, sizeof(*infoDir));
-		return success;
+		return connect(descriptor, (sockaddr*)infoDir, sizeof(*infoDir));
 	};
 
 
 	/* send() */
 	static int enviarInformacion(int descriptor, std::string info){
-		int success = send(descriptor, info.c_str(), strlen(info.c_str()), 0);
-		return success;
+		return send(descriptor, info.c_str(), strlen(info.c_str()), 0);
 	};
 
 	/* recv() */
@@ -71,6 +69,66 @@ public:
 	};
 
 
+
+	/*************************** FUNCIONES DE ENCO Y DECODEADO *******************************/
+
+	static string agregarPrefijoYFinal(string prefijo, string mensaje) {
+		ostringstream Encode;
+		Encode << "<"<<prefijo<<">"<<mensaje<<"~";
+		return Encode.str();
+	}
+
+	static string agregarPrefijoYJugYFinal(string prefijo, int jug, string mensaje) {
+		ostringstream Encode;
+		Encode << "<"<<prefijo<<">"<<jug<<":"<<mensaje<<"~";
+		return Encode.str();
+	}
+
+
+	static TipoMensajeRed extraerPrefijoYMensaje(string mensaje, string* contenido) {
+		stringstream ss(mensaje);
+		char sTipo[5], charContenido[MAX_BYTES_LECTURA];
+		ss.ignore();			// "<"
+		ss.get(sTipo, 4, '>');	// "tipo"
+		ss.ignore();			// ">"
+		ss.get(charContenido, MAX_BYTES_LECTURA, '\0');
+		mensaje = string(charContenido);
+		return StringToTipoMensajeRed(sTipo);
+	}
+
+	static int extraerNumeroYResto(string contenido, string* resto) {
+		char charResto[MAX_BYTES_LECTURA];
+		stringstream ss(contenido);
+		int jug; ss >> jug; ss.ignore(); // ':'
+		ss.get(charResto, MAX_BYTES_LECTURA, '\0');
+		*resto = string(charResto);
+		return jug;
+	}
+
+
+	// Diferencio aquello Recibido como el conjunto de Mensajes, cada cual posee la etiqueta de TipoMensajeRed y un Contenido decodificable.
+	// Extrae de recibidoSinParsear un mensaje entero, del cual parsea tipo y contenido.
+	static bool parsearSiguienteMensaje(string* recibidoSinParsear, TipoMensajeRed* tipo, string* unContenido) {
+		stringstream ss(*recibidoSinParsear);
+		char charUnMensaje[MAX_BYTES_LECTURA], charRestoRecibido[MAX_BYTES_LECTURA];
+		string unMensaje;
+		*tipo = TipoMensajeRed(0);
+
+		if (ss.peek() != '<') // Me deshago de posible basura.
+			ss.get(charUnMensaje, MAX_BYTES_LECTURA, '<');
+		ss.get(charUnMensaje, MAX_BYTES_LECTURA, '~');
+		ss.ignore();	// '~'
+		ss.get(charRestoRecibido, MAX_BYTES_LECTURA);
+		*recibidoSinParsear = string(charRestoRecibido);
+		unMensaje = string(charUnMensaje);
+
+		bool res = (charUnMensaje[0] == '<');
+		if (res)
+			*tipo = extraerPrefijoYMensaje(unMensaje, unContenido);
+		return res;
+	}
+
+	/*****************************************************************************************/
 };
 
 #endif /* RED_RED_H_ */

@@ -15,80 +15,67 @@ Server::Server() {
 }
 
 bool Server::iniciar() {
-	//this->Connection::finalizar();
-	/* código que debería ejecutar el servidor */
 	std::cout << "======= SERVIDOR =======" << std::endl;
-
 	this->socket = new SocketServidor();
-
 	if (this->socket->creadoCorrectamente() < 0) {
 		std::cout << "ERROR: No se pudo crear socket."<<std::endl;
 		return false;
 	}
-
-	/* bind() */
 	if (Red::enlazarSocket(this->socket) < 0) {
 		std::cout << "ERROR: bind failed."<<std::endl;
 		return false;
 	}
-
-	/* listen() */
 	if (Red::escucharConexiones(this->socket->getDescriptor(),MAX_CONEXIONES) < 0)
 		return false;
-
 	cantConectados = 0;
 	return true;
 }
 
 
-bool Server::mensajeParaElServidor(int sockfd, string s) {
-	bool res = true;
-	TipoMensajeRed tipo = TipoMensajeRed(0);
-	string unContenido;	stringstream ss(s);
-	char charUnMensaje[MAX_BYTES_LECTURA];
-	if (ss.peek() != '<') // Me deshago de posible basura.
-		ss.get(charUnMensaje, MAX_BYTES_LECTURA, '<');
-	ss.get(charUnMensaje, MAX_BYTES_LECTURA, '~');
-
-	while (charUnMensaje[0] == '<') {
-		string unMensaje(charUnMensaje);
-		tipo = Proxy::extraerPrefijoYMensaje(unMensaje, &unContenido);
+bool Server::mensajeParaElServidor(int sockfd, string recibido) {
+	bool rebotarlo = true;
+	string unMensaje, unContenido;
+	TipoMensajeRed tipo;
+	while (Red::parsearSiguienteMensaje(&recibido, &tipo, &unContenido)) {
 
 		switch (tipo) {
-		case COMIENZO:{ map<int,DataCliente>::iterator it; bool late = false;
-						do {
-							ostringstream nom(unContenido);
-							for (it = clientes.begin(); it != clientes.end(); ++it)
-								if (it->second.nombre == nom.str())
-									late = true;
-							if (late) {
-								nom << clientes[sockfd].id;
-								late = false;
-							} else {
-								clientes[sockfd].nombre = nom.str();
-								string enviar = Proxy::agregarPrefijoYJugYFinal("COM", clientes[sockfd].id, unContenido);
-								send(sockfd, &enviar, sizeof(enviar), MSG_NOSIGNAL);
-							}
-						} while (late == true);
-						res = true; // El mensaje es SOLO para el servidor
-					} break;
-		case MOVIMIENTO: { stringstream ss(unContenido);
-						int jug; ss >> jug; ss.ignore(); // ':'
-						char camEnc[MAX_BYTES_LECTURA];
-						ss.get(camEnc, MAX_BYTES_LECTURA, '~');
-						clientes[sockfd].posProtag = Camino::dec(camEnc).v.back();
-						res = false;
-					} break;
-		case NUEVA_ENTIDAD: { // agregar correspondiente?
-						res = false;
-					} break;
-		default:		res = false;
-		}
+		case COMIENZO: {
+				bool late;
+				do {
+					late = false;
+					ostringstream nom(unContenido);
+					for (map<int,DataCliente>::iterator it = clientes.begin(); it != clientes.end(); ++it)
+						if (it->second.nombre == nom.str())
+							late = true;
+					if (late) {
+						// Si el nombre está repetido, se le agrega su número de jugador hasta que no lo esté. (Jorge222)
+						nom << clientes[sockfd].id;
+					} else {
+						clientes[sockfd].nombre = nom.str();
+						if (nom.str() != unContenido) {
+							string enviar = Red::agregarPrefijoYJugYFinal("COM", clientes[sockfd].id, unContenido);
+							send(sockfd, &enviar, sizeof(enviar), MSG_NOSIGNAL);
+						}
+					}
+				} while (late == true);
 
-		ss.ignore();	// '~'
-		ss.get(charUnMensaje, MAX_BYTES_LECTURA, '~');
+				rebotarlo = false; // El mensaje es SOLO para el servidor
+			} break;
+
+		case MOVIMIENTO: {
+				string camEnc;
+				Red::extraerNumeroYResto(unContenido, &camEnc);
+				clientes[sockfd].posProtag = Camino::dec(camEnc).v.back();
+			} break;
+
+		case NUEVA_ENTIDAD: { // agregar correspondiente?
+			} break;
+
+		//MENSAJE, ESCENARIO, RECURSO, TOGGLE, ATAQUE, GLOTON, FIN
+		default: break;
+		}
 	}
-	return res;
+	return rebotarlo;
 }
 
 
@@ -123,7 +110,7 @@ int Server::intentarNuevaConexion(fd_set* p_tempset, int segundosDeEspera) {
 				ostringstream ss; string nombreJug;
 				char buffer[MAX_BYTES_LECTURA];
 				recv(peersock, buffer, sizeof(buffer), 0);
-				Proxy::extraerPrefijoYMensaje(buffer, &nombreJug);
+				Red::extraerPrefijoYMensaje(buffer, &nombreJug);
 				map<int,DataCliente>::iterator it;// = clientes.find(peersock);
 				for (it = clientes.begin(); it != clientes.end(); ++it)
 					if ((it->second.nombre == nombreJug) && (!it->second.conectado))
@@ -254,7 +241,7 @@ void Server::correr() {
 						string aux;
 						// Lo recibido de un socket, mandarlo a todos los demás
 						for (int k = 0; k < maxfd+1; k++) {
-							if (((k != j)||(Proxy::extraerPrefijoYMensaje(buffer,&aux)==MOVIMIENTO)) && FD_ISSET(k, &readset)) {
+							if (((k != j)||(Red::extraerPrefijoYMensaje(buffer,&aux)==MOVIMIENTO)) && FD_ISSET(k, &readset)) {
 								sent = 0;
 								do {
 									justsent = send(k, buffer+sent, result-sent, MSG_NOSIGNAL);
@@ -313,5 +300,6 @@ void Server::finalizar() {
 }
 
 Server::~Server() {
+	// Connection ya llama a finalizar
 	std::cout << "====== /SERVIDOR/ ======" << std::endl;
 }

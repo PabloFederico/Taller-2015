@@ -94,6 +94,7 @@ bool Client::iniciar() {
 }
 
 Client::~Client() {
+	// Connection ya llama a finalizar
 	std::cout << "====== /CLIENTE/ ======" << std::endl;
 }
 

@@ -12,7 +12,7 @@ Controller::Controller(Connection* lan = NULL) {
 	Coordenada* posInicial = NULL;
 	try {
 		if (lan != NULL)
-			posInicial = Proxy::esperarComienzo(lan);
+			posInicial = Proxy::clienteEsperarComienzo(lan);
 	} catch ( Disconnected &e ) { lan = NULL; }
 
 	this->juego = new Juego(lan, posInicial, NULL);

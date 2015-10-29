@@ -12,6 +12,7 @@ int Connection::getIDJugador() {
 	return this->idJug;
 }
 
+
 void Connection::enviar(std::string s) {
 	if (Red::enviarInformacion(this->lastDescriptor, s) < 0) {
 		//Log::imprimirALog(ERR, "ERROR: send failed.");
@@ -20,7 +21,7 @@ void Connection::enviar(std::string s) {
 		//std::cout << "Enviando: "<<s<<std::endl;//
 }
 
-std::string Connection::recibir() {
+string Connection::recibir() {
 	char buffer[MAX_BYTES_LECTURA];
 	if (Red::recibirInformacion(this->lastDescriptor, buffer) < 0)
 		throw NoSeRecibio();

@@ -8,63 +8,26 @@
 #include "Proxy.h"
 
 
-string agregarPrefijoYFinal(string prefijo, string mensaje) {
-	ostringstream Encode;
-	Encode << "<"<<prefijo<<">"<<mensaje<<"~";
-	return Encode.str();
-}
-
-string Proxy::agregarPrefijoYJugYFinal(string prefijo, int jug, string mensaje) {
-	ostringstream Encode;
-	Encode << "<"<<prefijo<<">"<<jug<<":"<<mensaje<<"~";
-	return Encode.str();
-}
-
-TipoMensajeRed Proxy::extraerPrefijoYMensaje(string recibido, string* mensaje) {
-	stringstream ss(recibido);
-	char sTipo[5], charMensaje[MAX_BYTES_LECTURA];
-	ss.ignore();			// "<"
-	ss.get(sTipo, 4, '>');	// "tipo"
-	ss.ignore();			// ">"
-	ss.get(charMensaje, MAX_BYTES_LECTURA, '\0');
-	*mensaje = string(charMensaje);
-	return StringToTipoMensajeRed(sTipo);
-}
-
-
-Coordenada* Proxy::esperarComienzo(Connection* lan) {
-	TipoMensajeRed tipo = TipoMensajeRed(0);
-	string unContenido;
+Coordenada* Proxy::clienteEsperarComienzo(Connection* lan) {
+	TipoMensajeRed tipo = MENSAJE;
+	string unContenido, recibido;
 	do {
 		try {
-			string recibido = lan->recibir();
-			stringstream ss(recibido);
-			char charUnMensaje[MAX_BYTES_LECTURA];
-			if (ss.peek() != '<') // Me deshago de posible basura.
-				ss.get(charUnMensaje, MAX_BYTES_LECTURA, '<');
-			ss.get(charUnMensaje, MAX_BYTES_LECTURA, '~');
-			string unMensaje(charUnMensaje);
-			tipo = extraerPrefijoYMensaje(unMensaje, &unContenido);
+			recibido = lan->recibir();
+			while (Red::parsearSiguienteMensaje(&recibido, &tipo, &unContenido))
+				if (tipo == COMIENZO)
+					break;
 		} catch ( NoSeRecibio &e ) {}
-	} while (tipo != COMIENZO);
+	} while (tipo == COMIENZO);
 	return new Coordenada(Coordenada::dec(unContenido));
 }
 
+
 TipoMensajeRed Proxy::actualizarMultiplayer(Juego* juego) {
+	TipoMensajeRed tipo;
 	string unContenido, recibido = juego->getConnection()->recibir();
 	// Si no se recibe nada, recibir() lanza NoSeRecibio y se saltea el resto.
-	TipoMensajeRed tipo = TipoMensajeRed(0);
-
-	stringstream ss(recibido);
-	char charUnMensaje[MAX_BYTES_LECTURA];
-	if (ss.peek() != '<') // Me deshago de posible basura.
-		ss.get(charUnMensaje, MAX_BYTES_LECTURA, '<');
-	ss.get(charUnMensaje, MAX_BYTES_LECTURA, '~');
-
-	while (charUnMensaje[0] == '<') {
-		string unMensaje(charUnMensaje);
-		tipo = extraerPrefijoYMensaje(unMensaje, &unContenido);
-
+	while (Red::parsearSiguienteMensaje(&recibido, &tipo, &unContenido)) {
 		switch (tipo) {
 		case COMIENZO: procesarNombre(juego, unContenido);
 			break;
@@ -87,30 +50,22 @@ TipoMensajeRed Proxy::actualizarMultiplayer(Juego* juego) {
 		case FIN:
 			break;
 		}
-
-		ss.ignore();	// '~'
-		if (ss.peek() != '<') // Me deshago de posible basura.
-				ss.get(charUnMensaje, MAX_BYTES_LECTURA, '<');
-		ss.get(charUnMensaje, MAX_BYTES_LECTURA, '~');
 	}
-
 	return tipo;	// devuelve sólo el último; pero no tiene uso igual
 }
 
 
+
 void Proxy::procesarMensaje(string encodeado) {
-	stringstream ss(encodeado);
-	int jug; ss >> jug; ss.ignore(); // ':'
-	Log::imprimirALog(INFO, jug+"> "+ss.str());
+	string resto;
+	int jug = Red::extraerNumeroYResto(encodeado, &resto);
+	Log::imprimirALog(INFO, jug+"> "+resto);
 }
 
 void Proxy::procesarNombre(Juego* juego, string encodeado) {
-	stringstream ss(encodeado);
-	int jug; ss >> jug; ss.ignore(); // ':'
-	char nom[MAX_BYTES_LECTURA];
-	ss.get(nom, MAX_BYTES_LECTURA, '~');
-	if (jug == juego->getIDJugador())
-		juego->setNombreJugador(string(nom));
+	string nombre;
+	if (Red::extraerNumeroYResto(encodeado, &nombre) == juego->getIDJugador())
+		juego->setNombreJugador(nombre);
 }
 
 void Proxy::procesarEscenario(Juego* juego, string encodeado) {
@@ -118,12 +73,9 @@ void Proxy::procesarEscenario(Juego* juego, string encodeado) {
 }
 
 void Proxy::procesarCamino(Juego* juego, string encodeado) {
-	stringstream ss(encodeado);
-	int jug; ss >> jug; ss.ignore(); // ':'
-	char camEnc[MAX_BYTES_LECTURA];
-	ss.get(camEnc, MAX_BYTES_LECTURA, '~');
-	Camino cam = Camino::dec(camEnc);
-	juego->getSpritePlayer(jug)->setearNuevoCamino(cam, juego->getCoordCeros());
+	string camEnc;
+	int jug = Red::extraerNumeroYResto(encodeado, &camEnc);
+	juego->getSpritePlayer(jug)->setearNuevoCamino(Camino::dec(camEnc), juego->getCoordCeros());
 }
 
 void Proxy::procesarNuevaEntidad(Juego* juego, string encodeado) {
@@ -131,29 +83,22 @@ void Proxy::procesarNuevaEntidad(Juego* juego, string encodeado) {
 }
 
 void Proxy::procesarRecurso(Juego* juego, string encodeado) {
-	stringstream ss(encodeado);
-	int nTipo; ss >> nTipo; ss.ignore(); // ','
-	char posEnc[MAX_BYTES_LECTURA];
-	ss.get(posEnc, MAX_BYTES_LECTURA, '~');
-	//std::cout << nTipo<<" es "<<TipoEntidad(nTipo)<<std::endl;//
+	string posEnc;
+	int nTipo = Red::extraerNumeroYResto(encodeado, &posEnc);
 	juego->agregarRecurso(TipoEntidad(nTipo), Coordenada::dec(posEnc));
 }
 
-void Proxy::procesarRecursoComido(Juego* juego, string encodeado) {
-	stringstream ss(encodeado);
-	char posEnc[MAX_BYTES_LECTURA];
-	ss.get(posEnc, MAX_BYTES_LECTURA, '~');
-	Coordenada coord = Coordenada::dec(posEnc);
+void Proxy::procesarRecursoComido(Juego* juego, string posEnc) {
+	Coordenada c = Coordenada::dec(posEnc);
 	try {
-		Entidad* recurso = juego->getEscenario()->getTile(coord)->devolverRecurso();
-		juego->getEscenario()->quitarRecurso(coord, recurso);
+		Entidad* recurso = juego->getEscenario()->getTile(c)->devolverRecurso();
+		juego->getEscenario()->quitarRecurso(c, recurso);
 	} catch ( NoTieneRecurso &e ) {}
 }
 
 void Proxy::procesarToggle(Juego* juego, string encodeado) {
-	stringstream ss(encodeado);
-	int jug; ss >> jug;
-	juego->toggleEnemigo(jug);
+	string aux;
+	juego->toggleEnemigo(Red::extraerNumeroYResto(encodeado, &aux));
 }
 
 //void procesarAtaque(Juego* juego, string encodeado)
@@ -162,32 +107,32 @@ void Proxy::procesarToggle(Juego* juego, string encodeado) {
 ***************************************************/
 
 void Proxy::enviarNombre(Connection* lan, string s) {
-	string t = agregarPrefijoYFinal("COM", s);
+	string t = Red::agregarPrefijoYFinal("COM", s);
 	lan->enviar(t);
 }
 
 void Proxy::enviar(Connection* lan, string s) {
-	string t = agregarPrefijoYJugYFinal("MSJ", lan->getIDJugador(), s);
+	string t = Red::agregarPrefijoYJugYFinal("MSJ", lan->getIDJugador(), s);
 	lan->enviar(t);
 }
 
 void Proxy::enviar(Connection* lan, InfoEscenario ie) {
-	string t = agregarPrefijoYFinal("ESC", ie.enc());
+	string t = Red::agregarPrefijoYFinal("ESC", ie.enc());
 	lan->enviar(t);
 }
 
 void Proxy::enviar(Connection* lan, Camino cam) {
-	string t = agregarPrefijoYJugYFinal("MOV", lan->getIDJugador(), cam.enc());
+	string t = Red::agregarPrefijoYJugYFinal("MOV", lan->getIDJugador(), cam.enc());
 	lan->enviar(t);
 }
 
 void Proxy::enviar(Connection* lan, PosEntidad ent) {
-	string t = agregarPrefijoYFinal("ENT", ent.enc());
+	string t = Red::agregarPrefijoYFinal("ENT", ent.enc());
 	lan->enviar(t);
 }
 
 void Proxy::comiRecurso(Connection* lan, Coordenada c) {
-	string t = agregarPrefijoYFinal("GLO", c.enc());
+	string t = Red::agregarPrefijoYFinal("GLO", c.enc());
 	lan->enviar(t);
 }
 

@@ -15,6 +15,7 @@
 #include "../utils/Constantes.h"
 #include "../modelo/Entidad.h"
 
+
 /* Estructura para guardar el Tipo de Entidad que se encuentra en las
  *  coordenadas x,y */
 struct PosTipoEntidad{

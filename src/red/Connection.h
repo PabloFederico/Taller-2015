@@ -29,7 +29,6 @@ protected:
 
 public:
 	virtual bool iniciar() = 0;
-
 	int getIDJugador();
 
 	void enviar(std::string);

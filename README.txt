@@ -1,7 +1,7 @@
 TALLER DE PROGRAMACION I 75.42
 AÑO: 2015
 CUATRIMESTRE : 2°
-NUMERO DE TP: 1
+NUMERO DE TP: 2
 
 NOMBRE Y APELLIDO DE INTEGRANTES:
 Condo, Emanuel 94773
@@ -17,4 +17,3 @@ Bibliotecas usadas: SDL 2 (Repositorio ubuntu con comando sudo apt-get install l
 						-> Dependencia de YAML: LibBoost (sudo apt-get install libboost-all-dev)
 						-> Dependencia de YAML : Cmake (sudo apt-get install cmake)
 
-						
