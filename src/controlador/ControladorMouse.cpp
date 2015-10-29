@@ -78,7 +78,7 @@ void ControladorMouse::procesarEvento(SDL_Event &event, int MouseX, int MouseY){
 								Proxy::enviar(juego->getConnection(), camino);
 
 							/* Activamos el movimiento del sprite y seteamos el nuevo camino que debe recorrer. */
-							//spriteProtag->setearNuevoCamino(camino, coord_pixel_ceros);
+							spriteProtag->setearNuevoCamino(camino, coord_pixel_ceros);
 						}
 					} catch ( FueraDeEscenario &e ) {}
 				}

@@ -274,6 +274,7 @@ struct PosEntidad{
 
 /* Estructura para guardar información para Escenario */
 struct InfoEscenario{
+	string nombre;
 	int size_x;
 	int size_y;
 	vector<PosTipoEntidad> posTipoEntidades;
@@ -282,6 +283,7 @@ struct InfoEscenario{
 	int posY_protagonista;
 
 	InfoEscenario(){
+		nombre = "";
 		size_x = 1;
 		size_y = 1;
 		protagonista = SOLDADO;
@@ -338,6 +340,36 @@ struct InfoEscenario{
 		ie.posY_protagonista = prot.y;
 
 		return ie;
+	}
+};
+
+struct ConfiguracionJuego{
+	string nombreJugador;
+	string direccion_ip;
+	int ancho_pantalla;
+	int alto_pantalla;
+	int vel_personaje;
+	int margen_scroll;
+	int rango_vision;
+	vector<InfoEntidad> entidades;
+	vector<InfoEscenario> escenarios;
+
+	ConfiguracionJuego(){
+		nombreJugador = "JugadorXXX";
+		direccion_ip = "127.0.0.1";
+		ancho_pantalla = 640;
+		alto_pantalla = 480;
+		vel_personaje = 50;
+		margen_scroll = 20;
+		rango_vision = 10;
+	}
+
+	void agregarInfoEntidad(InfoEntidad infoEntidad){
+		entidades.push_back(infoEntidad);
+	}
+
+	void agregarInfoEscenarios(InfoEscenario infoEscenario){
+		escenarios.push_back(infoEscenario);
 	}
 };
 

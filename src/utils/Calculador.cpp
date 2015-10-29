@@ -316,3 +316,10 @@ Coordenada Calculador::generarPosRandom(int size_x_final, int size_x_inicial, in
 	return Coordenada(x_rand,y_rand);
 }
 
+int Calculador::ChequeoDeBorde(int max, int input) {
+	if (input >= 0) {
+		if (input <= max)
+			return input;
+		else return max;
+	} else return 0;
+}

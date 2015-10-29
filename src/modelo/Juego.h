@@ -9,13 +9,10 @@
 #define MODELO_JUEGO_H_
 #include <stdio.h>
 #include <map>
-#include <yaml-cpp/yaml.h>
 #include <unistd.h>
 
 #include "../utils/Map.h"
-#include "../modelo/ConfigDefault.h"
 #include "../utils/ContenedorDeRecursos.h"
-#include "../utils/Calculador.h"
 #include "../utils/Exceptions.h"
 #include "../modelo/Entidad.h"
 #include "../modelo/BarraEstado.h"
@@ -32,10 +29,8 @@ private:
 	int *cero_x;
 	int *cero_y;
 
-	int screenWidth;
-	int screenHeight;
-	
-	vector<InfoEntidad> vectorInfoTiposEntidades;
+	ConfiguracionJuego configGame;
+
 	EntidadFactory *fabricaDeEntidades;
 	
 	Escenario *escenario;
@@ -44,23 +39,11 @@ private:
 
 	Connection* connection;
 
-	int vel_personaje;
-	int margen_scroll;
-	int rango_vision;
-
 	/* Carga la configuración inicial del juego a traves
 	 * de un archivo de configuración */
 	void cargarJuego(InfoEscenario* infoEscRed, Coordenada *posInicial);
 
 	void cargarImagenes();
-
-	int ChequeoDeBorde(int max, int input);
-
-	InfoEscenario parsearConfig();
-
-	InfoEscenario infoEscenarioDefault();
-	//de prueba		!!!
-	InfoEscenario OdioYAML();
 
 	ContenedorDeRecursos *contenedor;
 
