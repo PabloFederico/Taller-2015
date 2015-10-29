@@ -379,9 +379,6 @@ void Dibujador::dibujarBarraEstado(Escenario* esc, BarraEstado* barraEstado, TTF
 void Dibujador::dibujarMiniMapa(Escenario* esc, SDL_Rect rect){
 	Imagen *imagenRelieve = contenedor->getImagenTipo(PASTO);
 	Imagen* imagenNegra = contenedor->getImagenUtilTipo(CAPA_NEGRA);
-	SDL_Rect rect_ubicacion;
-
-	SDL_RenderCopy(renderer,imagenNegra->getTexture(),NULL,&rect);
 
 	pair<int,int> dimension = esc->getDimension();
 	int ANCHO = rect.w / dimension.first;
@@ -414,10 +411,6 @@ void Dibujador::dibujarMiniMapa(Escenario* esc, SDL_Rect rect){
 				Imagen* image = NULL;
 				for (unsigned k = 0; k < entidades.size(); k++){
 					Entidad* entidad = entidades[k];
-
-					if (entidad == esc->getProtagonista()){
-						rect_ubicacion = rectRelieve;
-					}
 
 					switch (entidad->getTipo()){
 						case SOLDADO:
@@ -457,6 +450,9 @@ void Dibujador::dibujarMiniMapa(Escenario* esc, SDL_Rect rect){
  					}
 					SDL_RenderCopy(this->renderer,image->getTexture(),NULL,&rect_aux);
 				}
+			}else{
+				// Si el estado del tile es NEGRO
+				SDL_RenderCopy(renderer,imagenNegra->getTexture(),NULL,&rectRelieve);
 			}
 			rectRelieve.x += 0.5 * ANCHO;
 			rectRelieve.y += 0.5 * ALTO;

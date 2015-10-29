@@ -141,12 +141,12 @@ int Server::intentarNuevaConexion(fd_set* p_tempset, int segundosDeEspera) {
 						if (j != peersock && FD_ISSET(j, &readset))
 							send(j, ss.str().c_str(), 10, MSG_NOSIGNAL);
 					ss.str( std::string() ); ss.clear();
-					sleep(1);
+					//sleep(1);
 					ss << "<COM>"<<it->second.posProtag.enc()<<"~";
 					// Le recuerdo su posición inicial.
 					send(peersock, ss.str().c_str(), MAX_BYTES_LECTURA, MSG_NOSIGNAL);
 					ss.str( std::string() ); ss.clear();
-					sleep(5);
+					//sleep(5);
 					for (it = clientes.begin(); it != clientes.end(); ++it)
 						if ((it->second.nombre != nombreJug) && (it->second.conectado)) {
 							ss.str( std::string() ); ss.clear();
@@ -251,9 +251,10 @@ void Server::correr() {
 					buffer[result] = 0;
 					if (!mensajeParaElServidor(j, string(buffer))) {
 						std::cout << "Echoing: "<<buffer<<std::endl;
+						string aux;
 						// Lo recibido de un socket, mandarlo a todos los demás
 						for (int k = 0; k < maxfd+1; k++) {
-							if ((k != j) && FD_ISSET(k, &readset)) {
+							if (((k != j)||(Proxy::extraerPrefijoYMensaje(buffer,&aux)==MOVIMIENTO)) && FD_ISSET(k, &readset)) {
 								sent = 0;
 								do {
 									justsent = send(k, buffer+sent, result-sent, MSG_NOSIGNAL);

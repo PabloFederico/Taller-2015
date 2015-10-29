@@ -51,7 +51,7 @@ void VentanaJuego::cargarJuego(Juego *juego){
 
 		controlador->posicionarCamaraEnProtagonista();
 
-		string nombreJugador = juego->getProtagonista()->getInfo();
+		string nombreJugador = juego->getNombreJugador();
 		SDL_SetWindowTitle(window,nombreJugador.c_str());
 	}
 }

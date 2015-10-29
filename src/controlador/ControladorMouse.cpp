@@ -78,7 +78,7 @@ void ControladorMouse::procesarEvento(SDL_Event &event, int MouseX, int MouseY){
 								Proxy::enviar(juego->getConnection(), camino);
 
 							/* Activamos el movimiento del sprite y seteamos el nuevo camino que debe recorrer. */
-							spriteProtag->setearNuevoCamino(camino, coord_pixel_ceros);
+							//spriteProtag->setearNuevoCamino(camino, coord_pixel_ceros);
 						}
 					} catch ( FueraDeEscenario &e ) {}
 				}
@@ -93,14 +93,14 @@ void ControladorMouse::procesarEvento(SDL_Event &event, int MouseX, int MouseY){
 
 	vector<Sprite*> spritesProtagonistas = juego->getSpritesProtagonistas();
 	for (vector<Sprite*>::iterator it = spritesProtagonistas.begin(); it < spritesProtagonistas.end(); ++it) {
+		if ((*it)->estaEnMovimiento())
+			(*it)->update(juego->getVelocidad());
 		if ((*it) != spriteProtag) {
 			try {
 				Coordenada coord_tile_sprite = Calculador::tileParaPixel((*it)->getPosPies(), coord_pixel_ceros);
 				juego->getEscenario()->actualizarPosicionEnemigo((*it)->getEntidad(), coord_tile_sprite);
 			} catch ( FueraDeEscenario &e ) {}
 		}
-		if ((*it)->estaEnMovimiento())
-			(*it)->update(juego->getVelocidad());
 	}
 
 }
