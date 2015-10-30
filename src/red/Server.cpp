@@ -40,26 +40,22 @@ bool Server::mensajeParaElServidor(int sockfd, string recibido) {
 
 		switch (tipo) {
 		case COMIENZO: {
+				ostringstream nom(unContenido);
 				bool late;
 				do {
 					late = false;
-					ostringstream nom(unContenido);
 					for (map<int,DataCliente>::iterator it = clientes.begin(); it != clientes.end(); ++it)
-						if (it->second.nombre == nom.str())
+						if (it->second.nombre == nom.str() && it->first != sockfd)
 							late = true;
-					if (late) {
-						// Si el nombre está repetido, se le agrega su número de jugador hasta que no lo esté. (Jorge222)
+					if (late) // Si el nombre está repetido, se le agrega su número de jugador hasta que no lo esté. (Jorge222)
 						nom << clientes[sockfd].id;
-					} else {
-						clientes[sockfd].nombre = nom.str();
-						if (nom.str() != unContenido) {
-							string enviar = Red::agregarPrefijoYJugYFinal("COM", clientes[sockfd].id, unContenido);
-							send(sockfd, &enviar, sizeof(enviar), MSG_NOSIGNAL);
-						}
-					}
 				} while (late == true);
-
-				rebotarlo = false; // El mensaje es SOLO para el servidor
+				if (nom.str() != unContenido) {
+					string enviar = Red::agregarPrefijoYJugYFinal("COM", clientes[sockfd].id, unContenido);
+					send(sockfd, &enviar, sizeof(enviar), MSG_NOSIGNAL);
+				}
+				clientes[sockfd].nombre = nom.str(); // Guardar nuevo nombre.
+				rebotarlo = false; // El mensaje era SOLO para el servidor
 			} break;
 
 		case MOVIMIENTO: {
@@ -80,9 +76,9 @@ bool Server::mensajeParaElServidor(int sockfd, string recibido) {
 
 
 TipoEntidad generarRecursoYCoordRandom(Coordenada* c) {
-	*c = Calculador::generarPosRandom(50,0,50,0,0);
+	*c = Calculador::generarPosRandom(50,0,50,0,7);
 	Coordenada aux = Calculador::generarPosRandom(ORO+1,MADERA,1,0,42);
-	return TipoEntidad(aux.x);	// último recurso, primer recurso
+	return TipoEntidad(aux.x);	   //último recurso^	  ^primer recurso
 }
 
 
@@ -105,48 +101,53 @@ int Server::intentarNuevaConexion(fd_set* p_tempset, int segundosDeEspera) {
 			if (peersock < 0) {
 				std::cout << "Error in accept(): "<<strerror(errno)<<std::endl;
 			} else {
-				cantConectados++;
-
+				map<int,DataCliente>::iterator it;
 				ostringstream ss; string nombreJug;
 				char buffer[MAX_BYTES_LECTURA];
+				cantConectados++;
+
+				// Primer mensaje: Recibo nombre de jugador pedido.
 				recv(peersock, buffer, sizeof(buffer), 0);
 				Red::extraerPrefijoYMensaje(buffer, &nombreJug);
-				map<int,DataCliente>::iterator it;// = clientes.find(peersock);
 				for (it = clientes.begin(); it != clientes.end(); ++it)
 					if ((it->second.nombre == nombreJug) && (!it->second.conectado))
 						break;
+
+				// Si es un jugador previo...
 				if (it != clientes.end()) {
-					ss << it->second.id<<"~";
 					it->second.conectado = true;
+
+					// Segundo mensaje: Envío al jugador su anterior número de jugador.
+					ss << it->second.id<<"~";
 					send(peersock, ss.str().c_str(), 10, MSG_NOSIGNAL);
-					//ss.str( std::string() ); ss.clear();
-					//ss << "<COM>"<<it->second.nombre<<"~";
-					//send(peersock, ss.str().c_str(), 10, MSG_NOSIGNAL);
 					ss.str( std::string() ); ss.clear();
-					ss << "<TOG>"<<it->second.id<<"~";
+
+					// // Paralelo: Envío a todos los demás jugadores que este volvió.
+					string mensaje = Red::agregarPrefijoYFinal("TOG", string(it->second.id));
+					//ss << "<TOG>"<<it->second.id<<"~";
 					for (int j = 0; j < maxfd+1; j++)
-						if (j != peersock && FD_ISSET(j, &readset))
-							send(j, ss.str().c_str(), 10, MSG_NOSIGNAL);
-					ss.str( std::string() ); ss.clear();
-					//sleep(1);
-					ss << "<COM>"<<it->second.posProtag.enc()<<"~";
-					// Le recuerdo su posición inicial.
-					send(peersock, ss.str().c_str(), MAX_BYTES_LECTURA, MSG_NOSIGNAL);
-					ss.str( std::string() ); ss.clear();
-					//sleep(5);
+						if (FD_ISSET(j, &readset) && j != peersock)
+							send(j, mensaje.c_str(), 10, MSG_NOSIGNAL);//send(j, ss.str().c_str(), 10, MSG_NOSIGNAL);
+					//ss.str( std::string() ); ss.clear();
+
+					// Tercer mensaje: Envío al jugador su última posición.
+					mensaje = Red::agregarPrefijoYFinal("COM", it->second.posProtag.enc());
+					//ss << "<COM>"<<it->second.posProtag.enc()<<"~";
+					send(peersock, mensaje.c_str(), MAX_BYTES_LECTURA, MSG_NOSIGNAL);//send(peersock, ss.str().c_str(), MAX_BYTES_LECTURA, MSG_NOSIGNAL);
+					//ss.str( std::string() ); ss.clear();
+
 					for (it = clientes.begin(); it != clientes.end(); ++it)
-						if ((it->second.nombre != nombreJug) && (it->second.conectado)) {
-							ss.str( std::string() ); ss.clear();
+						if ((it->second.nombre != nombreJug) && (it->second.conectado)) { //alto hardcodeo
 							ss << "<ENT>"<<it->second.posProtag.enc()<<"["<<it->second.id<<","<<SOLDADO<<","<<1<<","<<1<<"]"<<"~";
 							send(peersock, ss.str().c_str(), MAX_BYTES_LECTURA, MSG_NOSIGNAL);
+							ss.str( std::string() ); ss.clear();
 						}
 				} else {
-					string nomTemp = "Jugador"+cantConectados;	// alto hardcodeo
 					// Adaptable a secciones del mapa basado en MAX_CONEXIONES y cantConectados
 					// Caso contrario, aunque improbable, deberííía verificarse que no sea una posición repetida
 					Coordenada coordRandom = Calculador::generarPosRandom(50,0,50,0, cantConectados);
 					//std::cout << "Pos inicial para jugador "<<cantConectados<<" es: "<<coordRandom.x<<";"<<coordRandom.y<<std::endl;//
-					DataCliente cli = DataCliente(cantConectados, nomTemp, coordRandom);
+					DataCliente cli = DataCliente(cantConectados, nombreJug, coordRandom);
 					clientes.insert(pair<int,DataCliente>(peersock,cli));
 
 					ss << cantConectados<<"~";
