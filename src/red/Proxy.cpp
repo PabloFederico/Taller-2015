@@ -18,7 +18,7 @@ Coordenada* Proxy::clienteEsperarComienzo(Connection* lan) {
 				if (tipo == COMIENZO)
 					break;
 		} catch ( NoSeRecibio &e ) {}
-	} while (tipo == COMIENZO);
+	} while (tipo != COMIENZO);
 	return new Coordenada(Coordenada::dec(unContenido));
 }
 
@@ -28,27 +28,29 @@ TipoMensajeRed Proxy::actualizarMultiplayer(Juego* juego) {
 	string unContenido, recibido = juego->getConnection()->recibir();
 	// Si no se recibe nada, recibir() lanza NoSeRecibio y se saltea el resto.
 	while (Red::parsearSiguienteMensaje(&recibido, &tipo, &unContenido)) {
-		switch (tipo) {
-		case COMIENZO: procesarNombre(juego, unContenido);
-			break;
-		case ESCENARIO: procesarEscenario(juego, unContenido);
-			break;
-		case MOVIMIENTO: procesarCamino(juego, unContenido);
-			break;
-		case NUEVA_ENTIDAD: procesarNuevaEntidad(juego, unContenido);
-			break;
-		case RECURSO: procesarRecurso(juego, unContenido);
-			break;
-		case TOGGLE: procesarToggle(juego, unContenido);
-			break;
-		case GLOTON: procesarRecursoComido(juego, unContenido);
-			break;
-		case ATAQUE:
-			break;
-		case MENSAJE: procesarMensaje(unContenido);
-			break;
-		case FIN:
-			break;
+		if (unContenido.length() > 0) {
+			switch (tipo) {
+			case MENSAJE: procesarMensaje(unContenido);
+				break;
+			case COMIENZO: procesarNombre(juego, unContenido);
+				break;
+			case ESCENARIO: procesarEscenario(juego, unContenido);
+				break;
+			case MOVIMIENTO: procesarCamino(juego, unContenido);
+				break;
+			case NUEVA_ENTIDAD: procesarNuevaEntidad(juego, unContenido);
+				break;
+			case RECURSO: procesarRecurso(juego, unContenido);
+				break;
+			case TOGGLE: procesarToggle(juego, unContenido);
+				break;
+			case ATAQUE:
+				break;
+			case GLOTON: procesarRecursoComido(juego, unContenido);
+				break;
+			case FIN:
+				break;
+			}
 		}
 	}
 	return tipo;	// devuelve sólo el último; pero no tiene uso igual

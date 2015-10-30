@@ -65,10 +65,7 @@ void Juego::cargarNumJugador() {
 
 /********************************************************************************/
 void Juego::cargarJuego(InfoEscenario* infoEscRed = NULL, Coordenada *posInicial = NULL) {
-	//	std::vector<InfoEscenario> vecEscenarios;
-
 	//----------------------------------------------------------------------------------------!!
-
 	configGame = Yaml::cargarConfiguracionJuego("config.yaml");
 	// !!! Para Guido, comentar la línea de arriba y descomentar la de abajo.
 	//configGame = Yaml::OdioYAML();
@@ -80,7 +77,8 @@ void Juego::cargarJuego(InfoEscenario* infoEscRed = NULL, Coordenada *posInicial
 	if (esCliente()) {
 		configGame.vel_personaje = 50; // Misma velocidad para todos.
 		// Habría que saber en que escenario estamos
-		configGame.escenarios[0].setPosProtag(*posInicial);
+		if (posInicial != NULL)
+			configGame.escenarios[0].setPosProtag(*posInicial);
 	}
 	this->fabricaDeEntidades = new EntidadFactory(this->idJug, configGame.entidades);
 	this->escenario = new Escenario(configGame.escenarios[0], this->fabricaDeEntidades, this->enemigos);
@@ -203,9 +201,11 @@ PosEntidad Juego::getPosEntDeProtagonista() {
 void Juego::agregarRecurso(TipoEntidad recurso, Coordenada coord) {
 	Entidad* recurso_a_agregar = new Entidad(recurso); // AGHH MI FACTORYY
 	//printf("GENERO UN RECURSO NUEVO %s\n",recurso->getInfo().c_str());
-	escenario->agregarEntidad(coord, recurso_a_agregar);
-	//printf("TERMINO EL agregarRecurso, ME VOY \n");
-	this->contenedor->generarYGuardarSpriteEntidad(PosEntidad(coord, recurso_a_agregar), Coordenada(*cero_x, *cero_y), escenario);
+	try {
+		escenario->agregarEntidad(coord, recurso_a_agregar);
+		//printf("TERMINO EL agregarRecurso, ME VOY \n");
+		this->contenedor->generarYGuardarSpriteEntidad(PosEntidad(coord, recurso_a_agregar), Coordenada(*cero_x, *cero_y), escenario);
+	} catch ( FueraDeEscenario &e ) {}
 }
 
 /***************************************************/

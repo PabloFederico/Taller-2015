@@ -13,9 +13,13 @@ Controller::Controller(Connection* lan = NULL) {
 	try {
 		if (lan != NULL)
 			posInicial = Proxy::clienteEsperarComienzo(lan);
-	} catch ( Disconnected &e ) { lan = NULL; }
+	} catch ( Disconnected &e ) {
+		std::cout << "Desconectado."<<std::endl;
+		lan = NULL;
+	}
 
 	this->juego = new Juego(lan, posInicial, NULL);
+
 	if (lan != NULL) {
 		Proxy::enviarNombre(lan, juego->getNombreJugador());
 		Proxy::enviar(lan, juego->getPosEntDeProtagonista());
@@ -71,9 +75,7 @@ void Controller::procesarEvento(SDL_Event &event){
 
 	if (this->juego->esCliente()) {
 		try {
-			TipoMensajeRed tipo = Proxy::actualizarMultiplayer(this->juego);
-			//if (tipo != 0)//
-			//	std::cout << "Mensaje recibido y procesado de tipo "<<tipo<<std::endl;//
+			Proxy::actualizarMultiplayer(this->juego);
 		} catch ( NoSeRecibio &e ) {
 		} catch ( Disconnected &e ) {
 			juego->olvidarConnection();	// No está funcionando siempre... Hacerlo de otra forma.

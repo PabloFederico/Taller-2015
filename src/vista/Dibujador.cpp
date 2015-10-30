@@ -356,6 +356,7 @@ void Dibujador::dibujarBarraEstado(Escenario* esc, BarraEstado* barraEstado, TTF
 		convert << cantidad;
 		std::string cant_string = convert.str();
 		Imagen* image_recurso = contenedor->getImagenTipo((TipoEntidad)i);
+		//(MC) Warning: "extended initializer lists only available with -std=c++11 or -std=gnu++11"	... Se supone que agregue esos parámetros? O lo hacemos compatible para atrás?
 		Imagen* image_num = Loader::cargarTextoConFondo(renderer,fuenteTexto,cant_string,SDL_Color{255,255,255});
 		imagenesBasura.push_back(image_num);
 		SDL_RenderCopy(renderer, imagen_barra_negra->getTexture(), NULL, &rect_barra_negra);

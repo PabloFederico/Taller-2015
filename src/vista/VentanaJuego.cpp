@@ -90,19 +90,16 @@ void VentanaJuego::mostrar(){
 		bool run = true;
 
 		SDL_Event event;
-		uint32_t tiempo;
 		SDL_Cursor* cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_HAND);
 		if (cursor == NULL) printf("Fallo la creacion del cursor %s",SDL_GetError());
 		SDL_SetCursor(cursor);
 
-		while ( run ){
-				tiempo = SDL_GetTicks();
+		while ( run ) {
+
 				SDL_PollEvent(&event);
 
 				if (event.type == SDL_QUIT) run = false;
-				/*if ((tiempo % 10000) == 0){
-					controlador->getJuego()->getEscenario()->agregarRecurso(coord_random);
-				}*/
+
 				controlador->procesarEvento(event);
 
 	            /* Actualiza el renderer */

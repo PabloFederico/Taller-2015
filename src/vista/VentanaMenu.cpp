@@ -65,11 +65,11 @@ void VentanaMenu::mostrar(){
 
 	std::string labelIngresarNombre = " Nombre Jugador ";
 	Imagen *textoLabelIP = Loader::cargarTexto(renderer, fuenteTexto, labelIngresarNombre);
-	SDL_Rect rect_label;
-	rect_label.x = SCREEN_WIDTH / 2 - textoLabelIP->getPixelsX()/2;
-	rect_label.y = SCREEN_HEIGHT / 3 - textoLabelIP->getPixelsY();
-	rect_label.w = textoLabelIP->getPixelsX();
-	rect_label.h = textoLabelIP->getPixelsY();
+	//SDL_Rect rect_label;
+	//rect_label.x = SCREEN_WIDTH / 2 - textoLabelIP->getPixelsX()/2;
+	//rect_label.y = SCREEN_HEIGHT / 3 - textoLabelIP->getPixelsY();
+	//rect_label.w = textoLabelIP->getPixelsX();
+	//rect_label.h = textoLabelIP->getPixelsY();
 
 	std::string inputText = "";
 	Imagen *textoInput = NULL;

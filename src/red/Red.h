@@ -91,8 +91,8 @@ public:
 		ss.ignore();			// "<"
 		ss.get(sTipo, 4, '>');	// "tipo"
 		ss.ignore();			// ">"
-		ss.get(charContenido, MAX_BYTES_LECTURA, '~');
-		mensaje = string(charContenido);
+		ss.get(charContenido, MAX_BYTES_LECTURA, '\0');
+		*contenido = string(charContenido);
 		return StringToTipoMensajeRed(sTipo);
 	}
 

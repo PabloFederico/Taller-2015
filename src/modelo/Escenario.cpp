@@ -39,7 +39,7 @@ Escenario::Escenario(InfoEscenario infoEsc, EntidadFactory *fabrica, vector<PosE
 	} catch ( FueraDeEscenario &e ) {}
 	while (resPosicionar == false) {	// Genera posiciones random hasta poder agregar al protagonista.
 		try {
-			Coordenada posProtag = generarCoordenadaRandom(size_x, 0, size_y, 0);
+			Coordenada posProtag = generarCoordenadaRandom(size_x, 0, size_y, 0, 9);
 			resPosicionar = this->agregarEntidad(posProtag, this->protagonista);
 		} catch ( FueraDeEscenario &e ) {}
 	}
@@ -85,13 +85,15 @@ vector<PosEntidad>* Escenario::getVectorEntidades(){
 /********************************************************************************/
 void Escenario::actualizarPosicionProtagonista(Coordenada c){
 	/* Si las coordenadas no son iguales, actualizar la coordenada del protagonista */
-	if (!(c_protagonista == c)){
+	if (c_protagonista != c) {
 		Tile* tile = getTile(c_protagonista);
-		tile->eliminarEntidad(protagonista);
+		if (tile != NULL)
+			tile->eliminarEntidad(protagonista);
 
 		/* agregamos el protagonista a su nuevo tile */
 		tile = getTile(c.x, c.y);
-		tile->agregarEntidad(protagonista);
+		if (tile != NULL)
+			tile->agregarEntidad(protagonista);
 		c_protagonista = c;
 	}
 }
@@ -240,14 +242,13 @@ CapaFog* Escenario::getCapa() {
 	return this->capa;
 }
 
-Coordenada Escenario::generarCoordenadaRandom(int size_x_final, int size_x_inicial, int size_y_final, int size_y_inicial){
+Coordenada Escenario::generarCoordenadaRandom(int size_x_final, int size_x_inicial, int size_y_final, int size_y_inicial, int seed = 0) {
 	int x_rand, y_rand;
-	srand((int) time(0)); //seedeo el random bien
-	x_rand = (rand() % size_x_final) + size_x_inicial;
-	y_rand = (rand() % size_y_final) + size_y_inicial;
+	srand(((int)time(0)) * SDL_GetTicks()); //seedeo el random bien
+	x_rand = (rand() % (size_x_final - size_x_inicial)) + size_x_inicial;
+	y_rand = (rand() % (size_y_final - size_y_inicial)) + size_y_inicial;
 
-	return Coordenada(x_rand,y_rand);
-}
+	return Coordenada(x_rand,y_rand);}
 
 
 void Escenario::quitarRecurso(Coordenada c,Entidad* entidad){

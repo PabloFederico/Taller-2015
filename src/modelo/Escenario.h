@@ -79,7 +79,7 @@ public:
 	Tile* getTile(int x, int y);
 	Tile* getTile(Coordenada c);
 
-	static Coordenada generarCoordenadaRandom(int size_x_final, int size_x_inicial, int size_y_final, int size_y_inicial);
+	static Coordenada generarCoordenadaRandom(int size_x_final, int size_x_inicial, int size_y_final, int size_y_inicial, int seed);
 	void agregarRecurso(TipoEntidad recurso,Coordenada coord_random);
 	void quitarRecurso(Coordenada c,Entidad* entidad);
 	void actualizarPosicionProtagonista(Coordenada c);

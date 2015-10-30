@@ -24,7 +24,7 @@
 #define PUERTO_SERVIDOR		4050
 #define IP_SERVIDOR			"127.0.0.1"
 
-#define MAX_ESPERA_CONEXION 10 // segundos
+#define MAX_ESPERA_CONEXION 5 // segundos
 #define MAX_CONEXIONES		3 //5
 #define MAX_BYTES_LECTURA	2000
 
