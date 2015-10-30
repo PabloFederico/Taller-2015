@@ -62,13 +62,15 @@ bool Server::mensajeParaElServidor(int sockfd, string recibido) {
 				string camEnc;
 				Red::extraerNumeroYResto(unContenido, &camEnc);
 				clientes[sockfd].posProtag = Camino::dec(camEnc).v.back();
+				rebotarlo = true;
 			} break;
 
 		case NUEVA_ENTIDAD: { // agregar correspondiente?
+				rebotarlo = true;
 			} break;
 
 		//MENSAJE, ESCENARIO, RECURSO, TOGGLE, ATAQUE, GLOTON, FIN
-		default: break;
+		default: rebotarlo = true;
 		}
 	}
 	return rebotarlo;
@@ -289,13 +291,13 @@ void Server::correr() {
 
 		// Generación de recursos random
 		if ((clock() - t) > CLOCKS_PER_SEC*DELAY_RECURSOS) {
-			Coordenada c;
+			Coordenada c; ostringstream ss;
 			TipoEntidad tipoRecurso = generarRecursoYCoordRandom(&c);
-			mensaje = Red::agregarPrefijoYFinal("REC", tipoRecurso+","+c.enc());
+			ss << "<REC>"<<tipoRecurso<<","<<c.enc()<<"~";
 			//std::cout << "Recurso "<<mensaje<<std::endl;//
 			for (int j = 0; j < maxfd+1; j++)
 				if (FD_ISSET(j, &readset))
-					send(j, mensaje.c_str(), 20, MSG_NOSIGNAL);
+					send(j, ss.str().c_str(), 20, MSG_NOSIGNAL);
 			t = clock();
 		}
 

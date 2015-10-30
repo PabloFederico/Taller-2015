@@ -91,7 +91,7 @@ public:
 		ss.ignore();			// "<"
 		ss.get(sTipo, 4, '>');	// "tipo"
 		ss.ignore();			// ">"
-		ss.get(charContenido, MAX_BYTES_LECTURA, '\0');
+		ss.get(charContenido, MAX_BYTES_LECTURA, '~');
 		*contenido = string(charContenido);
 		return StringToTipoMensajeRed(sTipo);
 	}
@@ -109,6 +109,7 @@ public:
 	// Diferencio aquello Recibido como el conjunto de Mensajes, cada cual posee la etiqueta de TipoMensajeRed y un Contenido decodificable.
 	// Extrae de recibidoSinParsear un mensaje entero, del cual parsea tipo y contenido.
 	static bool parsearSiguienteMensaje(string* recibidoSinParsear, TipoMensajeRed* tipo, string* unContenido) {
+		if (recibidoSinParsear->length() == 0) return false;
 		stringstream ss(*recibidoSinParsear);
 		char charUnMensaje[MAX_BYTES_LECTURA], charRestoRecibido[MAX_BYTES_LECTURA];
 		string unMensaje;

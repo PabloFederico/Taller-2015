@@ -26,8 +26,10 @@ Coordenada* Proxy::clienteEsperarComienzo(Connection* lan) {
 TipoMensajeRed Proxy::actualizarMultiplayer(Juego* juego) {
 	TipoMensajeRed tipo;
 	string unContenido, recibido = juego->getConnection()->recibir();
+	std::cout << juego->getIDJugador()<<"- recibido1: "<<recibido;
 	// Si no se recibe nada, recibir() lanza NoSeRecibio y se saltea el resto.
 	while (Red::parsearSiguienteMensaje(&recibido, &tipo, &unContenido)) {
+		std::cout << "recibido2: "<<recibido<<" tipo: "<<tipo<<" unContenido: "<<unContenido<<std::endl;
 		if (unContenido.length() > 0) {
 			switch (tipo) {
 			case MENSAJE: procesarMensaje(unContenido);
