@@ -15,7 +15,7 @@ ControladorMouse::ControladorMouse(Juego *juego) {
 	this->juego = juego;
 }
 
-void ControladorMouse::procesarEvento(SDL_Event &event, int MouseX, int MouseY){
+void ControladorMouse::procesarEvento(SDL_Event &event, int MouseX, int MouseY, Connection* lan){
 	Sprite *spriteProtag = juego->getSpritePlayer();
 
 	/********** Actualización de la capa negra ***********/
@@ -94,7 +94,11 @@ void ControladorMouse::procesarEvento(SDL_Event &event, int MouseX, int MouseY){
 	vector<Sprite*> spritesProtagonistas = juego->getSpritesProtagonistas();
 	for (vector<Sprite*>::iterator it = spritesProtagonistas.begin(); it < spritesProtagonistas.end(); ++it) {
 		if ((*it)->estaEnMovimiento())
-			(*it)->update(juego->getVelocidad());
+			try {
+				(*it)->update(juego->getVelocidad());
+			} catch ( PasoCompletado &e ) {
+				Proxy::completePaso(lan, e.id);
+			}
 		if ((*it) != spriteProtag) {
 			try {
 				Coordenada coord_tile_sprite = Calculador::tileParaPixel((*it)->getPosPies(), coord_pixel_ceros);

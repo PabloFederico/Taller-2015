@@ -174,6 +174,7 @@ struct Camino {
 		std::reverse(v.begin(), v.end());
 	}
 	std::size_t size() { return v.size(); }
+	bool empty() { return (size() == 0); }
 	Coordenada sacarProximaCoordenada() {
 		if (v.empty())
 			throw CaminoVacio();
@@ -191,6 +192,9 @@ struct Camino {
 		v = vAux;
 	}
 	Coordenada operator[](int k) { return v[k]; }
+	Coordenada ultimo() {
+		return v.back();
+	}
 
 	// Encodeado: "c1|c2|c3|...|cn"
 	std::string enc() {
@@ -223,8 +227,11 @@ struct Camino {
 		return Coordenada(pix_x, pix_y);
 	}
 
-	~Camino() {
+	void borrar() {
 		v.clear();
+	}
+	~Camino() {
+		borrar();
 	}
 };
 

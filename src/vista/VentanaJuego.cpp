@@ -91,7 +91,7 @@ void VentanaJuego::mostrar(){
 
 		SDL_Event event;
 		SDL_Cursor* cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_HAND);
-		if (cursor == NULL) printf("Fallo la creacion del cursor %s",SDL_GetError());
+		if (cursor == NULL) printf("Falló la creación del cursor %s",SDL_GetError());
 		SDL_SetCursor(cursor);
 
 		while ( run ) {
@@ -107,7 +107,10 @@ void VentanaJuego::mostrar(){
 
 	            SDL_Delay(15);
 
-	            if (event.type == SDL_KEYDOWN){
+	    		string nombreJugador = this->controlador->getJuego()->getNombreJugador();//muy innecesario?
+	    		SDL_SetWindowTitle(window,nombreJugador.c_str());
+
+	    		if (event.type == SDL_KEYDOWN){
 	            	if (event.key.keysym.sym == KEY_RESET){
 	            		this->reiniciar();
 	            	}

@@ -42,6 +42,13 @@ public:
 	CaminoVacio();
 };
 
+class PasoCompletado: public std::exception
+{
+public:
+	int id;
+	PasoCompletado(int ID);
+};
+
 class NoSeRecibio: public std::exception
 {
 public:
@@ -65,5 +72,12 @@ class Disconnected: public std::exception
 public:
 	Disconnected();
 };
+
+class NoExiste: public std::exception
+{
+public:
+	NoExiste();
+};
+
 
 #endif /* UTILS_EXCEPTIONS_H_ */

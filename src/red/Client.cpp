@@ -58,16 +58,18 @@ bool Client::iniciar() {
 	bool res = -1;
 	for (int i = 0; i < MAX_CONEXIONES; i++) {
 		res = Red::crearConexion(this->socket);
+		std::cout << ".";
 		if (res >= 0)
 			break;
-		std::cout << "."; sleep(5);
+		sleep(5);
 	}
 	if (res < 0) {
 		std::cout << std::endl << "ERROR: connect failed."<<std::endl;
 		return false;
+	} else {
+		this->lastDescriptor = this->socket->getDescriptor();
+		std::cout << std::endl << "Success."<<std::endl;
 	}
-	this->lastDescriptor = this->socket->getDescriptor();
-	std::cout << std::endl << "Success."<<std::endl;
 
 	// Envía el nombre de jugador.
 	string mensaje = Red::agregarPrefijoYFinal("COM", parsearNombreJugador());

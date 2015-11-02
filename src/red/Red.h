@@ -63,8 +63,10 @@ public:
 	/* recv() */
 	static int recibirInformacion(int descriptor, char *info){
 		int success = recv(descriptor, info, MAX_BYTES_LECTURA, 0);
-		if (success == 0 && errno == ENOTCONN)
+		if (success == 0/* && errno == ENOTCONN*/)
 			throw Disconnected();
+		if (success > 0)
+			info[success] = 0;
 		return success;
 	};
 
@@ -77,6 +79,11 @@ public:
 		Encode << "<"<<prefijo<<">"<<mensaje<<"~";
 		return Encode.str();
 	}
+	static string agregarPrefijoYFinal(string prefijo, int numero) {
+			ostringstream Encode;
+			Encode << "<"<<prefijo<<">"<<numero<<"~";
+			return Encode.str();
+		}
 
 	static string agregarPrefijoYJugYFinal(string prefijo, int jug, string mensaje) {
 		ostringstream Encode;

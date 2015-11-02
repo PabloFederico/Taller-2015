@@ -360,7 +360,8 @@ void Sprite::update(int vel_personaje) {
 						this->setDireccion(direccion);
 					}
 				} catch ( FueraDeEscenario &e ) { setearNuevoCamino(Camino(), coord_ceros); }
-			}
+			} else // Se acaba de terminar el camino, que es de un solo paso.
+				throw PasoCompletado(entidad->getIDJug());
 		}
 
 	} else {

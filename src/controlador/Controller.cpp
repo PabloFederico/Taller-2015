@@ -70,7 +70,7 @@ void Controller::posicionarCamaraEnProtagonista(){
 void Controller::procesarEvento(SDL_Event &event){
 	int x,y;
 	SDL_GetMouseState(&x,&y);
-	controladorMouse->procesarEvento(event,x,y);
+	controladorMouse->procesarEvento(event,x,y, this->juego->getConnection());
 	controladorCamara->procesarPosicionMouse(x,y);
 
 	if (this->juego->esCliente()) {

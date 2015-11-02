@@ -23,10 +23,13 @@ FueraDeEscenario::FueraDeEscenario() {}
 TileEstaOcupado::TileEstaOcupado() {}
 
 CaminoVacio::CaminoVacio() {}
+PasoCompletado::PasoCompletado(int ID): id(ID) {}
 
 NoSeRecibio::NoSeRecibio() {}
 
 ConnectionProblem::ConnectionProblem() {}
 
 Disconnected::Disconnected() {}
+
+NoExiste::NoExiste() {}
 

@@ -87,8 +87,11 @@ void Escenario::actualizarPosicionProtagonista(Coordenada c){
 	/* Si las coordenadas no son iguales, actualizar la coordenada del protagonista */
 	if (c_protagonista != c) {
 		Tile* tile = getTile(c_protagonista);
-		if (tile != NULL)
-			tile->eliminarEntidad(protagonista);
+		try {
+			if (tile != NULL)
+				tile->eliminarEntidad(protagonista);
+		} catch ( NoSeRecibio &e ) {}
+
 
 		/* agregamos el protagonista a su nuevo tile */
 		tile = getTile(c.x, c.y);
@@ -111,7 +114,9 @@ void Escenario::actualizarPosicionEnemigo(Entidad* ent, Coordenada c) {
 		try {
 			Tile* tile = getTile(it->coord());
 			if (!tile) return;
-			tile->eliminarEntidad(ent);
+			try {
+				tile->eliminarEntidad(ent);
+			} catch ( NoSeRecibio &e ) {}
 			tile = getTile(c.x, c.y);
 			tile->agregarEntidad(ent);
 			it->x = c.x;

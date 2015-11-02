@@ -24,13 +24,13 @@ Coordenada* Proxy::clienteEsperarComienzo(Connection* lan) {
 
 
 TipoMensajeRed Proxy::actualizarMultiplayer(Juego* juego) {
-	TipoMensajeRed tipo;
 	string unContenido, recibido = juego->getConnection()->recibir();
-	std::cout << juego->getIDJugador()<<"- recibido1: "<<recibido;
 	// Si no se recibe nada, recibir() lanza NoSeRecibio y se saltea el resto.
+	TipoMensajeRed tipo;
+
 	while (Red::parsearSiguienteMensaje(&recibido, &tipo, &unContenido)) {
-		std::cout << "recibido2: "<<recibido<<" tipo: "<<tipo<<" unContenido: "<<unContenido<<std::endl;
 		if (unContenido.length() > 0) {
+
 			switch (tipo) {
 			case MENSAJE: procesarMensaje(unContenido);
 				break;
@@ -39,6 +39,8 @@ TipoMensajeRed Proxy::actualizarMultiplayer(Juego* juego) {
 			case ESCENARIO: procesarEscenario(juego, unContenido);
 				break;
 			case MOVIMIENTO: procesarCamino(juego, unContenido);
+				break;
+			case PASO_COMPLETO:
 				break;
 			case NUEVA_ENTIDAD: procesarNuevaEntidad(juego, unContenido);
 				break;
@@ -55,7 +57,7 @@ TipoMensajeRed Proxy::actualizarMultiplayer(Juego* juego) {
 			}
 		}
 	}
-	return tipo;	// devuelve sólo el último; pero no tiene uso igual
+	return tipo;	// devuelve sólo el último; pero ni se le da uso
 }
 
 
@@ -79,11 +81,16 @@ void Proxy::procesarEscenario(Juego* juego, string encodeado) {
 void Proxy::procesarCamino(Juego* juego, string encodeado) {
 	string camEnc;
 	int jug = Red::extraerNumeroYResto(encodeado, &camEnc);
-	juego->getSpritePlayer(jug)->setearNuevoCamino(Camino::dec(camEnc), juego->getCoordCeros());
+	try {
+		juego->getSpritePlayer(jug)->setearNuevoCamino(Camino::dec(camEnc), juego->getCoordCeros());
+	} catch ( NoSeRecibio &e ) {}
 }
 
 void Proxy::procesarNuevaEntidad(Juego* juego, string encodeado) {
-	juego->cargarEnemigo(PosEntidad::dec(encodeado));
+	//std::cout << juego->getIDJugador()<<" Procesando entidad enemiga: "<<encodeado<<std::endl;//
+	try {
+		juego->cargarEnemigo(PosEntidad::dec(encodeado));
+	} catch ( FueraDeEscenario &e ) { Log::imprimirALog(WAR, "Enemigo fuera del escenario"); }
 }
 
 void Proxy::procesarRecurso(Juego* juego, string encodeado) {
@@ -138,6 +145,10 @@ void Proxy::enviar(Connection* lan, PosEntidad ent) {
 void Proxy::comiRecurso(Connection* lan, Coordenada c) {
 	string t = Red::agregarPrefijoYFinal("GLO", c.enc());
 	lan->enviar(t);
+}
+
+void Proxy::completePaso(Connection* lan, int id_jug) {
+	string t = Red::agregarPrefijoYFinal("PAS", id_jug);
 }
 
 //void Proxy::enviar(Ataque)

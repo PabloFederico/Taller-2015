@@ -131,7 +131,8 @@ Sprite* Juego::getSpritePlayer(int id_jug) {
 	for (vector<PosEntidad>::iterator it = enemigos->begin(); it < enemigos->end(); ++it)
 		if (it->entidad->getIDJug() == id_jug)
 			return this->contenedor->getSpriteDeEntidad(it->entidad);
-	return this->contenedor->getSpriteDeEntidad(protagonista);
+	throw NoSeRecibio();
+	//return this->contenedor->getSpriteDeEntidad(protagonista);
 }
 
 /***************************************************/
@@ -210,22 +211,36 @@ void Juego::agregarRecurso(TipoEntidad recurso, Coordenada coord) {
 
 /***************************************************/
 void Juego::cargarEnemigo(PosEntidad posEnt) {
-	bool resPosicionar = false;
-	int aux = posEnt.x;
-	int *d = &posEnt.x;
-	// cabeza para resolver situación inicial, se las arregla para el 9# % de los casos
-	while (!resPosicionar) {
-		try {
-			resPosicionar = escenario->agregarEntidad(posEnt.coord(), posEnt.entidad);
-			if (!resPosicionar) *d += 1;
-		} catch ( FueraDeEscenario &e ) {
-			*d = aux;
-			d = &posEnt.y;
-		}
-	}
-	enemigos->push_back(posEnt);
+	if (posEnt.entidad->getIDJug() == getIDJugador())
+		return;	// Si es el propio, no hacer nada...
+	try {
+		for (vector<PosEntidad>::iterator it = enemigos->begin(); it < enemigos->end(); ++it)
+			if (it->entidad->getIDJug() == posEnt.entidad->getIDJug()) {
+				Camino camCorreccion;
+				camCorreccion.agregar(posEnt.coord());
+				getSpritePlayer(posEnt.entidad->getIDJug())->setearNuevoCamino(camCorreccion, getCoordCeros());
+				return;		// Si ya hay una entidad de ese jugador, corrije su posición nomás.
+			}
 
-	this->contenedor->generarYGuardarSpriteEntidad(posEnt, Coordenada(*cero_x, *cero_y), escenario);
+		bool resPosicionar = false;
+		int aux = posEnt.x;
+		int *d = &posEnt.x;
+		// cabeza para resolver situación inicial, se las arregla para el 9# % de los casos
+		while (!resPosicionar) {
+			try {
+				resPosicionar = escenario->agregarEntidad(posEnt.coord(), posEnt.entidad);
+				if (!resPosicionar)
+					*d += 1;
+			} catch ( FueraDeEscenario &e ) {
+				if (*d == aux) throw FueraDeEscenario();
+				*d = aux;
+				d = &posEnt.y;
+			}
+		}
+
+		enemigos->push_back(posEnt);
+		this->contenedor->generarYGuardarSpriteEntidad(posEnt, Coordenada(*cero_x, *cero_y), escenario);
+	} catch ( NoSeRecibio &e ) {}
 }
 
 /***************************************************/
@@ -237,11 +252,12 @@ void Juego::toggleEnemigo(int id_jug) {
 			if (entidadEnemigo->estaPetrificado()) {
 				// Si está congelado, lo pasamos a color
 				entidadEnemigo->despetrificar();
+				std::cout << id_jug<<" despetrificado"<<std::endl;//
 			} else {
 				// Si no, lo pasamos a gris
 
 				entidadEnemigo->petrificar();
-
+				std::cout << id_jug<<" petrificado"<<std::endl;//
 			}
 			contenedor->getSpriteDeEntidad(entidadEnemigo)->cambiarTexture();
 			break;

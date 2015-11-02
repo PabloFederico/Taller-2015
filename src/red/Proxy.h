@@ -37,6 +37,7 @@ public:
 	static void enviar(Connection* lan, Camino cam);	// Enviar movimientos del protagonista
 	static void enviar(Connection* lan, PosEntidad ent);		// Enviar información de entidad
 	static void comiRecurso(Connection* lan, Coordenada c);
+	static void completePaso(Connection* lan, int id_jug);
 	//static void enviar(Connection* lan, Ataque)
 };
 

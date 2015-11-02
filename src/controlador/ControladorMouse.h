@@ -18,7 +18,7 @@ private:
 public:
 	ControladorMouse(Juego *juego);
 
-	void procesarEvento(SDL_Event &event, int x, int y);
+	void procesarEvento(SDL_Event &event, int x, int y, Connection *lan);
 
 	virtual ~ControladorMouse();
 };
