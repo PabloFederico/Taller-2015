@@ -36,6 +36,13 @@ void ControladorMouse::procesarEvento(SDL_Event &event, int MouseX, int MouseY, 
 	if (tile->tieneRecurso()){
 		Entidad* recurso = tile->devolverRecurso();
 		barra->agregarRecursoEconomico(recurso->getTipo());
+
+		// Elimina el sprite del recurso
+		map<Entidad*,Sprite*>::iterator p = juego->getSpritesEntidades()->find(recurso);
+		if (p != juego->getSpritesEntidades()->end()){
+			delete p->second;
+		}
+
 		escenario->quitarRecurso(pos_jug,recurso);
 	}
 
