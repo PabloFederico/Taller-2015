@@ -44,6 +44,7 @@ void ControladorMouse::procesarEvento(SDL_Event &event, int MouseX, int MouseY, 
 		}
 
 		escenario->quitarRecurso(pos_jug,recurso);
+		Proxy::comiRecurso(lan, pos_jug);
 	}
 
 	/*********** Análisis del clic del mouse *************/
