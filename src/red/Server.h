@@ -36,11 +36,12 @@ struct DataCliente {
 
 	void setCamino(Camino cam) {
 		quieto();
-		camino = cam;
+		while (!cam.empty())
+			camino.agregar(cam.sacarProximaCoordenada());
 		posProtag = cam.ultimo();
 	}
 	Coordenada avanzar(int cantConectados) {
-		if (camino.empty() || cantConectados > completaronPaso)
+		if (camino.empty() || completaronPaso < cantConectados)
 			throw CaminoVacio();
 		completaronPaso = 0;
 		return camino.sacarProximaCoordenada();
@@ -62,7 +63,7 @@ struct Clientes {
 
 	int agregar(int socket, string nombre, Entidad* pEntidad = NULL) {
 		int idJug = cant()+1;
-		Entidad entidad = Entidad(SOLDADO, cant()+1);
+		Entidad entidad = Entidad(SOLDADO, idJug);
 		if (pEntidad != NULL)
 			 entidad = *pEntidad;
 
@@ -74,6 +75,7 @@ struct Clientes {
 				it = m.begin();
 			}
 		m.insert(pair<int,DataCliente>(socket, DataCliente(idJug, nombre, coordRandom, entidad)));
+
 		cantConectados++;
 		return idJug;
 	}
@@ -86,7 +88,7 @@ struct Clientes {
 				return (it->second);
 		throw NoExiste();
 	}
-	DataCliente operator[](int k) { return m[k]; }
+	DataCliente& operator[](int k) { return m[k]; }
 
 	void jugadorConectado(int socket) {
 		m[socket].conectado = true;
@@ -94,11 +96,20 @@ struct Clientes {
 	}
 	void jugadorDesconectado(int socket) {
 		m[socket].conectado = false;
+		m[socket].quieto();
 		cantConectados--;
 	}
 
 	string mensajeDeEntidadDeJugador(int socket) {
-		return Red::agregarPrefijoYFinal("ENT", PosEntidad(m[socket].posProtag, &m[socket].entidad).enc());
+		return Red::agregarPrefijoYFinal("ENT", PosEntidad(m[socket].posProtag,&m[socket].entidad).enc());
+	}
+
+	string mensajeDeTodasLasEntidadesConectadas() {
+		ostringstream msj;
+		for (map<int,DataCliente>::iterator it = m.begin(); it != m.end(); ++it)
+			if (it->second.conectado)
+				msj << mensajeDeEntidadDeJugador(it->first);
+		return msj.str();
 	}
 
 	string nuevoNombrePara(int socket, string nombrePedido) {
@@ -121,7 +132,7 @@ struct Clientes {
 	}
 
 	string mensajeParaAvanzarJug(int socket) {
-		return m[socket].avanzar(cantConectados).enc();
+		return Red::agregarPrefijoYJugYFinal("MOV", m[socket].id, m[socket].avanzar(cantConectados).enc());
 	}
 };
 

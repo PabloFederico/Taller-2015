@@ -191,7 +191,7 @@ struct Camino {
 		v.clear();
 		v = vAux;
 	}
-	Coordenada operator[](int k) { return v[k]; }
+	Coordenada operator[](int k) { return v[k]; }	// Acceso, no modificación
 	Coordenada ultimo() {
 		return v.back();
 	}

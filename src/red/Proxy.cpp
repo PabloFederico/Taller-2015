@@ -83,7 +83,9 @@ void Proxy::procesarCamino(Juego* juego, string encodeado) {
 	int jug = Red::extraerNumeroYResto(encodeado, &camEnc);
 	try {
 		juego->getSpritePlayer(jug)->setearNuevoCamino(Camino::dec(camEnc), juego->getCoordCeros());
-	} catch ( NoSeRecibio &e ) {}
+	} catch ( NoSeRecibio &e ) {
+		juego->getSpritePlayer()->setearNuevoCamino(Camino::dec(camEnc), juego->getCoordCeros());
+	}
 }
 
 void Proxy::procesarNuevaEntidad(Juego* juego, string encodeado) {
@@ -149,6 +151,7 @@ void Proxy::comiRecurso(Connection* lan, Coordenada c) {
 
 void Proxy::completePaso(Connection* lan, int id_jug) {
 	string t = Red::agregarPrefijoYFinal("PAS", id_jug);
+	lan->enviar(t);
 }
 
 //void Proxy::enviar(Ataque)

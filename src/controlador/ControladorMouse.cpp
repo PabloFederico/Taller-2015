@@ -76,9 +76,9 @@ void ControladorMouse::procesarEvento(SDL_Event &event, int MouseX, int MouseY, 
 							/* Si se está jugando en red, enviar el movimiento a los demás jugadores. */
 							if (juego->esCliente())
 								Proxy::enviar(juego->getConnection(), camino);
-
-							/* Activamos el movimiento del sprite y seteamos el nuevo camino que debe recorrer. */
-							spriteProtag->setearNuevoCamino(camino, coord_pixel_ceros);
+							else
+								spriteProtag->setearNuevoCamino(camino, coord_pixel_ceros);
+								/* Activamos localmente el movimiento del sprite y seteamos el nuevo camino que debe recorrer. */
 						}
 					} catch ( FueraDeEscenario &e ) {}
 				}

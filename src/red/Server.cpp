@@ -62,7 +62,6 @@ void Server::inicializarCliente(int peersock, int segundosDeEspera) {
 		// Segundo mensaje: Envío al jugador su número de jugador.
 		ss << cli.id<<"~";
 		send(peersock, ss.str().c_str(), 10, MSG_NOSIGNAL);
-		ss.str( std::string() ); ss.clear();
 		// Envío a todos los demás jugadores que este volvió.
 		mensaje = Red::agregarPrefijoYFinal("TOG", cli.id);
 		enviarATodosMenos(peersock, mensaje);
@@ -79,9 +78,10 @@ void Server::inicializarCliente(int peersock, int segundosDeEspera) {
 
 		// Tercer mensaje: Si el juego ya ha comenzado, enviar señal de comienzo y nueva posición inmediatamente.
 		if (segundosDeEspera < 3) {
+			sleep(1);
 			mensaje = Red::agregarPrefijoYFinal("COM", clientes[peersock].posProtag.enc());
 			send(peersock, mensaje.c_str(), 16, MSG_NOSIGNAL);
-			// Además, aviso del nuevo enemigo a todos los demás jugadores.
+			// Además, envío el nuevo enemigo a todos los demás jugadores.
 			mensaje = clientes.mensajeDeEntidadDeJugador(peersock);
 			enviarATodosMenos(peersock, mensaje);
 		}
@@ -89,12 +89,7 @@ void Server::inicializarCliente(int peersock, int segundosDeEspera) {
 
 	// Si el juego ya ha comenzado, envío a la nueva conexión las posiciones de todos los demás.
 	if (segundosDeEspera < 3) {
-		for (map<int,DataCliente>::iterator it = clientes.m.begin(); it != clientes.m.end(); ++it)
-			if ((it->second.conectado) && (it->second.nombre != nombreJug)) {
-				mensaje = clientes.mensajeDeEntidadDeJugador(it->first);
-				ss << ss.str()<<Red::agregarPrefijoYFinal("ENT", mensaje);
-			}
-		std::cout << "Si el juego ha comenzado, envío al jugador "<<nombreJug<<" las posiciones de todos los demás."<<std::endl;//
+		mensaje = clientes.mensajeDeTodasLasEntidadesConectadas();
 		send(peersock, mensaje.c_str(), MAX_BYTES_LECTURA, MSG_NOSIGNAL);
 	}
 }
@@ -148,7 +143,6 @@ void Server::conexionPerdida(int j) {
 	close(j);
 	FD_CLR(j, &readset);
 	enviarATodos(Red::agregarPrefijoYFinal("TOG", clientes[j].id));	//Avisarle a los demás.
-	clientes[j].quieto();
 	clientes.jugadorDesconectado(j);
 	std::cout << "Socket "<<j<<": "<<clientes[j].nombre<<" (jugador "<<clientes[j].id<<") se ha desconectado."<<std::endl;
 }
@@ -186,8 +180,9 @@ bool Server::procesarComoServidor(int sockfd, string recibido) {
 			} break;
 
 		case NUEVA_ENTIDAD: {
-				Coordenada posJug = PosEntidad::dec(unContenido).coord();
-				clientes[sockfd].posProtag = posJug;
+				PosEntidad peAux = PosEntidad::dec(unContenido);
+				clientes[sockfd].entidad = *peAux.entidad;
+				clientes[sockfd].posProtag = peAux.coord();;
 				rebotarlo = false;
 			} break;
 
@@ -252,12 +247,14 @@ void Server::correr() {
 	}
 
 	// Enviar posiciones de enemigos.
-	for (j = 0; j < maxfd+1; j++) {
+	enviarATodos(clientes.mensajeDeTodasLasEntidadesConectadas());
+	enviarATodos(clientes.mensajeDeTodasLasEntidadesConectadas());
+	/*for (j = 0; j < maxfd+1; j++) {
 		if (FD_ISSET(j, &readset)) {
-			mensaje = clientes.mensajeDeEntidadDeJugador(j);
-			enviarATodosMenos(j, mensaje);
+			mensaje = clientes.mensajeDeEntidadDeJugador(j);//
+			enviarATodosMenos(j, mensaje);//
 		}	//NO FUNCIONANDO PARA EL MAX_CONEXIONES-ésimo!? Revisar
-	}
+	}*/
 
 	std::cout << "Comenzando juego..."<<std::endl << std::endl;
 	/******************************************************************/
@@ -296,7 +293,6 @@ void Server::correr() {
 		if ((clock() - t) > CLOCKS_PER_SEC*DELAY_RECURSOS) {
 			Coordenada c;
 			TipoEntidad tipoRecurso = generarRecursoYCoordRandom(&c);
-			//std::cout << "Recurso "<<mensaje<<std::endl;//
 			enviarATodos(Red::agregarPrefijoYJugYFinal("REC", int(tipoRecurso), c.enc()));
 			t = clock();
 		}
@@ -305,7 +301,7 @@ void Server::correr() {
 		for (j = 0; j < maxfd+1; j++)
 			if (FD_ISSET(j, &readset)) {
 				try {
-					mensaje = Red::agregarPrefijoYJugYFinal("MOV", clientes[j].id, clientes.mensajeParaAvanzarJug(j));
+					mensaje = clientes.mensajeParaAvanzarJug(j);
 					std::cout << "Envío paso "<<mensaje<<std::endl;//
 					enviarATodos(mensaje);
 				} catch ( CaminoVacio &e ) {}

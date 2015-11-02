@@ -54,7 +54,7 @@ bool Client::iniciar() {
 		std::cout << "ERROR: No se puede crear socket."<<std::endl;
 		return false;
 	}
-	std::cout << "Intentado conectarse ("<<MAX_CONEXIONES<<" intentos)";
+	std::cout << "Intentado conectarse ("<<MAX_CONEXIONES<<" intentos)"<<std::endl;
 	bool res = -1;
 	for (int i = 0; i < MAX_CONEXIONES; i++) {
 		res = Red::crearConexion(this->socket);
@@ -66,10 +66,9 @@ bool Client::iniciar() {
 	if (res < 0) {
 		std::cout << std::endl << "ERROR: connect failed."<<std::endl;
 		return false;
-	} else {
-		this->lastDescriptor = this->socket->getDescriptor();
-		std::cout << std::endl << "Success."<<std::endl;
 	}
+
+	this->lastDescriptor = this->socket->getDescriptor();
 
 	// Envía el nombre de jugador.
 	string mensaje = Red::agregarPrefijoYFinal("COM", parsearNombreJugador());
@@ -85,7 +84,7 @@ bool Client::iniciar() {
 	} while (this->idJug == 0);
 
 	fcntl(this->socket->getDescriptor(), F_SETFL, O_NONBLOCK); // non-blocking mode
-	std::cout << "Conectado como jugador #"<<this->idJug<<"."<<std::endl;
+	std::cout << std::endl << "Success! Conectado como jugador #"<<this->idJug<<"."<<std::endl;
 	return true;
 }
 
