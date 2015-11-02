@@ -105,10 +105,10 @@ struct Clientes {
 	}
 
 	string mensajeDeTodasLasEntidadesConectadas() {
-		ostringstream msj;
+		ostringstream msj; msj.str("");
 		for (map<int,DataCliente>::iterator it = m.begin(); it != m.end(); ++it)
 			if (it->second.conectado)
-				msj << mensajeDeEntidadDeJugador(it->first);
+				msj << msj.str()<<mensajeDeEntidadDeJugador(it->first);
 		return msj.str();
 	}
 
