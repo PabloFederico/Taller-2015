@@ -37,6 +37,7 @@ void ControladorMouse::procesarEvento(SDL_Event &event, int MouseX, int MouseY, 
 		Entidad* recurso = tile->devolverRecurso();
 		barra->agregarRecursoEconomico(recurso->getTipo());
 		escenario->quitarRecurso(pos_jug,recurso);
+		Proxy::comiRecurso(lan, pos_jug);
 	}
 
 	/*********** Análisis del clic del mouse *************/
