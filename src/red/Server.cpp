@@ -32,7 +32,7 @@ bool Server::iniciar() {
 }
 
 
-// Funciones para comunicar mensaje a todos (o casi) los sockets de readset.
+// Comunicar mensaje a todos (o casi) los sockets de readset.
 void Server::enviarATodos(string mensaje) {
 	enviarATodosMenos(-1, mensaje);
 }
@@ -65,6 +65,7 @@ void Server::inicializarCliente(int peersock, int segundosDeEspera) {
 		// Envío a todos los demás jugadores que este volvió.
 		mensaje = Red::agregarPrefijoYFinal("TOG", cli.id);
 		enviarATodosMenos(peersock, mensaje);
+		sleep(1);
 		// Tercer mensaje: Envío al jugador señal de comienzo y su última posición.
 		mensaje = Red::agregarPrefijoYFinal("COM", cli.posProtag.enc());
 		send(peersock, mensaje.c_str(), MAX_BYTES_LECTURA, MSG_NOSIGNAL);
