@@ -401,8 +401,8 @@ void Dibujador::dibujarMiniMapa(Escenario* esc, SDL_Rect rect){
 		for (int i = 0; i < dimension.first; i++){
 
 			/* Solo dibujamos para las zonas visibles (GRISES ó COLOR) */
-
-			if (capaFog->getEstadoTile(i,j) != ESTADO_NEGRO){
+			EstadoCapa estadoCapa = capaFog->getEstadoTile(i,j);
+			if (estadoCapa != ESTADO_NEGRO){
 				SDL_RenderCopy(renderer,imagenRelieve->getTexture(),NULL,&rectRelieve);
 				Tile* tile = esc->getTile(i,j);
 				vector<Entidad*> entidades = tile->getEntidades();
@@ -419,37 +419,56 @@ void Dibujador::dibujarMiniMapa(Escenario* esc, SDL_Rect rect){
 								image = contenedor->getImagenUtilTipo((TipoImagenUtil)entidad->getIDJug());
 								rect_aux.w = 3;
 								rect_aux.h = 3;
+								if (estadoCapa == ESTADO_COLOR){
+									SDL_RenderCopy(this->renderer,image->getTexture(),NULL,&rect_aux);
+								}
 								break;
 						case ANIMAL:
 								image = contenedor->getImagenUtilTipo(ICONO_BLANCO);
+								if (estadoCapa == ESTADO_COLOR){
+									SDL_RenderCopy(this->renderer,image->getTexture(),NULL,&rect_aux);
+								}
 								break;
 						case CASTILLO:
 								image = contenedor->getImagenUtilTipo(ICONO_VIOLETA);
 								rect_aux = rectRelieve;
+								SDL_RenderCopy(this->renderer,image->getTexture(),NULL,&rect_aux);
 								break;
 						case ARBOL:
 								image = contenedor->getImagenUtilTipo(ICONO_VERDE);
+								SDL_RenderCopy(this->renderer,image->getTexture(),NULL,&rect_aux);
 								break;
 						case AGUA:
 								image = contenedor->getImagenTipo(AGUA);
 								rect_aux = rectRelieve;
+								SDL_RenderCopy(this->renderer,image->getTexture(),NULL,&rect_aux);
 								break;
 						case TIERRA:
 								image = contenedor->getImagenTipo(TIERRA);
 								rect_aux = rectRelieve;
+								SDL_RenderCopy(this->renderer,image->getTexture(),NULL,&rect_aux);
 								break;
 						case MADERA:
 								image = contenedor->getImagenUtilTipo(ICONO_NARANJA);
+								if (estadoCapa == ESTADO_COLOR){
+									SDL_RenderCopy(this->renderer,image->getTexture(),NULL,&rect_aux);
+								}
 								break;
 						case COMIDA:
 								image = contenedor->getImagenUtilTipo(ICONO_ROSA);
+								if (estadoCapa == ESTADO_COLOR){
+									SDL_RenderCopy(this->renderer,image->getTexture(),NULL,&rect_aux);
+								}
 								break;
 						case ORO:
 								image = contenedor->getImagenUtilTipo(ICONO_AMARILLO);
+								if (estadoCapa == ESTADO_COLOR){
+									SDL_RenderCopy(this->renderer,image->getTexture(),NULL,&rect_aux);
+								}
 								break;
 						default : break;
  					}
-					SDL_RenderCopy(this->renderer,image->getTexture(),NULL,&rect_aux);
+					//SDL_RenderCopy(this->renderer,image->getTexture(),NULL,&rect_aux);
 				}
 			}else{
 				// Si el estado del tile es NEGRO
