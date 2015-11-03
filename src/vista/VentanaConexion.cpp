@@ -12,7 +12,7 @@
 
 VentanaConexion::VentanaConexion(Controller *controlador): Ventana(controlador) {
 	if ( !init() ) std::cout << "error" << std::endl;
-	 this->fuenteTexto = TTF_OpenFont("censcbk.ttf",TAM_LETRA_CONEXION);
+	 this->fuenteTexto = TTF_OpenFont("images/censcbk.ttf",TAM_LETRA_CONEXION);
 	imagenFondo = Loader::cargarImagen(renderer,"images/fondo_ventana.png");
 }
 

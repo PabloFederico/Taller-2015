@@ -241,7 +241,7 @@ void Sprite::setearNuevoCamino(Camino nuevoCamino, Coordenada coord_ceros){
 		Coordenada c_prox_punto = nuevoCamino[0];
 		// Coordenada para posicionar el sprite.
 		c_prox_punto.x -= this->getPosicion().w / 2;
-		c_prox_punto.y -= this->getPosicion().h;// / 2;
+		c_prox_punto.y -= this->getPosicion().h;
 
 		Direccion direccion = Calculador::calcularDireccion(c_prox_punto, coordPixelSprite());
 		this->setDireccion(direccion);
@@ -309,7 +309,7 @@ void Sprite::update(int vel_personaje) {
 		// * pero no se aplica para el último punto destino. */
 		//if (this->getCaminoARecorrer().size() > 1){
 		c_prox_pixel.x -= this->getPosicion().w / 2;
-		c_prox_pixel.y -= this->getPosicion().h;// / 2;
+		c_prox_pixel.y -= this->getPosicion().h;
 		//}
 
 		float distancia = Calculador::calcularDistanciaEntrePixeles(Coordenada(this->regPos.posX_player, this->regPos.posY_player), c_prox_pixel);

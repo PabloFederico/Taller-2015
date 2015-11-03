@@ -11,7 +11,7 @@
 
 VentanaMenu::VentanaMenu(Controller* controlador):Ventana(controlador) {
 	if ( !init() ) std::cout << "error" << std::endl;
-	 this->fuenteTexto = TTF_OpenFont("TERMINAT.TTF",20);
+	 this->fuenteTexto = TTF_OpenFont("images/TERMINAT.TTF",20);
 	imagenFondo = Loader::cargarImagen(renderer,"images/fondo_ventana.png");
 	fondoBoton = Loader::cargarImagen(renderer,"images/fondo_boton_1.png");
 	generarBotonesMenu();

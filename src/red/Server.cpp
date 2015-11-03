@@ -250,12 +250,6 @@ void Server::correr() {
 	// Enviar posiciones de enemigos.
 	enviarATodos(clientes.mensajeDeTodasLasEntidadesConectadas());
 	enviarATodos(clientes.mensajeDeTodasLasEntidadesConectadas());
-	/*for (j = 0; j < maxfd+1; j++) {
-		if (FD_ISSET(j, &readset)) {
-			mensaje = clientes.mensajeDeEntidadDeJugador(j);//
-			enviarATodosMenos(j, mensaje);//
-		}	//NO FUNCIONANDO PARA EL MAX_CONEXIONES-ésimo!? Revisar
-	}*/
 
 	std::cout << "Comenzando juego..."<<std::endl << std::endl;
 	/******************************************************************/

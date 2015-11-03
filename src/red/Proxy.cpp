@@ -89,7 +89,6 @@ void Proxy::procesarCamino(Juego* juego, string encodeado) {
 }
 
 void Proxy::procesarNuevaEntidad(Juego* juego, string encodeado) {
-	//std::cout << juego->getIDJugador()<<" Procesando entidad enemiga: "<<encodeado<<std::endl;//
 	try {
 		juego->cargarEnemigo(PosEntidad::dec(encodeado));
 	} catch ( FueraDeEscenario &e ) { Log::imprimirALog(WAR, "Enemigo fuera del escenario"); }

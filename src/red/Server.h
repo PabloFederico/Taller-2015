@@ -36,9 +36,9 @@ struct DataCliente {
 
 	void setCamino(Camino cam) {
 		quieto();
+		posProtag = cam.ultimo();
 		while (!cam.empty())
 			camino.agregar(cam.sacarProximaCoordenada());
-		posProtag = cam.ultimo();
 	}
 	Coordenada avanzar(int cantConectados) {
 		if (camino.empty() || completaronPaso < cantConectados)
