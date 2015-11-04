@@ -64,7 +64,7 @@ void Server::inicializarCliente(int peersock, int segundosDeEspera) {
 		send(peersock, ss.str().c_str(), 10, MSG_NOSIGNAL);
 		// Envío a todos los demás jugadores que este volvió.
 		mensaje = Red::agregarPrefijoYFinal("TOG", cli.id);
-		enviarATodosMenos(peersock, mensaje);
+		enviarATodos(mensaje);
 		sleep(1);
 		// Tercer mensaje: Envío al jugador señal de comienzo y su última posición.
 		mensaje = Red::agregarPrefijoYFinal("COM", cli.posProtag.enc());
@@ -280,6 +280,8 @@ void Server::correr() {
 					conexionPerdida(j);
 				} else if (errno != EWOULDBLOCK)
 					std::cout << "Error in recv(): "<<strerror(errno)<<std::endl;
+				else
+					cout << "acá va el ping con chequeo";
 
 			} // fi (FD_ISSET(j, &readset))
 		} // rof cada cliente

@@ -1,6 +1,6 @@
-nombre_jugador: EnriqueIII
+nombre_jugador: pepe
 
-direccion_ip: 127.0.0.1
+direccion_ip: 10.0.0.1
 
 pantalla:
   ancho: 900

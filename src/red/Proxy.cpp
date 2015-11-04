@@ -104,7 +104,7 @@ void Proxy::procesarRecursoComido(Juego* juego, string posEnc) {
 	Coordenada c = Coordenada::dec(posEnc);
 	try {
 		Entidad* recurso = juego->getEscenario()->getTile(c)->devolverRecurso();
-		delete juego->getSpritesEntidades()->find(recurso)->second;
+		//delete juego->getSpritesEntidades()->find(recurso)->second;
 		juego->getEscenario()->quitarRecurso(c, recurso);
 	} catch ( NoTieneRecurso &e ) {}
 }

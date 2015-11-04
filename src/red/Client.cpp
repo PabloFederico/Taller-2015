@@ -11,28 +11,32 @@
 
 string parsearIP() {
 	string ip = IP_SERVIDOR;
-	YAML::Node config;
-	try {
-		config = YAML::LoadFile("config.yaml");
-		if (config["direccion_ip"])
-			ip = config["direccion_ip"].as<string>();
-	} catch (YAML::BadFile &e) {}
+	//YAML::Node config;
+	//try {
+		//config = YAML::LoadFile("config.yaml");
+		//if (config["direccion_ip"])
+			//ip = config["direccion_ip"].as<string>();
+
+	//} catch (YAML::BadFile &e) {}
+	ip = "192.168.43.54";
 	return ip;
 }
 
 string parsearNombreJugador() {
 	string nombre = "Octai";
-	YAML::Node config;
+	//YAML::Node config;
 	try {
-		config = YAML::LoadFile("config.yaml");
-		if (config["nombre_jugador"])
-			nombre = config["nombre_jugador"].as<string>();
-		else nombre = "Ema";
+		//config = YAML::LoadFile("config.yaml");
+		//if (false) //(config["nombre_jugador"])
+			//nombre = config["nombre_jugador"].as<string>();
+		//else
+			//nombre = "Ema";
 	} catch (YAML::BadFile &e) {
 		nombre = "Pablito";
 	} catch (YAML::ParserException &e) {
 		nombre = "Guido!";
 	}
+	nombre = "Pablinn";
 	return nombre;
 }
 
@@ -48,8 +52,8 @@ Client::Client() {
 }
 
 bool Client::iniciar() {
-	string ip = parsearIP();
-	this->socket = new SocketCliente(ip);
+	//string ip = parsearIP();
+	this->socket = new SocketCliente("10.0.0.2");
 	if (this->socket->creadoCorrectamente() < 0) {
 		std::cout << "ERROR: No se puede crear socket."<<std::endl;
 		return false;
@@ -71,7 +75,7 @@ bool Client::iniciar() {
 	this->lastDescriptor = this->socket->getDescriptor();
 
 	// Envía el nombre de jugador.
-	string mensaje = Red::agregarPrefijoYFinal("COM", parsearNombreJugador());
+	string mensaje = Red::agregarPrefijoYFinal("COM", "Pablitooo");
 	send(this->lastDescriptor, mensaje.c_str(), MAX_BYTES_LECTURA, 0);
 
 	// Recibe su número de jugador.

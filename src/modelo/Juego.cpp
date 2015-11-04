@@ -66,9 +66,9 @@ void Juego::cargarNumJugador() {
 /********************************************************************************/
 void Juego::cargarJuego(InfoEscenario* infoEscRed = NULL, Coordenada *posInicial = NULL) {
 	//----------------------------------------------------------------------------------------!!
-	configGame = Yaml::cargarConfiguracionJuego("config.yaml");
+	//configGame = Yaml::cargarConfiguracionJuego("config.yaml");
 	// !!! Para Guido, comentar la línea de arriba y descomentar la de abajo.
-	//configGame = Yaml::OdioYAML();
+	configGame = Yaml::OdioYAML();
 	//----------------------------------------------------------------------------------------!!
 
 	//if esCliente(), receive Escenario; chequear disponibilidad de las entidades, rellenar con missing las faltantes.
