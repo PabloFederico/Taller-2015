@@ -195,7 +195,7 @@ void Juego::setConnection(Connection* conn) {
 
 /***************************************************/
 void Juego::olvidarConnection() {
-	delete this->connection;
+	this->connection->finalizar();
 }
 
 /***************************************************/
