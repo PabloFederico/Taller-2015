@@ -69,6 +69,7 @@ void Server::inicializarCliente(int peersock, int segundosDeEspera) {
 		// Tercer mensaje: Envío al jugador señal de comienzo y su última posición.
 		mensaje = Red::agregarPrefijoYFinal("COM", cli.posProtag.enc());
 		send(peersock, mensaje.c_str(), MAX_BYTES_LECTURA, MSG_NOSIGNAL);
+		send(peersock, mensaje.c_str(), MAX_BYTES_LECTURA, MSG_NOSIGNAL);
 
 	} catch ( NoExiste &e ) {
 		// Es un jugador nuevo... lo registro e inicializo
@@ -91,6 +92,7 @@ void Server::inicializarCliente(int peersock, int segundosDeEspera) {
 	// Si el juego ya ha comenzado, envío a la nueva conexión las posiciones de todos los demás.
 	if (segundosDeEspera < 3) {
 		mensaje = clientes.mensajeDeTodasLasEntidadesConectadas();
+		send(peersock, mensaje.c_str(), MAX_BYTES_LECTURA, MSG_NOSIGNAL);
 		send(peersock, mensaje.c_str(), MAX_BYTES_LECTURA, MSG_NOSIGNAL);
 	}
 }
