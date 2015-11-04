@@ -9,31 +9,19 @@
 #include <yaml-cpp/yaml.h>
 
 
-string parsearIP() {
-	string ip = IP_SERVIDOR;
-	YAML::Node config;
-	try {
-		config = YAML::LoadFile("config.yaml");
-		if (config["direccion_ip"])
-			ip = config["direccion_ip"].as<string>();
-	} catch (YAML::BadFile &e) {}
-	return ip;
-}
-
-string parsearNombreJugador() {
-	string nombre = "Octai";
-	YAML::Node config;
-	try {
-		config = YAML::LoadFile("config.yaml");
-		if (config["nombre_jugador"])
-			nombre = config["nombre_jugador"].as<string>();
-		else nombre = "Ema";
+void parsearIPyNombreJugador(string* ip, string *nombre) {
+	*ip = IP_SERVIDOR;
+	*nombre = NOMBRE_DEFAULT;
+	try {		// Descomentar todo para obtener funcionalidad YAML.
+		//YAML::Node config;
+		//config = YAML::LoadFile("config.yaml");
+		//if (config["nombre_jugador"])
+			//*nombre = config["nombre_jugador"].as<string>();
+		//if (config["direccion_ip"])
+			//*ip = config["direccion_ip"].as<string>();
 	} catch (YAML::BadFile &e) {
-		nombre = "Pablito";
 	} catch (YAML::ParserException &e) {
-		nombre = "Guido!";
 	}
-	return nombre;
 }
 
 
@@ -47,8 +35,10 @@ Client::Client() {
 }
 
 bool Client::iniciar() {
+	string ip, nombreJug;
+	parsearIPyNombreJugador(&ip, &nombreJug);
+
 	std::cout << "======= CLIENTE =======" << std::endl;
-	string ip = parsearIP();
 	this->socket = new SocketCliente(ip);
 	if (this->socket->creadoCorrectamente() < 0) {
 		std::cout << "ERROR: No se puede crear socket."<<std::endl;
@@ -71,7 +61,7 @@ bool Client::iniciar() {
 	this->lastDescriptor = this->socket->getDescriptor();
 
 	// Envía el nombre de jugador.
-	string mensaje = Red::agregarPrefijoYFinal("COM", parsearNombreJugador());
+	string mensaje = Red::agregarPrefijoYFinal("COM", nombreJug);
 	send(this->lastDescriptor, mensaje.c_str(), MAX_BYTES_LECTURA, 0);
 
 	// Recibe su número de jugador.
@@ -90,7 +80,9 @@ bool Client::iniciar() {
 
 
 bool Client::reintentarConexion(string nombreActual) {
-	string ip = parsearIP();
+	string ip, nombreJug;
+	parsearIPyNombreJugador(&ip, &nombreJug);
+
 	this->socket = new SocketCliente(ip);
 	if (this->socket->creadoCorrectamente() < 0)
 		return false;

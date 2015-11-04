@@ -23,6 +23,7 @@
 
 #define PUERTO_SERVIDOR		4050
 #define IP_SERVIDOR			"127.0.0.1"
+#define NOMBRE_DEFAULT		"Pablito"
 
 #define MAX_ESPERA_CONEXION 10 // segundos
 #define MAX_CONEXIONES		3 //5
