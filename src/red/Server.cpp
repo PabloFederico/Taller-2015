@@ -256,6 +256,7 @@ void Server::correr() {
 
 
 	clock_t t = clock();
+	clock_t t2 = clock();
 
 	/************************ LOOP PRINCIPAL **************************/
 	while (clientes.cantConectados > 0) {
@@ -308,8 +309,11 @@ void Server::correr() {
 		}
 
 		// chequear ping (y desconexión) con todos los clientes
-		mensaje = Red::agregarPrefijoYFinal("PNG","");
-		enviarATodos(mensaje);
+		if ((clock() - t2) > 1.0*CLOCKS_PER_SEC) {
+			mensaje = Red::agregarPrefijoYFinal("PNG","");
+			enviarATodos(mensaje);
+			t2 = clock();
+		}
 
 	} // end while
 	/******************************************************************/
