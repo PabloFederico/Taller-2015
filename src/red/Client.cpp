@@ -9,7 +9,7 @@
 #include <yaml-cpp/yaml.h>
 
 
-string parsearIPyNombreJugador(string* ip, string *nombre) {
+void parsearIPyNombreJugador(string* ip, string *nombre) {
 	*ip = IP_SERVIDOR;
 	*nombre = NOMBRE_DEFAULT;
 	try {		// Descomentar todo para obtener funcionalidad YAML.
@@ -22,7 +22,6 @@ string parsearIPyNombreJugador(string* ip, string *nombre) {
 	} catch (YAML::BadFile &e) {
 	} catch (YAML::ParserException &e) {
 	}
-	return nombre;
 }
 
 
