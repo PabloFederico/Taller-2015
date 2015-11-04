@@ -307,6 +307,9 @@ void Server::correr() {
 			chequearPorNuevosClientes();
 		}
 
+		// chequear ping (y desconexión) con todos los clientes
+		mensaje = Red::agregarPrefijoYFinal("PNG","");
+		enviarATodos(mensaje);
 
 	} // end while
 	/******************************************************************/

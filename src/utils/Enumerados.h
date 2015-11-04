@@ -19,7 +19,7 @@ enum TipoImagenUtil { CUADRADO_MAGENTA, CUADRADO_ROJO, CUADRADO_AZUL, CUADRADO_V
 					ICONO_GRIS, ICONO_NARANJA, ICONO_VIOLETA, ICONO_BLANCO, ICONO_MAGENTA,
 					CAPA_GRIS, CAPA_NEGRA, CUADRO_UBICACION };
 
-enum TipoMensajeRed { MENSAJE, COMIENZO, ESCENARIO, MOVIMIENTO, PASO_COMPLETO, NUEVA_ENTIDAD, RECURSO, TOGGLE, ATAQUE, GLOTON, FIN /*...*/};
+enum TipoMensajeRed { MENSAJE, PING, COMIENZO, ESCENARIO, MOVIMIENTO, PASO_COMPLETO, NUEVA_ENTIDAD, RECURSO, TOGGLE, ATAQUE, GLOTON, FIN /*...*/};
 
 enum TipoBoton { BOTON_NADA, BOTON_NAME, BOTON_NUEVA_PARTIDA, BOTON_SELECTOR_ESCENARIO, BOTON_CARGAR_PARTIDA, BOTON_EXIT };
 
@@ -44,6 +44,7 @@ inline const char* LogToString(TipoLog v){
 
 inline const TipoMensajeRed StringToTipoMensajeRed(std::string s) {
 	if (s == "MSJ")	return MENSAJE;
+	if (s == "PNG") return PING;
 	if (s == "COM")	return COMIENZO;
 	if (s == "ESC")	return ESCENARIO;
 	if (s == "MOV")	return MOVIMIENTO;
@@ -58,7 +59,7 @@ inline const TipoMensajeRed StringToTipoMensajeRed(std::string s) {
 }
 
 inline const bool EsRecurso(TipoEntidad tipo) {
-	if (tipo == MADERA || tipo == COMIDA || tipo == ORO)
+	if (tipo == MADERA || tipo == COMIDA || tipo == ORO || tipo == PIEDRA)
 		return true;
 	return false;
 }

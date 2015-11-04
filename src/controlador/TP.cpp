@@ -38,7 +38,8 @@ int main(int argc, char** argv) {
 		SDL_Quit();
 		IMG_Quit();
 		TTF_Quit();
-		delete lan;
+		if (lan != NULL)
+			delete lan;
 	}
 
 	return 0;

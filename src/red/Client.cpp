@@ -38,7 +38,6 @@ string parsearNombreJugador() {
 
 
 Client::Client() {
-	std::cout << "======= CLIENTE =======" << std::endl;
 	try {
 		if (!iniciar())
 			throw ConnectionProblem();
@@ -48,6 +47,7 @@ Client::Client() {
 }
 
 bool Client::iniciar() {
+	std::cout << "======= CLIENTE =======" << std::endl;
 	string ip = parsearIP();
 	this->socket = new SocketCliente(ip);
 	if (this->socket->creadoCorrectamente() < 0) {
@@ -87,6 +87,33 @@ bool Client::iniciar() {
 	std::cout << std::endl << "Success! Conectado como jugador #"<<this->idJug<<"."<<std::endl;
 	return true;
 }
+
+
+bool Client::reintentarConexion(string nombreActual) {
+	string ip = parsearIP();
+	this->socket = new SocketCliente(ip);
+	if (this->socket->creadoCorrectamente() < 0)
+		return false;
+	if (Red::crearConexion(this->socket) < 0)
+		return false;
+
+	this->lastDescriptor = this->socket->getDescriptor();
+	string mensaje = Red::agregarPrefijoYFinal("COM", nombreActual);
+	send(this->lastDescriptor, mensaje.c_str(), MAX_BYTES_LECTURA, 0);
+	// Recibe su número de jugador.
+	this->idJug = 0;
+	do {
+		try {
+			std::stringstream ss(recibir());
+			ss >> this->idJug;
+		} catch ( NoSeRecibio &e ) {}
+	} while (this->idJug == 0);
+
+	fcntl(this->socket->getDescriptor(), F_SETFL, O_NONBLOCK); // non-blocking mode
+	std::cout << std::endl << "Success! Reconectado como jugador #"<<this->idJug<<"."<<std::endl;
+	return true;
+}
+
 
 Client::~Client() {
 	// El destructor de Connection se ocupa de llamar a finalizar

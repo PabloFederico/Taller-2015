@@ -24,12 +24,15 @@
 class Connection {
 protected:
 	Socket* socket = NULL;
+	time_t lastPing;
 	int lastDescriptor;
 	int idJug;
 
 public:
+	Connection();
 	virtual bool iniciar() = 0;
 	int getIDJugador();
+	void chequearPing();
 
 	void enviar(std::string);
 	std::string recibir();

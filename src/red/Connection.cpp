@@ -8,6 +8,19 @@
 #include "Connection.h"
 
 
+Connection::Connection() {
+	idJug = 0;
+	lastDescriptor = 0;
+	lastPing = clock();
+}
+
+void Connection::chequearPing() {
+	if ((lastPing + 1.5*CLOCKS_PER_SEC) > clock())	// Si pasó más de 1,5 segundos desde el último ping... desconectar.
+		throw Disconnected();
+	lastPing = clock();
+}
+
+
 int Connection::getIDJugador() {
 	return this->idJug;
 }

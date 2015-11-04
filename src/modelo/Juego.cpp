@@ -189,6 +189,11 @@ Connection* const Juego::getConnection() {
 }
 
 /***************************************************/
+void Juego::setConnection(Connection* conn) {
+	this->connection = conn;
+}
+
+/***************************************************/
 void Juego::olvidarConnection() {
 	delete this->connection;
 }

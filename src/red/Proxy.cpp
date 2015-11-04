@@ -34,6 +34,8 @@ TipoMensajeRed Proxy::actualizarMultiplayer(Juego* juego) {
 			switch (tipo) {
 			case MENSAJE: procesarMensaje(unContenido);
 				break;
+			case PING: juego->getConnection()->chequearPing();
+				break;
 			case COMIENZO: procesarNombre(juego, unContenido);
 				break;
 			case ESCENARIO: procesarEscenario(juego, unContenido);
