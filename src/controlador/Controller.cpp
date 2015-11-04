@@ -78,6 +78,11 @@ void Controller::procesarEvento(SDL_Event &event){
 		try {
 			Proxy::actualizarMultiplayer(this->juego);
 		} catch ( NoSeRecibio &e ) {
+			try {
+				juego->getConnection()->chequearPing();
+			} catch ( Disconnected &e ) {
+				juego->olvidarConnection();
+			}
 		} catch ( Disconnected &e ) {
 			juego->olvidarConnection();
 		}
