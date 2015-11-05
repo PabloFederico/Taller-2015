@@ -15,7 +15,7 @@ Connection::Connection() {
 }
 
 void Connection::chequearPing() {
-	if ((lastPing + 3.0*CLOCKS_PER_SEC) > clock())	// Si pasó más de 1,5 segundos desde el último ping... desconectar.
+	if ((lastPing + 3.0*CLOCKS_PER_SEC) > clock())	// Si pasaron más de 3,0 segundos desde el último ping... salta.
 		throw Disconnected();
 }
 

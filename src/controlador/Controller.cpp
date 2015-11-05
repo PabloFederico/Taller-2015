@@ -78,20 +78,20 @@ void Controller::procesarEvento(SDL_Event &event){
 		try {
 			Proxy::actualizarMultiplayer(this->juego);
 		} catch ( NoSeRecibio &e ) {
-			try {
-				juego->getConnection()->chequearPing();
-			} catch ( Disconnected &e ) {
-				juego->olvidarConnection();
-			}
+			//try {
+				//juego->getConnection()->chequearPing();
+			//} catch ( Disconnected &e ) {
+				//juego->olvidarConnection();
+			//}
 		} catch ( Disconnected &e ) {
-			juego->olvidarConnection();
+			//juego->olvidarConnection();
 		}
-	} else {
-		if (((Client*)this->lan)->reintentarConexion(juego->getNombreJugador()))
-			juego->setConnection(this->lan);
-		else
-			this->lan->finalizar();
-	}
+	}// else {
+		//if (((Client*)this->lan)->reintentarConexion(juego->getNombreJugador()))
+		//	juego->setConnection(this->lan);
+		//else
+		//	this->lan->finalizar();
+	//}
 }
 
 void Controller::agregarCamara(Camara *cam){
