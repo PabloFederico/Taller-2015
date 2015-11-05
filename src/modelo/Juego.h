@@ -53,6 +53,7 @@ public:
 	Juego(Connection* lan, Coordenada* posInicial, InfoEscenario* infoEscRed);
 
 	Connection* const getConnection();
+	void setConnection(Connection* conn);
 	void olvidarConnection();
 	bool esCliente();
 

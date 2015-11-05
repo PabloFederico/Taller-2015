@@ -19,6 +19,7 @@ private:
 public:
 	Client();
 	bool iniciar();
+	bool reintentarConexion(string nombreActual);
 	void finalizar();
 	~Client();
 };

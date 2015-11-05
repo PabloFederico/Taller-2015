@@ -69,6 +69,7 @@ void Server::inicializarCliente(int peersock, int segundosDeEspera) {
 		// Tercer mensaje: Envío al jugador señal de comienzo y su última posición.
 		mensaje = Red::agregarPrefijoYFinal("COM", cli.posProtag.enc());
 		send(peersock, mensaje.c_str(), MAX_BYTES_LECTURA, MSG_NOSIGNAL);
+		send(peersock, mensaje.c_str(), MAX_BYTES_LECTURA, MSG_NOSIGNAL);
 
 	} catch ( NoExiste &e ) {
 		// Es un jugador nuevo... lo registro e inicializo
@@ -91,6 +92,7 @@ void Server::inicializarCliente(int peersock, int segundosDeEspera) {
 	// Si el juego ya ha comenzado, envío a la nueva conexión las posiciones de todos los demás.
 	if (segundosDeEspera < 3) {
 		mensaje = clientes.mensajeDeTodasLasEntidadesConectadas();
+		send(peersock, mensaje.c_str(), MAX_BYTES_LECTURA, MSG_NOSIGNAL);
 		send(peersock, mensaje.c_str(), MAX_BYTES_LECTURA, MSG_NOSIGNAL);
 	}
 }
@@ -256,6 +258,7 @@ void Server::correr() {
 
 
 	clock_t t = clock();
+	clock_t t2 = clock();
 
 	/************************ LOOP PRINCIPAL **************************/
 	while (clientes.cantConectados > 0) {
@@ -309,6 +312,12 @@ void Server::correr() {
 			chequearPorNuevosClientes();
 		}
 
+		// chequear ping (y desconexión) con todos los clientes
+		if ((clock() - t2) > 1.0*CLOCKS_PER_SEC) {
+			mensaje = Red::agregarPrefijoYFinal("PNG","");
+			enviarATodos(mensaje);
+			t2 = clock();
+		}
 
 	} // end while
 	/******************************************************************/

@@ -17,6 +17,7 @@
 class Controller {
 private:
 	Juego *juego;
+	Connection *lan;
 	ControladorMouse *controladorMouse;
 	ControladorCamara *controladorCamara;
 

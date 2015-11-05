@@ -9,6 +9,7 @@
 
 
 Controller::Controller(Connection* lan = NULL) {
+	this->lan = lan;
 	Coordenada* posInicial = NULL;
 	try {
 		if (lan != NULL)
@@ -77,9 +78,19 @@ void Controller::procesarEvento(SDL_Event &event){
 		try {
 			Proxy::actualizarMultiplayer(this->juego);
 		} catch ( NoSeRecibio &e ) {
+			try {
+				juego->getConnection()->chequearPing();
+			} catch ( Disconnected &e ) {
+				juego->olvidarConnection();
+			}
 		} catch ( Disconnected &e ) {
-			juego->olvidarConnection();	// No está funcionando siempre... Hacerlo de otra forma.
-		}	// Podría poner q lo olvide al recibir vacío (""), y contar con lo que reconecte después.
+			juego->olvidarConnection();
+		}
+	} else {
+		if (((Client*)this->lan)->reintentarConexion(juego->getNombreJugador()))
+			juego->setConnection(this->lan);
+		else
+			this->lan->finalizar();
 	}
 }
 
@@ -96,8 +107,7 @@ void Controller::reiniciarJuego(){
 }
 
 int Controller::verificarConexion(std::string string_IP){
-
-	return -1;
+	return -1;	// !!! todo
 }
 
 
