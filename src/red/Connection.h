@@ -29,11 +29,12 @@ protected:
 	int idJug;
 
 public:
-	Connection();
+	//Connection();
 	virtual bool iniciar() = 0;
 	int getIDJugador();
+
 	void chequearPing();
-	void reestablecerPing();
+	void reestablecerPing();	// Experimentales, no usar
 	void revisarPing();
 
 	void enviar(std::string);

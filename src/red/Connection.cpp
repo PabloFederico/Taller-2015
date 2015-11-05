@@ -8,11 +8,11 @@
 #include "Connection.h"
 
 
-Connection::Connection() {
-	idJug = 0;
-	lastDescriptor = 0;
-	lastPing = clock();
-}
+//Connection::Connection() {
+//	idJug = 0;
+//	lastDescriptor = 0;
+//	lastPing = clock();
+//}
 
 void Connection::chequearPing() {
 	if ((lastPing + 3.0*CLOCKS_PER_SEC) > clock())	// Si pasaron más de 3,0 segundos desde el último ping... salta.

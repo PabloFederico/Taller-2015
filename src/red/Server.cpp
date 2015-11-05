@@ -283,8 +283,6 @@ void Server::correr() {
 					conexionPerdida(j);
 				} else if (errno != EWOULDBLOCK)
 					std::cout << "Error in recv(): "<<strerror(errno)<<std::endl;
-				else
-					cout << "acá va el ping con chequeo";
 
 			} // fi (FD_ISSET(j, &readset))
 		} // rof cada cliente
