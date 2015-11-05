@@ -64,7 +64,7 @@ void Server::inicializarCliente(int peersock, int segundosDeEspera) {
 		send(peersock, ss.str().c_str(), 10, MSG_NOSIGNAL);
 		// Envío a todos los demás jugadores que este volvió.
 		mensaje = Red::agregarPrefijoYFinal("TOG", cli.id);
-		enviarATodos(mensaje);
+		enviarATodos(mensaje);	// (La nueva conexión todavía ni está en el fd_set)
 		sleep(1);
 		// Tercer mensaje: Envío al jugador señal de comienzo y su última posición.
 		mensaje = Red::agregarPrefijoYFinal("COM", cli.posProtag.enc());
@@ -258,7 +258,7 @@ void Server::correr() {
 
 
 	clock_t t = clock();
-	clock_t t2 = clock();
+	//clock_t t2 = clock();
 
 	/************************ LOOP PRINCIPAL **************************/
 	while (clientes.cantConectados > 0) {
@@ -313,11 +313,11 @@ void Server::correr() {
 		}
 
 		// chequear ping (y desconexión) con todos los clientes
-		if ((clock() - t2) > 1.0*CLOCKS_PER_SEC) {
-			mensaje = Red::agregarPrefijoYFinal("PNG","");
-			enviarATodos(mensaje);
-			t2 = clock();
-		}
+		//if ((clock() - t2) > 1.0*CLOCKS_PER_SEC) {
+		//	mensaje = Red::agregarPrefijoYFinal("PNG","");
+		//	enviarATodos(mensaje);
+		//	t2 = clock();
+		//}
 
 	} // end while
 	/******************************************************************/
