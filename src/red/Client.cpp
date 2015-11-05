@@ -13,12 +13,12 @@ void parsearIPyNombreJugador(string* ip, string *nombre) {
 	*ip = IP_SERVIDOR;
 	*nombre = NOMBRE_DEFAULT;
 	try {		// Descomentar todo para obtener funcionalidad YAML.
-		//YAML::Node config;
-		//config = YAML::LoadFile("config.yaml");
-		//if (config["nombre_jugador"])
-			//*nombre = config["nombre_jugador"].as<string>();
-		//if (config["direccion_ip"])
-			//*ip = config["direccion_ip"].as<string>();
+		YAML::Node config;
+		config = YAML::LoadFile("config.yaml");
+		if (config["nombre_jugador"])
+			*nombre = config["nombre_jugador"].as<string>();
+		if (config["direccion_ip"])
+			*ip = config["direccion_ip"].as<string>();
 	} catch (YAML::BadFile &e) {
 	} catch (YAML::ParserException &e) {
 	}

@@ -305,12 +305,8 @@ void Sprite::update(int vel_personaje) {
 		 * */
 		Coordenada c_prox_pixel = this->getCaminoARecorrer()[0];
 
-		///* Esta condición es para que el chabón se ubique en el centro del tile,
-		// * pero no se aplica para el último punto destino. */
-		//if (this->getCaminoARecorrer().size() > 1){
 		c_prox_pixel.x -= this->getPosicion().w / 2;
 		c_prox_pixel.y -= this->getPosicion().h;
-		//}
 
 		float distancia = Calculador::calcularDistanciaEntrePixeles(Coordenada(this->regPos.posX_player, this->regPos.posY_player), c_prox_pixel);
 
