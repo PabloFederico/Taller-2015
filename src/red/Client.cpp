@@ -38,7 +38,10 @@ bool Client::iniciar() {
 	string ip, nombreJug;
 	parsearIPyNombreJugador(&ip, &nombreJug);
 
+<<<<<<< HEAD
 	std::cout << "======= CLIENTE =======" << std::endl;
+=======
+>>>>>>> refs/heads/master
 	this->socket = new SocketCliente(ip);
 	if (this->socket->creadoCorrectamente() < 0) {
 		std::cout << "ERROR: No se puede crear socket."<<std::endl;

@@ -134,42 +134,7 @@ Coordenada Calculador::pixelCentralDeTile(Coordenada coord_tile, Coordenada coor
 	int pix_y = coord_ceros.y + (1 + coord_tile.x + coord_tile.y) * DISTANCIA_ENTRE_Y;
 	return Coordenada(pix_x, pix_y);
 }
-Coordenada Calculador::generarCoordenadaRandom(int size_x_final, int size_x_inicial, int size_y_final, int size_y_inicial) {
-	int x_rand, y_rand;
-	x_rand = (rand() % size_x_final) + size_x_inicial;
-	y_rand = (rand() % size_y_final) + size_y_inicial;
 
-	return Coordenada(x_rand,y_rand);
-}
-
-
-/*
- * POR AHORA NO USAMOS ESTA FUNCION, PERO EN UN FUTURO......
- * Coordenada Calculador::generarPosicionRecurso(Escenario* escenario){
-	bool valido = false;
-		Coordenada coord_random;
-		int i = 1;
-		while (!valido){
-			cout << "ENTRO AL RANDOM PARA GENERAR COORDENADA" << endl;
-			srand(SDL_GetTicks() * i);
-			cout << "GENERO LA COORDENADA" << endl;
-			coord_random = generar(escenario->getDimension().first(),0,escenario->getDimension().second(),0);
-			cout << "GENERE LA COORDENADA" << endl;
-			Tile* tile = escenario->getTile(coord_random);
-			cout << "SACO EL TILE" << endl;
-			if ((!tile->tieneRecurso()) && (tile->estaLibre())){
-				valido = true;
-				cout << "LA COORDENADA ES VALIDA, ME VOY DEL WHILE" << endl;
-				printf("LA COORDENADA ES: X %d, Y %d  \n",coord_random.x,coord_random.y);
-			}
-			if (!valido){
-				cout << "COORDENADA INVALIDA, SIGO GENERANDO" << endl;
-				i +=10;
-			}
-
-		}
-}
-*/
 
 float distEuclidiana(Coordenada a, Coordenada z) {
 	return sqrt( pow(z.x-a.x,2) + pow(z.y-a.y,2) );
@@ -306,6 +271,7 @@ Camino Calculador::obtenerCaminoMin(Escenario *esc, Coordenada coord_pixel_orig,
 
 	return camino;
 }
+
 
 Coordenada Calculador::generarPosRandom(int size_x_final, int size_x_inicial, int size_y_final, int size_y_inicial, int seed = 0){
 	int x_rand, y_rand;	// Esto FRUSTRA el randomness, siempre va a dar lo mismo, porque vuelve al número múltiplo de 50...

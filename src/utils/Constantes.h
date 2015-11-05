@@ -26,7 +26,7 @@
 #define NOMBRE_DEFAULT		"Pablito"
 
 #define MAX_ESPERA_CONEXION 10 // segundos
-#define MAX_CONEXIONES		4 //5
+#define MAX_CONEXIONES		3 //5
 #define MAX_BYTES_LECTURA	2000
 
 #define DELAY_RECURSOS		75 // segundos

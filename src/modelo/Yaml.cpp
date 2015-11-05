@@ -173,7 +173,7 @@ ConfiguracionJuego Yaml::OdioYAML() {
 		tipos["animal"] = ANIMAL;
 
 	configDefault.nombreJugador = "JugadorXXX";
-	configDefault.direccion_ip = "127.0.0.1";
+	configDefault.direccion_ip = "10.0.0.1";
 	configDefault.ancho_pantalla = 900;
 	configDefault.alto_pantalla = 600;
 	configDefault.margen_scroll = 20;
