@@ -6,13 +6,14 @@
  */
 
 #include "../red/Server.h"
-
+#include "../red/ControladorConexion.h"
 
 Server::Server() {
 	std::cout << "======= SERVIDOR =======" << std::endl;
 	if (!iniciar()) {
 		throw ConnectionProblem();
 	}
+	this->controladorServer = new ControladorServidor(this);
 }
 
 bool Server::iniciar() {
@@ -197,13 +198,13 @@ bool Server::procesarComoServidor(int sockfd, string recibido) {
 }
 
 
-
+/*
 TipoEntidad generarRecursoYCoordRandom(Coordenada* c) {
 	*c = Calculador::generarPosRandom(50,0,50,0,7);
 	Coordenada aux = Calculador::generarPosRandom(ORO+1,MADERA,1,0,42);
 	return TipoEntidad(aux.x);	   //último recurso^	  ^primer recurso
 }
-
+*/
 
 
 void Server::correr() {
@@ -219,104 +220,15 @@ void Server::correr() {
 	/********************** CONEXIONES INICIALES **********************/
 	std::cout << "Aceptando hasta "<<MAX_CONEXIONES<<" jugadores ("<<MAX_ESPERA_CONEXION<<" s para conectarse)."<<std::endl;
 
-	for (int i = 0; i < MAX_CONEXIONES; i++) {
-		std::cout << "#"<<i+1<<" ... ";
-		memcpy(&tempset, &readset, sizeof(tempset));
-		// Espera MAX_ESPERA_CONEXION segundos o hasta que aparezca una conexión.
-		intentarNuevaConexion(&tempset, MAX_ESPERA_CONEXION);
-	}
-	memcpy(&tempset, &readset, sizeof(tempset));
-	FD_CLR(srvsock, &readset);
 
-	if (clientes.cantConectados < 2) {
-		std::cout << "No se conectaron suficientes jugadores para una partida en red."<<std::endl;
-		std::cout << "Hazte algunos amigos y vuelve a intentarlo.";
-		sleep(1); std::cout << "."; sleep(1); std::cout << "."; sleep(1); std::cout << ".";
-		sleep(1); std::cout << "."; sleep(1); std::cout << std::endl;
-		return;
-	} else if (clientes.cantConectados == MAX_CONEXIONES) sleep(2);
-
-	std::cout << std::endl << "Se recibieron "<<clientes.cantConectados<<" conexiones."<<std::endl;
-	/******************************************************************/
-
-
-	/************************ COMIENZA JUEGO **************************/
-	// Enviar señal de comienzo junto a posición inicial.
-	for (j = 0; j < maxfd+1; j++) {
-		if (FD_ISSET(j, &readset)) {
-			mensaje = Red::agregarPrefijoYFinal("COM", clientes[j].posProtag.enc());
-			send(j, mensaje.c_str(), 16, MSG_NOSIGNAL);
-		}	//NO FUNCIONANDO PARA EL MAX_CONEXIONES-ésimo!? Revisar
-	}
-
-	// Enviar posiciones de enemigos.
-	enviarATodos(clientes.mensajeDeTodasLasEntidadesConectadas());
-	enviarATodos(clientes.mensajeDeTodasLasEntidadesConectadas());
-
-	std::cout << "Comenzando juego..."<<std::endl << std::endl;
-	/******************************************************************/
-
-
-	clock_t t = clock();
-	//clock_t t2 = clock();
-
-	/************************ LOOP PRINCIPAL **************************/
-	while (clientes.cantConectados > 0) {
-
-		// Por cada cliente conectado...
-		for (j = 0; j < maxfd+1; j++) {
-			if (FD_ISSET(j, &readset)) {
-
-				do {	// Recibir del socket actual cualquier mensaje que esté esperando.
-					result = recv(j, buffer, MAX_BYTES_LECTURA, 0);
-				} while (errno == EINTR && result == -1);
-
-				if (result > 0) {
-					buffer[result] = 0;
-					// Lo recibido de un cliente, si no es únicamente para el servidor, mandarlo a todos los demás
-					if (procesarComoServidor(j, string(buffer))) {
-						std::cout << "Echoing: "<<buffer<<std::endl;//
-						enviarATodosMenos(j, buffer);
-					}
-
-				} else if (result == 0) {
-					conexionPerdida(j);
-				} else if (errno != EWOULDBLOCK)
-					std::cout << "Error in recv(): "<<strerror(errno)<<std::endl;
-
-			} // fi (FD_ISSET(j, &readset))
-		} // rof cada cliente
-
-		// Generación de recursos random
-		if ((clock() - t) > CLOCKS_PER_SEC*DELAY_RECURSOS) {
-			Coordenada c;
-			TipoEntidad tipoRecurso = generarRecursoYCoordRandom(&c);
-			enviarATodos(Red::agregarPrefijoYJugYFinal("REC", int(tipoRecurso), c.enc()));
-			t = clock();
+	while (true){
+		int client_sock = Red::aceptarCliente(socket);
+		if (client_sock > 0){
+			ControladorConexion* controladorConexion = new ControladorConexion(controladorServer,client_sock);
+			// Aca empieza la magia con hilos
+			// El método ejecutar manda a ejecutar el método run de cualquier clase que herede de Thread
+			controladorConexion->ejecutar();
 		}
-
-		// Continuar movimientos: si hubiera, enviar próximo paso de cada jugador a todos las conexiones.
-		for (j = 0; j < maxfd+1; j++)
-			if (FD_ISSET(j, &readset)) {
-				try {
-					mensaje = clientes.mensajeParaAvanzarJug(j);
-					std::cout << "Envío paso "<<mensaje<<std::endl;//
-					enviarATodos(mensaje);
-				} catch ( CaminoVacio &e ) {}
-			}
-
-		// Intenta (re)conectar [más] jugadores...
-		if (clientes.cantConectados < MAX_CONEXIONES) {
-			chequearPorNuevosClientes();
-		}
-
-		// chequear ping (y desconexión) con todos los clientes
-		//if ((clock() - t2) > 1.0*CLOCKS_PER_SEC) {
-		//	mensaje = Red::agregarPrefijoYFinal("PNG","");
-		//	enviarATodos(mensaje);
-		//	t2 = clock();
-		//}
-
 	} // end while
 	/******************************************************************/
 
