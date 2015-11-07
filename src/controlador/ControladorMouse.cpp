@@ -38,9 +38,11 @@ void ControladorMouse::procesarEvento(SDL_Event &event, int MouseX, int MouseY, 
 		barra->agregarRecursoEconomico(recurso->getTipo());
 
 		// Elimina el sprite del recurso
-		map<Entidad*,Sprite*>::iterator p = juego->getSpritesEntidades()->find(recurso);
-		if (p != juego->getSpritesEntidades()->end()){
+		Map<Entidad*,Sprite*>* mapaSprites = juego->getSpritesEntidades();
+		map<Entidad*,Sprite*>::iterator p = mapaSprites->find(recurso);
+		if (p != mapaSprites->end()) {
 			delete p->second;
+			mapaSprites->erase(recurso);
 		}
 
 		escenario->quitarRecurso(pos_jug,recurso);
