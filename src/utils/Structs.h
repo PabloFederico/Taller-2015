@@ -146,6 +146,14 @@ struct Coordenada{
 		return (this->x < c.x || this->y < c.y);	//Adivino que esto está bien
 	}
 
+	Coordenada operator+(const Coordenada & c) const {
+		return Coordenada(this->x + c.x,this->y + c.y);
+	}
+
+	Coordenada operator-(const Coordenada & c) const {
+		return Coordenada(this->x - c.x,this->y - c.y);
+	}
+
 	// Encodeado: "x;y"
 	std::string enc() {
 		ostringstream Encode;

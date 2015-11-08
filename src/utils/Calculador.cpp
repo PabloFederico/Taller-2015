@@ -114,6 +114,17 @@ bool Calculador::puntoContenidoEnEscenario(Coordenada coord_tile, Escenario *esc
 	*/
 }
 
+// No lanza FueraDeEscenario.
+Coordenada Calculador::tileParaCualquierPixel(Coordenada coord_pixel, Coordenada coord_ceros) {
+	int px =  coord_pixel.x - coord_ceros.x;
+	int py = (coord_pixel.y - coord_ceros.y) * (ANCHO_PIXEL_PASTO / ALTO_PIXEL_PASTO);
+	int tile_x = floor( 1.0*(px+py) / ANCHO_PIXEL_PASTO );
+	int tile_y = floor( 1.0*(py-px) / ANCHO_PIXEL_PASTO );
+
+	return Coordenada(tile_x,tile_y);
+}
+
+
 // Calculado con el píxel (0;0) en la esquina superior del tile (0;0). Atrapar FueraDeEscenario.
 Coordenada Calculador::tileParaPixel(Coordenada coord_pixel, Coordenada coord_ceros) {
 	int px =  coord_pixel.x - coord_ceros.x;
@@ -130,6 +141,14 @@ Coordenada Calculador::tileParaPixel(Coordenada coord_pixel, Coordenada coord_ce
 Coordenada Calculador::pixelCentralDeTile(Coordenada coord_tile, Coordenada coord_ceros) {
 	if (coord_tile.x < 0 || coord_tile.y < 0)// || tile_x >= this->tiles_x || tile_y >= this->tiles_y)
 		throw FueraDeEscenario();
+	int pix_x = coord_ceros.x + 	(coord_tile.x - coord_tile.y) * DISTANCIA_ENTRE_X;
+	int pix_y = coord_ceros.y + (1 + coord_tile.x + coord_tile.y) * DISTANCIA_ENTRE_Y;
+	return Coordenada(pix_x, pix_y);
+}
+
+
+// No lanza FueraDeEscenario.
+Coordenada Calculador::pixelCentralDeCualquierTile(Coordenada coord_tile, Coordenada coord_ceros) {
 	int pix_x = coord_ceros.x + 	(coord_tile.x - coord_tile.y) * DISTANCIA_ENTRE_X;
 	int pix_y = coord_ceros.y + (1 + coord_tile.x + coord_tile.y) * DISTANCIA_ENTRE_Y;
 	return Coordenada(pix_x, pix_y);

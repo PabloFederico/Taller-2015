@@ -32,11 +32,11 @@ public:
 
 	void setContenedorDeRecursos(ContenedorDeRecursos* container);
 
-	void dibujarRelieve(Escenario* esc);
+	void dibujarRelieve(Escenario* esc, pair<int,int> tamVentana);
 	//void dibujarEntidades();
 	//void dibujarProtagonista(Sprite* sprite);
 	//void dibujarCapaNegra(CapaFog* capa);
-	void dibujarEscenario(Escenario* esc, TTF_Font* fuenteTexto);
+	void dibujarEscenario(Escenario* esc, TTF_Font* fuenteTexto, pair<int,int> tamVentana);
 	void dibujarBarraEstado(Escenario* esc, BarraEstado* barraEstado, TTF_Font *fuenteTexto);
 	bool dibujarContorno(Escenario* esc, TTF_Font* fuenteTexto);
 

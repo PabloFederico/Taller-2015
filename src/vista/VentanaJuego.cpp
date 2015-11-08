@@ -44,8 +44,8 @@ void VentanaJuego::cargarJuego(Juego *juego){
 		this->dibujador = new Dibujador(renderer);
 		this->dibujador->setOrigen(cero_x,cero_y);
 
-		/* Las imagenes , los sprites y los SDL_Rect (para cada entidad)
-		 * se cargar en el contenedor */
+		/* Las imágenes, los sprites y los SDL_Rect (para cada entidad)
+		 * se cargan en el contenedor */
 
 		this->cargarImagenesYSprites(juego);
 
@@ -78,7 +78,7 @@ void VentanaJuego::dibujar(){
 	Escenario* escenario = controlador->getJuego()->getEscenario();
 	BarraEstado* barraEstado = controlador->getJuego()->getBarraEstado();
 
-	dibujador->dibujarEscenario(escenario, fuenteTexto);
+	dibujador->dibujarEscenario(escenario, fuenteTexto, pair<int,int>(this->SCREEN_WIDTH,this->SCREEN_HEIGHT));
 	dibujador->dibujarBarraEstado(escenario, barraEstado, fuenteTexto);
 	//dibujador->dibujarContorno(escenario, fuenteTexto);
 
@@ -105,7 +105,7 @@ void VentanaJuego::mostrar(){
 	            /* Actualiza el renderer */
 	            this->dibujar();
 
-	            SDL_Delay(15);
+	            SDL_Delay(15);	// Estos son milisegundos, como que no cambia nada. Yo lo sacaría! (MC)
 
 	    		if (event.type == SDL_KEYDOWN){
 	            	if (event.key.keysym.sym == KEY_RESET){

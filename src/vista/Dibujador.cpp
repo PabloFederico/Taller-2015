@@ -28,9 +28,8 @@ void Dibujador::setContenedorDeRecursos(ContenedorDeRecursos* container){
 }
 
 /********************************************************************************/
-void Dibujador::dibujarRelieve(Escenario* esc){
-	int tiles_x = esc->getDimension().first;
-	int tiles_y = esc->getDimension().second;
+// Dibujamos el relieve por Default
+void Dibujador::dibujarRelieve(Escenario* esc, pair<int,int> tamVentana){
 	CapaFog* capa = esc->getCapa();
 	Imagen *imagenRelieve = this->contenedor->getImagenTipo(PASTO);
 	Imagen *imagenSelector = this->contenedor->getImagenUtilTipo(SELECT_TILE);
@@ -41,33 +40,42 @@ void Dibujador::dibujarRelieve(Escenario* esc){
 	rectRelieve.w = ANCHO_PIXEL_PASTO;
 	rectRelieve.h = ALTO_PIXEL_PASTO;
 
-	// Dibujamos el relieve por Default
-	for(int j = 0; j < tiles_y; j++){
+	Coordenada c_tileInicial = Calculador::tileParaCualquierPixel(Coordenada(0,0), Coordenada(cero_relativo_x,cero_relativo_y)) - Coordenada(1,0);
+	Coordenada c_pixelSupIzqBase = Calculador::pixelCentralDeCualquierTile(c_tileInicial-Coordenada(1,0), Coordenada(cero_relativo_x,cero_relativo_y));
 
-		rectRelieve.x = cero_relativo_x;
-		rectRelieve.y = cero_relativo_y;
+	bool zigzag = false;
+	for (Coordenada coordBase = c_tileInicial; rectRelieve.y <= tamVentana.second; zigzag = !zigzag) { // vertical
+		rectRelieve.x = c_pixelSupIzqBase.x + DISTANCIA_ENTRE_X;
+		rectRelieve.y = c_pixelSupIzqBase.y;
 
-		for(int i = 0; i < tiles_x; i++){
-			if (capa->getEstadoTile(i,j) != ESTADO_NEGRO){
+		for (Coordenada coordTileActual = coordBase; rectRelieve.x <= tamVentana.first; coordTileActual.x++, coordTileActual.y--) { // horizontal
+			if (esc->coordEnEscenario(coordTileActual)) {
+				if (capa->getEstadoTile(coordTileActual.x,coordTileActual.y) != ESTADO_NEGRO){
 
-				SDL_RenderCopy(this->renderer,imagenRelieve->getTexture(),NULL,&rectRelieve);
+					SDL_RenderCopy(this->renderer,imagenRelieve->getTexture(),NULL,&rectRelieve);
 
-				Tile* tile = esc->getTile(i,j);
-				vector<Entidad*> entidades = tile->getEntidades();
-				for (unsigned k = 0; k < entidades.size(); k++){
-					Entidad* entidad = entidades[k];
-					Sprite* sprite = contenedor->getSpriteDeEntidad(entidad);
+					Tile* tile = esc->getTile(coordTileActual);
+					vector<Entidad*> entidades = tile->getEntidades();
+					for (unsigned k = 0; k < entidades.size(); k++){
+						Entidad* entidad = entidades[k];
+						Sprite* sprite = contenedor->getSpriteDeEntidad(entidad);
 
-					if (entidad == esc->getEntidadSeleccionada() && !sprite->estaEnMovimiento()){
-						SDL_RenderCopy(renderer,imagenSelector->getTexture(),NULL,&rectRelieve);
+						if (entidad == esc->getEntidadSeleccionada() && !sprite->estaEnMovimiento()){
+							SDL_RenderCopy(renderer,imagenSelector->getTexture(),NULL,&rectRelieve);
+						}
 					}
 				}
-			}
-			rectRelieve.x += DISTANCIA_ENTRE_X;
-			rectRelieve.y += DISTANCIA_ENTRE_Y;
+			} // fi coordenada en escenario
+			rectRelieve.x += ANCHO_PIXEL_PASTO;
 		}
-		cero_relativo_x -= DISTANCIA_ENTRE_X;
-		cero_relativo_y += DISTANCIA_ENTRE_Y;
+		if (zigzag) {
+			coordBase.x++;
+			c_pixelSupIzqBase.x += DISTANCIA_ENTRE_X;
+		} else {
+			coordBase.y++;
+			c_pixelSupIzqBase.x -= DISTANCIA_ENTRE_X;
+		}
+		c_pixelSupIzqBase.y += DISTANCIA_ENTRE_Y;
 	}
 }
 
@@ -84,15 +92,14 @@ void Dibujador::dibujarProtagonista(Sprite* sprite){
 */
 
 /********************************************************************************/
-void Dibujador::dibujarEscenario(Escenario* esc, TTF_Font* fuenteTexto){
+void Dibujador::dibujarEscenario(Escenario* esc, TTF_Font* fuenteTexto, pair<int,int> tamVentana){
 	for (unsigned i = 0; i < imagenesBasura.size(); i++){
 		delete imagenesBasura[i];
 	}
 	imagenesBasura.clear();
 	/* Dibujar pasto en otro método para resolver cabeza del chabon*/
-	this->dibujarRelieve(esc);
+	this->dibujarRelieve(esc, tamVentana);
 
-	pair<int,int> dimension = esc->getDimension();
 	CapaFog* capaFog = esc->getCapa();
 	Imagen *imagenGris = this->contenedor->getImagenUtilTipo(CAPA_GRIS);
 
@@ -108,80 +115,92 @@ void Dibujador::dibujarEscenario(Escenario* esc, TTF_Font* fuenteTexto){
 
 	vector<Entidad*> entidadesDibujadas;
 
+	Coordenada c_tileInicial = Calculador::tileParaCualquierPixel(Coordenada(0,0), Coordenada(cero_relativo_x,cero_relativo_y)) - Coordenada(1,0);
+	Coordenada c_pixelSupIzqBase = Calculador::pixelCentralDeCualquierTile(c_tileInicial-Coordenada(1,0), Coordenada(cero_relativo_x,cero_relativo_y));
+
+	bool zigzag = false;
 	/* Recorremos tile por tile */
-	for (int j = 0; j < dimension.second; j++){
-		rectRelieve.x = cero_relativo_x;
-		rectRelieve.y = cero_relativo_y;
-		for (int i = 0; i < dimension.first; i++){
+	for (Coordenada coordBase = c_tileInicial; rectRelieve.y <= tamVentana.second; zigzag = !zigzag) { // vertical
+		rectRelieve.x = c_pixelSupIzqBase.x + DISTANCIA_ENTRE_X;
+		rectRelieve.y = c_pixelSupIzqBase.y;
 
-			/* Solo dibujamos para las zonas visibles (GRISES ó COLOR) */
-			EstadoCapa ec = capaFog->getEstadoTile(i,j);
-			if (ec != ESTADO_NEGRO) {
+		for (Coordenada coordTileActual = coordBase; rectRelieve.x <= tamVentana.first; coordTileActual.x++, coordTileActual.y--) { // horizontal
+			if (esc->coordEnEscenario(coordTileActual)) {
+				/* Solo dibujamos para las zonas visibles (GRISES ó COLOR) */
+				EstadoCapa ec = capaFog->getEstadoTile(coordTileActual.x,coordTileActual.y);
+				if (ec != ESTADO_NEGRO) {
 
-				Tile* tile = esc->getTile(i,j);
-				vector<Entidad*> entidades = tile->getEntidades();
-				for (unsigned k = 0; k < entidades.size(); k++){
-					Entidad* entidad = entidades[k];
+					Tile* tile = esc->getTile(coordTileActual);
+					vector<Entidad*> entidades = tile->getEntidades();
+					for (unsigned k = 0; k < entidades.size(); k++){
+						Entidad* entidad = entidades[k];
 
-					Sprite* sprite = this->contenedor->getSpriteDeEntidad(entidad);
-					SDL_Rect pos = sprite->getPosicion();
+						Sprite* sprite = this->contenedor->getSpriteDeEntidad(entidad);
+						SDL_Rect pos = sprite->getPosicion();
 
-					if ( entidad->getIDJug() != 0 && entidad != esc->getProtagonista() && ec == ESTADO_COLOR){
-						Imagen* image_id = Loader::cargarTexto(renderer,fuenteTexto,entidad->getInfo());
-						SDL_Rect rect_id;
-						rect_id.w = image_id->getPixelsX();
-						rect_id.h = image_id->getPixelsY();
-						rect_id.x = pos.x - 10;
-						rect_id.y = pos.y - 10;
-						SDL_RenderCopy(renderer,image_id->getTexture(),NULL,&rect_id);
-						imagenesBasura.push_back(image_id);
-					}
+						if ( entidad->getIDJug() != 0 && entidad != esc->getProtagonista() && ec == ESTADO_COLOR ){
+							Imagen* image_id = Loader::cargarTexto(renderer,fuenteTexto,entidad->getInfo());
+							SDL_Rect rect_id;
+							rect_id.w = image_id->getPixelsX();
+							rect_id.h = image_id->getPixelsY();
+							rect_id.x = pos.x - 10;
+							rect_id.y = pos.y - 10;
+							SDL_RenderCopy(renderer,image_id->getTexture(),NULL,&rect_id);
+							imagenesBasura.push_back(image_id);
+						}
 
-					//Entidades con movimiento:
-					if (entidad->esMovible()) {
-						if (sprite->estaEnMovimiento()){
-							if (sprite->currentTime() > (1000/sprite->getFps())){
-								sprite->efectuarMovimiento();
+						//Entidades con movimiento:
+						if (entidad->esMovible()) {
+							if (sprite->estaEnMovimiento()){
+								if (sprite->currentTime() > (1000/sprite->getFps())){
+									sprite->efectuarMovimiento();
+								}
+							}
+							/* Si la entidad esta dentro del campo de visón, lo dibujamos */
+							if (ec == ESTADO_COLOR){
+								SDL_Rect frame = sprite->getFrameActual();
+								SDL_RenderCopy(this->renderer,sprite->getImagen()->getTexture(),&frame,&pos);
 							}
 						}
-						/* Si la entidad esta dentro del campo de visón, lo dibujamos */
-						if (ec == ESTADO_COLOR){
-							SDL_Rect frame = sprite->getFrameActual();
-							SDL_RenderCopy(this->renderer,sprite->getImagen()->getTexture(),&frame,&pos);
-						}
-					}
-					//Entidades sin movimiento:
-					else{
-						if (entidad->esRecurso() && ec == ESTADO_COLOR){
-							rectRecurso.x = pos.x + pos.w / 3;
-							rectRecurso.y = pos.y + pos.h / 4;
-							SDL_RenderCopy(this->renderer,sprite->getImagen()->getTexture(),NULL,&rectRecurso);
-						}else{
-							/* Se busca que no haya sido dibujado (caso CASTILLO) */
-							 vector<Entidad*>::iterator it = find(entidadesDibujadas.begin(), entidadesDibujadas.end(), entidad);
-							 bool fueDibujado = (it != entidadesDibujadas.end());
-							 if (!fueDibujado && !entidad->esRecurso()){
-								 SDL_Rect rect = sprite->getFrameActual();
-								 SDL_RenderCopy(this->renderer,sprite->getImagen()->getTexture(),&rect,&pos);
-								 entidadesDibujadas.push_back(entidad);
-							 }
+						//Entidades sin movimiento:
+						else{
+							if (entidad->esRecurso() && ec == ESTADO_COLOR){
+								rectRecurso.x = pos.x + pos.w / 3;
+								rectRecurso.y = pos.y + pos.h / 4;
+								SDL_RenderCopy(this->renderer,sprite->getImagen()->getTexture(),NULL,&rectRecurso);
+							}else{
+								/* Se busca que no haya sido dibujado (caso CASTILLO) */
+								 vector<Entidad*>::iterator it = find(entidadesDibujadas.begin(), entidadesDibujadas.end(), entidad);
+								 bool fueDibujado = (it != entidadesDibujadas.end());
+								 if (!fueDibujado && !entidad->esRecurso()){
+									 SDL_Rect rect = sprite->getFrameActual();
+									 SDL_RenderCopy(this->renderer,sprite->getImagen()->getTexture(),&rect,&pos);
+									 entidadesDibujadas.push_back(entidad);
+								 }
+							}
 						}
 					}
 				}
-			}
-			if (ec == ESTADO_GRIS) {
-				SDL_RenderCopy(renderer,imagenGris->getTexture(),NULL,&rectRelieve);
-			}
-			rectRelieve.x += DISTANCIA_ENTRE_X;
-			rectRelieve.y += DISTANCIA_ENTRE_Y;
+				if (ec == ESTADO_GRIS) {
+					SDL_RenderCopy(renderer,imagenGris->getTexture(),NULL,&rectRelieve);
+				}
+			} // fi coordenada en escenario
+			rectRelieve.x += ANCHO_PIXEL_PASTO;
+		} // rof horizontal
+
+		if (zigzag) {
+			coordBase.x++;
+			c_pixelSupIzqBase.x += DISTANCIA_ENTRE_X;
+		} else {
+			coordBase.y++;
+			c_pixelSupIzqBase.x -= DISTANCIA_ENTRE_X;
 		}
-		cero_relativo_x -= DISTANCIA_ENTRE_X;
-		cero_relativo_y += DISTANCIA_ENTRE_Y;
+		c_pixelSupIzqBase.y += DISTANCIA_ENTRE_Y;
 	}
 }
 
 
-/********************************************************************************/
+ /********************************************************************************/
 bool Dibujador::dibujarContorno(Escenario* esc, TTF_Font* fuenteTexto){
 	for (unsigned i = 0; i < imagenesBasura.size(); i++){
 		delete imagenesBasura[i];

@@ -32,9 +32,13 @@ public:
 	//static bool puntoContenidoEnEscenario(Coordenada coord_pixel, Coordenada coord_ceros_pixel, Escenario *escenario);
 	static bool puntoContenidoEnEscenario(Coordenada coord_tile, Escenario *escenario);
 
+	static Coordenada tileParaCualquierPixel(Coordenada coord_pixel, Coordenada coord_ceros);
+
 	static Coordenada tileParaPixel(Coordenada coord_pixel, Coordenada coord_ceros);
 
 	static Coordenada pixelCentralDeTile(Coordenada coord_tile, Coordenada coord_ceros);
+
+	static Coordenada pixelCentralDeCualquierTile(Coordenada coord_tile, Coordenada coord_ceros);
 
 	static Coordenada generarCoordenadaRandom(int size_x_final, int size_x_inicial, int size_y_final, int size_y_inicial);
 
