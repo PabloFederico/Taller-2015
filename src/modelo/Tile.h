@@ -14,6 +14,7 @@
 class Tile {
 private:
 	std::vector<Entidad*> entidades;
+	bool esCentral = false;
 
 public:
 	Tile();
@@ -21,9 +22,9 @@ public:
 	vector<Entidad*> getEntidades();
 	bool estaLibre();
 	bool tieneRecurso();
+	bool esTileCentral();
 
-
-	void agregarEntidad(Entidad* entidad);
+	void agregarEntidad(Entidad* entidad, bool central = false);
 	void eliminarEntidad(Entidad* entidad);
 
 	Entidad* quitarEntidad(int id_jug);

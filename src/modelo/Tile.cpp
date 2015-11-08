@@ -9,11 +9,12 @@
 #include <algorithm>
 #include <stdio.h>
 
-Tile::Tile() {}
+Tile::Tile(): esCentral(false) {}
 
 bool Tile::estaLibre(){
-	if (entidades.size() == 0) return true;
-	if (entidades.size() == 1 && (!entidades[0]->ocupaSuTile())) return true;
+	if (entidades.size() == 0 ||
+	   (entidades.size() == 1 && (!entidades[0]->ocupaSuTile())))
+			return true;
 
 	return false;
 }
@@ -22,15 +23,21 @@ vector<Entidad*> Tile::getEntidades(){
 	return entidades;
 }
 
-void Tile::agregarEntidad(Entidad* entidad){
+void Tile::agregarEntidad(Entidad* entidad, bool central){
+	this->esCentral = central;
 	entidades.push_back(entidad);
 }
 
 void Tile::eliminarEntidad(Entidad* entidad){
 	vector<Entidad*>::iterator it = find(entidades.begin(), entidades.end(), entidad);
-	if (it != entidades.end())
-		entidades.erase(it);
-	else throw NoSeRecibio();
+	if (it == entidades.end())
+		throw NoSeRecibio();
+	entidades.erase(it);
+	esCentral = false;
+}
+
+bool Tile::esTileCentral() {
+	return this->esCentral;
 }
 
 bool Tile::tieneRecurso(){
@@ -66,6 +73,7 @@ Entidad* Tile::quitarEntidad(int id_jug) {
 		throw NoSeRecibio();
 	Entidad* ent = *it;
 	entidades.erase(it);
+	esCentral = false;
 	return ent;
 }
 

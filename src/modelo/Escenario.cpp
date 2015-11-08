@@ -160,7 +160,9 @@ bool Escenario::agregarEntidad(Coordenada pos, Entidad* entidad){
 		for (int j = 0; j < dim.second; j++){
 			for (int i = 0; i < dim.first; i++){
 				Tile* tile = this->matriz_tiles[pos.x+i][pos.y+j];
-				tile->agregarEntidad(entidad);
+				if (i==dim.first/2 && j==dim.second/2)
+					tile->agregarEntidad(entidad, true);
+				else tile->agregarEntidad(entidad);
 			}
 		}
 		// Los recursos se manejan por separado, no se agregan y se borran desde el tile.

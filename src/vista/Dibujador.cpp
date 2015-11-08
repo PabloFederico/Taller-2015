@@ -149,8 +149,7 @@ void Dibujador::dibujarEscenario(Escenario* esc, TTF_Font* fuenteTexto, pair<int
 							imagenesBasura.push_back(image_id);
 						}
 
-						//Entidades con movimiento:
-						if (entidad->esMovible()) {
+						if (entidad->esMovible()) {		//Entidades con movimiento:
 							if (sprite->estaEnMovimiento()){
 								if (sprite->currentTime() > (1000/sprite->getFps())){
 									sprite->efectuarMovimiento();
@@ -162,21 +161,18 @@ void Dibujador::dibujarEscenario(Escenario* esc, TTF_Font* fuenteTexto, pair<int
 								SDL_RenderCopy(this->renderer,sprite->getImagen()->getTexture(),&frame,&pos);
 							}
 						}
-						//Entidades sin movimiento:
-						else{
+						else{	//Entidades sin movimiento:
 							if (entidad->esRecurso() && ec == ESTADO_COLOR){
 								rectRecurso.x = pos.x + pos.w / 3;
 								rectRecurso.y = pos.y + pos.h / 4;
 								SDL_RenderCopy(this->renderer,sprite->getImagen()->getTexture(),NULL,&rectRecurso);
 							}else{
-								/* Se busca que no haya sido dibujado (caso CASTILLO) */
-								 vector<Entidad*>::iterator it = find(entidadesDibujadas.begin(), entidadesDibujadas.end(), entidad);
-								 bool fueDibujado = (it != entidadesDibujadas.end());
-								 if (!fueDibujado && !entidad->esRecurso()){
-									 SDL_Rect rect = sprite->getFrameActual();
-									 SDL_RenderCopy(this->renderer,sprite->getImagen()->getTexture(),&rect,&pos);
-									 entidadesDibujadas.push_back(entidad);
-								 }
+								pair<int,int> tamEnt = entidad->getTam();
+								if (!entidad->esRecurso() && ( (tamEnt.first==1 && tamEnt.second==1) || tile->esTileCentral() )) {
+									SDL_Rect rect = sprite->getFrameActual();
+									SDL_RenderCopy(this->renderer,sprite->getImagen()->getTexture(),&rect,&pos);
+									entidadesDibujadas.push_back(entidad);
+								}
 							}
 						}
 					}
@@ -186,7 +182,7 @@ void Dibujador::dibujarEscenario(Escenario* esc, TTF_Font* fuenteTexto, pair<int
 				}
 			} // fi coordenada en escenario
 			rectRelieve.x += ANCHO_PIXEL_PASTO;
-		} // rof horizontal
+		} // rof recorrido horizontal
 
 		if (zigzag) {
 			coordBase.x++;
@@ -304,7 +300,7 @@ void Dibujador::dibujarBarraEstado(Escenario* esc, BarraEstado* barraEstado, TTF
 	/* Dibujamos el fondo (Para la info de los recursos económicos) */
 	rect_barra.x = 0;
 	rect_barra.y = height_window - dim.second;
-	rect_barra.w = dim.first * 0.3;
+	rect_barra.w = dim.first * 0.3;		// Veo mucho hardcodeo
 	rect_barra.h = dim.second;
 	imagen = this->contenedor->getImagenUtilTipo(BARRA_FONDO);
 	SDL_RenderCopy(renderer,imagen->getTexture(),NULL,&rect_barra);
