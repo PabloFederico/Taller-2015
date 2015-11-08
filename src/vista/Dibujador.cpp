@@ -402,8 +402,8 @@ void Dibujador::dibujarMiniMapa(Escenario* esc, SDL_Rect rect){
 
 	pair<int,int> dimension = esc->getDimension();
 	int ANCHO = rect.w / dimension.first;
-	int ALTO = rect.h / dimension.second;
-
+	if (ANCHO % 2 != 0) ANCHO += 1;
+	int ALTO = 0.5 * ANCHO;
 	CapaFog* capaFog = esc->getCapa();
 
 

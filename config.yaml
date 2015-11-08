@@ -3,8 +3,8 @@ nombre_jugador: pepe
 direccion_ip: 127.0.0.1
 
 pantalla:
-  ancho: 900
-  alto: 600
+  ancho: 1080
+  alto: 640
 
 configuracion:
   vel_personaje: 50
