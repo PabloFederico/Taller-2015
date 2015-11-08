@@ -44,11 +44,11 @@ void Dibujador::dibujarRelieve(Escenario* esc, pair<int,int> tamVentana){
 	Coordenada c_pixelSupIzqBase = Calculador::pixelCentralDeCualquierTile(c_tileInicial-Coordenada(1,0), Coordenada(cero_relativo_x,cero_relativo_y));
 
 	bool zigzag = false;
-	for (Coordenada coordBase = c_tileInicial; rectRelieve.y <= tamVentana.second; zigzag = !zigzag) { // vertical
+	for (Coordenada coordBase = c_tileInicial; c_pixelSupIzqBase.y <= tamVentana.second; zigzag = !zigzag) { // vertical
 		rectRelieve.x = c_pixelSupIzqBase.x + DISTANCIA_ENTRE_X;
 		rectRelieve.y = c_pixelSupIzqBase.y;
 
-		for (Coordenada coordTileActual = coordBase; rectRelieve.x <= tamVentana.first; coordTileActual.x++, coordTileActual.y--) { // horizontal
+		for (Coordenada coordTileActual = coordBase; rectRelieve.x <= tamVentana.first+DISTANCIA_ENTRE_X; coordTileActual.x++, coordTileActual.y--) { // horizontal
 			if (esc->coordEnEscenario(coordTileActual)) {
 				if (capa->getEstadoTile(coordTileActual.x,coordTileActual.y) != ESTADO_NEGRO){
 
@@ -120,11 +120,11 @@ void Dibujador::dibujarEscenario(Escenario* esc, TTF_Font* fuenteTexto, pair<int
 
 	bool zigzag = false;
 	/* Recorremos tile por tile */
-	for (Coordenada coordBase = c_tileInicial; rectRelieve.y <= tamVentana.second; zigzag = !zigzag) { // vertical
+	for (Coordenada coordBase = c_tileInicial; c_pixelSupIzqBase.y <= tamVentana.second; zigzag = !zigzag) { // vertical
 		rectRelieve.x = c_pixelSupIzqBase.x + DISTANCIA_ENTRE_X;
 		rectRelieve.y = c_pixelSupIzqBase.y;
 
-		for (Coordenada coordTileActual = coordBase; rectRelieve.x <= tamVentana.first; coordTileActual.x++, coordTileActual.y--) { // horizontal
+		for (Coordenada coordTileActual = coordBase; rectRelieve.x <= tamVentana.first+DISTANCIA_ENTRE_X; coordTileActual.x++, coordTileActual.y--) { // horizontal
 			if (esc->coordEnEscenario(coordTileActual)) {
 				/* Solo dibujamos para las zonas visibles (GRISES ó COLOR) */
 				EstadoCapa ec = capaFog->getEstadoTile(coordTileActual.x,coordTileActual.y);
