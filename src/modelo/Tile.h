@@ -14,7 +14,7 @@
 class Tile {
 private:
 	std::vector<Entidad*> entidades;
-	bool esCentral = false;
+	bool esCentral;
 
 public:
 	Tile();
