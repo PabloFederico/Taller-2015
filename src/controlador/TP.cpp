@@ -1,14 +1,14 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
-#include "../red/Server.h"
+//#include "../red/Server.h"
 #include "../controlador/Controller.h"
 #include "../vista/VentanaJuego.h"
 #include "../vista/VentanaConexion.h"
 #include "../vista/VentanaMenu.h"
-#include "../red/Connection.h"
+//#include "../red/Connection.h"
 
 int main(int argc, char** argv) {
-
+/*
 	Server* server = NULL;
 	Client* lan = NULL;
 	if (argc > 1) {
@@ -21,13 +21,13 @@ int main(int argc, char** argv) {
 				lan = new Client();
 		} catch ( ConnectionProblem &e ) { return -1; }
 	}
-
+*/
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
 		return -1;
-	} else if (server == NULL) {
+	} else {//if (server == NULL) {
 		TTF_Init();
 
-		Controller *controller = new Controller(lan);
+		Controller *controller = new Controller();//lan);
 		VentanaJuego *ventana = new VentanaJuego(controller);
 		//VentanaConexion *ventana = new VentanaConexion(controller);
 		//VentanaMenu *ventana = new VentanaMenu(controller);
@@ -38,7 +38,7 @@ int main(int argc, char** argv) {
 		SDL_Quit();
 		IMG_Quit();
 		TTF_Quit();
-		delete lan;
+		//delete lan;
 	}
 
 	return 0;

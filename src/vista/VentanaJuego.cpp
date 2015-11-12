@@ -62,7 +62,7 @@ void VentanaJuego::cargarImagenesYSprites(Juego* juego){
 	ContenedorDeRecursos * contenedor = new ContenedorDeRecursos(renderer);
 	contenedor->cargarImagenesEntidades(juego->getInfoTiposEntidades());
 
-	vector<PosEntidad>* posEntidades = juego->getEscenario()->getVectorEntidades();
+	vector<Entidad*>* posEntidades = juego->getEscenario()->getVectorEntidades();
 
 	Coordenada coord_ceros(*juego->getCeros().first, *juego->getCeros().second);
 	contenedor->generarYGuardarSpritesEntidades(posEntidades,coord_ceros,juego->getEscenario());

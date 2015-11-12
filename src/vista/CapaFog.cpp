@@ -48,7 +48,7 @@ vector<pair<int,int> > CapaFog::generarPuntos(int x, int y){
 }
 
 void CapaFog::descubrirDesdePunto(int x, int y){
-	this->actualizarCapaGris();
+	//this->actualizarCapaGris();
 	vector<pair<int,int> > puntos = this->generarPuntos(x,y);
 	for (unsigned i = 0; i < puntos.size(); i++){
 		int tileX = puntos[i].first;

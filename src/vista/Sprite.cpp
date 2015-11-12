@@ -322,24 +322,7 @@ void Sprite::update(int vel_personaje) {
                 this->regPos.posY_player = y_result;
             }
 		} else {
-/*
-			Coordenada c_tile_actual = Calculador::tileParaPixel(getCaminoARecorrer()[0],coord_ceros);
-			Tile* tile = escenario->getTile(c_tile_actual);
-			printf("holaaaaa\n");
-			if (tile->tieneRecurso()){
 
-				//this->entidad->getIDJug() != escenario->getProtagonista()->getIDJug()){
-				printf("hay recurso\n");
-				Entidad* auxRecurso = tile->devolverRecurso();
-				printf("%s \n",auxRecurso->getInfo().c_str());
-				printf("eliminado\n");
-				tile->eliminarEntidad(auxRecurso);
-				printf("elimindado\n");
-				//delete auxRecurso;
-			}else{
-				printf("no paso\n");
-			}
-*/
 			/* guardar última coordenada para desocuparla y cambiar a la próxima */
 			Coordenada c_ult_punto = this->getCaminoARecorrer()[0];
 			this->quitarPrimeraCoordenada();

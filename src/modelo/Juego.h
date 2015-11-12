@@ -17,14 +17,17 @@
 #include "../modelo/Entidad.h"
 #include "../modelo/BarraEstado.h"
 #include "../modelo/Escenario.h"
-#include "../red/Connection.h"
-#include "../red/Client.h"
+//#include "../red/Connection.h"
+//#include "../red/Client.h"
 #include "../vista/Sprite.h"
+#include "../modelo/Jugador.h"
 
 class Juego {
 private:
 	int idJug;
 	string nombreJug;
+
+	Jugador* jugador;
 
 	int *cero_x;
 	int *cero_y;
@@ -34,14 +37,14 @@ private:
 	EntidadFactory *fabricaDeEntidades;
 	
 	Escenario *escenario;
-	Entidad *protagonista;
-	vector<PosEntidad>* enemigos;
 
-	Connection* connection;
+	vector<Unidad* >* enemigos;
+
+	//Connection* connection;
 
 	/* Carga la configuración inicial del juego a traves
 	 * de un archivo de configuración */
-	void cargarJuego(InfoEscenario* infoEscRed, Coordenada *posInicial);
+	void cargarJuego();//InfoEscenario* infoEscRed, Coordenada *posInicial);
 
 	void cargarImagenes();
 
@@ -50,12 +53,14 @@ private:
 	BarraEstado *barraEstado;
 
 public:
-	Juego(Connection* lan, Coordenada* posInicial, InfoEscenario* infoEscRed);
+	Juego();//Connection* lan, Coordenada* posInicial, InfoEscenario* infoEscRed);
 
-	Connection* const getConnection();
-	void setConnection(Connection* conn);
-	void olvidarConnection();
-	bool esCliente();
+	//Connection* const getConnection();
+	//void setConnection(Connection* conn);
+	//void olvidarConnection();
+	//bool esCliente();
+
+	Jugador* getJugador();
 
 	void setNombreJugador(string nom);
 
@@ -64,16 +69,22 @@ public:
 	string getNombreJugador();
 	int getIDJugador();
 	void cargarNumJugador();
-	void cargarEnemigo(PosEntidad posEnt);
+	void cargarEnemigo(Unidad* enemigo);
 
 	Map<Entidad*, Sprite*>* getSpritesEntidades();
 	vector<InfoEntidad> getInfoTiposEntidades();
-	Entidad* getProtagonista();
-	Sprite* getSpritePlayer();
-	Sprite* getSpritePlayer(int idJug);
+
+	//Sprite* getSpritePlayer();
+	Sprite* getSpritePlayer(int idJug, int identificador);
+
+	Sprite* getSpriteDeEntidad(Entidad* entidad);
+
 	Entidad* getEntidadDeSprite(Sprite* spr);
+
 	vector<Sprite*> getSpritesProtagonistas();
-	PosEntidad getPosEntDeProtagonista();
+
+	//PosEntidad getPosEntDeProtagonista();
+
 	pair<int,int> getDimensionVentana();
 	int getVelocidad();
 	int getMargenScroll();

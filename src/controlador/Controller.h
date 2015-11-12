@@ -9,20 +9,22 @@
 #define CONTROLADOR_CONTROLLER_H_
 #include <SDL2/SDL.h>
 #include "../modelo/Juego.h"
-#include "../red/Proxy.h"
+//#include "../red/Proxy.h"
 #include "ControladorMouse.h"
 #include "ControladorCamara.h"
+#include "ControladorEscenario.h"
 
 
 class Controller {
 private:
 	Juego *juego;
-	Connection *lan;
+	//Connection *lan;
 	ControladorMouse *controladorMouse;
 	ControladorCamara *controladorCamara;
+	ControladorEscenario *controladorEscenario;
 
 public:
-	Controller(Connection* lan);
+	Controller();//Connection* lan);
 
 	Juego* getJuego();
 

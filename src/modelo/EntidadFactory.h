@@ -24,6 +24,9 @@ private:
 public:
 	EntidadFactory(int num_jug, std::vector<InfoEntidad> v);
 	Entidad* nuevaEntidad(TipoEntidad tipo);
+
+	int getId_Jug();
+
 	virtual ~EntidadFactory();
 
 };

@@ -8,8 +8,8 @@
 #include "../controlador/Controller.h"
 
 
-Controller::Controller(Connection* lan = NULL) {
-	this->lan = lan;
+Controller::Controller(){//Connection* lan = NULL) {
+	/*this->lan = lan;
 	Coordenada* posInicial = NULL;
 	try {
 		if (lan != NULL)
@@ -18,16 +18,17 @@ Controller::Controller(Connection* lan = NULL) {
 		std::cout << "Desconectado."<<std::endl;
 		lan = NULL;
 	}
-
-	this->juego = new Juego(lan, posInicial, NULL);
-
+*/
+	this->juego = new Juego();//lan, posInicial, NULL);
+/*
 	if (lan != NULL) {
 		Proxy::enviarNombre(lan, juego->getNombreJugador());
 		Proxy::enviar(lan, juego->getPosEntDeProtagonista());
 	}
-
+*/
 	this->controladorMouse = new ControladorMouse(juego);
 	this->controladorCamara = new ControladorCamara(juego);
+	this->controladorEscenario = new ControladorEscenario(juego);
 }
 
 Juego* Controller::getJuego(){
@@ -39,25 +40,30 @@ void Controller::posicionarCamaraEnProtagonista(){
 	int cant_mover = 10;
 	int width_camera = juego->getDimensionVentana().first;
 	int height_camera = juego->getDimensionVentana().second - juego->getBarraEstado()->getDimension().second;
+	/* Agarra cualquier unidad y posiciona la camara sobre esa unidad */
+	std::cout<<"posicionando cam"<<std::endl;
+	Sprite* spriteUnidad = juego->getSpriteDeEntidad((Entidad*)juego->getJugador()->getUnidadActiva());
+	//Sprite* spriteUnidad = juego->getSpritesEntidades()->find((Entidad*)juego->getJugador()->getUnidadActiva())->second;
+	std::cout<<"paso la pos cam"<<std::endl;
 	while (!playerEstaEnElCentro){
-		SDL_Rect posicion = juego->getSpritePlayer()->getPosicion();
-
+		SDL_Rect posicion = spriteUnidad->getPosicion();
+		std::cout<<"preguntando por la pos"<<std::endl;
 		if (posicion.x < (width_camera/2 - 30)){
 			controladorCamara->moverCamara(cant_mover,0);
 		}
-		posicion = juego->getSpritePlayer()->getPosicion();
+		posicion = spriteUnidad->getPosicion();
 		if (posicion.x > (width_camera/2 + 30)){
 			controladorCamara->moverCamara(-cant_mover,0);
 		}
-		posicion = juego->getSpritePlayer()->getPosicion();
+		posicion = spriteUnidad->getPosicion();
 		if (posicion.y < (height_camera/2 - 30)){
 			controladorCamara->moverCamara(0,cant_mover);
 		}
-		posicion = juego->getSpritePlayer()->getPosicion();
+		posicion = spriteUnidad->getPosicion();
 		if (posicion.y > (height_camera/2 + 30)){
 			controladorCamara->moverCamara(0,-cant_mover);
 		}
-		posicion = juego->getSpritePlayer()->getPosicion();
+		posicion = spriteUnidad->getPosicion();
 
 		if (posicion.x > 0 &&
 			posicion.x < width_camera &&
@@ -71,9 +77,10 @@ void Controller::posicionarCamaraEnProtagonista(){
 void Controller::procesarEvento(SDL_Event &event){
 	int x,y;
 	SDL_GetMouseState(&x,&y);
-	controladorMouse->procesarEvento(event,x,y, this->juego->getConnection());
+	controladorEscenario->actualizarEstadoEscenario();//juego->getConnection());
+	controladorMouse->procesarEvento(event,x,y);//, this->juego->getConnection());
 	controladorCamara->procesarPosicionMouse(x,y);
-
+/*
 	if (this->juego->esCliente()) {
 		try {
 			Proxy::actualizarMultiplayer(this->juego);
@@ -92,6 +99,7 @@ void Controller::procesarEvento(SDL_Event &event){
 		//else
 		//	this->lan->finalizar();
 	//}
+*/
 }
 
 void Controller::agregarCamara(Camara *cam){
@@ -102,8 +110,10 @@ void Controller::reiniciarJuego(){
 	this->juego->reiniciar();
 	delete this->controladorCamara;
 	delete this->controladorMouse;
+	delete this->controladorEscenario;
 	this->controladorMouse = new ControladorMouse(juego);
 	this->controladorCamara = new ControladorCamara(juego);
+	this->controladorEscenario = new ControladorEscenario(juego);
 }
 
 int Controller::verificarConexion(std::string string_IP){
@@ -115,5 +125,6 @@ Controller::~Controller() {
 	delete this->juego;
 	delete this->controladorCamara;
 	delete this->controladorMouse;
+	delete this->controladorEscenario;
 }
 

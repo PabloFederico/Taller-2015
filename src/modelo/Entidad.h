@@ -12,15 +12,21 @@ using namespace std;
 #include <string>
 #include <sstream>
 #include "../utils/Enumerados.h"
+#include "../utils/Common.h"
+
+//class Coordenada;
+
+//typedef Coordenada Coord;
 
 class Entidad {
-private:
+protected:
 	TipoEntidad tipo;
 	int idJug;
 	bool movible,ocupador;
 	int ancho,alto;
 	std::string info;
-	bool petrificado;
+	//bool petrificado;
+	int x,y;
 
 public:
 	Entidad(TipoEntidad tipo, int num_jug = 0);
@@ -28,9 +34,13 @@ public:
 	TipoEntidad getTipo();
 	int getIDJug();
 
-	bool estaPetrificado();
-	void petrificar();
-	void despetrificar();
+	//bool estaPetrificado();
+	//void petrificar();
+	//void despetrificar();
+
+	Coordenada getPosicion();
+
+	void setPosicion(Coordenada c);
 
 	bool esRecurso();
 

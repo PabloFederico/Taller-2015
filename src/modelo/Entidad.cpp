@@ -32,10 +32,10 @@ Entidad::Entidad(TipoEntidad tipo, int num_jug): idJug(num_jug)  {
 			ocupador = true;
 			info = "Soldado";
 			break;
-		case JUANA_DE_ARCO:
+		case ALDEANO:
 			movible = true;
 			ocupador = true;
-			info = "Juana De Arco";
+			info = "Aldeano";
 			break;
 		case ANIMAL:
 				movible = true;
@@ -73,24 +73,12 @@ Entidad::Entidad(TipoEntidad tipo, int num_jug): idJug(num_jug)  {
 				info = "";
 				break;
 	}
-	petrificado = false;
-
-	if (idJug != 0) {
-		ostringstream ssInfo;
-		ssInfo << info<<" (Jugador "<<idJug<<")";
-		info = ssInfo.str();
-	}
+	x = 0;
+	y = 0;
 }
 
-bool Entidad::estaPetrificado(){
-	return petrificado;
-}
-
-void Entidad::petrificar() {
-	this->petrificado = true;
-}
-void Entidad::despetrificar() {
-	this->petrificado = false;
+int Entidad::getIDJug(){
+	return idJug;
 }
 
 TipoEntidad Entidad::getTipo(){
@@ -98,11 +86,7 @@ TipoEntidad Entidad::getTipo(){
 }
 
 bool Entidad::esRecurso(){
-	return (tipo == ORO || tipo == MADERA || tipo == COMIDA);
-}
-
-int Entidad::getIDJug() {
-	return this->idJug;
+	return (tipo == ORO || tipo == MADERA || tipo == COMIDA || tipo == PIEDRA);
 }
 
 void Entidad::setTam(int ancho, int alto) {
@@ -122,10 +106,20 @@ bool Entidad::ocupaSuTile() {
 	return this->ocupador;
 }
 
+Coordenada Entidad::getPosicion(){
+	return Coordenada(x,y);
+}
+
+void Entidad::setPosicion(Coordenada nuevaCoord){
+	x = nuevaCoord.x;
+	y = nuevaCoord.y;
+}
+
 
 std::string Entidad::getInfo(){
 	return info;
 }
+
 std::string Entidad::enc() {
 	ostringstream enc;
 	enc << idJug<<","<<tipo<<","<<ancho<<","<<alto;

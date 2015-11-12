@@ -8,46 +8,16 @@
 #include "ControladorMouse.h"
 #include "../utils/Calculador.h"
 #include "../modelo/DetectorDeColisiones.h"
-#include "../red/Connection.h"
+//#include "../red/Connection.h"
 
 
 ControladorMouse::ControladorMouse(Juego *juego) {
 	this->juego = juego;
 }
 
-void ControladorMouse::procesarEvento(SDL_Event &event, int MouseX, int MouseY, Connection* lan){
-	Sprite *spriteProtag = juego->getSpritePlayer();
+void ControladorMouse::procesarEvento(SDL_Event &event, int MouseX, int MouseY){//, Connection* lan){
 
-	/********** Actualización de la capa negra ***********/
-	Coordenada coord_pixel_sprite = spriteProtag->getPosPies();
 	Coordenada coord_pixel_ceros(*juego->getCeros().first + DISTANCIA_ENTRE_X, *juego->getCeros().second);
-
-	try {
-		Coordenada coord_tile_sprite = Calculador::tileParaPixel(coord_pixel_sprite,coord_pixel_ceros);
-		juego->getEscenario()->actualizarPosicionProtagonista(coord_tile_sprite);
-		juego->getEscenario()->getCapa()->descubrirDesdePunto(coord_tile_sprite.x, coord_tile_sprite.y);
-	}catch (FueraDeEscenario &e) {}
-
-	 /*Chequeo de si se come un recurso */
-	Escenario* escenario = juego->getEscenario();
-	BarraEstado* barra = juego->getBarraEstado();
-	Coordenada pos_jug = escenario->getPosProtagonista();
-	Tile* tile = escenario->getTile(pos_jug);
-	if (tile->tieneRecurso()){
-		Entidad* recurso = tile->devolverRecurso();
-		barra->agregarRecursoEconomico(recurso->getTipo());
-
-		// Elimina el sprite del recurso
-		Map<Entidad*,Sprite*>* mapaSprites = juego->getSpritesEntidades();
-		map<Entidad*,Sprite*>::iterator p = mapaSprites->find(recurso);
-		if (p != mapaSprites->end()) {
-			delete p->second;
-			mapaSprites->erase(recurso);
-		}
-
-		escenario->quitarRecurso(pos_jug,recurso);
-		Proxy::comiRecurso(lan, pos_jug);
-	}
 
 	/*********** Análisis del clic del mouse *************/
 	if (event.type == SDL_MOUSEBUTTONDOWN){
@@ -78,16 +48,18 @@ void ControladorMouse::procesarEvento(SDL_Event &event, int MouseX, int MouseY, 
 	            ///pruebas
 	            //Coordenada mouse = Calculador::tileParaPixel(Coordenada(MouseX,MouseY),coord_pixel_ceros);
 	            //std::cout << "mouse: "<<mouse.x<<";"<<mouse.y<<'\t'<<"follow: "<<follow.x<<";"<<follow.y<<std::endl;
-				if (escenario->getEntidadSeleccionada() == escenario->getProtagonista()) {
+				if (escenario->getEntidadSeleccionada() != NULL && escenario->getEntidadSeleccionada()->getIDJug() == juego->getIDJugador()) {
+					Sprite* spriteUnidad = juego->getSpritesEntidades()->find(escenario->getEntidadSeleccionada())->second;
+					Coordenada coord_pixel_sprite = spriteUnidad->getPosPies();
 					try {
 						Camino camino = Calculador::obtenerCaminoMin(escenario, coord_pixel_sprite, Coordenada(MouseX, MouseY), coord_pixel_ceros);
 
 						if (camino.size() > 0) {
 							/* Si se está jugando en red, enviar el movimiento a los demás jugadores. */
-							if (juego->esCliente())
-								Proxy::enviar(juego->getConnection(), camino);
-							else
-								spriteProtag->setearNuevoCamino(camino, coord_pixel_ceros);
+							//if (juego->esCliente())
+							//	Proxy::enviar(juego->getConnection(), camino);
+							//else
+								spriteUnidad->setearNuevoCamino(camino, coord_pixel_ceros);
 								/* Activamos localmente el movimiento del sprite y seteamos el nuevo camino que debe recorrer. */
 						}
 					} catch ( FueraDeEscenario &e ) {}
@@ -107,9 +79,9 @@ void ControladorMouse::procesarEvento(SDL_Event &event, int MouseX, int MouseY, 
 			try {
 				(*it)->update(juego->getVelocidad());
 			} catch ( PasoCompletado &e ) {
-				Proxy::completePaso(lan, e.id);
+				//Proxy::completePaso(lan, e.id);
 			}
-		if ((*it) != spriteProtag) {
+		if ((*it)->getEntidad()->getIDJug() != juego->getIDJugador()) {
 			try {
 				Coordenada coord_tile_sprite = Calculador::tileParaPixel((*it)->getPosPies(), coord_pixel_ceros);
 				juego->getEscenario()->actualizarPosicionEnemigo((*it)->getEntidad(), coord_tile_sprite);

@@ -23,7 +23,6 @@ private:
 	Map<Entidad*, Sprite*> *mapSpritesEntidades;
 	map<TipoEntidad, InfoEntidad> mapInfoEntidades;
 	Map<TipoImagenUtil, Imagen*> *mapImagenesUtil; /* para las imagenes de barra de estado */
-	Imagen* imagenPetrificadaSoldado;
 
 public:
 	ContenedorDeRecursos(SDL_Renderer *renderer);
@@ -40,8 +39,8 @@ public:
 
 	Sprite* getSpriteDeEntidad(Entidad *entidad);
 
-	void generarYGuardarSpritesEntidades(vector<PosEntidad> *posEntidades,Coordenada coord_ceros, Escenario* escenario);
-	void generarYGuardarSpriteEntidad(PosEntidad posEnt, Coordenada coord_ceros, Escenario* escenario);
+	void generarYGuardarSpritesEntidades(vector<Entidad*> *posEntidades,Coordenada coord_ceros, Escenario* escenario);
+	void generarYGuardarSpriteEntidad(Entidad* entidad, Coordenada coord_ceros, Escenario* escenario);
 
 	void actualizarPosicionesEntidades(int corrimiento_x, int corrimiento_y);
 
@@ -51,7 +50,7 @@ public:
 
 	void cargarImagenesRecursos();
 
-	void setearCanalAlphaParaEntidad(Entidad* entidad, int canalAlpha);
+	//void setearCanalAlphaParaEntidad(Entidad* entidad, int canalAlpha);
 
 	virtual ~ContenedorDeRecursos();
 };

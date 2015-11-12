@@ -14,7 +14,7 @@
 #include "../utils/Exceptions.h"
 #include "../utils/Constantes.h"
 #include "../modelo/Entidad.h"
-
+#include "../utils/Common.h"
 
 /* Estructura para guardar el Tipo de Entidad que se encuentra en las
  *  coordenadas x,y */
@@ -120,53 +120,6 @@ struct Rectangulo{
 			return true;
 		}
 		return false;
-	}
-};
-
-struct Coordenada{
-	int x,y;
-	Coordenada(int x, int y){
-		this->x = x;
-		this->y = y;
-	}
-
-	Coordenada(){
-		this->x = 0;
-		this->y = 0;
-	}
-
-	bool operator==(const Coordenada & c) const {
-		return (this->x == c.x && this->y == c.y);
-	}
-	bool operator!=(const Coordenada & c) const {
-		return (this->x != c.x || this->y != c.y);
-	}
-
-	bool operator<(const Coordenada & c) const {
-		return (this->x < c.x || this->y < c.y);	//Adivino que esto está bien
-	}
-
-	Coordenada operator+(const Coordenada & c) const {
-		return Coordenada(this->x + c.x,this->y + c.y);
-	}
-
-	Coordenada operator-(const Coordenada & c) const {
-		return Coordenada(this->x - c.x,this->y - c.y);
-	}
-
-	// Encodeado: "x;y"
-	std::string enc() {
-		ostringstream Encode;
-		Encode << x << ";" << y;
-		return Encode.str();
-	}
-	static Coordenada dec(std::string s) {
-		std::stringstream ss(s);
-		int x,y;
-		ss >> x;
-		ss.ignore();
-		ss >> y;
-		return Coordenada(x,y);
 	}
 };
 
@@ -294,24 +247,24 @@ struct InfoEscenario{
 	int size_x;
 	int size_y;
 	vector<PosTipoEntidad> posTipoEntidades;
-	TipoEntidad protagonista;
-	int posX_protagonista;
-	int posY_protagonista;
+	//TipoEntidad protagonista;
+	//int posX_protagonista;
+	//int posY_protagonista;
 
 	InfoEscenario(){
 		nombre = "";
 		size_x = 1;
 		size_y = 1;
-		protagonista = SOLDADO;
-		posX_protagonista = 0;
-		posY_protagonista = 0;
+		//protagonista = SOLDADO;
+		//posX_protagonista = 0;
+		//posY_protagonista = 0;
 	};
-
+/*
 	void setPosProtag(Coordenada c) {
 		posX_protagonista = c.x;
 		posY_protagonista = c.y;
 	}
-
+*/
 	void agregarEntidad(pair<int,int> pos, TipoEntidad tipo){
 		PosTipoEntidad posTipoEnte(pos.first,pos.second,tipo);
 		this->posTipoEntidades.push_back(posTipoEnte);
@@ -322,10 +275,11 @@ struct InfoEscenario{
 	}
 
 	bool operator!() {
-		return !((size_x > 0) && (size_y > 0) && (posX_protagonista >= 0) && (posY_protagonista >= 0));
+		return !((size_x > 0) && (size_y > 0));// && (posX_protagonista >= 0) && (posY_protagonista >= 0));
 	}
 
 	// Encodeado: "x;y|[...,PTE,...,]|protTE"
+/*
 	std::string enc() {
 		ostringstream Encode;
 		Encode << size_x << ";" << size_y << "|[";
@@ -335,6 +289,7 @@ struct InfoEscenario{
 		Encode << "]|"<<(PosTipoEntidad(posX_protagonista, posY_protagonista, protagonista).enc());
 		return Encode.str();
 	}
+*/
 	static InfoEscenario dec(std::string s) {
 		std::stringstream ss(s);
 		InfoEscenario ie;
@@ -350,10 +305,10 @@ struct InfoEscenario{
 		}
 		ss.ignore(2);
 		ss.get(cs, 14);
-		PosTipoEntidad prot = PosTipoEntidad::dec(cs);
-		ie.protagonista = prot.tipo;
-		ie.posX_protagonista = prot.x;
-		ie.posY_protagonista = prot.y;
+		//PosTipoEntidad prot = PosTipoEntidad::dec(cs);
+		//ie.protagonista = prot.tipo;
+		//ie.posX_protagonista = prot.x;
+		//ie.posY_protagonista = prot.y;
 
 		return ie;
 	}

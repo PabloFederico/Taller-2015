@@ -19,6 +19,8 @@ public:
 
 	void insert(K,V);
 
+	int size();
+
 	typename std::map<K,V>::iterator find(K);
 
 	typename std::map<K,V>::iterator begin();
@@ -33,6 +35,11 @@ public:
 template <class K, class V>
 Map<K,V>::Map(){
    this->mapa = new std::map<K,V>();
+}
+
+template <class K, class V>
+int Map<K,V>::size(){
+   return this->mapa->size();
 }
 
 template <class K, class V>

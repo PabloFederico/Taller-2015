@@ -1,6 +1,6 @@
 nombre_jugador: pepe
 
-direccion_ip: 10.42.0.1
+direccion_ip: 127.0.0.1
 
 pantalla:
   ancho: 1080
@@ -16,17 +16,17 @@ tipos:
     imagen: images/arbol.png
     descripcion: Arbol
 
-  - nombre: castillo
-    alto_base: 4
-    ancho_base: 4
-    imagen: images/casss.png
-    pixel_ref_x: 30
-    pixel_ref_y: 40
-    descripcion: Castillo
+#  - nombre: castillo
+#    alto_base: 4
+#    ancho_base: 4
+#    imagen: images/casss.png
+#    pixel_ref_x: 30
+#    pixel_ref_y: 40
+#    descripcion: Castillo
 
   - nombre: soldado
     fps: 40
-    imagen: images/chabon000.png
+    imagen: images/soldado2.png
     descripcion: Soldado
 
   - nombre: animal
@@ -41,6 +41,18 @@ tipos:
   - nombre: agua
     imagen: images/agua.png
 
+  - nombre: centro_civico
+    alto_base: 4
+ 	ancho_base: 4
+    imagen: images/centro_civico.png
+    descripcion: Centro_Civico
+
+  - nombre: cuartel
+    alto_base: 4
+ 	ancho_base: 4
+    imagen: images/cuartel.png
+    descripcion: Cuartel
+
 #  - nombre: comida
 #    imagen: images/comida.png
 
@@ -50,10 +62,10 @@ tipos:
 #  - nombre: oro
 #    imagen: images/moneda.png
 
-  - nombre: juana_de_arco
+  - nombre: aldeano
     fps: 40
-    imagen: images/juanita.png
-    descripcion: Juana de Arco
+    imagen: images/aldeano.png
+    descripcion: Aldeano
 
 escenario:
   - nombre: orleans
@@ -70,7 +82,6 @@ escenario:
       - {x: 12, y: 11, tipo: agua}
       - {x: 12, y: 12, tipo: agua}
       - {x: 22, y: 0, tipo: tierra}
-      - {x: 0, y: 5, tipo: castillo}
       - {x: 30, y: 12, tipo: tierra}
       - {x: 5, y: 5, tipo: arbol}
       - {x: 6, y: 5, tipo: arbol}
@@ -80,11 +91,6 @@ escenario:
       - {x: 7, y: 6, tipo: arbol}
       - {x: 1, y: 0, tipo: arbol}
       - {x: 1, y: 1, tipo: arbol}
-      - {x: 40, y: 40, tipo: castillo}
       - {x: 10, y: 14, tipo: animal}
       - {x: 11, y: 14, tipo: animal}
       - {x: 12, y: 14, tipo: animal}
-    protagonista:
-      - tipo: soldado
-        x: 20
-        y: 20
