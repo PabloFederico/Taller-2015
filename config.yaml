@@ -1,6 +1,6 @@
 nombre_jugador: pepe
 
-direccion_ip: 127.0.0.1
+direccion_ip: 10.42.0.1
 
 pantalla:
   ancho: 1080

@@ -105,7 +105,7 @@ void VentanaJuego::mostrar(){
 	            /* Actualiza el renderer */
 	            this->dibujar();
 
-	            SDL_Delay(15);	// Estos son milisegundos, como que no cambia nada. Yo lo sacaría! (MC)
+	            SDL_Delay(10); /* Delay para Emanuel */
 
 	    		if (event.type == SDL_KEYDOWN){
 	            	if (event.key.keysym.sym == KEY_RESET){

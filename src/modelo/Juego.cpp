@@ -75,7 +75,7 @@ void Juego::cargarJuego(InfoEscenario* infoEscRed = NULL, Coordenada *posInicial
 
 	// Acá me imagino la posibilidad de un selector de escenarios.
 	if (esCliente()) {
-		configGame.vel_personaje = 50; // Misma velocidad para todos.
+		//configGame.vel_personaje = 50; // Misma velocidad para todos.
 		// Habría que saber en que escenario estamos
 		if (posInicial != NULL)
 			configGame.escenarios[0].setPosProtag(*posInicial);
