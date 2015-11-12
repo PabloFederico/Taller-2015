@@ -13,26 +13,65 @@ ControladorConexion::ControladorConexion(ControladorServidor* c, int sock) {
 	this->sock_cliente = sock;
 }
 
+bool ControladorConexion::hayMensajesPendientes(){
+	return (colaMsg.size() > 0);
+}
+
+void ControladorConexion::acolarMensaje(DataMsg data){
+	//mutexLock();
+	colaMsg.push_back(data);
+	//mutexUnlock();
+}
+
+DataMsg ControladorConexion::desacolarMensaje(){
+	//mutexLock();
+	DataMsg data = colaMsg.front();
+	colaMsg.pop_front();
+	//mutexUnlock();
+	return data;
+}
+
 void* ControladorConexion::run(){
 	// la función validar LogIn procesa el nombre de usuario y espera hasta que haya
 	// un mínimo válido de conexiones para jugar
 	// dentro de validarLogIn hay un void esperarConexiones()
 	bool userValido = controladorServidor->validarLogIn(sock_cliente);
 	if (!userValido) return NULL;
-	char buffer[MAX_BYTES_LECTURA];
+
+	char buffer[MAX_BYTES_LECTURA+1];
+	string mensaje;
 	bool quit = false;
+	int result;
 	while (!quit){
-		int len = Red::recibirInformacion(sock_cliente,buffer);
-		if (len <= 0){
-			controladorServidor->clienteSeDesconecto(sock_cliente);
-			quit = true;
-		}else{
-			buffer[len] = 0;
-			if (controladorServidor->procesarComoServidor(sock_cliente,std::string(buffer))){
-				std::cout << "Echoing: "<<buffer<<std::endl;//
-				controladorServidor->enviarATodosMenos(sock_cliente, buffer);
-			}
-		}
+		if (controladorServidor->fd_ISSET(sock_cliente)) {
+			do {	// Recibir del socket actual cualquier mensaje que esté esperando.
+				result = recv(sock_cliente, buffer, MAX_BYTES_LECTURA, 0);
+			} while (errno == EINTR && result == -1);
+
+			if (result > 0) {
+				buffer[result] = 0;
+				acolarMensaje(DataMsg(sock_cliente,buffer));
+				std::cout << "Recibido: "<<buffer<<std::endl;//
+				// Lo recibido de un cliente, si no es únicamente para el servidor, mandarlo a todos los demás
+				if (hayMensajesPendientes()){
+					DataMsg dataMsg = desacolarMensaje();
+					std::cout <<"procesando : "<<dataMsg.sock_fd<<" "<<dataMsg.msg<<std::endl;
+					int fd_sock = dataMsg.sock_fd;
+					string msg = dataMsg.msg;
+					if (controladorServidor->procesarComoServidor(fd_sock, msg)) {
+						std::cout << "Echoing: "<<msg<<std::endl;//
+						controladorServidor->enviarATodosMenos(fd_sock,msg);
+
+					}
+				}
+
+			} else if (result == 0) {
+				controladorServidor->clienteSeDesconecto(sock_cliente);
+			} else if (errno != EWOULDBLOCK)
+				std::cout << "Error in recv(): "<<strerror(errno)<<std::endl;
+
+		} // fi (FD_ISSET(j, &readset))
+
 
 		/* Aca debería estar lo de los recursos random y usar una especie de mutex
 		 * para que no todos los hilos creen recursos a cada momento, usando variables
@@ -43,6 +82,15 @@ void* ControladorConexion::run(){
 
 		/* basandome en lo de martin, aca seguiría lo de continuar movimientos
 		 * o sea, mandar las coordenadas guardadas (creo) */
+		if (controladorServidor->fd_ISSET(sock_cliente)) {
+			try {
+				controladorServidor->mutexLock();
+				mensaje = controladorServidor->mensajeParaAvanzarJug(sock_cliente);
+				std::cout << "Envío paso "<<mensaje<<std::endl;//
+				controladorServidor->enviarATodos(mensaje);
+				controladorServidor->mutexUnlock();
+			} catch ( CaminoVacio &e ) {}
+		}
 	}
 	return NULL;
 }

@@ -15,6 +15,7 @@
 #include "Proxy.h"
 #include <cerrno>
 #include <time.h>
+#include <SDL2/SDL.h>
 
 class ControladorServidor;
 
@@ -44,6 +45,8 @@ public:
 	void enviarATodosMenos(int socketNoRecibe, string mensaje);
 
 	void correr();
+
+	int fd_ISSET(int sock);
 
 	void finalizar();
 	~Server();

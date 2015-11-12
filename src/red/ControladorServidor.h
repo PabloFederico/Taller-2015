@@ -18,7 +18,7 @@ private:
 	pthread_mutex_t mutex;
 	clock_t t;
 
-	void esperarConexiones();
+	void esperarConexiones(int sock);
 	void generacionDeRecursosRandom();
 
 public:
@@ -26,9 +26,19 @@ public:
 
 	bool validarLogIn(int sock);
 
+	void mutexLock();
+
+	void mutexUnlock();
+
+	int fd_ISSET(int fd);
+
+	std::string mensajeParaAvanzarJug(int fd);
+
 	bool procesarComoServidor(int sock, std::string buffer);
 
 	void enviarATodosMenos(int sock, std::string buffer);
+
+	void enviarATodos(std::string buffer);
 
 	void clienteSeDesconecto(int sock_cliente);
 

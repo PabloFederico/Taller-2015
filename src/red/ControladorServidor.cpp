@@ -11,10 +11,15 @@
 ControladorServidor::ControladorServidor(Server* server) {
 	this->server = server;
 	t = clock();
+	pthread_mutex_init(&mutex,NULL);
 }
 
 void ControladorServidor::clienteSeDesconecto(int sock_cliente){
 	server->conexionPerdida(sock_cliente);
+}
+
+int ControladorServidor::fd_ISSET(int fd){
+	return server->fd_ISSET(fd);
 }
 
 bool ControladorServidor::procesarComoServidor(int sock, std::string buffer){
@@ -62,6 +67,7 @@ bool ControladorServidor::validarLogIn(int peersock){
 		sleep(1);
 		// Tercer mensaje: Envío al jugador señal de comienzo y su última posición.
 		mensaje = Red::agregarPrefijoYFinal("COM", cli.posProtag.enc());
+
 		send(peersock, mensaje.c_str(), MAX_BYTES_LECTURA, MSG_NOSIGNAL);
 		send(peersock, mensaje.c_str(), MAX_BYTES_LECTURA, MSG_NOSIGNAL);
 
@@ -70,9 +76,8 @@ bool ControladorServidor::validarLogIn(int peersock){
 		int idJug = clientes.agregar(peersock, nombreJug);
 		// Segundo mensaje: Envío número de jugador.
 		ss << idJug<<"~";
-		send(peersock, ss.str().c_str(), 5, MSG_NOSIGNAL);
 
-		esperarConexiones();
+		send(peersock, ss.str().c_str(), 5, MSG_NOSIGNAL);
 
 		sleep(1);
 		mensaje = Red::agregarPrefijoYFinal("COM", clientes[peersock].posProtag.enc());
@@ -81,18 +86,41 @@ bool ControladorServidor::validarLogIn(int peersock){
 		mensaje = clientes.mensajeDeEntidadDeJugador(peersock);
 		server->enviarATodosMenos(peersock, mensaje);
 	}
-
-	esperarConexiones();
+	std::cout << "Jugador "<<clientes[peersock].id<<" conectado!"<<std::endl;
+	esperarConexiones(peersock);
 	mensaje = clientes.mensajeDeTodasLasEntidadesConectadas();
 	send(peersock, mensaje.c_str(), MAX_BYTES_LECTURA, MSG_NOSIGNAL);
-	send(peersock, mensaje.c_str(), MAX_BYTES_LECTURA, MSG_NOSIGNAL);
+	//send(peersock, mensaje.c_str(), MAX_BYTES_LECTURA, MSG_NOSIGNAL);
 
 	return true;
 }
 
-void ControladorServidor::esperarConexiones(){
+std::string ControladorServidor::mensajeParaAvanzarJug(int fd){
+	return clientes.mensajeParaAvanzarJug(fd);
+}
+
+void ControladorServidor::mutexLock(){
+	pthread_mutex_lock(&mutex);
+}
+
+void ControladorServidor::mutexUnlock(){
+	pthread_mutex_unlock(&mutex);
+}
+
+void ControladorServidor::enviarATodos(std::string buffer){
+	server->enviarATodos(buffer);
+}
+
+void ControladorServidor::esperarConexiones(int sock){
 	while (clientes.cant() < 2){
 		sleep(2);
+	}
+
+	if (server->fd_ISSET(sock)){
+		string msg = Red::agregarPrefijoYFinal("COM", clientes[sock].posProtag.enc());
+		mutexLock();
+		send(sock, msg.c_str(), 16, MSG_NOSIGNAL);
+		mutexUnlock();
 	}
 }
 

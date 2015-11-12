@@ -122,12 +122,12 @@ int Server::intentarNuevaConexion(fd_set* p_tempset, int segundosDeEspera) {
 			return -1;
 		}
 
-		inicializarCliente(peersock, segundosDeEspera);
+		//inicializarCliente(peersock, segundosDeEspera);
 
 		fcntl(peersock, F_SETFL, O_NONBLOCK); // non-blocking mode
 		FD_SET(peersock, &readset);
 		maxfd = (maxfd > peersock)?maxfd:peersock;
-		std::cout << "Jugador "<<clientes[peersock].id<<" conectado!"<<std::endl;
+		//std::cout << "Jugador "<<clientes[peersock].id<<" conectado!"<<std::endl;
 		return peersock;
 	}
 	return -1;
@@ -210,7 +210,7 @@ TipoEntidad generarRecursoYCoordRandom(Coordenada* c) {
 void Server::correr() {
 	fd_set tempset;
 	string mensaje;
-	char buffer[MAX_BYTES_LECTURA+1];
+	//char buffer[MAX_BYTES_LECTURA+1];
 	int j, result, srvsock = this->socket->getDescriptor();
 
 	FD_ZERO(&readset);
@@ -221,8 +221,12 @@ void Server::correr() {
 	std::cout << "Aceptando hasta "<<MAX_CONEXIONES<<" jugadores ("<<MAX_ESPERA_CONEXION<<" s para conectarse)."<<std::endl;
 
 
+
 	while (true){
-		int client_sock = Red::aceptarCliente(socket);
+		SDL_PollEvent(&e);
+		memcpy(&tempset, &readset, sizeof(tempset));
+		//int client_sock = Red::aceptarCliente(socket);
+		int client_sock = intentarNuevaConexion(&tempset,MAX_ESPERA_CONEXION);
 		if (client_sock > 0){
 			ControladorConexion* controladorConexion = new ControladorConexion(controladorServer,client_sock);
 			// Aca empieza la magia con hilos
@@ -236,6 +240,9 @@ void Server::correr() {
 	sleep(4);
 }
 
+int Server::fd_ISSET(int sock){
+	return FD_ISSET(sock,&readset);
+}
 
 
 void Server::finalizar() {

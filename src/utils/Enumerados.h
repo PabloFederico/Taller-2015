@@ -66,4 +66,6 @@ inline const bool EsRecurso(TipoEntidad tipo) {
 
 enum EstadoCapa { ESTADO_NEGRO, ESTADO_GRIS, ESTADO_COLOR};
 
+enum EstadoConexion { CONECTADO = 1 , DESCONECTADO = 2};
+
 #endif /* UTILS_ENUMERADOS_H_ */
