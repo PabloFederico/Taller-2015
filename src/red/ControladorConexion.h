@@ -26,6 +26,10 @@ private:
 	ControladorServidor* controladorServidor;
 	int sock_cliente;
 	list<DataMsg> colaMsg;
+	pthread_mutex_t mutex;
+
+	void mutexLock();
+	void mutexUnlock();
 
 public:
 	ControladorConexion(ControladorServidor* controlador, int sock_cliente);

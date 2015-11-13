@@ -37,12 +37,14 @@ TipoEntidad generarRecursoYCoordRandom(Coordenada* c) {
 }
 
 void ControladorServidor::generacionDeRecursosRandom(){
+	mutexLock();
 	if ((clock() - t) > CLOCKS_PER_SEC*DELAY_RECURSOS) {
 		Coordenada c;
 		TipoEntidad tipoRecurso = generarRecursoYCoordRandom(&c);
 		server->enviarATodos(Red::agregarPrefijoYJugYFinal("REC", int(tipoRecurso), c.enc()));
 		t = clock();
 	}
+	mutexUnlock();
 }
 
 bool ControladorServidor::validarLogIn(int peersock){
@@ -73,20 +75,23 @@ bool ControladorServidor::validarLogIn(int peersock){
 
 	} catch ( NoExiste &e ) {
 		// Es un jugador nuevo... lo registro e inicializo
+		mutexLock();
 		int idJug = clientes.agregar(peersock, nombreJug);
+		mutexUnlock();
 		// Segundo mensaje: Envío número de jugador.
 		ss << idJug<<"~";
 
+		// envío su id
 		send(peersock, ss.str().c_str(), 5, MSG_NOSIGNAL);
 
-		sleep(1);
-		mensaje = Red::agregarPrefijoYFinal("COM", clientes[peersock].posProtag.enc());
-		send(peersock, mensaje.c_str(), 16, MSG_NOSIGNAL);
+		//sleep(1);
+		//mensaje = Red::agregarPrefijoYFinal("COM", clientes[peersock].posProtag.enc());
+		//send(peersock, mensaje.c_str(), 16, MSG_NOSIGNAL);
 		// Además, envío el nuevo enemigo a todos los demás jugadores.
-		mensaje = clientes.mensajeDeEntidadDeJugador(peersock);
-		server->enviarATodosMenos(peersock, mensaje);
+		//mensaje = clientes.mensajeDeEntidadDeJugador(peersock);
+		//server->enviarATodosMenos(peersock, mensaje);
 	}
-	std::cout << "Jugador "<<clientes[peersock].id<<" conectado!"<<std::endl;
+	std::cout << "Jugador "<<clientes[peersock].id<<" ("<<clientes[peersock].nombre<<") conectado!"<<std::endl;
 	esperarConexiones(peersock);
 	mensaje = clientes.mensajeDeTodasLasEntidadesConectadas();
 	send(peersock, mensaje.c_str(), MAX_BYTES_LECTURA, MSG_NOSIGNAL);
@@ -111,19 +116,24 @@ void ControladorServidor::enviarATodos(std::string buffer){
 	server->enviarATodos(buffer);
 }
 
+void ControladorServidor::fd_clr(){
+	server->fd_clr();
+}
+
 void ControladorServidor::esperarConexiones(int sock){
 	while (clientes.cant() < 2){
 		sleep(2);
 	}
+	sleep(2);
 
+	/* mensaje de inicio de juego para el cliente */
 	if (server->fd_ISSET(sock)){
 		string msg = Red::agregarPrefijoYFinal("COM", clientes[sock].posProtag.enc());
-		mutexLock();
 		send(sock, msg.c_str(), 16, MSG_NOSIGNAL);
-		mutexUnlock();
 	}
 }
 
 ControladorServidor::~ControladorServidor() {
+	pthread_mutex_destroy(&mutex);
 }
 

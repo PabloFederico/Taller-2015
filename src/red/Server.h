@@ -16,6 +16,7 @@
 #include <cerrno>
 #include <time.h>
 #include <SDL2/SDL.h>
+#include "../utils/Thread.h"
 
 class ControladorServidor;
 
@@ -28,11 +29,13 @@ private:
 
 	ControladorServidor* controladorServer;
 
-	//map<int,Thread*> hilos;
+	vector<Thread*> hilos;
 
 public:
 	Server();
 	bool iniciar();
+
+	void fd_clr();
 
 	void inicializarCliente(int peersock, int segundosDeEspera);
 

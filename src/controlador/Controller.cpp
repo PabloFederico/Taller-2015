@@ -20,12 +20,12 @@ Controller::Controller(Connection* lan = NULL) {
 	}
 
 	this->juego = new Juego(lan, posInicial, NULL);
-
+/*
 	if (lan != NULL) {
 		Proxy::enviarNombre(lan, juego->getNombreJugador());
 		Proxy::enviar(lan, juego->getPosEntDeProtagonista());
 	}
-
+*/
 	this->controladorMouse = new ControladorMouse(juego);
 	this->controladorCamara = new ControladorCamara(juego);
 }

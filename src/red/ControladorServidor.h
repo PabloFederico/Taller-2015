@@ -19,12 +19,14 @@ private:
 	clock_t t;
 
 	void esperarConexiones(int sock);
-	void generacionDeRecursosRandom();
+
 
 public:
 	ControladorServidor(Server* server);
 
 	bool validarLogIn(int sock);
+
+	void generacionDeRecursosRandom();
 
 	void mutexLock();
 
@@ -41,6 +43,8 @@ public:
 	void enviarATodos(std::string buffer);
 
 	void clienteSeDesconecto(int sock_cliente);
+
+	void fd_clr();
 
 	virtual ~ControladorServidor();
 };

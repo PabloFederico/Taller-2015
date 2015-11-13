@@ -173,7 +173,7 @@ bool Server::procesarComoServidor(int sockfd, string recibido) {
 				string camEnc;
 				Red::extraerNumeroYResto(unContenido, &camEnc);
 				clientes[sockfd].setCamino(Camino::dec(camEnc));	// Settear nuevo camino que hace dicho jugador
-				rebotarlo = false;
+				rebotarlo = true;
 			} break;
 
 		case PASO_COMPLETO: {
@@ -205,6 +205,10 @@ TipoEntidad generarRecursoYCoordRandom(Coordenada* c) {
 	return TipoEntidad(aux.x);	   //último recurso^	  ^primer recurso
 }
 */
+void Server::fd_clr(){
+	int srvsock = this->socket->getDescriptor();
+	FD_CLR(srvsock, &readset);
+}
 
 
 void Server::correr() {
@@ -222,19 +226,22 @@ void Server::correr() {
 
 
 
-	while (true){
-		SDL_PollEvent(&e);
+	while (hilos.size() < 2){
 		memcpy(&tempset, &readset, sizeof(tempset));
 		//int client_sock = Red::aceptarCliente(socket);
 		int client_sock = intentarNuevaConexion(&tempset,MAX_ESPERA_CONEXION);
 		if (client_sock > 0){
 			ControladorConexion* controladorConexion = new ControladorConexion(controladorServer,client_sock);
+			hilos.push_back(controladorConexion);
 			// Aca empieza la magia con hilos
 			// El método ejecutar manda a ejecutar el método run de cualquier clase que herede de Thread
 			controladorConexion->ejecutar();
 		}
 	} // end while
 	/******************************************************************/
+	for (unsigned i = 0; i < hilos.size(); i++){
+		hilos[i]->join();
+	}
 
 	std::cout << std::endl << "Se han desconectado todos los jugadores."<<std::endl<<"Fin de la partida."<<std::endl;
 	sleep(4);
@@ -253,5 +260,8 @@ void Server::finalizar() {
 
 Server::~Server() {
 	// El destructor de Connection se ocupa de llamar a finalizar
+	for (unsigned i = 0; i < hilos.size(); i++){
+		delete hilos[i];
+	}
 	std::cout << "====== /SERVIDOR/ ======" << std::endl;
 }

@@ -100,14 +100,13 @@ void ControladorMouse::procesarEvento(SDL_Event &event, int MouseX, int MouseY, 
 		}
 	} /* Fin if SDL_MOUSEBUTTONDOWN */
 
-
 	vector<Sprite*> spritesProtagonistas = juego->getSpritesProtagonistas();
 	for (vector<Sprite*>::iterator it = spritesProtagonistas.begin(); it < spritesProtagonistas.end(); ++it) {
 		if ((*it)->estaEnMovimiento())
 			try {
 				(*it)->update(juego->getVelocidad());
 			} catch ( PasoCompletado &e ) {
-				Proxy::completePaso(lan, e.id);
+				//Proxy::completePaso(lan, e.id);
 			}
 		if ((*it) != spriteProtag) {
 			try {
