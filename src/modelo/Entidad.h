@@ -25,6 +25,7 @@ protected:
 	int idJug;
 
 	int vidaRestante;
+	EstadoEntidad estado;
 	bool movible,ocupador;
 	int ancho,alto;
 	std::string info;
@@ -38,8 +39,11 @@ public:
 	Entidad(TipoEntidad tipo, int num_jug = 0);
 
 	TipoEntidad getTipo();
+	EstadoEntidad getEstado();
 	int getIDJug();
 
+	void cambioEstado(EstadoEntidad est);
+	void finalizaAccion();
 	//bool estaPetrificado();
 	//void petrificar();
 	//void despetrificar();
