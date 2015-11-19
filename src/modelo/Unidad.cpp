@@ -26,10 +26,6 @@ float distanciaEuclidiana(Coordenada a, Coordenada z) {
 	return sqrt( pow(z.x-a.x,2) + pow(z.y-a.y,2) );
 }
 
-void Unidad::olvidarInteraccion() {
-	this->receptor = NULL;
-}
-
 void Unidad::interactuar() {
 	// Verifica que haya con quien interactuar y de que haya pasado el tiempo requerido.
 	if (receptor == NULL || (clock() - this->reloj) < CLOCKS_PER_SEC*DELAY_INTERACCION) return;
@@ -43,10 +39,12 @@ void Unidad::interactuar() {
 				// Distancia máxima hardcodeada de 1 tile; TODO rangoAtaque
 				if (distanciaEuclidiana(this->getPosicion(), Coordenada(i,j)) < 2) {
 
-					//if (receptor->esConstruccion()) { // TODO } else
+					//if (receptor->esConstruccion()) { cambioEstado(CONSTRUYENDO); // TODO } else
 					if (receptor->esEdificio() || receptor->esUnidad()) {
+						cambioEstado(ATACANDO);
 						this->lastimar(this->receptor);
 					} else if (receptor->esRecurso()) {
+						cambioEstado(RECOLECTANDO);
 						int recolectado = 0;
 						recolectado = receptor->sufrirRecoleccion();
 						if (recolectado > 0)
@@ -73,6 +71,7 @@ int Unidad::generarGolpe() {
 void Unidad::lastimar(Entidad* victima) {
 	victima->sufrirGolpe(this->generarGolpe());
 }
+
 
 void Unidad::set_id_jugador(int nuevoDuenio){
 	idJug = nuevoDuenio;
@@ -101,6 +100,11 @@ void Unidad::petrificar(){
 void Unidad::despetrificar(){
 	petrificado = false;
 }
+
+void Unidad::cambioEstado(EstadoEntidad est) {
+	this->estado = est;
+}
+
 
 std::string Unidad::enc(){
 	ostringstream enc;

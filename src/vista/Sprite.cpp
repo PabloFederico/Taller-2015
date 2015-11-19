@@ -149,6 +149,9 @@ bool Sprite::estaEnMovimiento(){
 /********************************************************************************/
 void Sprite::activarMovimiento(bool valor){
 	this->enMovimiento = valor;
+	if (valor)
+		this->entidad->cambioEstado(CAMINANDO);
+	else this->entidad->finalizaAccion();
 }
 
 /********************************************************************************/

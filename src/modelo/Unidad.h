@@ -18,25 +18,21 @@ private:
 
 public:
 	Unidad(TipoEntidad tipo, int id_jug);
+	bool esUnidad();
 
-	void olvidarInteraccion();
 	int generarGolpe();
 	void lastimar(Entidad* victima);
 	void interactuar();
 
 	void set_id_jugador(int nuevoDuenio);
-
 	void set_identificador(int nuevoDNI);
-
 	int get_identificador();
 
-	bool esUnidad();
-
 	bool estaPetrificado();
-
 	void petrificar();
-
 	void despetrificar();
+
+	void cambioEstado(EstadoEntidad est);
 
 	std::string enc();
 

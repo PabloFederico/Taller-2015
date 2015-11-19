@@ -10,6 +10,7 @@
 Entidad::Entidad(TipoEntidad tipo, int num_jug): idJug(num_jug)  {
 	this->reloj = clock();
 	this->receptor = NULL;
+	this->estado = QUIETO;
 	this->vidaRestante = 0;
 	this->ancho = 1;
 	this->alto = 1;
@@ -101,6 +102,18 @@ TipoEntidad Entidad::getTipo(){
 	return this->tipo;
 }
 
+EstadoEntidad Entidad::getEstado() {
+	return this->estado;
+}
+
+void Entidad::cambioEstado(EstadoEntidad est) {
+	//this->estado = est; // Todos los EstadoEntidad son para Unidad nomás. Lo descarta.
+}
+
+void Entidad::finalizaAccion() {
+	this->estado = QUIETO;
+}
+
 bool Entidad::esRecurso(){
 	return EsRecurso(this->tipo);
 }
@@ -149,8 +162,10 @@ void Entidad::interactuarCon(Entidad* receptor) {
 }
 
 void Entidad::olvidarInteraccion() {
+	finalizaAccion();
 	this->receptor = NULL;
 }
+
 
 void Entidad::sufrirGolpe(int fuerzaGolpe) {
 	if (this->vidaRestante <= 0)
