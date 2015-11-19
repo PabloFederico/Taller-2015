@@ -30,6 +30,10 @@ vector<Unidad*> Jugador::getUnidadesSeleccionadas(){
 	return unidadesSeleccionadas;
 }
 
+void Jugador::liberarUnidadesSeleccionadas(){
+	unidadesSeleccionadas.clear();
+}
+
 void Jugador::agregarCentroCivico(CentroCivico* centro){
 	centroCivico = centro;
 }

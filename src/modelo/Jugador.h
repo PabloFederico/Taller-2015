@@ -40,6 +40,8 @@ public:
 
 	vector<Unidad*> getUnidadesSeleccionadas();
 
+	void liberarUnidadesSeleccionadas();
+
 	void agregarCentroCivico(CentroCivico* centro);
 
 	void agregarNuevaUnidad(Unidad* unidad);
