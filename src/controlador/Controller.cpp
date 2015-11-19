@@ -41,13 +41,10 @@ void Controller::posicionarCamaraEnProtagonista(){
 	int width_camera = juego->getDimensionVentana().first;
 	int height_camera = juego->getDimensionVentana().second - juego->getBarraEstado()->getDimension().second;
 	/* Agarra cualquier unidad y posiciona la camara sobre esa unidad */
-	std::cout<<"posicionando cam"<<std::endl;
 	Sprite* spriteUnidad = juego->getSpriteDeEntidad((Entidad*)juego->getJugador()->getUnidadActiva());
-	//Sprite* spriteUnidad = juego->getSpritesEntidades()->find((Entidad*)juego->getJugador()->getUnidadActiva())->second;
-	std::cout<<"paso la pos cam"<<std::endl;
+
 	while (!playerEstaEnElCentro){
 		SDL_Rect posicion = spriteUnidad->getPosicion();
-		std::cout<<"preguntando por la pos"<<std::endl;
 		if (posicion.x < (width_camera/2 - 30)){
 			controladorCamara->moverCamara(cant_mover,0);
 		}
