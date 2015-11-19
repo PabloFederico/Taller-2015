@@ -16,7 +16,7 @@ VentanaConexion::VentanaConexion(Controller *controlador): Ventana(controlador) 
 	imagenFondo = Loader::cargarImagen(renderer,"images/fondo_ventana.png");
 }
 
-void VentanaConexion::mostrar(){
+void VentanaConexion::run(){
 	bool quit = false;
 	SDL_Event e;
 

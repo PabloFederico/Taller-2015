@@ -17,18 +17,25 @@ private:
 	TipoBoton tipo;
 	SDL_Rect rect;
 	std::string info;
+	bool presionado;
 	Imagen* imagenTexto;
+	SDL_Rect frames[2];
+	SDL_Rect frameActual;
 
 public:
-	Boton(TipoBoton tipo, SDL_Rect posicion);
-
-	TipoBoton getTipo();
+	Boton(std::string info, SDL_Rect posicion);
 
 	void setImagen(Imagen* imagen);
+
+	bool fue_presionado();
+
+	void presionarBoton();
 
 	Imagen* getImagen();
 
 	SDL_Rect getPosicion();
+
+	SDL_Rect getFrameActual();
 
 	std::string getInfoBoton();
 

@@ -17,7 +17,7 @@ private:
 public:
 	VentanaConexion(Controller *controlador);
 
-	void mostrar();
+	void run();
 
 	virtual ~VentanaConexion();
 };

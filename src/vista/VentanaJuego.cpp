@@ -97,11 +97,13 @@ void VentanaJuego::mostrar(){
 
 		while ( run ) {
 
-				SDL_PollEvent(&event);
+				controlador->capturarEvento(event);
 
 				if (event.type == SDL_QUIT) run = false;
 
-				controlador->procesarEvento(event);
+				controlador->procesarEvento();
+
+				controlador->actualizarEstadoDelJuego();
 
 	            /* Actualiza el renderer */
 	            this->dibujar();

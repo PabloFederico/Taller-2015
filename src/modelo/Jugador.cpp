@@ -18,8 +18,16 @@ Jugador::Jugador(std::string nombre, int id) {
 	vec_unidades.clear();
 	unidadActiva = NULL;
 
-	for (int i = MADERA; i <= ORO; i++)
+	for (int i = (int)MADERA; i <= (int)ORO; i++)
 		mapRecursosEconomicos[(TipoEntidad)i] = 0;
+}
+
+void Jugador::agregarUnidadSeleccionada(Unidad* unidad){
+	unidadesSeleccionadas.push_back(unidad);
+}
+
+vector<Unidad*> Jugador::getUnidadesSeleccionadas(){
+	return unidadesSeleccionadas;
 }
 
 void Jugador::agregarCentroCivico(CentroCivico* centro){

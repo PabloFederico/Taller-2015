@@ -15,93 +15,143 @@ ControladorMouse::ControladorMouse(Juego *juego) {
 	this->juego = juego;
 }
 
-void ControladorMouse::procesarEvento(SDL_Event &event, int MouseX, int MouseY){//, Connection* lan){
-
-	Coordenada coord_pixel_ceros(*juego->getCeros().first + DISTANCIA_ENTRE_X, *juego->getCeros().second);
-
+//void ControladorMouse::procesarEvento(SDL_Event &event, int MouseX, int MouseY, Connection* lan){
+void ControladorMouse::procesarMouse(Mouse* mouse){
 	/*********** Análisis del clic del mouse *************/
-	if (event.type == SDL_MOUSEBUTTONDOWN && (event.button.button == SDL_BUTTON_LEFT || event.button.button == SDL_BUTTON_RIGHT)){
-
-		bool clicValido = false;
-		Tile* tile_clic;
-		Coordenada c_tile_clic;
-		Escenario *escenario = juego->getEscenario();
-
-		int limiteY_camara = juego->getDimensionVentana().second - juego->getBarraEstado()->getDimension().second;
-
-		/* Para que no cliquee fuera de la camara */
-		if (limiteY_camara < MouseY) clicValido = false;
-		else{
-				try{
-					c_tile_clic = Calculador::tileParaPixel(Coordenada(MouseX,MouseY), coord_pixel_ceros);
-					clicValido = escenario->coordEnEscenario(c_tile_clic);
-
-					tile_clic = escenario->getTile(c_tile_clic.x, c_tile_clic.y);
-					escenario->setearCoordTileClic(c_tile_clic);	//en desuso
-
-				}catch(FueraDeEscenario &e) {
-					clicValido = false;
-					escenario->setearTileClic(NULL, Coordenada(0,0));
-				}
+	if (mouse->click()){
+		// Analizar tipo de click
+		switch (mouse->getEstado()){
+			case CLICK_IZQUIERDO: procesarClickIzquierdo(mouse);
+								  break;
+			case CLICK_DERECHO:   procesarClickDerecho(mouse);
+								  break;
+			case CLICK_DER_MOV:   procesarArrastreClickDerecho(mouse);
+								  break;
+			case CLICK_IZQ_MOV:   break;
+			default : break;
 		}
 
-		if (clicValido){
+		mouse->setEstado(NO_CLICK);
+	}
+}
+/*
+		if (mouse->getEstado() == CLICK_IZQUIERDO){
+			bool clicValido;
+			Coordenada coord_pixel_ceros = juego->getCoordCeros();
+			Escenario *escenario = juego->getEscenario();
 
-			if (event.button.button == SDL_BUTTON_LEFT) {
+			int limiteY_camara = juego->getDimensionVentana().second - juego->getBarraEstado()->getDimension().second;
 
-				escenario->setearTileClic(tile_clic, c_tile_clic);
+			// Para que no cliquee fuera de la camara
+			if (limiteY_camara < mouse->getXY().y) clicValido = false;
+			else{
+					try{
+						Coordenada c_tile_clic = Calculador::tileParaPixel(mouse->getXY(), coord_pixel_ceros);
+						clicValido = Calculador::puntoContenidoEnEscenario(c_tile_clic, escenario);
+						//Seteo tile clic:
+						Tile* tile_clic = escenario->getTile(c_tile_clic.x, c_tile_clic.y);
+						escenario->setearTileClic(tile_clic, c_tile_clic);
+						escenario->setearCoordTileClic(c_tile_clic);
 
-				if (escenario->getEntidadSeleccionada() != NULL) {
-					if (escenario->getEntidadSeleccionada()->getIDJug() == juego->getIDJugador()) {
-						Sprite* spriteUnidad = juego->getSpritesEntidades()->find(escenario->getEntidadSeleccionada())->second;
-						Coordenada coord_pixel_sprite = spriteUnidad->getPosPies();
-						try {
-							Camino camino = Calculador::obtenerCaminoMin(escenario, coord_pixel_sprite, Coordenada(MouseX, MouseY), coord_pixel_ceros);
-
-							if (camino.size() > 0) {
-								/* Si se está jugando en red, enviar el movimiento a los demás jugadores. */
-								//if (juego->esCliente())
-								//	Proxy::enviar(juego->getConnection(), camino);
-								//else
-									spriteUnidad->setearNuevoCamino(camino, coord_pixel_ceros);
-									// /* Activamos localmente el movimiento del sprite y seteamos el nuevo camino que debe recorrer. */
-							}
-						} catch ( FueraDeEscenario &e ) {}
+					}catch(FueraDeEscenario &e) {
+						clicValido = false;
+						escenario->setearTileClic(NULL, Coordenada(0,0));
 					}
+			}
+			// Si el clic es válido, buscamos el camino mínimo.
+			if (clicValido){
+	            ///pruebas
+	            //Coordenada mouse = Calculador::tileParaPixel(Coordenada(MouseX,MouseY),coord_pixel_ceros);
+	            //std::cout << "mouse: "<<mouse.x<<";"<<mouse.y<<'\t'<<"follow: "<<follow.x<<";"<<follow.y<<std::endl;
+				if (escenario->getEntidadSeleccionada() != NULL) {
+				  if (escenario->getEntidadSeleccionada()->getIDJug() == juego->getIDJugador()) {
+					Sprite* spriteUnidad = juego->getSpritesEntidades()->find(escenario->getEntidadSeleccionada())->second;
+					Coordenada coord_pixel_sprite = spriteUnidad->getPosPies();
+					try {
+						Camino camino = Calculador::obtenerCaminoMin(escenario, coord_pixel_sprite, mouse->getXY(), coord_pixel_ceros);
 
-					// Cargar info de la entidad seleccionada en la barra.
+						if (camino.size() > 0) {
+							// Si se está jugando en red, enviar el movimiento a los demás jugadores.
+							//if (juego->esCliente())
+								//Proxy::enviar(juego->getConnection(), camino);
+							//else
+								spriteUnidad->setearNuevoCamino(camino, coord_pixel_ceros);
+								// Activamos localmente el movimiento del sprite y seteamos el nuevo camino que debe recorrer.
+						}
+					} catch ( FueraDeEscenario &e ) {}
+				  }
+				}
+
+				if (escenario->getEntidadSeleccionada() != NULL){
 					juego->getBarraEstado()->setInformacion(escenario->getEntidadSeleccionada()->getInfo());
 				}
-
-			} else if (event.button.button == SDL_BUTTON_RIGHT) {
-				// Si hay una Entidad propia preseleccionada, que interactúe con la Entidad recién cliqueada.
-				if (escenario->getEntidadSeleccionada() != NULL && escenario->getEntidadSeleccionada()->getIDJug() == juego->getIDJugador()) {
-					Entidad* entidadReceptora = escenario->obtenerEntidadOcupadoraEnTile(tile_clic);
-					if (entidadReceptora != NULL)
-						escenario->getEntidadSeleccionada()->interactuarCon(entidadReceptora);
-				}
-			}
-
-		} /* Fin clicValido */
-
-	} /* Fin if SDL_MOUSEBUTTONDOWN */
-
-
-	vector<Sprite*> spritesProtagonistas = juego->getSpritesProtagonistas();
-	for (vector<Sprite*>::iterator it = spritesProtagonistas.begin(); it < spritesProtagonistas.end(); ++it) {
-		if ((*it)->estaEnMovimiento())
-			try {
-				(*it)->update(juego->getVelocidad());
-			} catch ( PasoCompletado &e ) {
-				//Proxy::completePaso(lan, e.id);
-			}
-		if ((*it)->getEntidad()->getIDJug() != juego->getIDJugador()) {
-			try {
-				Coordenada coord_tile_sprite = Calculador::tileParaPixel((*it)->getPosPies(), coord_pixel_ceros);
-				juego->getEscenario()->actualizarPosicionEnemigo((*it)->getEntidad(), coord_tile_sprite);
-			} catch ( FueraDeEscenario &e ) {}
+			} // Fin clicValido
 		}
+		mouse->setEstado(NO_CLICK);
+	} // Fin if SDL_MOUSEBUTTONDOWN
+}
+*/
+
+
+void ControladorMouse::procesarClickIzquierdo(Mouse* mouse){
+	//bool clicValido;
+	bool clicSobreBarra = false ;
+	Coordenada coord_pixel_ceros = juego->getCoordCeros();
+	Escenario *escenario = juego->getEscenario();
+
+	int limiteY_camara = juego->getDimensionVentana().second - juego->getBarraEstado()->getDimension().second;
+
+	if (limiteY_camara < mouse->getXY().y) clicSobreBarra = true;
+
+	int cant_unid_seleccionadas = juego->getJugador()->getUnidadesSeleccionadas().size();
+
+	if (cant_unid_seleccionadas > 0 && clicSobreBarra){
+		// Agregar que va a hacer (contruír, tomar alguna herramienta, etc)
 	}
+	if (cant_unid_seleccionadas == 0 && !clicSobreBarra){
+			try{
+				Coordenada c_tile_clic = Calculador::tileParaPixel(mouse->getXY(), coord_pixel_ceros);
+				Calculador::puntoContenidoEnEscenario(c_tile_clic, escenario);
+				//Seteo tile clic:
+				Tile* tile_clic = escenario->getTile(c_tile_clic.x, c_tile_clic.y);
+				escenario->setearTileClic(tile_clic, c_tile_clic);
+				escenario->setearCoordTileClic(c_tile_clic);
+
+			}catch(FueraDeEscenario &e) {
+				escenario->setearTileClic(NULL, Coordenada(0,0));
+			}
+	}
+}
+
+void ControladorMouse::procesarClickDerecho(Mouse* mouse){
+	Coordenada coord_pixel_ceros = juego->getCoordCeros();
+	Escenario *escenario = juego->getEscenario();
+
+	if (escenario->getEntidadSeleccionada() != NULL) {
+	  if (escenario->getEntidadSeleccionada()->getIDJug() == juego->getIDJugador()) {
+		Sprite* spriteUnidad = juego->getSpritesEntidades()->find(escenario->getEntidadSeleccionada())->second;
+		Coordenada coord_pixel_sprite = spriteUnidad->getPosPies();
+		try {
+			Camino camino = Calculador::obtenerCaminoMin(escenario, coord_pixel_sprite, mouse->getXY(), coord_pixel_ceros);
+
+			if (camino.size() > 0) {
+				/* Si se está jugando en red, enviar el movimiento a los demás jugadores. */
+				//if (juego->esCliente())
+					//Proxy::enviar(juego->getConnection(), camino);
+				//else
+					spriteUnidad->setearNuevoCamino(camino, coord_pixel_ceros);
+					/* Activamos localmente el movimiento del sprite y seteamos el nuevo camino que debe recorrer. */
+			}
+		} catch ( FueraDeEscenario &e ) {}
+	  }
+	}
+
+	if (escenario->getEntidadSeleccionada() != NULL){
+		juego->getBarraEstado()->setInformacion(escenario->getEntidadSeleccionada()->getInfo());
+	}
+}
+
+void ControladorMouse::procesarArrastreClickDerecho(Mouse* mouse){
 
 }
 
