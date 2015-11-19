@@ -60,29 +60,29 @@ Entidad::Entidad(TipoEntidad tipo, int num_jug): idJug(num_jug)  {
 			ocupador = true;
 			info = "Arbol";
 			break;
-		case ORO:
+		case MADERA:
 			vidaRestante = 150;
 			movible = false;
-			ocupador = false;
-			info = "Oro";
+			ocupador = true;
+			info = "Madera";
 			break;
 		case COMIDA:
 			vidaRestante = 150;
 			movible = false;
-			ocupador = false;
+			ocupador = true;
 			info = "Comida";
-			break;
-		case MADERA:
-			vidaRestante = 150;
-			movible = false;
-			ocupador = false;
-			info = "Madera";
 			break;
 		case PIEDRA:
 			vidaRestante = 150;
 			movible = false;
-			ocupador = false;
+			ocupador = true;
 			info = "Piedra";
+			break;
+		case ORO:
+			vidaRestante = 150;
+			movible = false;
+			ocupador = true;
+			info = "Oro";
 			break;
 		default:
 			movible = false;
@@ -194,7 +194,13 @@ int Entidad::sufrirRecoleccion() {
 
 std::string Entidad::getInfo(){
 	ostringstream enc;
-	enc << info<<", vida: "<<vidaRestante;	//Elegir un formato
+	enc << info<<"; vida: "<<vidaRestante;	//Elegir un formato TODO
+	return enc.str();
+}
+
+std::string Entidad::getVidaString() {
+	ostringstream enc;
+	enc << vidaRestante;
 	return enc.str();
 }
 

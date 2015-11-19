@@ -54,6 +54,7 @@ private:
 
 public:
 	Juego();//Connection* lan, Coordenada* posInicial, InfoEscenario* infoEscRed);
+	void cargaInicialDeRecursos();
 
 	//Connection* const getConnection();
 	//void setConnection(Connection* conn);

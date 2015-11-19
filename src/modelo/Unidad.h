@@ -22,6 +22,7 @@ public:
 
 	int generarGolpe();
 	void lastimar(Entidad* victima);
+	bool esRecolector();
 	void interactuar();
 
 	void set_id_jugador(int nuevoDuenio);
