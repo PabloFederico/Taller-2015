@@ -107,6 +107,13 @@ void Juego::cargarJuego(){//InfoEscenario* infoEscRed = NULL, Coordenada *posIni
 }
 
 /********************************************************************************/
+void Juego::cargaInicialDeRecursos() {
+	// bieeen hardcodeado, de prueba
+	agregarRecurso(ORO, Coordenada(22,22));
+	agregarRecurso(COMIDA, Coordenada(20,22));
+}
+
+/********************************************************************************/
 int Juego::getRangoDeVision(){
 	return configGame.rango_vision;
 }
@@ -230,12 +237,10 @@ BarraEstado* Juego::getBarraEstado(){
 
 /***************************************************/
 void Juego::agregarRecurso(TipoEntidad recurso, Coordenada coord) {
-	Entidad* recurso_a_agregar = new Entidad(recurso); // AGHH MI FACTORYY
+	Entidad* recurso_a_agregar = new Entidad(recurso); // AGHH MI FACTORYY TODO
 	recurso_a_agregar->setPosicion(coord);
-	//printf("GENERO UN RECURSO NUEVO %s\n",recurso->getInfo().c_str());
 	try {
 		escenario->agregarEntidad(coord, recurso_a_agregar);
-		//printf("TERMINO EL agregarRecurso, ME VOY \n");
 		this->contenedor->generarYGuardarSpriteEntidad(recurso_a_agregar, Coordenada(*cero_x, *cero_y), escenario);
 	} catch ( FueraDeEscenario &e ) {}
 }

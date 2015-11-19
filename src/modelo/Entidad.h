@@ -64,6 +64,7 @@ public:
 	std::pair<int,int> getTam();
 
 	std::string getInfo();
+	std::string getVidaString();
 
 	bool esMovible();
 	bool ocupaSuTile();

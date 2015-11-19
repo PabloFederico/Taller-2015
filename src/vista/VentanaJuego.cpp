@@ -48,6 +48,7 @@ void VentanaJuego::cargarJuego(Juego *juego){
 		 * se cargan en el contenedor */
 
 		this->cargarImagenesYSprites(juego);
+		juego->cargaInicialDeRecursos();
 
 		controlador->posicionarCamaraEnProtagonista();
 

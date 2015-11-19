@@ -7,6 +7,7 @@
 
 #include "Unidad.h"
 #include <string>
+#include <iostream>
 #include <sstream>
 #include <math.h>
 using namespace std;
@@ -26,9 +27,11 @@ float distanciaEuclidiana(Coordenada a, Coordenada z) {
 	return sqrt( pow(z.x-a.x,2) + pow(z.y-a.y,2) );
 }
 
+// throws Recoleccion cuando se recolectó algún recurso.
 void Unidad::interactuar() {
 	// Verifica que haya con quien interactuar y de que haya pasado el tiempo requerido.
-	if (receptor == NULL || (clock() - this->reloj) < CLOCKS_PER_SEC*DELAY_INTERACCION) return;
+	if (receptor == NULL || (clock() - this->reloj) < CLOCKS_PER_SEC*DELAY_INTERACCION) return;	//No está respetando el tiempo pedido. TODO
+	//std::cout << "Interacción "<<clock()<<" "<<this->reloj<<": "<<clock()-reloj<<" "<<CLOCKS_PER_SEC*DELAY_INTERACCION<<" - "<<(clock()-reloj)/CLOCKS_PER_SEC<<std::endl;//
 
 	this->reloj = clock();
 	try {
@@ -38,18 +41,19 @@ void Unidad::interactuar() {
 			for (int j = posReceptor.y; j < posReceptor.y+tamReceptor.second; j++)
 				// Distancia máxima hardcodeada de 1 tile; TODO rangoAtaque
 				if (distanciaEuclidiana(this->getPosicion(), Coordenada(i,j)) < 2) {
-
+					std::cout << "Interacción de "<<getInfo()<<" "<<get_identificador()<<std::endl;//
 					//if (receptor->esConstruccion()) { cambioEstado(CONSTRUYENDO); // TODO } else
 					if (receptor->esEdificio() || receptor->esUnidad()) {
 						cambioEstado(ATACANDO);
 						this->lastimar(this->receptor);
-					} else if (receptor->esRecurso()) {
+					} else if (receptor->esRecurso() && this->esRecolector()) {
 						cambioEstado(RECOLECTANDO);
 						int recolectado = 0;
 						recolectado = receptor->sufrirRecoleccion();
-						if (recolectado > 0)
+						if (recolectado > 0) {
 							throw Recoleccion(receptor->getTipo(), recolectado);
 							// Ojo que si llega a este punto, no se correrá nada debajo
+						}
 					}
 					return;
 				}
@@ -85,8 +89,12 @@ void Unidad::set_identificador(int nuevoDNI){
 	dni = nuevoDNI;
 }
 
-bool Unidad::esUnidad(){
+bool Unidad::esUnidad() {
 	return true;
+}
+
+bool Unidad::esRecolector() {
+	return (tipo == ALDEANO);
 }
 
 bool Unidad::estaPetrificado(){

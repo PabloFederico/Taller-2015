@@ -126,13 +126,18 @@ void Dibujador::dibujarEscenario(Escenario* esc, TTF_Font* fuenteTexto, pair<int
 						Sprite* sprite = this->contenedor->getSpriteDeEntidad(entidad);
 						SDL_Rect pos = sprite->getPosicion();
 
-						if ( entidad->getIDJug() != 0 && entidad->getIDJug() != esc->getIDJug() && ec == ESTADO_COLOR ){
-							Imagen* image_id = Loader::cargarTexto(renderer,fuenteTexto,entidad->getInfo());
+						if ( (entidad->getIDJug() != 0 || entidad->esRecurso()) && ec == ESTADO_COLOR ){//falta incluir animales y otras entidades con vida no Unidad ni Edificio
+							Imagen* image_id;
+							if (entidad->getIDJug() != 0 && entidad->getIDJug() != esc->getIDJug())
+								image_id = Loader::cargarTexto(renderer,fuenteTexto,entidad->getInfo());
+							else
+								image_id = Loader::cargarTexto(renderer,fuenteTexto,entidad->getVidaString());
+
 							SDL_Rect rect_id;
 							rect_id.w = image_id->getPixelsX();
 							rect_id.h = image_id->getPixelsY();
-							rect_id.x = pos.x - 10;
-							rect_id.y = pos.y - 10;
+							rect_id.x = pos.x - rect_id.w / 2;
+							rect_id.y = pos.y - 8;
 							SDL_RenderCopy(renderer,image_id->getTexture(),NULL,&rect_id);
 							imagenesBasura.push_back(image_id);
 						}
@@ -337,7 +342,7 @@ void Dibujador::dibujarMiniMapa(Escenario* esc, SDL_Rect rect){
 					switch (entidad->getTipo()){
 						case SOLDADO:
 						case ALDEANO:
-								image = contenedor->getImagenUtilTipo((TipoImagenUtil)entidad->getIDJug());
+								image = contenedor->getImagenUtilTipo((TipoImagenUtil)entidad->getIDJug());	// hasta 3 jugadores!! alto hardcodeo TODO
 								rect_aux.w = 3;
 								rect_aux.h = 3;
 								if (estadoCapa == ESTADO_COLOR){
