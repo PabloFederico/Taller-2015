@@ -9,7 +9,7 @@
 
 /********************************************************************************/
 Sprite::Sprite(int cant_Direcciones, Uint32 cant_Img_Distintas, Imagen* imagen,
-				SDL_Rect posicion, Escenario* escen, Coordenada c_ceros, Entidad* ent): entidad(ent) {
+			SDL_Rect posicion, Escenario* escen, Coordenada c_ceros, Entidad* ent): entidad(ent) {
 	this->cant_Direcciones = cant_Direcciones;
 	this->cant_Img_Distintas = cant_Img_Distintas;
 	this->imagen = imagen;

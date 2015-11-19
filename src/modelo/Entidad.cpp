@@ -179,7 +179,7 @@ int Entidad::sufrirRecoleccion() {
 
 std::string Entidad::getInfo(){
 	ostringstream enc;
-	enc << info<<", vida: "<<vidaRestante;
+	enc << info<<", vida: "<<vidaRestante;	//Elegir un formato
 	return enc.str();
 }
 
