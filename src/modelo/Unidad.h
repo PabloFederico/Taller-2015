@@ -32,6 +32,8 @@ public:
 	void petrificar();
 	void despetrificar();
 
+	void olvidarInteraccion();
+
 	void cambioEstado(EstadoEntidad est);
 
 	std::string enc();

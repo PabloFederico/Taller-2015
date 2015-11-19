@@ -9,6 +9,7 @@
 
 
 Controller::Controller(){//Connection* lan = NULL) {
+	mouse = new Mouse();	
 	/*this->lan = lan;
 	Coordenada* posInicial = NULL;
 	try {
@@ -28,7 +29,7 @@ Controller::Controller(){//Connection* lan = NULL) {
 */
 	this->controladorMouse = new ControladorMouse(juego);
 	this->controladorCamara = new ControladorCamara(juego);
-	this->controladorEscenario = new ControladorEscenario(juego);
+	this->controladorJuego = new ControladorJuego(juego);
 }
 
 Juego* Controller::getJuego(){
@@ -71,13 +72,64 @@ void Controller::posicionarCamaraEnProtagonista(){
 	}
 }
 
-void Controller::procesarEvento(SDL_Event &event){
-	int x,y;
-	SDL_GetMouseState(&x,&y);
-	controladorEscenario->actualizarEstadoEscenario();//juego->getConnection());
-	controladorMouse->procesarEvento(event,x,y);//, this->juego->getConnection());
-	controladorCamara->procesarPosicionMouse(x,y);
-	juego->continuar();
+Mouse* Controller::getMouse(){
+	return mouse;
+}
+
+void Controller::capturarEvento(SDL_Event &event){
+
+	while (SDL_PollEvent(&event)){
+		int x,y;
+		switch (event.type){
+		case SDL_MOUSEBUTTONDOWN:
+			if (event.button.button == SDL_BUTTON_LEFT){
+				SDL_GetMouseState(&x,&y);
+				mouse->setXY(Coordenada(x,y));
+				mouse->pulsar_click_izq();
+				mouse->setEstado(CLICK_IZQUIERDO);
+			}
+			else{
+				bool siguePresionado = true;
+				SDL_GetMouseState(&x,&y);
+				mouse->inicializarCoordenadaAnterior(Coordenada(x,y));
+				while (siguePresionado){
+					SDL_GetMouseState(&x,&y);
+					SDL_PollEvent(&event);
+					mouse->setXY(Coordenada(x,y));
+					if (event.type == SDL_MOUSEBUTTONUP)
+						siguePresionado = false;
+				}
+
+				if (mouse->getXY() != mouse->getXY_anterior()){
+					std::cout <<"se arrastro mouse con click derecho presionado\n";
+					std::cout <<mouse->getXY_anterior().x<<":"<<mouse->getXY_anterior().y<<" ";
+					std::cout <<mouse->getXY().x<<":"<<mouse->getXY().y<<"\n";
+					mouse->setEstado(CLICK_DER_MOV);
+				}else mouse->setEstado(CLICK_DERECHO);
+
+			}
+			//}
+			break;
+
+		case SDL_MOUSEBUTTONUP:
+			mouse->soltar_click_izq();
+			mouse->soltar_click_der();
+			break;
+
+		case SDL_MOUSEMOTION:
+			SDL_GetMouseState(&x,&y);
+			mouse->setXY(Coordenada(x,y));
+			break;
+
+		default:
+			//mouse->soltar_click_izq();
+			//mouse->soltar_click_der();
+			break;
+		}
+	} // End while
+
+
+	//juego->continuar();
 /*
 	if (this->juego->esCliente()) {
 		try {
@@ -97,6 +149,26 @@ void Controller::procesarEvento(SDL_Event &event){
 		//else
 		//	this->lan->finalizar();
 	//}
+	*/
+}
+
+void Controller::procesarEvento(){
+	controladorMouse->procesarMouse(mouse);
+}
+
+void Controller::actualizarEstadoDelJuego(){
+	controladorJuego->actualizarJuego(mouse);
+	controladorCamara->actualizarScroll(mouse);
+/*
+	if (this->juego->esCliente()) {
+		try {
+			Proxy::actualizarMultiplayer(this->juego);
+		} catch ( NoSeRecibio &e ) {
+
+		} catch ( Disconnected &e ) {
+
+		}
+	}
 */
 }
 
@@ -108,10 +180,8 @@ void Controller::reiniciarJuego(){
 	this->juego->reiniciar();
 	delete this->controladorCamara;
 	delete this->controladorMouse;
-	delete this->controladorEscenario;
 	this->controladorMouse = new ControladorMouse(juego);
 	this->controladorCamara = new ControladorCamara(juego);
-	this->controladorEscenario = new ControladorEscenario(juego);
 }
 
 int Controller::verificarConexion(std::string string_IP){
@@ -123,6 +193,7 @@ Controller::~Controller() {
 	delete this->juego;
 	delete this->controladorCamara;
 	delete this->controladorMouse;
-	delete this->controladorEscenario;
+	delete this->controladorJuego;
+	delete this->mouse;
 }
 

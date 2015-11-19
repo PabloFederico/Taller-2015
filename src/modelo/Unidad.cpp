@@ -26,6 +26,10 @@ float distanciaEuclidiana(Coordenada a, Coordenada z) {
 	return sqrt( pow(z.x-a.x,2) + pow(z.y-a.y,2) );
 }
 
+void Unidad::olvidarInteraccion() {
+	this->receptor = NULL;
+}
+
 void Unidad::interactuar() {
 	// Verifica que haya con quien interactuar y de que haya pasado el tiempo requerido.
 	if (receptor == NULL || (clock() - this->reloj) < CLOCKS_PER_SEC*DELAY_INTERACCION) return;

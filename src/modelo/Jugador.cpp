@@ -22,6 +22,14 @@ Jugador::Jugador(std::string nombre, int id) {
 		mapRecursosEconomicos[(TipoEntidad)i] = 0;
 }
 
+void Jugador::agregarUnidadSeleccionada(Unidad* unidad){
+	unidadesSeleccionadas.push_back(unidad);
+}
+
+vector<Unidad*> Jugador::getUnidadesSeleccionadas(){
+	return unidadesSeleccionadas;
+}
+
 void Jugador::agregarCentroCivico(CentroCivico* centro){
 	centroCivico = centro;
 }

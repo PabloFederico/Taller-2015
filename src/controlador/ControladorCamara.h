@@ -10,6 +10,7 @@
 
 #include "../vista/Camara.h"
 #include "../modelo/Juego.h"
+#include "Mouse.h"
 
 class ControladorCamara {
 private:
@@ -18,6 +19,7 @@ private:
 public:
 	ControladorCamara(Juego *juego);
 	void setCamara(Camara *cam);
+	void actualizarScroll(Mouse* mouse);
 	void procesarPosicionMouse(int x, int y);
 	void moverCamara(int cant_x, int cant_y);
 	virtual ~ControladorCamara();

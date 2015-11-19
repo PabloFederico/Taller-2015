@@ -9,28 +9,36 @@
 #define CONTROLADOR_CONTROLLER_H_
 #include <SDL2/SDL.h>
 #include "../modelo/Juego.h"
+#include "Mouse.h"
 //#include "../red/Proxy.h"
 #include "ControladorMouse.h"
 #include "ControladorCamara.h"
-#include "ControladorEscenario.h"
+#include "ControladorJuego.h"
 
 
 class Controller {
 private:
 	Juego *juego;
+	Mouse* mouse;
 	//Connection *lan;
 	ControladorMouse *controladorMouse;
 	ControladorCamara *controladorCamara;
-	ControladorEscenario *controladorEscenario;
+	ControladorJuego *controladorJuego;
 
 public:
 	Controller();//Connection* lan);
 
 	Juego* getJuego();
 
+	Mouse* getMouse();
+
 	void iniciarJuego();
 
-	void procesarEvento(SDL_Event &event);
+	void actualizarEstadoDelJuego();
+
+	void capturarEvento(SDL_Event &event);
+
+	void procesarEvento();
 
 	void agregarCamara(Camara *cam);
 
