@@ -19,6 +19,7 @@ ControladorMouse::ControladorMouse(Juego *juego) {
 void ControladorMouse::procesarMouse(Mouse* mouse){
 	/*********** Análisis del clic del mouse *************/
 	if (mouse->click()){
+		juego->getEscenario()->quitarRecuadroSeleccion();
 		// Analizar tipo de click
 		switch (mouse->getEstado()){
 			case CLICK_IZQUIERDO: procesarClickIzquierdo(mouse);
@@ -115,6 +116,9 @@ void ControladorMouse::procesarArrastreClickDerecho(Mouse* mouse){
 			!Calculador::puntoContenidoEnEscenario(c_tile_final,escenario))
 			    throw FueraDeEscenario();
 		if (c_tile_inicial != c_tile_final){
+
+			juego->getEscenario()->agregarCoordenadasRecuadroSeleccion(c_tile_inicial,c_tile_final);
+
 			for (Coordenada c1 = c_tile_inicial; c1.y <= c_tile_final.y; c1.y++){
 				for (Coordenada c2 = c1; c2.x <= c_tile_final.x ; c2.x++){
 					Tile* tile = juego->getEscenario()->getTile(c2);

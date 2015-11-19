@@ -25,6 +25,7 @@ private:
 
 	void dibujarMiniMapa(Escenario* esc, SDL_Rect rect);
 	void dibujarRecuadroCamara(SDL_Rect rect, int ancho_tile, int alto_tile);
+	void dibujarRecuadroSeleccion(Escenario* esc);
 
 public:
 	Dibujador(SDL_Renderer *renderer);

@@ -206,6 +206,18 @@ void ContenedorDeRecursos::cargarImagenesUtil(){
 	imagen = Loader::cargarImagen(this->renderer,"images/selector_tile_0.png");
 	this->mapImagenesUtil->insert(SELECT_TILE,imagen);
 
+	imagen = Loader::cargarImagen(this->renderer,"images/selector_tile_01.png");
+	this->mapImagenesUtil->insert(SELECT_TILE_01,imagen);
+
+	imagen = Loader::cargarImagen(this->renderer,"images/selector_tile_02.png");
+	this->mapImagenesUtil->insert(SELECT_TILE_02,imagen);
+
+	imagen = Loader::cargarImagen(this->renderer,"images/selector_tile_03.png");
+	this->mapImagenesUtil->insert(SELECT_TILE_03,imagen);
+
+	imagen = Loader::cargarImagen(this->renderer,"images/selector_tile_04.png");
+	this->mapImagenesUtil->insert(SELECT_TILE_04,imagen);
+
 	imagen = Loader::cargarImagen(this->renderer,"images/ubicacion_minimapa.png");
 	this->mapImagenesUtil->insert(CUADRO_UBICACION,imagen);
 

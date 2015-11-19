@@ -268,6 +268,27 @@ void Escenario::quitarRecurso(Coordenada c,Entidad* entidad){
 	aux->~Entidad();
 }
 /********************************************************************************/
+bool Escenario::tieneRecuadroSeleccion(){
+	return (c_tile_ini_recuadro != c_tile_fin_recuadro);
+}
+
+/********************************************************************************/
+void Escenario::agregarCoordenadasRecuadroSeleccion(Coordenada c_inicial, Coordenada c_final){
+	c_tile_ini_recuadro = c_inicial;
+	c_tile_fin_recuadro = c_final;
+}
+
+/********************************************************************************/
+pair<Coordenada,Coordenada> Escenario::getCoordenadasRecuadro(){
+	return make_pair(c_tile_ini_recuadro,c_tile_fin_recuadro);
+}
+
+/********************************************************************************/
+void Escenario::quitarRecuadroSeleccion(){
+	c_tile_ini_recuadro = c_tile_fin_recuadro;
+}
+
+/********************************************************************************/
 Escenario::~Escenario() {
 	for (unsigned i = 0; i < posicionesEntidades->size(); i++){
 		Entidad* entidad = (*posicionesEntidades)[i];
