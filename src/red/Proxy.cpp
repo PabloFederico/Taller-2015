@@ -82,7 +82,7 @@ void Proxy::procesarEscenario(Juego* juego, string encodeado) {
 
 void Proxy::procesarCamino(Juego* juego, string encodeado) {
 	string camEnc;
-	int jug = Red::extraerNumeroYResto(encodeado, &camEnc);
+	//int jug = Red::extraerNumeroYResto(encodeado, &camEnc);
 	try {
 		//juego->getSpritePlayer(jug)->setearNuevoCamino(Camino::dec(camEnc), juego->getCoordCeros());
 	} catch ( NoSeRecibio &e ) {

@@ -80,6 +80,7 @@ void Controller::procesarEvento(SDL_Event &event){
 	controladorEscenario->actualizarEstadoEscenario();//juego->getConnection());
 	controladorMouse->procesarEvento(event,x,y);//, this->juego->getConnection());
 	controladorCamara->procesarPosicionMouse(x,y);
+	juego->continuar();
 /*
 	if (this->juego->esCliente()) {
 		try {

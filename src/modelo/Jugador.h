@@ -15,13 +15,18 @@ class Jugador {
 private:
 	std::string nombre;
 	int id_jug;
+
 	int contador_dni_unidades;
 	int contador_dni_edificios;
+
 	CentroCivico* centroCivico;
 	std::map<int,Unidad* > unidades;
 	std::vector<Unidad*> vec_unidades;
 	std::map<int,Edificio*> edificios;
+
 	Unidad* unidadActiva;
+
+	std::map<TipoEntidad, int> mapRecursosEconomicos;
 
 public:
 	Jugador(std::string nombre, int id_jug);
@@ -36,7 +41,13 @@ public:
 
 	void agregarNuevoEdificio(Edificio* edificio);
 
+	void agregarRecursoEconomico(TipoEntidad tipo, int cant);
+
+	std::map<TipoEntidad,int> getMapRecursosEconomicos();
+
 	CentroCivico* getCentroCivico();
+
+	void interaccionesDeUnidades();
 
 	virtual ~Jugador();
 };

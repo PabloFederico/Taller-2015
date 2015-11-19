@@ -72,7 +72,7 @@ void ContenedorDeRecursos::generarYGuardarSpriteEntidad(Entidad* entidad, Coorde
 						posicion.y -= (1.5 * DISTANCIA_ENTRE_Y);
 						posicion.w = ANCHO_PIXEL_PASTO;
 						posicion.h = 2 * ALTO_PIXEL_PASTO;
-						sprite = new Sprite(1,1,this->getImagenTipo(ARBOL),posicion,escenario,coord_ceros);
+						sprite = new Sprite(1,1,this->getImagenTipo(ARBOL),posicion,escenario,coord_ceros,entidad);
 
 						int x_ini = posicion.x;
 						int y_ini = posicion.y;
@@ -91,7 +91,7 @@ void ContenedorDeRecursos::generarYGuardarSpriteEntidad(Entidad* entidad, Coorde
 						//sprite = new Sprite(mapInfoEntidades[CASTILLO].ancho,mapInfoEntidades[CASTILLO].ancho,this->getImagenTipo(CASTILLO),posicion);
 						posicion.w = ANCHO_PIXEL_PASTO * this->mapInfoEntidades[entidad->getTipo()].ancho;
 						posicion.h = ALTO_PIXEL_PASTO * this->mapInfoEntidades[entidad->getTipo()].alto + (ALTO_PIXEL_PASTO -  DISTANCIA_ENTRE_Y / 2);
-						sprite = new Sprite(1,1,this->getImagenTipo(entidad->getTipo()),posicion,escenario,coord_ceros);
+						sprite = new Sprite(1,1,this->getImagenTipo(entidad->getTipo()),posicion,escenario,coord_ceros,entidad);
 
 						int x_ini = posicion.x;
 						int y_ini = posicion.y;
@@ -132,7 +132,7 @@ void ContenedorDeRecursos::generarYGuardarSpriteEntidad(Entidad* entidad, Coorde
 						posicion.y -= (DISTANCIA_ENTRE_Y);
 						posicion.w = ANCHO_PIXEL_PASTO ;
 						posicion.h = 2*ALTO_PIXEL_PASTO;
-						sprite = new Sprite(DIRECCIONES,IMAGENES_DIFERENTES,this->getImagenTipo(ANIMAL),posicion,escenario,coord_ceros);
+						sprite = new Sprite(DIRECCIONES,IMAGENES_DIFERENTES,this->getImagenTipo(ANIMAL),posicion,escenario,coord_ceros,entidad);
 						sprite->activarMovimiento(true);
 
 						int x_ini = posicion.x;
@@ -143,7 +143,7 @@ void ContenedorDeRecursos::generarYGuardarSpriteEntidad(Entidad* entidad, Coorde
 						break;
 		default       :
 						/* AGUA ó TIERRA */
-						{sprite = new Sprite(1,1,this->getImagenTipo(entidad->getTipo()),posicion,escenario,coord_ceros);
+						{sprite = new Sprite(1,1,this->getImagenTipo(entidad->getTipo()),posicion,escenario,coord_ceros,entidad);
 
 						int x_ini = posicion.x;
 						int y_ini = posicion.y;
@@ -266,6 +266,9 @@ void ContenedorDeRecursos::cargarImagenesRecursos(){
 
 	imagen = Loader::cargarImagen(this->renderer,"images/comida_1.png");
 	this->mapImagenes->insert(COMIDA,imagen);
+
+	imagen = Loader::cargarImagen(this->renderer,"images/missing1.png");	// TODO AGREGAR ACÁ PATH DE PNG DE PIEDRA
+	this->mapImagenes->insert(PIEDRA,imagen);
 }
 
 /********************************************************************************/

@@ -12,6 +12,7 @@ using namespace std;
 #include <string>
 #include <sstream>
 #include "../utils/Enumerados.h"
+#include "../utils/Exceptions.h"
 #include "../utils/Common.h"
 
 //class Coordenada;
@@ -22,11 +23,16 @@ class Entidad {
 protected:
 	TipoEntidad tipo;
 	int idJug;
+
+	int vidaRestante;
 	bool movible,ocupador;
 	int ancho,alto;
 	std::string info;
+	Entidad* receptor;
 	//bool petrificado;
 	int x,y;
+
+	clock_t reloj;
 
 public:
 	Entidad(TipoEntidad tipo, int num_jug = 0);
@@ -38,11 +44,17 @@ public:
 	//void petrificar();
 	//void despetrificar();
 
+	void interactuarCon(Entidad* receptor);
+	void olvidarInteraccion();
+	//void interactuar();
+
 	Coordenada getPosicion();
 
 	void setPosicion(Coordenada c);
 
 	bool esRecurso();
+	bool esEdificio();
+	bool esUnidad();
 
 	void setTam(int ancho, int alto);
 	std::pair<int,int> getTam();
@@ -51,6 +63,9 @@ public:
 
 	bool esMovible();
 	bool ocupaSuTile();
+
+	void sufrirGolpe(int fuerza);
+	int sufrirRecoleccion();
 
 	std::string enc();
 	static Entidad* dec(std::string);

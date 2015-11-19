@@ -103,7 +103,7 @@ void Juego::cargarJuego(){//InfoEscenario* infoEscRed = NULL, Coordenada *posIni
 
 	escenario->getCapa()->setRangoDeVision(configGame.rango_vision);
 	//this->protagonista = this->escenario->getProtagonista();
-	this->barraEstado = new BarraEstado(configGame.ancho_pantalla, 150);
+	this->barraEstado = new BarraEstado(configGame.ancho_pantalla, 150, jugador); // Podría ser proporcional al tamaño de la ventana (MC)
 }
 
 /********************************************************************************/
@@ -294,6 +294,11 @@ void Juego::toggleEnemigo(int id_jug) {
 			contenedor->getSpriteDeEntidad(entidadEnemigo)->cambiarTexture();
 			break;
 		}
+}
+
+/***************************************************/
+void Juego::continuar() {	//Modularizar si se pasa a usar threads
+	this->jugador->interaccionesDeUnidades();
 }
 
 /***************************************************/

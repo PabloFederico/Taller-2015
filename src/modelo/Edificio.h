@@ -20,6 +20,8 @@ public:
 
 	void set_identificador(int nuevoDNI);
 
+	bool esEdificio();
+
 	virtual ~Edificio();
 };
 

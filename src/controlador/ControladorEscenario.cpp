@@ -19,9 +19,8 @@ void ControladorEscenario::actualizarEstadoEscenario(){//Connection* lan){
 
 	/* Se despeja la niebla para todas las unidades del jugador */
 	juego->getEscenario()->getCapa()->actualizarCapaGris();
-	unsigned i = 0;
 
-	while (i < unidades.size()){
+	for (unsigned i = 0; i < unidades.size(); i++) {
 			Sprite* spriteUnidad = juego->getSpritesEntidades()->find(unidades[i])->second;
 			/********** Actualización de la capa negra ***********/
 			Coordenada coord_pixel_sprite = spriteUnidad->getPosPies();
@@ -34,28 +33,27 @@ void ControladorEscenario::actualizarEstadoEscenario(){//Connection* lan){
 			}catch (FueraDeEscenario &e) {}
 
 			 /*Chequeo de si se come un recurso */
-			Escenario* escenario = juego->getEscenario();
-			BarraEstado* barra = juego->getBarraEstado();
-			//Coordenada pos_jug = escenario->getPosProtagonista();
-			Coordenada pos_unidad = unidades[i]->getPosicion();
-			Tile* tile = escenario->getTile(pos_unidad);
-			if (tile->tieneRecurso()){
-				Entidad* recurso = tile->devolverRecurso();
-				barra->agregarRecursoEconomico(recurso->getTipo());
+//			Escenario* escenario = juego->getEscenario();
+//			BarraEstado* barra = juego->getBarraEstado();
+//			Coordenada pos_unidad = unidades[i]->getPosicion();
+//			Tile* tile = escenario->getTile(pos_unidad);
+//			if (tile->tieneRecurso()){
+//				Entidad* recurso = tile->devolverRecurso();
+//				barra->agregarRecursoEconomico(recurso->getTipo());
 
-				// Elimina el sprite del recurso
-				Map<Entidad*,Sprite*>* mapaSprites = juego->getSpritesEntidades();
-				map<Entidad*,Sprite*>::iterator p = mapaSprites->find(recurso);
-				if (p != mapaSprites->end()) {
-					delete p->second;
-					mapaSprites->erase(recurso);
-				}
-
-				escenario->quitarRecurso(pos_unidad,recurso);
-				//Proxy::comiRecurso(lan, pos_unidad);
-			}
-			i++;
+				// Elimina el sprite del recurso TODO
+//				Map<Entidad*,Sprite*>* mapaSprites = juego->getSpritesEntidades();
+//				map<Entidad*,Sprite*>::iterator p = mapaSprites->find(recurso);
+//				if (p != mapaSprites->end()) {
+//					delete p->second;
+//					mapaSprites->erase(recurso);
+//				}
+//				escenario->quitarRecurso(pos_unidad,recurso);
+//				//Proxy::comiRecurso(lan, pos_unidad);
+//			}
 	}// end while
+
+	// CADA X TIEMPO? O CREARLE SU PROPIO THREAD? (MC) jugador->interaccionesDeUnidades(); TODO
 }
 
 ControladorEscenario::~ControladorEscenario() {

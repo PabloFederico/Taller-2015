@@ -210,15 +210,24 @@ bool Escenario::tileEsOcupable(Coordenada c) {
 }
 
 /********************************************************************************/
-void Escenario::setearTileClic(Tile* tile, Coordenada c_tile){
-	this->tile_clic = tile;
-	if ((tile != NULL) && (capa->getEstadoTile(c_tile.x, c_tile.y) == ESTADO_COLOR)) {
-		vector<Entidad*> entidades = tile->getEntidades();
-		for (unsigned i = 0; i < entidades.size(); i++){
-			if (entidades[i]->ocupaSuTile()){
-				this->entidadSeleccionada = entidades[i];	// Si hay varias (que no debería), queda la última
-			}
+Entidad* Escenario::obtenerEntidadOcupadoraEnTile(Tile* tile) {
+	Entidad* ent = NULL;
+	vector<Entidad*> entidades = tile->getEntidades();
+	for (unsigned i = 0; i < entidades.size(); i++) {
+		if (entidades[i]->ocupaSuTile()) {
+			 ent = entidades[i];	// Si hay varias (que no debería), queda la última (lo cual es preferible)
 		}
+	}
+	return ent;
+}
+
+/********************************************************************************/
+void Escenario::setearTileClic(Tile* tile, Coordenada c_tile){
+	this->tile_clic = tile;					// Por qué no dejar el valor anterior en caso de NULL? (MC)
+	if ((tile != NULL) && (capa->getEstadoTile(c_tile.x, c_tile.y) == ESTADO_COLOR)) {
+		 Entidad *entAux = obtenerEntidadOcupadoraEnTile(tile);
+		 if (entAux != NULL)
+			 this->entidadSeleccionada = entAux;
 	}
 }
 

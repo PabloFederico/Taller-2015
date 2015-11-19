@@ -103,6 +103,8 @@ public:
 
 	void toggleEnemigo(int id_jug);
 
+	void continuar();
+
 	void reiniciar();
 	virtual ~Juego();
 };

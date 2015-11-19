@@ -61,6 +61,7 @@ public:
 
 	Entidad* getEntidadSeleccionada();
 
+	Entidad* obtenerEntidadOcupadoraEnTile(Tile* tile);
 	void setearTileClic(Tile* tile, Coordenada c_tile);
 	void setearCoordTileClic(Coordenada c);
 	bool coordEnEscenario(Coordenada c);

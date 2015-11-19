@@ -265,7 +265,7 @@ void Dibujador::dibujarBarraEstado(Escenario* esc, BarraEstado* barraEstado, TTF
 	rect_num.w = 10;
 	rect_num.h = 10;
 
-	map<TipoEntidad, int> mapRecursosEconomicos = barraEstado->getRecursosEconomicos();
+	map<TipoEntidad, int> mapRecursosEconomicos = barraEstado->getMapRecursosEconomicos();
 
 	for (int i = MADERA; i <= ORO; i++){
 		int cantidad = mapRecursosEconomicos[(TipoEntidad)i];

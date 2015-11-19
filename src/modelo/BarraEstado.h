@@ -9,24 +9,23 @@
 #define MODELO_BARRAESTADO_H_
 #include <map>
 #include "../utils/Enumerados.h"
+#include "../modelo/Jugador.h"
 
 class BarraEstado {
 private:
 	int height;
 	int width;
 	std::string infoDescripcion;
-	std::map<TipoEntidad, int> mapRecursosEconomicos;
+	Jugador* jugador;
 
 public:
-	BarraEstado(int ancho, int alto);
-
-	void agregarRecursoEconomico(TipoEntidad tipo);
+	BarraEstado(int ancho, int alto, Jugador* jug);
 
 	std::pair<int,int> getDimension();
 
-	std::map<TipoEntidad, int> getRecursosEconomicos();
-
 	std::string getDescripcion();
+
+	std::map<TipoEntidad,int> getMapRecursosEconomicos();
 
 	void setInformacion(std::string infoDescripcion);
 

@@ -7,28 +7,21 @@
 
 #include "../modelo/BarraEstado.h"
 
-BarraEstado::BarraEstado(int ancho, int alto) {
+BarraEstado::BarraEstado(int ancho, int alto, Jugador* jug): jugador(jug) {
 	this->height = alto;
 	this->width = ancho;
-	mapRecursosEconomicos[ORO] = 0;
-	mapRecursosEconomicos[MADERA] = 0;
-	mapRecursosEconomicos[COMIDA] = 0;
 }
 
 std::pair<int, int> BarraEstado::getDimension(){
 	return std::make_pair(width,height);
 }
 
-void BarraEstado::agregarRecursoEconomico(TipoEntidad tipo){
-	mapRecursosEconomicos[tipo]++;
-}
-
-std::map<TipoEntidad, int> BarraEstado::getRecursosEconomicos(){
-	return mapRecursosEconomicos;
-}
-
 std::string BarraEstado::getDescripcion(){
 	return infoDescripcion;
+}
+
+std::map<TipoEntidad,int> BarraEstado::getMapRecursosEconomicos() {
+	return jugador->getMapRecursosEconomicos();
 }
 
 void BarraEstado::setInformacion(std::string nuevaDescripcion){
@@ -36,6 +29,5 @@ void BarraEstado::setInformacion(std::string nuevaDescripcion){
 }
 
 BarraEstado::~BarraEstado() {
-	mapRecursosEconomicos.clear();
 }
 

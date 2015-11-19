@@ -17,6 +17,11 @@ Jugador::Jugador(std::string nombre, int id) {
 	edificios.clear();
 	vec_unidades.clear();
 	unidadActiva = NULL;
+
+	mapRecursosEconomicos[ORO] = 0;
+	mapRecursosEconomicos[MADERA] = 0;
+	mapRecursosEconomicos[COMIDA] = 0;
+	mapRecursosEconomicos[PIEDRA] = 0;
 }
 
 void Jugador::agregarCentroCivico(CentroCivico* centro){
@@ -32,6 +37,14 @@ void Jugador::agregarNuevaUnidad(Unidad* nuevaUnidad){
 		unidadActiva = nuevaUnidad;
 	}
 	vec_unidades.push_back(nuevaUnidad);
+}
+
+void Jugador::agregarRecursoEconomico(TipoEntidad tipo, int cant) {
+	mapRecursosEconomicos[tipo] += cant;
+}
+
+std::map<TipoEntidad,int> Jugador::getMapRecursosEconomicos() {
+	return mapRecursosEconomicos;
 }
 
 Unidad* Jugador::getUnidadActiva(){
@@ -53,10 +66,21 @@ vector<Unidad*> Jugador::getUnidades(){
 	return vec_unidades;
 }
 
+void Jugador::interaccionesDeUnidades() {
+	for (std::vector<Unidad*>::iterator uniIt = this->vec_unidades.begin(); uniIt < this->vec_unidades.end(); ++uniIt) {
+		try {
+			(*uniIt)->interactuar();
+		} catch ( Recoleccion &r ) {
+			agregarRecursoEconomico(r.tipo, r.cant);
+		}
+	}
+}
+
 Jugador::~Jugador() {
 	//for (unsigned i = 0; i < vec_unidades.size(); i++){
 	//	delete vec_unidades[i];
 	//}
+	mapRecursosEconomicos.clear();
 	delete centroCivico;
 }
 

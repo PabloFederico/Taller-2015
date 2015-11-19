@@ -19,6 +19,10 @@ void Edificio::set_identificador(int nuevoDNI){
 	dni = nuevoDNI;
 }
 
+bool Edificio::esEdificio(){
+	return true;
+}
+
 Edificio::~Edificio() {
 	// TODO Auto-generated destructor stub
 }

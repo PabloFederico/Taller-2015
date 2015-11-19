@@ -9,8 +9,9 @@
 #define MODELO_UNIDAD_H_
 #include "../modelo/Entidad.h"
 #include "../utils/Enumerados.h"
+#include "../utils/Constantes.h"
 
-class Unidad: public Entidad{
+class Unidad: public Entidad {
 private:
 	int dni;
 	bool petrificado;
@@ -18,11 +19,18 @@ private:
 public:
 	Unidad(TipoEntidad tipo, int id_jug);
 
+	void olvidarInteraccion();
+	int generarGolpe();
+	void lastimar(Entidad* victima);
+	void interactuar();
+
 	void set_id_jugador(int nuevoDuenio);
 
 	void set_identificador(int nuevoDNI);
 
 	int get_identificador();
+
+	bool esUnidad();
 
 	bool estaPetrificado();
 

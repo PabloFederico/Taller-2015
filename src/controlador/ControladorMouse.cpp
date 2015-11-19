@@ -20,56 +20,70 @@ void ControladorMouse::procesarEvento(SDL_Event &event, int MouseX, int MouseY){
 	Coordenada coord_pixel_ceros(*juego->getCeros().first + DISTANCIA_ENTRE_X, *juego->getCeros().second);
 
 	/*********** Análisis del clic del mouse *************/
-	if (event.type == SDL_MOUSEBUTTONDOWN){
-		if (event.button.button == SDL_BUTTON_LEFT){
-			bool clicValido;
-			Escenario *escenario = juego->getEscenario();
+	if (event.type == SDL_MOUSEBUTTONDOWN && (event.button.button == SDL_BUTTON_LEFT || event.button.button == SDL_BUTTON_RIGHT)){
 
-			int limiteY_camara = juego->getDimensionVentana().second - juego->getBarraEstado()->getDimension().second;
+		bool clicValido = false;
+		Tile* tile_clic;
+		Coordenada c_tile_clic;
+		Escenario *escenario = juego->getEscenario();
 
-			/* Para que no cliquee fuera de la camara */
-			if (limiteY_camara < MouseY) clicValido = false;
-			else{
-					try{
-						Coordenada c_tile_clic = Calculador::tileParaPixel(Coordenada(MouseX,MouseY), coord_pixel_ceros);
-						clicValido = Calculador::puntoContenidoEnEscenario(c_tile_clic, escenario);
-						//Seteo tile clic:
-						Tile* tile_clic = escenario->getTile(c_tile_clic.x, c_tile_clic.y);
-						escenario->setearTileClic(tile_clic, c_tile_clic);
-						escenario->setearCoordTileClic(c_tile_clic);
+		int limiteY_camara = juego->getDimensionVentana().second - juego->getBarraEstado()->getDimension().second;
 
-					}catch(FueraDeEscenario &e) {
-						clicValido = false;
-						escenario->setearTileClic(NULL, Coordenada(0,0));
-					}
-			}
-			/* Si el clic es válido, buscamos el camino mínimo. */
-			if (clicValido){
-	            ///pruebas
-	            //Coordenada mouse = Calculador::tileParaPixel(Coordenada(MouseX,MouseY),coord_pixel_ceros);
-	            //std::cout << "mouse: "<<mouse.x<<";"<<mouse.y<<'\t'<<"follow: "<<follow.x<<";"<<follow.y<<std::endl;
-				if (escenario->getEntidadSeleccionada() != NULL && escenario->getEntidadSeleccionada()->getIDJug() == juego->getIDJugador()) {
-					Sprite* spriteUnidad = juego->getSpritesEntidades()->find(escenario->getEntidadSeleccionada())->second;
-					Coordenada coord_pixel_sprite = spriteUnidad->getPosPies();
-					try {
-						Camino camino = Calculador::obtenerCaminoMin(escenario, coord_pixel_sprite, Coordenada(MouseX, MouseY), coord_pixel_ceros);
+		/* Para que no cliquee fuera de la camara */
+		if (limiteY_camara < MouseY) clicValido = false;
+		else{
+				try{
+					c_tile_clic = Calculador::tileParaPixel(Coordenada(MouseX,MouseY), coord_pixel_ceros);
+					clicValido = escenario->coordEnEscenario(c_tile_clic);
 
-						if (camino.size() > 0) {
-							/* Si se está jugando en red, enviar el movimiento a los demás jugadores. */
-							//if (juego->esCliente())
-							//	Proxy::enviar(juego->getConnection(), camino);
-							//else
-								spriteUnidad->setearNuevoCamino(camino, coord_pixel_ceros);
-								/* Activamos localmente el movimiento del sprite y seteamos el nuevo camino que debe recorrer. */
-						}
-					} catch ( FueraDeEscenario &e ) {}
+					tile_clic = escenario->getTile(c_tile_clic.x, c_tile_clic.y);
+					escenario->setearCoordTileClic(c_tile_clic);	//en desuso
+
+				}catch(FueraDeEscenario &e) {
+					clicValido = false;
+					escenario->setearTileClic(NULL, Coordenada(0,0));
 				}
+		}
 
-				if (escenario->getEntidadSeleccionada() != NULL){
+		if (clicValido){
+
+			if (event.button.button == SDL_BUTTON_LEFT) {
+
+				escenario->setearTileClic(tile_clic, c_tile_clic);
+
+				if (escenario->getEntidadSeleccionada() != NULL) {
+					if (escenario->getEntidadSeleccionada()->getIDJug() == juego->getIDJugador()) {
+						Sprite* spriteUnidad = juego->getSpritesEntidades()->find(escenario->getEntidadSeleccionada())->second;
+						Coordenada coord_pixel_sprite = spriteUnidad->getPosPies();
+						try {
+							Camino camino = Calculador::obtenerCaminoMin(escenario, coord_pixel_sprite, Coordenada(MouseX, MouseY), coord_pixel_ceros);
+
+							if (camino.size() > 0) {
+								/* Si se está jugando en red, enviar el movimiento a los demás jugadores. */
+								//if (juego->esCliente())
+								//	Proxy::enviar(juego->getConnection(), camino);
+								//else
+									spriteUnidad->setearNuevoCamino(camino, coord_pixel_ceros);
+									// /* Activamos localmente el movimiento del sprite y seteamos el nuevo camino que debe recorrer. */
+							}
+						} catch ( FueraDeEscenario &e ) {}
+					}
+
+					// Cargar info de la entidad seleccionada en la barra.
 					juego->getBarraEstado()->setInformacion(escenario->getEntidadSeleccionada()->getInfo());
 				}
-			} /* Fin clicValido */
-		}
+
+			} else if (event.button.button == SDL_BUTTON_RIGHT) {
+				// Si hay una Entidad propia preseleccionada, que interactúe con la Entidad recién cliqueada.
+				if (escenario->getEntidadSeleccionada() != NULL && escenario->getEntidadSeleccionada()->getIDJug() == juego->getIDJugador()) {
+					Entidad* entidadReceptora = escenario->obtenerEntidadOcupadoraEnTile(tile_clic);
+					if (entidadReceptora != NULL)
+						escenario->getEntidadSeleccionada()->interactuarCon(entidadReceptora);
+				}
+			}
+
+		} /* Fin clicValido */
+
 	} /* Fin if SDL_MOUSEBUTTONDOWN */
 
 
