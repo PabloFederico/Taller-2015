@@ -90,7 +90,6 @@ void Controller::capturarEvento(SDL_Event &event){
 			else{
 				if (mouse->getEstado() != CLICK_DER_MOV)
 					mouse->setEstado(CLICK_DERECHO);
-				}
 /*
 				bool siguePresionado = true;
 				SDL_GetMouseState(&x,&y);
@@ -110,7 +109,7 @@ void Controller::capturarEvento(SDL_Event &event){
 					mouse->setEstado(CLICK_DER_MOV);
 				}else mouse->setEstado(CLICK_DERECHO);
 */
-			//}
+			}
 			break;
 
 		case SDL_MOUSEBUTTONUP:

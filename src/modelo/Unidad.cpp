@@ -41,7 +41,7 @@ void Unidad::interactuar() {
 			for (int j = posReceptor.y; j < posReceptor.y+tamReceptor.second; j++)
 				// Distancia máxima hardcodeada de 1 tile; TODO rangoAtaque
 				if (distanciaEuclidiana(this->getPosicion(), Coordenada(i,j)) < 2) {
-					std::cout << "Interacción de "<<getInfo()<<" "<<get_identificador()<<std::endl;//
+					//std::cout << "Interacción de "<<getInfo()<<" "<<get_identificador()<<std::endl;//
 					//if (receptor->esConstruccion()) { cambioEstado(CONSTRUYENDO); // TODO } else
 					if (receptor->esEdificio() || receptor->esUnidad()) {
 						cambioEstado(ATACANDO);
