@@ -224,6 +224,7 @@ Entidad* Escenario::obtenerEntidadOcupadoraEnTile(Tile* tile) {
 /********************************************************************************/
 void Escenario::setearTileClic(Tile* tile, Coordenada c_tile){
 	this->tile_clic = tile;					// Por qué no dejar el valor anterior en caso de NULL? (MC)
+	if (tile == NULL) entidadSeleccionada = NULL;
 	if ((tile != NULL) && (capa->getEstadoTile(c_tile.x, c_tile.y) == ESTADO_COLOR)) {
 		 Entidad *entAux = obtenerEntidadOcupadoraEnTile(tile);
 		 if (entAux != NULL)
@@ -267,6 +268,32 @@ void Escenario::quitarRecurso(Coordenada c,Entidad* entidad){
 	quitarEntidad(c,entidad);
 	aux->~Entidad();
 }
+/********************************************************************************/
+bool Escenario::tieneRecuadroSeleccion(){
+	return (c_tile_ini_recuadro != c_tile_fin_recuadro);
+}
+
+/********************************************************************************/
+void Escenario::agregarCoordenadasRecuadroSeleccion(Coordenada c_inicial, Coordenada c_final){
+	c_tile_ini_recuadro = c_inicial;
+	c_tile_fin_recuadro = c_final;
+}
+
+/********************************************************************************/
+pair<Coordenada,Coordenada> Escenario::getCoordenadasRecuadro(){
+	if (c_tile_ini_recuadro.y > c_tile_fin_recuadro.y || c_tile_ini_recuadro.x > c_tile_fin_recuadro.x){
+		Coordenada aux = c_tile_fin_recuadro;
+		c_tile_fin_recuadro = c_tile_ini_recuadro;
+		c_tile_ini_recuadro = aux;
+	}
+	return make_pair(c_tile_ini_recuadro,c_tile_fin_recuadro);
+}
+
+/********************************************************************************/
+void Escenario::quitarRecuadroSeleccion(){
+	c_tile_ini_recuadro = c_tile_fin_recuadro;
+}
+
 /********************************************************************************/
 Escenario::~Escenario() {
 	for (unsigned i = 0; i < posicionesEntidades->size(); i++){

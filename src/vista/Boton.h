@@ -14,7 +14,6 @@
 
 class Boton {
 private:
-	TipoBoton tipo;
 	SDL_Rect rect;
 	std::string info;
 	bool presionado;

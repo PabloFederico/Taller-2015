@@ -59,7 +59,7 @@ void Unidad::interactuar() {
 				}
 
 	} catch ( EntidadMurio &e ) {
-		olvidarInteraccion();
+		this->olvidarInteraccion();
 	}
 }
 

@@ -33,7 +33,7 @@ public:
 	void petrificar();
 	void despetrificar();
 
-	void olvidarInteraccion();
+	//void olvidarInteraccion();
 
 	void cambioEstado(EstadoEntidad est);
 

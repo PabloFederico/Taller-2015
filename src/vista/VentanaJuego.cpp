@@ -87,7 +87,7 @@ void VentanaJuego::dibujar(){
 }
 
 /********************************************************************************/
-void VentanaJuego::mostrar(){
+void VentanaJuego::run(){
 		bool run = true;
 
 		SDL_Event event;

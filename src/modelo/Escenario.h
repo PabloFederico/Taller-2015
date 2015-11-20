@@ -43,6 +43,9 @@ private:
 
 	void inicializarMatrizTiles();
 
+	Coordenada c_tile_ini_recuadro;
+	Coordenada c_tile_fin_recuadro;
+
 public:
 	Escenario(InfoEscenario info, EntidadFactory* fabrica, vector<Unidad*>* enemigos = NULL);
 
@@ -87,6 +90,11 @@ public:
 	void actualizarPosicionParaEntidad(Coordenada c, Entidad* entidad);
 
 	CapaFog* getCapa();
+
+	bool tieneRecuadroSeleccion();
+	void agregarCoordenadasRecuadroSeleccion(Coordenada c_inicial, Coordenada c_final);
+	pair<Coordenada,Coordenada> getCoordenadasRecuadro();
+	void quitarRecuadroSeleccion();
 
 	virtual ~Escenario();
 };
