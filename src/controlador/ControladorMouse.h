@@ -16,6 +16,8 @@ class ControladorMouse {
 private:
 	Juego* juego;
 
+	bool procesarClickEnVentana(Mouse* mouse, Tile** tile_clic, Coordenada* c_tile_clic);
+
 	void procesarClickIzquierdo(Mouse* mouse);
 	void procesarClickDerecho(Mouse* mouse);
 	void procesarArrastreClickDerecho(Mouse* mouse);

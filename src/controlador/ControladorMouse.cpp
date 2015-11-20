@@ -92,8 +92,7 @@ void ControladorMouse::procesarMouse(Mouse* mouse){
 }
 */
 
-
-void ControladorMouse::procesarClickIzquierdo(Mouse* mouse){
+bool ControladorMouse::procesarClickEnVentana(Mouse* mouse, Tile** tile_clic, Coordenada* c_tile_clic) {
 	//bool clicValido;
 	bool clicSobreBarra = false ;
 	Coordenada coord_pixel_ceros = juego->getCoordCeros();
@@ -106,26 +105,38 @@ void ControladorMouse::procesarClickIzquierdo(Mouse* mouse){
 	int cant_unid_seleccionadas = juego->getJugador()->getUnidadesSeleccionadas().size();
 
 	if (cant_unid_seleccionadas > 0 && clicSobreBarra){
-		// Agregar que va a hacer (contruír, tomar alguna herramienta, etc)
+		// Agregar que va a hacer (contruír, tomar alguna herramienta, etc) // Procesar click en Barra
 	}
 	if (cant_unid_seleccionadas == 0 && !clicSobreBarra){
 			try{
-				Coordenada c_tile_clic = Calculador::tileParaPixel(mouse->getXY(), coord_pixel_ceros);
-				Calculador::puntoContenidoEnEscenario(c_tile_clic, escenario);
+				*c_tile_clic = Calculador::tileParaPixel(mouse->getXY(), coord_pixel_ceros);
+				Calculador::puntoContenidoEnEscenario(*c_tile_clic, escenario);
 				//Seteo tile clic:
-				Tile* tile_clic = escenario->getTile(c_tile_clic.x, c_tile_clic.y);
-				escenario->setearTileClic(tile_clic, c_tile_clic);
-				escenario->setearCoordTileClic(c_tile_clic);
+				*tile_clic = escenario->getTile(c_tile_clic->x, c_tile_clic->y);
+				escenario->setearCoordTileClic(*c_tile_clic);
 
 			}catch(FueraDeEscenario &e) {
 				escenario->setearTileClic(NULL, Coordenada(0,0));
+				*tile_clic = NULL;
+				return false;
 			}
 	}
+	return true;
+}
+
+void ControladorMouse::procesarClickIzquierdo(Mouse* mouse){
+	Tile* tile_clic = NULL;
+	Coordenada c_tile_clic;
+
+	if (procesarClickEnVentana(mouse, &tile_clic, &c_tile_clic))
+		juego->getEscenario()->setearTileClic(tile_clic, c_tile_clic);
 }
 
 void ControladorMouse::procesarClickDerecho(Mouse* mouse){
 	Coordenada coord_pixel_ceros = juego->getCoordCeros();
 	Escenario *escenario = juego->getEscenario();
+
+	// dependiendo si ahora elige una entidad o no, mediante obtenerEntidadOcupadoraEnTile, mover o interactuar TODO-ING
 
 	if (escenario->getEntidadSeleccionada() != NULL) {
 	  if (escenario->getEntidadSeleccionada()->getIDJug() == juego->getIDJugador()) {
