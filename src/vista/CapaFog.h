@@ -21,12 +21,12 @@ private:
 
 	vector<pair<int,int> > generarPuntos(int x, int y);
 
-	void actualizarCapaGris();
-
 public:
 	CapaFog(int tiles_x, int tiles_y);
 
 	pair<int,int> getDimension();
+
+	void actualizarCapaGris();
 
 	void descubrirDesdePunto(int x, int y);
 

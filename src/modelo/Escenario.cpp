@@ -8,7 +8,7 @@
 
 
 
-Escenario::Escenario(InfoEscenario infoEsc, EntidadFactory *fabrica, vector<PosEntidad>* malvados):
+Escenario::Escenario(InfoEscenario infoEsc, EntidadFactory *fabrica, vector<Unidad*>* malvados):
 		fabricaDeEntidades(fabrica), enemigos(malvados) {
 	this->size_x = infoEsc.size_x;
 	this->size_y = infoEsc.size_y;
@@ -18,7 +18,7 @@ Escenario::Escenario(InfoEscenario infoEsc, EntidadFactory *fabrica, vector<PosE
 
 	this->capa = new CapaFog(size_x,size_y);
 
-	this->posicionesEntidades = new vector<PosEntidad>();
+	this->posicionesEntidades = new vector<Entidad*>();
 
 	vector<PosTipoEntidad> vecPosTipoEntidades = infoEsc.getPosicionesEntidades();
 	for (unsigned i = 0; i < vecPosTipoEntidades.size(); i++){
@@ -27,10 +27,12 @@ Escenario::Escenario(InfoEscenario infoEsc, EntidadFactory *fabrica, vector<PosE
 		TipoEntidad tipo = vecPosTipoEntidades[i].tipo;
 		Entidad *entidad = this->fabricaDeEntidades->nuevaEntidad(tipo);
 		Coordenada pos(x,y);
+		entidad->setPosicion(pos);
 		this->agregarEntidad(pos,entidad);	// Si no pudo, no reintento.
 	}
 	infoEsc.getPosicionesEntidades().clear();
-
+	std::cout<<"se agregaron todas las entidades"<<std::endl;
+/*
 	this->protagonista = this->fabricaDeEntidades->nuevaEntidad(infoEsc.protagonista);
 	Coordenada posProtag(infoEsc.posX_protagonista, infoEsc.posY_protagonista);
 	bool resPosicionar = false;
@@ -43,11 +45,9 @@ Escenario::Escenario(InfoEscenario infoEsc, EntidadFactory *fabrica, vector<PosE
 			resPosicionar = this->agregarEntidad(posProtag, this->protagonista);
 		} catch ( FueraDeEscenario &e ) {}
 	}
-	this->c_protagonista = posProtag;
+*/
 	this->tile_clic = NULL;
 	this->entidadSeleccionada = NULL;
-	//PosEntidad posEntidad(posProtag, this->protagonista);
-	//this->posicionesEntidades->push_back(posEntidad);
 }
 
 /********************************************************************************/
@@ -63,47 +63,39 @@ void Escenario::inicializarMatrizTiles() {
 }
 
 /********************************************************************************/
-Entidad* Escenario::getProtagonista(){
-	return this->protagonista;
-}
-
-/********************************************************************************/
-Coordenada Escenario::getPosProtagonista() {
-	return this->c_protagonista;
-}
-
-/********************************************************************************/
 pair<int,int> Escenario::getDimension(){
 	return std::make_pair(this->size_x,this->size_y);
 }
 
 /********************************************************************************/
-vector<PosEntidad>* Escenario::getVectorEntidades(){
+vector<Entidad*>* Escenario::getVectorEntidades(){
 	return this->posicionesEntidades;
 }
 
 /********************************************************************************/
-void Escenario::actualizarPosicionProtagonista(Coordenada c){
-	/* Si las coordenadas no son iguales, actualizar la coordenada del protagonista */
-	if (c_protagonista != c) {
-		Tile* tile = getTile(c_protagonista);
+void Escenario::actualizarPosicionParaEntidad(Coordenada c, Entidad* entidad){
+	/* Si las coordenadas no son iguales, actualizar la coordenada de cualquier entidad */
+	if (entidad->getPosicion() != c) {
+		Tile* tile = getTile(entidad->getPosicion());
 		try {
 			if (tile != NULL)
-				tile->eliminarEntidad(protagonista);
+				tile->eliminarEntidad(entidad);
 		} catch ( NoSeRecibio &e ) {}
 
 
-		/* agregamos el protagonista a su nuevo tile */
+		/* agregamos la entidad a su nuevo tile */
 		tile = getTile(c.x, c.y);
 		if (tile != NULL)
-			tile->agregarEntidad(protagonista);
-		c_protagonista = c;
+			tile->agregarEntidad(entidad);
+		entidad->setPosicion(c);
 	}
 }
 
 /********************************************************************************/
 void Escenario::actualizarPosicionEnemigo(Entidad* ent, Coordenada c) {
 	/* Si las coordenadas no son iguales, actualizar la coordenada del enemigo */
+	actualizarPosicionParaEntidad(c,ent);
+	/*
 	if (!coordEnEscenario(c))
 		throw FueraDeEscenario();
 	vector<PosEntidad>::iterator it;
@@ -125,6 +117,7 @@ void Escenario::actualizarPosicionEnemigo(Entidad* ent, Coordenada c) {
 			std::cerr << "No estaba ahí, campeón."<<std::endl;
 		}
 	}
+	*/
 }
 
 /********************************************************************************/
@@ -142,7 +135,9 @@ Tile* Escenario::getTile(Coordenada c) {
 }
 
 /********************************************************************************/
-
+int Escenario::getIDJug(){
+	return fabricaDeEntidades->getId_Jug();
+}
 
 /********************************************************************************/
 bool Escenario::agregarEntidad(Coordenada pos, Entidad* entidad){
@@ -167,8 +162,9 @@ bool Escenario::agregarEntidad(Coordenada pos, Entidad* entidad){
 		}
 		// Los recursos se manejan por separado, no se agregan y se borran desde el tile.
 		if (!EsRecurso(entidad->getTipo())) {
-			PosEntidad posEntidad(pos, entidad);
-			this->posicionesEntidades->push_back(posEntidad);
+			//PosEntidad posEntidad(pos, entidad);
+			//this->posicionesEntidades->push_back(posEntidad);
+			posicionesEntidades->push_back(entidad);
 		}
 	} catch ( TileEstaOcupado &e ) {
 		Log::imprimirALog(ERR,"Se intentó agregar una entidad en un tile ocupado");
@@ -181,8 +177,7 @@ bool Escenario::agregarEntidad(Coordenada pos, Entidad* entidad){
 // Hace DELETE de la posición de memoria, por lo que el puntero pasado no se debe seguir usando!!!
 void Escenario::quitarEntidad(Coordenada pos, Entidad* entidad) {
 	// La quita del vector posicionesEntidades.
-	PosEntidad pE(pos, entidad);
-	std::vector<PosEntidad>::iterator it = std::find(this->posicionesEntidades->begin(), this->posicionesEntidades->end(), pE);
+	std::vector<Entidad*>::iterator it = std::find(this->posicionesEntidades->begin(), this->posicionesEntidades->end(), entidad);
 	if (it != this->posicionesEntidades->end()) {
 		this->posicionesEntidades->erase(it);
 
@@ -215,15 +210,25 @@ bool Escenario::tileEsOcupable(Coordenada c) {
 }
 
 /********************************************************************************/
-void Escenario::setearTileClic(Tile* tile, Coordenada c_tile){
-	this->tile_clic = tile;
-	if ((tile != NULL) && (capa->getEstadoTile(c_tile.x, c_tile.y) == ESTADO_COLOR)) {
-		vector<Entidad*> entidades = tile->getEntidades();
-		for (unsigned i = 0; i < entidades.size(); i++){
-			if (entidades[i]->ocupaSuTile()){
-				this->entidadSeleccionada = entidades[i];	// Si hay varias (que no debería), queda la última
-			}
+Entidad* Escenario::obtenerEntidadOcupadoraEnTile(Tile* tile) {
+	Entidad* ent = NULL;
+	vector<Entidad*> entidades = tile->getEntidades();
+	for (unsigned i = 0; i < entidades.size(); i++) {
+		if (entidades[i]->ocupaSuTile()) {
+			 ent = entidades[i];	// Si hay varias (que no debería), queda la última (lo cual es preferible)
 		}
+	}
+	return ent;
+}
+
+/********************************************************************************/
+void Escenario::setearTileClic(Tile* tile, Coordenada c_tile){
+	this->tile_clic = tile;					// Por qué no dejar el valor anterior en caso de NULL? (MC)
+	if (tile == NULL) entidadSeleccionada = NULL;
+	if ((tile != NULL) && (capa->getEstadoTile(c_tile.x, c_tile.y) == ESTADO_COLOR)) {
+		 Entidad *entAux = obtenerEntidadOcupadoraEnTile(tile);
+		 if (entAux != NULL)
+			 this->entidadSeleccionada = entAux;
 	}
 }
 
@@ -264,14 +269,42 @@ void Escenario::quitarRecurso(Coordenada c,Entidad* entidad){
 	aux->~Entidad();
 }
 /********************************************************************************/
+bool Escenario::tieneRecuadroSeleccion(){
+	return (c_tile_ini_recuadro != c_tile_fin_recuadro);
+}
+
+/********************************************************************************/
+void Escenario::agregarCoordenadasRecuadroSeleccion(Coordenada c_inicial, Coordenada c_final){
+	c_tile_ini_recuadro = c_inicial;
+	c_tile_fin_recuadro = c_final;
+}
+
+/********************************************************************************/
+pair<Coordenada,Coordenada> Escenario::getCoordenadasRecuadro(){
+	if (c_tile_ini_recuadro.y > c_tile_fin_recuadro.y || c_tile_ini_recuadro.x > c_tile_fin_recuadro.x){
+		Coordenada aux = c_tile_fin_recuadro;
+		c_tile_fin_recuadro = c_tile_ini_recuadro;
+		c_tile_ini_recuadro = aux;
+	}
+	return make_pair(c_tile_ini_recuadro,c_tile_fin_recuadro);
+}
+
+/********************************************************************************/
+void Escenario::quitarRecuadroSeleccion(){
+	c_tile_ini_recuadro = c_tile_fin_recuadro;
+}
+
+/********************************************************************************/
 Escenario::~Escenario() {
 	for (unsigned i = 0; i < posicionesEntidades->size(); i++){
-		Entidad* entidad = (*posicionesEntidades)[i].entidad;
+		Entidad* entidad = (*posicionesEntidades)[i];
 		delete entidad; // meter en quitarEntidad y reemplazar acá?
 	}
 
 	this->posicionesEntidades->clear();
 	delete this->posicionesEntidades;
+
+	delete fabricaDeEntidades;
 
 	delete this->capa;
 

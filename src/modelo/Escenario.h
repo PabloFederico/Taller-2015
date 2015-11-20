@@ -18,6 +18,7 @@
 #include "../modelo/Tile.h"
 #include "../utils/Exceptions.h"
 #include "../utils/Log.h"
+#include "../modelo/Unidad.h"
 using namespace std;
 
 class Escenario {
@@ -29,40 +30,41 @@ private:
 
 	CapaFog *capa;
 
-	vector<PosEntidad>* posicionesEntidades;
+	vector<Entidad*>* posicionesEntidades;
 
 	EntidadFactory* fabricaDeEntidades;
 
-	Entidad* protagonista;
-	vector<PosEntidad>* enemigos;
-	Entidad* entidadSeleccionada;
+	vector<Unidad*>* enemigos;
 
-	Coordenada c_protagonista;
+	Entidad* entidadSeleccionada;
 
 	Tile* tile_clic;
 	Coordenada c_tile_clic;
 
 	void inicializarMatrizTiles();
 
+	Coordenada c_tile_ini_recuadro;
+	Coordenada c_tile_fin_recuadro;
+
 public:
-	Escenario(InfoEscenario info, EntidadFactory* fabrica, vector<PosEntidad>* enemigos = NULL);
+	Escenario(InfoEscenario info, EntidadFactory* fabrica, vector<Unidad*>* enemigos = NULL);
 
 	/* Devuelve las dimensiones del escenario en un par (x,y) */
 	pair<int,int> getDimension();
 
+	int getIDJug();
+
 	/* Devuelve un vector que contiene structs de PosEntidad, posición en X,
 	 * posición en Y y la entidad */
-	vector<PosEntidad>* getVectorEntidades();
+	vector<Entidad*>* getVectorEntidades();
 
 	/* Agrega una entidad en una posición indicada como parámetro */
 	bool agregarEntidad(Coordenada pos, Entidad* entidad);
 	void quitarEntidad(Coordenada pos, Entidad* entidad);
 
-	Entidad* getProtagonista();
-	Coordenada getPosProtagonista();
-
 	Entidad* getEntidadSeleccionada();
 
+	Entidad* obtenerEntidadOcupadoraEnTile(Tile* tile);
 	void setearTileClic(Tile* tile, Coordenada c_tile);
 	void setearCoordTileClic(Coordenada c);
 	bool coordEnEscenario(Coordenada c);
@@ -82,10 +84,17 @@ public:
 	static Coordenada generarCoordenadaRandom(int size_x_final, int size_x_inicial, int size_y_final, int size_y_inicial, int seed);
 	void agregarRecurso(TipoEntidad recurso,Coordenada coord_random);
 	void quitarRecurso(Coordenada c,Entidad* entidad);
-	void actualizarPosicionProtagonista(Coordenada c);
+
 	void actualizarPosicionEnemigo(Entidad* ent, Coordenada c);
 
+	void actualizarPosicionParaEntidad(Coordenada c, Entidad* entidad);
+
 	CapaFog* getCapa();
+
+	bool tieneRecuadroSeleccion();
+	void agregarCoordenadasRecuadroSeleccion(Coordenada c_inicial, Coordenada c_final);
+	pair<Coordenada,Coordenada> getCoordenadasRecuadro();
+	void quitarRecuadroSeleccion();
 
 	virtual ~Escenario();
 };

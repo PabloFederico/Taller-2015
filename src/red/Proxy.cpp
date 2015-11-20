@@ -24,7 +24,7 @@ Coordenada* Proxy::clienteEsperarComienzo(Connection* lan) {
 
 
 TipoMensajeRed Proxy::actualizarMultiplayer(Juego* juego) {
-	string unContenido, recibido = juego->getConnection()->recibir();
+	string unContenido, recibido;// = juego->getConnection()->recibir();
 	// Si no se recibe nada, recibir() lanza NoSeRecibio y se saltea el resto.
 	TipoMensajeRed tipo;
 
@@ -34,7 +34,7 @@ TipoMensajeRed Proxy::actualizarMultiplayer(Juego* juego) {
 			switch (tipo) {
 			case MENSAJE: procesarMensaje(unContenido);
 				break;
-			case PING: juego->getConnection()->revisarPing();
+			case PING: //juego->getConnection()->revisarPing();
 				break;
 			case COMIENZO: procesarNombre(juego, unContenido);
 				break;
@@ -82,17 +82,17 @@ void Proxy::procesarEscenario(Juego* juego, string encodeado) {
 
 void Proxy::procesarCamino(Juego* juego, string encodeado) {
 	string camEnc;
-	int jug = Red::extraerNumeroYResto(encodeado, &camEnc);
+	//int jug = Red::extraerNumeroYResto(encodeado, &camEnc);
 	try {
-		juego->getSpritePlayer(jug)->setearNuevoCamino(Camino::dec(camEnc), juego->getCoordCeros());
+		//juego->getSpritePlayer(jug)->setearNuevoCamino(Camino::dec(camEnc), juego->getCoordCeros());
 	} catch ( NoSeRecibio &e ) {
-		juego->getSpritePlayer()->setearNuevoCamino(Camino::dec(camEnc), juego->getCoordCeros());
+		//juego->getSpritePlayer()->setearNuevoCamino(Camino::dec(camEnc), juego->getCoordCeros());
 	}
 }
 
 void Proxy::procesarNuevaEntidad(Juego* juego, string encodeado) {
 	try {
-		juego->cargarEnemigo(PosEntidad::dec(encodeado));
+		//juego->cargarEnemigo(PosEntidad::dec(encodeado));
 	} catch ( FueraDeEscenario &e ) { Log::imprimirALog(WAR, "Enemigo fuera del escenario"); }
 }
 
@@ -140,8 +140,8 @@ void Proxy::enviar(Connection* lan, string s) {
 }
 
 void Proxy::enviar(Connection* lan, InfoEscenario ie) {
-	string t = Red::agregarPrefijoYFinal("ESC", ie.enc());
-	lan->enviar(t);
+	//string t = Red::agregarPrefijoYFinal("ESC", ie.enc());
+	//lan->enviar(t);
 }
 
 void Proxy::enviar(Connection* lan, Camino cam) {

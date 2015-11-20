@@ -15,6 +15,10 @@ const char* bad_nombreTipoEntidad::what() const throw()
 	return "Tipo de entidad mal especificado.";
 }
 
+EntidadMurio::EntidadMurio() {}
+
+Recoleccion::Recoleccion(TipoEntidad tipo, int cant): tipo(tipo), cant(cant) {}
+
 DestinoEncontrado::DestinoEncontrado() {}
 
 NoTieneRecurso::NoTieneRecurso() {}

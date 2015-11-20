@@ -8,6 +8,10 @@
 #include "../modelo/Entidad.h"
 
 Entidad::Entidad(TipoEntidad tipo, int num_jug): idJug(num_jug)  {
+	this->reloj = clock();
+	this->receptor = NULL;
+	this->estado = QUIETO;
+	this->vidaRestante = 0;
 	this->ancho = 1;
 	this->alto = 1;
 	this->tipo = tipo;
@@ -18,91 +22,106 @@ Entidad::Entidad(TipoEntidad tipo, int num_jug): idJug(num_jug)  {
 			info = "";
 			break;
 		case TIERRA:
-				movible = false;
-				ocupador = false;
-				info = "";
-				break;
+			movible = false;
+			ocupador = false;
+			info = "";
+			break;
 		case AGUA:
-				movible = false;
-				ocupador = true;
-				info = "Agua";
-				break;
+			movible = false;
+			ocupador = true;
+			info = "Agua";
+			break;
 		case SOLDADO:
+			vidaRestante = 100;
 			movible = true;
 			ocupador = true;
 			info = "Soldado";
 			break;
-		case JUANA_DE_ARCO:
+		case ALDEANO:
+			vidaRestante = 50;
 			movible = true;
 			ocupador = true;
-			info = "Juana De Arco";
+			info = "Aldeano";
 			break;
 		case ANIMAL:
-				movible = true;
-				ocupador = true;
-				info = "Animal";
-				break;
+			vidaRestante = 30;
+			movible = true;
+			ocupador = true;
+			info = "Animal";
+			break;
 		case CASTILLO:
-				movible = false;
-				ocupador = true;
-				info = "Castillo";
-				break;
+			vidaRestante = 300;
+			movible = false;
+			ocupador = true;
+			info = "Castillo";
+			break;
 		case ARBOL:
-				movible = false;
-				ocupador = true;
-				info = "Arbol";
-				break;
-		case ORO:
-				movible = false;
-				ocupador = false;
-				info = "Oro";
-				break;
-		case COMIDA:
-				movible = false;
-				ocupador = false;
-				info = "Comida";
-				break;
+			movible = false;
+			ocupador = true;
+			info = "Arbol";
+			break;
 		case MADERA:
-				movible = false;
-				ocupador = false;
-				info = "Madera";
-				break;
+			vidaRestante = 150;
+			movible = false;
+			ocupador = true;
+			info = "Madera";
+			break;
+		case COMIDA:
+			vidaRestante = 150;
+			movible = false;
+			ocupador = true;
+			info = "Comida";
+			break;
+		case PIEDRA:
+			vidaRestante = 150;
+			movible = false;
+			ocupador = true;
+			info = "Piedra";
+			break;
+		case ORO:
+			vidaRestante = 150;
+			movible = false;
+			ocupador = true;
+			info = "Oro";
+			break;
 		default:
-				movible = false;
-				ocupador = true;
-				info = "";
-				break;
+			movible = false;
+			ocupador = true;
+			info = "";
+			break;
 	}
-	petrificado = false;
-
-	if (idJug != 0) {
-		ostringstream ssInfo;
-		ssInfo << info<<" (Jugador "<<idJug<<")";
-		info = ssInfo.str();
-	}
+	x = 0;
+	y = 0;
 }
 
-bool Entidad::estaPetrificado(){
-	return petrificado;
-}
-
-void Entidad::petrificar() {
-	this->petrificado = true;
-}
-void Entidad::despetrificar() {
-	this->petrificado = false;
+int Entidad::getIDJug(){
+	return idJug;
 }
 
 TipoEntidad Entidad::getTipo(){
 	return this->tipo;
 }
 
-bool Entidad::esRecurso(){
-	return (tipo == ORO || tipo == MADERA || tipo == COMIDA);
+EstadoEntidad Entidad::getEstado() {
+	return this->estado;
 }
 
-int Entidad::getIDJug() {
-	return this->idJug;
+void Entidad::cambioEstado(EstadoEntidad est) {
+	//this->estado = est; // Todos los EstadoEntidad son para Unidad nomás. Lo descarta.
+}
+
+void Entidad::finalizaAccion() {
+	this->estado = QUIETO;
+}
+
+bool Entidad::esRecurso(){
+	return EsRecurso(this->tipo);
+}
+bool Entidad::esEdificio(){
+	return EsEdificio(this->tipo);
+}
+bool Entidad::esUnidad(){
+	return EsUnidad(this->tipo);
 }
 
 void Entidad::setTam(int ancho, int alto) {
@@ -122,10 +141,70 @@ bool Entidad::ocupaSuTile() {
 	return this->ocupador;
 }
 
+Coordenada Entidad::getPosicion(){
+	return Coordenada(x,y);
+}
+
+void Entidad::setPosicion(Coordenada nuevaCoord){
+	x = nuevaCoord.x;
+	y = nuevaCoord.y;	// Por qué no guardarla como Coordenada y listo? (MC)
+}
+
+void Entidad::interactuarCon(Entidad* receptor) {
+	if (this->getIDJug() == receptor->getIDJug())
+		return;	// No existe acción contra otra entidad propia (por ahora).
+	if (receptor->esEdificio() || receptor->esUnidad() || receptor->esRecurso()) {
+		this->receptor = receptor;
+		this->reloj = clock();
+		// SOLDADO, ALDEANO, ANIMAL // EDIFICIO, CENTRO_CIVICO, CUARTEL, CASTILLO // MADERA, COMIDA, ORO, PIEDRA
+	}
+	// ARBOL, DEFAULT
+}
+
+void Entidad::olvidarInteraccion() {
+	finalizaAccion();
+	this->receptor = NULL;
+}
+
+
+void Entidad::sufrirGolpe(int fuerzaGolpe) {
+	if (this->vidaRestante <= 0)
+		throw EntidadMurio();
+	this->vidaRestante -= fuerzaGolpe;
+	if (this->vidaRestante <= 0 && !esRecurso())
+		throw EntidadMurio();
+}
+
+int Entidad::sufrirRecoleccion() {
+	int recolectado = 5;	// hardcodeado
+	if (this->vidaRestante <= 0)
+		throw EntidadMurio();
+	this->vidaRestante -= recolectado;
+	if (this->vidaRestante < 0) {
+		recolectado += this->vidaRestante;
+		this->vidaRestante = 0;
+	}
+	return recolectado;
+}
+
+//void Entidad::interactuar() {
+	// TODO? Acción por default a con un receptor para unidades que no sean Edificio o Unidad?
+//}
+
 
 std::string Entidad::getInfo(){
-	return info;
+	ostringstream enc;
+	enc << info<<"; vida: "<<vidaRestante;	//Elegir un formato TODO
+	return enc.str();
 }
+
+std::string Entidad::getVidaString() {
+	ostringstream enc;
+	enc << vidaRestante;
+	return enc.str();
+}
+
+
 std::string Entidad::enc() {
 	ostringstream enc;
 	enc << idJug<<","<<tipo<<","<<ancho<<","<<alto;

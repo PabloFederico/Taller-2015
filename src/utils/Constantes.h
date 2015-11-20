@@ -30,6 +30,7 @@
 #define MAX_BYTES_LECTURA	2000
 
 #define DELAY_RECURSOS		60 // segundos
+#define DELAY_INTERACCION	1  // segundos???
 
 #define KEY_RESET 'r'
 

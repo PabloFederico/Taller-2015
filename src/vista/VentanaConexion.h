@@ -9,15 +9,17 @@
 #define VISTA_VENTANACONEXION_H_
 #include "../vista/Ventana.h"
 
+enum Campo { NINGUNO, IP, NOMBRE, PUERTO};
+
 class VentanaConexion : public Ventana{
 private:
 	Imagen* imagenFondo;
-	vector<Imagen*> imagenesBasura;
+	Imagen* imagenFondoCampo;
 
 public:
 	VentanaConexion(Controller *controlador);
 
-	void mostrar();
+	void run();
 
 	virtual ~VentanaConexion();
 };

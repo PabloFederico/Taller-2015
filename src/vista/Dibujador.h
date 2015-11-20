@@ -25,6 +25,7 @@ private:
 
 	void dibujarMiniMapa(Escenario* esc, SDL_Rect rect);
 	void dibujarRecuadroCamara(SDL_Rect rect, int ancho_tile, int alto_tile);
+	void dibujarRecuadroSeleccion(Escenario* esc);
 
 public:
 	Dibujador(SDL_Renderer *renderer);
@@ -33,12 +34,9 @@ public:
 	void setContenedorDeRecursos(ContenedorDeRecursos* container);
 
 	void dibujarRelieve(Escenario* esc, pair<int,int> tamVentana);
-	//void dibujarEntidades();
-	//void dibujarProtagonista(Sprite* sprite);
-	//void dibujarCapaNegra(CapaFog* capa);
+
 	void dibujarEscenario(Escenario* esc, TTF_Font* fuenteTexto, pair<int,int> tamVentana);
 	void dibujarBarraEstado(Escenario* esc, BarraEstado* barraEstado, TTF_Font *fuenteTexto);
-	bool dibujarContorno(Escenario* esc, TTF_Font* fuenteTexto);
 
 	///
 	void repintarOcupado(Escenario* esc);

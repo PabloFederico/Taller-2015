@@ -16,7 +16,6 @@ ContenedorDeRecursos::ContenedorDeRecursos(SDL_Renderer *renderer) {
 	this->mapSpritesEntidades = new Map<Entidad*, Sprite*>();
 	this->mapImagenes = new Map<TipoEntidad, Imagen*>();
 	mapImagenesUtil = new Map<TipoImagenUtil, Imagen*>();
-	imagenPetrificadaSoldado = NULL;
 }
 
 /********************************************************************************/
@@ -30,14 +29,10 @@ void ContenedorDeRecursos::cargarImagenesEntidades(vector<InfoEntidad> infoEntid
 
 	Imagen *contorno_grande = Loader::cargarImagen(this->renderer,"images/selector_tile_2.png");
 	this->mapImagenes->insert(CONTORNOXL,contorno_grande);
-	string path_aux = "";
+
 	for (unsigned i = 0; i < infoEntidades.size(); i++){
 		TipoEntidad tipo = infoEntidades[i].tipo;
 		string path = infoEntidades[i].path;
-
-		if (tipo == SOLDADO){
-			path_aux = path;
-		}
 
 		/* Nos guardamos la información de las entidades */
 		this->mapInfoEntidades[tipo] = infoEntidades[i];
@@ -46,24 +41,20 @@ void ContenedorDeRecursos::cargarImagenesEntidades(vector<InfoEntidad> infoEntid
 
 		this->mapImagenes->insert(tipo,imagen);
 	}
-
-	if (path_aux != ""){
-		imagenPetrificadaSoldado = Loader::cargarImagen(renderer,path_aux);
-	}
 }
 
 /********************************************************************************/
-void ContenedorDeRecursos::generarYGuardarSpritesEntidades(vector<PosEntidad> *posEntidades, Coordenada coord_ceros, Escenario* escenario){
+void ContenedorDeRecursos::generarYGuardarSpritesEntidades(vector<Entidad*> *posEntidades, Coordenada coord_ceros, Escenario* escenario){
 	for (unsigned i = 0; i < posEntidades->size(); i++) {
 		generarYGuardarSpriteEntidad((*posEntidades)[i], coord_ceros, escenario);
 	}
+	std::cout<<mapSpritesEntidades->size()<<" sprites creados"<<std::endl;
 }
 
-void ContenedorDeRecursos::generarYGuardarSpriteEntidad(PosEntidad posEnt, Coordenada coord_ceros, Escenario* escenario) {
-	int tile_x = posEnt.x;
-	int tile_y = posEnt.y;
+void ContenedorDeRecursos::generarYGuardarSpriteEntidad(Entidad* entidad, Coordenada coord_ceros, Escenario* escenario) {
+	int tile_x = entidad->getPosicion().x;
+	int tile_y = entidad->getPosicion().y;
 	Coordenada coord_tile(tile_x, tile_y);
-	Entidad* entidad = posEnt.entidad;
 	entidad->setTam(mapInfoEntidades[entidad->getTipo()].ancho, mapInfoEntidades[entidad->getTipo()].alto);	// Esto ya lo hace la clase FactoryEntidades
 	Coordenada coordenada = Calculador::calcularPosicionRelativa(coord_tile,coord_ceros);
 
@@ -81,7 +72,7 @@ void ContenedorDeRecursos::generarYGuardarSpriteEntidad(PosEntidad posEnt, Coord
 						posicion.y -= (1.5 * DISTANCIA_ENTRE_Y);
 						posicion.w = ANCHO_PIXEL_PASTO;
 						posicion.h = 2 * ALTO_PIXEL_PASTO;
-						sprite = new Sprite(1,1,this->getImagenTipo(ARBOL),posicion,escenario,coord_ceros);
+						sprite = new Sprite(1,1,this->getImagenTipo(ARBOL),posicion,escenario,coord_ceros,entidad);
 
 						int x_ini = posicion.x;
 						int y_ini = posicion.y;
@@ -91,30 +82,45 @@ void ContenedorDeRecursos::generarYGuardarSpriteEntidad(PosEntidad posEnt, Coord
 						break;
 			/* Modificamos los tamanios de la imagen castillo para que ocupe
 			 * los tiles que le corresponden */
-		case CASTILLO : {
-						posicion.x -= DISTANCIA_ENTRE_X * (this->mapInfoEntidades[CASTILLO].ancho - 1);
+		case CUARTEL:
+		case CENTRO_CIVICO : {
+						posicion.x -= DISTANCIA_ENTRE_X * (this->mapInfoEntidades[entidad->getTipo()].ancho - 1);
 						posicion.y = posicion.y - ALTO_PIXEL_PASTO +  DISTANCIA_ENTRE_Y / 4;
 						//posicion.w = ANCHO_PIXEL_PASTO;
 						//posicion.h = (ALTO_PIXEL_PASTO * this->mapInfoEntidades[CASTILLO].ancho + ALTO_PIXEL_PASTO) / this->mapInfoEntidades[CASTILLO].ancho;
 						//sprite = new Sprite(mapInfoEntidades[CASTILLO].ancho,mapInfoEntidades[CASTILLO].ancho,this->getImagenTipo(CASTILLO),posicion);
-						posicion.w = ANCHO_PIXEL_PASTO * this->mapInfoEntidades[CASTILLO].ancho;
-						posicion.h = ALTO_PIXEL_PASTO * this->mapInfoEntidades[CASTILLO].alto + (ALTO_PIXEL_PASTO -  DISTANCIA_ENTRE_Y / 2);
-						sprite = new Sprite(1,1,this->getImagenTipo(CASTILLO),posicion,escenario,coord_ceros);
+						posicion.w = ANCHO_PIXEL_PASTO * this->mapInfoEntidades[entidad->getTipo()].ancho;
+						posicion.h = ALTO_PIXEL_PASTO * this->mapInfoEntidades[entidad->getTipo()].alto + (ALTO_PIXEL_PASTO -  DISTANCIA_ENTRE_Y / 2);
+						sprite = new Sprite(1,1,this->getImagenTipo(entidad->getTipo()),posicion,escenario,coord_ceros,entidad);
 
 						int x_ini = posicion.x;
 						int y_ini = posicion.y;
-						Rectangulo rect1(x_ini, mapInfoEntidades[CASTILLO].ancho*ANCHO_PIXEL_PASTO, y_ini, mapInfoEntidades[CASTILLO].ancho*ALTO_PIXEL_PASTO);
+						Rectangulo rect1(x_ini, mapInfoEntidades[entidad->getTipo()].ancho*ANCHO_PIXEL_PASTO, y_ini, mapInfoEntidades[entidad->getTipo()].ancho*ALTO_PIXEL_PASTO);
 						sprite->agregarRectangulo(rect1);
 						}
 						break;
-		case SOLDADO  :
-		case JUANA_DE_ARCO :{
+		case SOLDADO  : {
+						posicion.x += ANCHO_PIXEL_PASTO / 4;
+						posicion.y -= 2;
+						posicion.w = ANCHO_PIXEL_PASTO / 2;
+						posicion.h = ALTO_PIXEL_PASTO;
+						sprite = new Sprite(DIRECCIONES,8,this->getImagenTipo(entidad->getTipo()),posicion,escenario,coord_ceros,entidad);
+
+						int x_ini = posicion.x;
+						int y_ini = posicion.y;
+						Rectangulo rect1(x_ini + 0.3*posicion.w, 0.3*posicion.w, y_ini + 0.1 * posicion.h, 0.8*posicion.h);
+						sprite->agregarRectangulo(rect1);
+						}
+						break;
+
+		case ALDEANO :{
 						posicion.x += ANCHO_PIXEL_PASTO / 4;
 						posicion.w = ANCHO_PIXEL_PASTO / 2;
 						posicion.h = ALTO_PIXEL_PASTO * 3 / 4;
 						sprite = new Sprite(DIRECCIONES,14,this->getImagenTipo(entidad->getTipo()),posicion,escenario,coord_ceros,entidad);
-						SDL_SetTextureColorMod(imagenPetrificadaSoldado->getTexture(),150,150,150);
-						sprite->agregarImagenPetrificada(imagenPetrificadaSoldado);
+						//SDL_SetTextureColorMod(imagenPetrificadaSoldado->getTexture(),150,150,150);
+						//sprite->agregarImagenPetrificada(imagenPetrificadaSoldado);
+
 						int x_ini = posicion.x;
 						int y_ini = posicion.y;
 						Rectangulo rect1(x_ini + 0.3*posicion.w, 0.3*posicion.w, y_ini + 0.1 * posicion.h, 0.8*posicion.h);
@@ -126,7 +132,7 @@ void ContenedorDeRecursos::generarYGuardarSpriteEntidad(PosEntidad posEnt, Coord
 						posicion.y -= (DISTANCIA_ENTRE_Y);
 						posicion.w = ANCHO_PIXEL_PASTO ;
 						posicion.h = 2*ALTO_PIXEL_PASTO;
-						sprite = new Sprite(DIRECCIONES,IMAGENES_DIFERENTES,this->getImagenTipo(ANIMAL),posicion,escenario,coord_ceros);
+						sprite = new Sprite(DIRECCIONES,IMAGENES_DIFERENTES,this->getImagenTipo(ANIMAL),posicion,escenario,coord_ceros,entidad);
 						sprite->activarMovimiento(true);
 
 						int x_ini = posicion.x;
@@ -137,11 +143,12 @@ void ContenedorDeRecursos::generarYGuardarSpriteEntidad(PosEntidad posEnt, Coord
 						break;
 		default       :
 						/* AGUA ó TIERRA */
-						{sprite = new Sprite(1,1,this->getImagenTipo(entidad->getTipo()),posicion,escenario,coord_ceros);
+						{sprite = new Sprite(1,1,this->getImagenTipo(entidad->getTipo()),posicion,escenario,coord_ceros,entidad);
+
 						int x_ini = posicion.x;
 						int y_ini = posicion.y;
 						Rectangulo rect1(x_ini, ANCHO_PIXEL_PASTO, y_ini, ALTO_PIXEL_PASTO);
-						 sprite->agregarRectangulo(rect1);
+						sprite->agregarRectangulo(rect1);
 						}
 						break;
 	}
@@ -149,6 +156,7 @@ void ContenedorDeRecursos::generarYGuardarSpriteEntidad(PosEntidad posEnt, Coord
 	sprite->setDelay(this->mapInfoEntidades[entidad->getTipo()].delay);
 	sprite->setFps(this->mapInfoEntidades[entidad->getTipo()].fps);
 	this->mapSpritesEntidades->insert(entidad,sprite);
+	std::cout<<"entidad : "<<entidad->getInfo()<<"   Posición : "<< entidad->getPosicion().x<<" "<<entidad->getPosicion().y<<std::endl;//
 }
 
 /********************************************************************************/
@@ -197,6 +205,18 @@ void ContenedorDeRecursos::cargarImagenesUtil(){
 
 	imagen = Loader::cargarImagen(this->renderer,"images/selector_tile_0.png");
 	this->mapImagenesUtil->insert(SELECT_TILE,imagen);
+
+	imagen = Loader::cargarImagen(this->renderer,"images/selector_tile_01.png");
+	this->mapImagenesUtil->insert(SELECT_TILE_01,imagen);
+
+	imagen = Loader::cargarImagen(this->renderer,"images/selector_tile_02.png");
+	this->mapImagenesUtil->insert(SELECT_TILE_02,imagen);
+
+	imagen = Loader::cargarImagen(this->renderer,"images/selector_tile_03.png");
+	this->mapImagenesUtil->insert(SELECT_TILE_03,imagen);
+
+	imagen = Loader::cargarImagen(this->renderer,"images/selector_tile_04.png");
+	this->mapImagenesUtil->insert(SELECT_TILE_04,imagen);
 
 	imagen = Loader::cargarImagen(this->renderer,"images/ubicacion_minimapa.png");
 	this->mapImagenesUtil->insert(CUADRO_UBICACION,imagen);
@@ -258,6 +278,9 @@ void ContenedorDeRecursos::cargarImagenesRecursos(){
 
 	imagen = Loader::cargarImagen(this->renderer,"images/comida_1.png");
 	this->mapImagenes->insert(COMIDA,imagen);
+
+	imagen = Loader::cargarImagen(this->renderer,"images/missing1.png");	// TODO AGREGAR ACÁ PATH DE PNG DE PIEDRA
+	this->mapImagenes->insert(PIEDRA,imagen);
 }
 
 /********************************************************************************/
@@ -275,11 +298,11 @@ InfoEntidad ContenedorDeRecursos::getInfoTipo(TipoEntidad tipo){
 }
 
 /********************************************************************************/
-void ContenedorDeRecursos::setearCanalAlphaParaEntidad(Entidad* entidad, int canalAlpha){
+/*void ContenedorDeRecursos::setearCanalAlphaParaEntidad(Entidad* entidad, int canalAlpha){
 	Sprite* spriteEntidad = this->getSpriteDeEntidad(entidad);
 	SDL_SetTextureAlphaMod(spriteEntidad->getImagen()->getTexture(),canalAlpha);
 }
-
+*/
 /********************************************************************************/
 ContenedorDeRecursos::~ContenedorDeRecursos() {
 	this->mapInfoEntidades.clear();
@@ -307,7 +330,5 @@ ContenedorDeRecursos::~ContenedorDeRecursos() {
 		delete sprite;
 	}
 	delete this->mapSpritesEntidades;
-
-	delete this->imagenPetrificadaSoldado;
 }
 

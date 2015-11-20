@@ -8,6 +8,7 @@
 #ifndef UTILS_EXCEPTIONS_H_
 #define UTILS_EXCEPTIONS_H_
 
+#include "Enumerados.h"
 #include <exception>
 #include <stdexcept>
 
@@ -16,6 +17,20 @@ class bad_nombreTipoEntidad: public std::invalid_argument
 public:
 	bad_nombreTipoEntidad(const std::string& message);
 	const char* what() const throw();
+};
+
+class EntidadMurio: public std::exception
+{
+public:
+	EntidadMurio();
+};
+
+class Recoleccion: public std::exception
+{
+public:
+	TipoEntidad tipo;
+	int cant;
+	Recoleccion(TipoEntidad tipo, int cant);
 };
 
 class DestinoEncontrado: public std::exception

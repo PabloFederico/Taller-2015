@@ -48,6 +48,7 @@ void VentanaJuego::cargarJuego(Juego *juego){
 		 * se cargan en el contenedor */
 
 		this->cargarImagenesYSprites(juego);
+		juego->cargaInicialDeRecursos();
 
 		controlador->posicionarCamaraEnProtagonista();
 
@@ -62,7 +63,7 @@ void VentanaJuego::cargarImagenesYSprites(Juego* juego){
 	ContenedorDeRecursos * contenedor = new ContenedorDeRecursos(renderer);
 	contenedor->cargarImagenesEntidades(juego->getInfoTiposEntidades());
 
-	vector<PosEntidad>* posEntidades = juego->getEscenario()->getVectorEntidades();
+	vector<Entidad*>* posEntidades = juego->getEscenario()->getVectorEntidades();
 
 	Coordenada coord_ceros(*juego->getCeros().first, *juego->getCeros().second);
 	contenedor->generarYGuardarSpritesEntidades(posEntidades,coord_ceros,juego->getEscenario());
@@ -86,7 +87,7 @@ void VentanaJuego::dibujar(){
 }
 
 /********************************************************************************/
-void VentanaJuego::mostrar(){
+void VentanaJuego::run(){
 		bool run = true;
 
 		SDL_Event event;
@@ -96,11 +97,13 @@ void VentanaJuego::mostrar(){
 
 		while ( run ) {
 
-				SDL_PollEvent(&event);
+				controlador->capturarEvento(event);
 
 				if (event.type == SDL_QUIT) run = false;
 
-				controlador->procesarEvento(event);
+				controlador->procesarEvento();
+
+				controlador->actualizarEstadoDelJuego();
 
 	            /* Actualiza el renderer */
 	            this->dibujar();

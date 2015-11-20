@@ -37,7 +37,7 @@ public:
 	VentanaJuego(Controller *controlador);
 
 	/* Muestra la ventana principal */
-	void mostrar();
+	void run();
 
 	virtual ~VentanaJuego();
 

@@ -80,17 +80,59 @@ void Dibujador::dibujarRelieve(Escenario* esc, pair<int,int> tamVentana){
 }
 
 /********************************************************************************/
-/*
-void Dibujador::dibujarProtagonista(Sprite* sprite){
-	// Dibujamos al player
-	SDL_Rect rect = sprite->getPosicion();
+void Dibujador::dibujarRecuadroSeleccion(Escenario* esc){
+	Coordenada c_inicial = esc->getCoordenadasRecuadro().first;
+	Coordenada c_final = esc->getCoordenadasRecuadro().second;
+	Coordenada c_horiz(c_inicial.x,c_final.y);
+	Coordenada c_vert(c_final.x,c_inicial.y);
 
-	SDL_Texture* texturePlayer = sprite->getImagen()->getTexture();
-	SDL_Rect frame = sprite->getFrameActual();
-	SDL_RenderCopy(this->renderer,texturePlayer,&frame,&rect);
+	Coordenada c_pixel_ini = Calculador::calcularPosicionRelativa(c_inicial, Coordenada(*cero_x,*cero_y));
+	Coordenada c_pixel_fin = Calculador::calcularPosicionRelativa(Coordenada(c_inicial.x,c_final.y+1),Coordenada(*cero_x,*cero_y));
+
+	int dif_x = c_final.x - c_inicial.x;
+	int dif_y = c_final.y - c_inicial.y;
+
+	SDL_Rect rect_1;
+	rect_1.x = c_pixel_ini.x;
+	rect_1.y = c_pixel_ini.y;
+	rect_1.w = ANCHO_PIXEL_PASTO;
+	rect_1.h = ALTO_PIXEL_PASTO;
+
+	SDL_Rect rect_2;
+	rect_2.x = c_pixel_fin.x;
+	rect_2.y = c_pixel_fin.y;
+	rect_2.w = ANCHO_PIXEL_PASTO;
+	rect_2.h = ALTO_PIXEL_PASTO;
+
+	Imagen* imagen_horiz = contenedor->getImagenUtilTipo(SELECT_TILE_02);
+	Imagen* imagen_vert = contenedor->getImagenUtilTipo(SELECT_TILE_01);
+	for (int i = 0; i < dif_x+1; i++){
+		SDL_RenderCopy(renderer,imagen_horiz->getTexture(), NULL, &rect_1);
+		SDL_RenderCopy(renderer,imagen_horiz->getTexture(), NULL, &rect_2);
+		rect_1.x += DISTANCIA_ENTRE_X;
+		rect_1.y += DISTANCIA_ENTRE_Y;
+		rect_2.x += DISTANCIA_ENTRE_X;
+		rect_2.y += DISTANCIA_ENTRE_Y;
+	}
+
+	c_pixel_fin = Calculador::calcularPosicionRelativa(Coordenada(c_final.x+1,c_inicial.y),Coordenada(*cero_x,*cero_y));
+
+	rect_1.x = c_pixel_ini.x;
+	rect_1.y = c_pixel_ini.y;
+
+	rect_2.x = c_pixel_fin.x;
+	rect_2.y = c_pixel_fin.y;
+
+	for (int j = 0; j < dif_y+1; j++){
+		SDL_RenderCopy(renderer,imagen_vert->getTexture(), NULL, &rect_1);
+		SDL_RenderCopy(renderer,imagen_vert->getTexture(), NULL, &rect_2);
+		rect_1.x -= DISTANCIA_ENTRE_X;
+		rect_1.y += DISTANCIA_ENTRE_Y;
+		rect_2.x -= DISTANCIA_ENTRE_X;
+		rect_2.y += DISTANCIA_ENTRE_Y;
+	}
+
 }
-*/
-
 /********************************************************************************/
 void Dibujador::dibujarEscenario(Escenario* esc, TTF_Font* fuenteTexto, pair<int,int> tamVentana){
 	for (unsigned i = 0; i < imagenesBasura.size(); i++){
@@ -99,6 +141,9 @@ void Dibujador::dibujarEscenario(Escenario* esc, TTF_Font* fuenteTexto, pair<int
 	imagenesBasura.clear();
 	/* Dibujar pasto en otro método para resolver cabeza del chabon*/
 	this->dibujarRelieve(esc, tamVentana);
+
+	if (esc->tieneRecuadroSeleccion())
+		dibujarRecuadroSeleccion(esc);
 
 	CapaFog* capaFog = esc->getCapa();
 	Imagen *imagenGris = this->contenedor->getImagenUtilTipo(CAPA_GRIS);
@@ -138,13 +183,18 @@ void Dibujador::dibujarEscenario(Escenario* esc, TTF_Font* fuenteTexto, pair<int
 						Sprite* sprite = this->contenedor->getSpriteDeEntidad(entidad);
 						SDL_Rect pos = sprite->getPosicion();
 
-						if ( entidad->getIDJug() != 0 && entidad != esc->getProtagonista() && ec == ESTADO_COLOR ){
-							Imagen* image_id = Loader::cargarTexto(renderer,fuenteTexto,entidad->getInfo());
+						if ( (entidad->getIDJug() != 0 || entidad->esRecurso()) && ec == ESTADO_COLOR ){//falta incluir animales y otras entidades con vida no Unidad ni Edificio
+							Imagen* image_id;
+							if (entidad->getIDJug() != 0 && entidad->getIDJug() != esc->getIDJug())
+								image_id = Loader::cargarTexto(renderer,fuenteTexto,entidad->getInfo());
+							else
+								image_id = Loader::cargarTexto(renderer,fuenteTexto,entidad->getVidaString());
+
 							SDL_Rect rect_id;
 							rect_id.w = image_id->getPixelsX();
 							rect_id.h = image_id->getPixelsY();
-							rect_id.x = pos.x - 10;
-							rect_id.y = pos.y - 10;
+							rect_id.x = pos.x - rect_id.w / 2;
+							rect_id.y = pos.y - 8;
 							SDL_RenderCopy(renderer,image_id->getTexture(),NULL,&rect_id);
 							imagenesBasura.push_back(image_id);
 						}
@@ -195,92 +245,6 @@ void Dibujador::dibujarEscenario(Escenario* esc, TTF_Font* fuenteTexto, pair<int
 	}
 }
 
-
- /********************************************************************************/
-bool Dibujador::dibujarContorno(Escenario* esc, TTF_Font* fuenteTexto){
-	for (unsigned i = 0; i < imagenesBasura.size(); i++){
-		delete imagenesBasura[i];
-	}
-	imagenesBasura.clear();
-
-	Imagen* contorno = contenedor->getImagenTipo(CONTORNO);
-	Imagen* contornoxl = contenedor->getImagenTipo(CONTORNOXL);
-
-	Tile* tile = esc->getTileClic();
-	if (tile == NULL) return false;
-
-	CapaFog* capaFog = esc->getCapa();
-	Coordenada c_tile = esc->getCoordTileClic();
-	if (capaFog->getEstadoTile(c_tile.x, c_tile.y) == ESTADO_NEGRO){
-		esc->setearTileClic(NULL,Coordenada(0,0));
-		return false;
-	}
-
-	vector<Entidad*> entidades = tile->getEntidades();
-	if (entidades.size() == 0) esc->setearTileClic(NULL,Coordenada(0,0));
-
-	for (unsigned k = 0; k < entidades.size(); k++){
-		Entidad* entidad = entidades[k];
-		InfoEntidad info = contenedor->getInfoTipo(entidad->getTipo());
-		string descripcion = info.descripcion;
-		Sprite* sprite = contenedor->getSpriteDeEntidad(entidad);
-		SDL_Rect pos = sprite->getPosicion();
-		pos.w = ANCHO_PIXEL_PASTO;
-		pos.h = ALTO_PIXEL_PASTO;
-
-		SDL_Rect rect_desc;
-		int width_window;
-		int height_window;
-		SDL_GetRendererOutputSize(renderer,&width_window,&height_window);
-		rect_desc.x = 250;
-		rect_desc.y = height_window - 110; // Barra arranca en 150
-		rect_desc.h = 15;
-		rect_desc.w = 10 * descripcion.size();
-
-		Imagen* image_desc = Loader::cargarTexto(renderer,fuenteTexto,descripcion);
-		imagenesBasura.push_back(image_desc);
-
-		bool realizar;
-		switch (entidad->getTipo()){
-			case SOLDADO:
-				pos.x -= 14;
-				pos.y += 10;
-				realizar = true;
-				break;
-			case ARBOL:
-				pos.y += 23;
-				realizar = true;
-				break;
-			case ANIMAL:
-				pos.x -= 5;
-				pos.y += 15;
-				realizar = true;
-				break;
-			case CASTILLO:
-				pos.w = entidad->getTam().first + 250;
-				pos.h = entidad->getTam().second + 120;
-				pos.x -= 5;
-				pos.y += 5;
-				contorno = contornoxl;
-				realizar = true;
-				break;
-			case TIERRA:
-				if (entidades.size() == 1) esc->setearTileClic(NULL,Coordenada(0,0));
-				realizar = false;
-				break;
-			default :
-				realizar = false;
-				break;
-		}
-		// Dibujo contorno de tile y descripcion en barra:
-		if (realizar == true){
-			SDL_RenderCopy(this->renderer,contorno->getTexture(),NULL,&pos);
-			SDL_RenderCopy(renderer, image_desc->getTexture(), NULL, &rect_desc);
-		}
-
-	}
-	return true; //agregado por MC
-}
 /********************************************************************************/
 void Dibujador::dibujarBarraEstado(Escenario* esc, BarraEstado* barraEstado, TTF_Font* fuenteTexto){
 	for (unsigned i = 0; i < imagenesBasura.size(); i++){
@@ -363,7 +327,7 @@ void Dibujador::dibujarBarraEstado(Escenario* esc, BarraEstado* barraEstado, TTF
 	rect_num.w = 10;
 	rect_num.h = 10;
 
-	map<TipoEntidad, int> mapRecursosEconomicos = barraEstado->getRecursosEconomicos();
+	map<TipoEntidad, int> mapRecursosEconomicos = barraEstado->getMapRecursosEconomicos();
 
 	for (int i = MADERA; i <= ORO; i++){
 		int cantidad = mapRecursosEconomicos[(TipoEntidad)i];
@@ -434,8 +398,8 @@ void Dibujador::dibujarMiniMapa(Escenario* esc, SDL_Rect rect){
 
 					switch (entidad->getTipo()){
 						case SOLDADO:
-						case JUANA_DE_ARCO:
-								image = contenedor->getImagenUtilTipo((TipoImagenUtil)entidad->getIDJug());
+						case ALDEANO:
+								image = contenedor->getImagenUtilTipo((TipoImagenUtil)entidad->getIDJug());	// hasta 3 jugadores!! alto hardcodeo TODO
 								rect_aux.w = 3;
 								rect_aux.h = 3;
 								if (estadoCapa == ESTADO_COLOR){

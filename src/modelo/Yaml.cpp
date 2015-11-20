@@ -19,8 +19,10 @@ ConfiguracionJuego Yaml::cargarConfiguracionJuego(std::string archivoConfig){
 		tipos["tierra"] = TIERRA;
 		tipos["agua"] = AGUA;
 		tipos["castillo"] = CASTILLO;
+		tipos["cuartel"] = CUARTEL;
+		tipos["centro_civico"] = CENTRO_CIVICO;
 		tipos["soldado"] = SOLDADO;
-		tipos["juana_de_arco"] = JUANA_DE_ARCO;
+		tipos["aldeano"] = ALDEANO;
 		tipos["animal"] = ANIMAL;
 
 
@@ -118,7 +120,7 @@ ConfiguracionJuego Yaml::cargarConfiguracionJuego(std::string archivoConfig){
 
 					} else Log::imprimirALog(ERR,"Error: Tipo '" + ent["tipo"].as<string>() + "' desconocido");
 				}
-
+				/*
 				YAML::Node protag = unEscenario["protagonista"][0];
 				infoEsc.protagonista = SOLDADO;	//hardcodeo
 				if (tipos[protag["tipo"].as<string>()] == 0)
@@ -127,6 +129,7 @@ ConfiguracionJuego Yaml::cargarConfiguracionJuego(std::string archivoConfig){
 
 				infoEsc.posX_protagonista = Calculador::ChequeoDeBorde(infoEsc.size_x-1, protag["x"].as<int>());
 				infoEsc.posY_protagonista = Calculador::ChequeoDeBorde(infoEsc.size_y-1, protag["y"].as<int>());
+				*/
 				// Asume que protagnista ocupa un único tile
 			//}
 		} else {
@@ -168,8 +171,10 @@ ConfiguracionJuego Yaml::OdioYAML() {
 		tipos["tierra"] = TIERRA;
 		tipos["agua"] = AGUA;
 		tipos["castillo"] = CASTILLO;
+		tipos["cuartel"] = CUARTEL;
+		tipos["centro_civico"] = CENTRO_CIVICO;
 		tipos["soldado"] = SOLDADO;
-		tipos["juana_de_arco"] = JUANA_DE_ARCO;
+		tipos["aldeano"] = ALDEANO;
 		tipos["animal"] = ANIMAL;
 
 	configDefault.nombreJugador = "JugadorXXX";
@@ -178,7 +183,7 @@ ConfiguracionJuego Yaml::OdioYAML() {
 	configDefault.alto_pantalla = 600;
 	configDefault.margen_scroll = 20;
 	configDefault.vel_personaje = 50;
-	configDefault.rango_vision = 10;
+	configDefault.rango_vision = 5;
 
 
 	InfoEntidad infoArbol;
@@ -193,25 +198,25 @@ ConfiguracionJuego Yaml::OdioYAML() {
 	InfoEntidad infoAgua;
 	infoAgua.tipo = tipos["agua"];
 	infoAgua.path = "images/agua.png";
-
+/*
 	InfoEntidad infoCastillo;
 	infoCastillo.tipo = tipos["castillo"];
 	infoCastillo.path = "images/casss.png";
 	infoCastillo.ancho = 4;
 	infoCastillo.alto = 4;
 	infoCastillo.descripcion = "Castillo";
-
+*/
 	InfoEntidad infoSoldado;
 	infoSoldado.tipo = tipos["soldado"];
-	infoSoldado.path = "images/chabon000.png";
+	infoSoldado.path = "images/soldado.png";
 	infoSoldado.fps = 40;
 	infoSoldado.descripcion = "Soldado";
 
-	InfoEntidad infoJuana;
-	infoJuana.tipo = tipos["juana_de_arco"];
-	infoJuana.path = "images/juanita.png";
-	infoJuana.fps = 10;
-	infoJuana.descripcion = "Juana";
+	InfoEntidad infoAldeano;
+	infoAldeano.tipo = tipos["aldeano"];
+	infoAldeano.path = "images/aldeano.png";
+	infoAldeano.fps = 40;
+	infoAldeano.descripcion = "Aldeano";
 
 	InfoEntidad infoAnimal;
 	infoAnimal.tipo = tipos["animal"];
@@ -220,11 +225,22 @@ ConfiguracionJuego Yaml::OdioYAML() {
 	infoAnimal.fps = 10;
 	infoAnimal.descripcion = "Animal";
 
+	InfoEntidad infoCuartel;
+	infoCuartel.tipo = tipos["cuartel"];
+	infoCuartel.path = "images/cuartel.png";
+	infoCuartel.descripcion = "Cuartel";
+
+	InfoEntidad infoCentroCivico;
+	infoCentroCivico.tipo = tipos["centro_civico"];
+	infoCentroCivico.path = "images/centro_civico.png";
+	infoCentroCivico.descripcion = "Centro Civico";
+
 	configDefault.agregarInfoEntidad(infoArbol);
 	configDefault.agregarInfoEntidad(infoAgua);
-	configDefault.agregarInfoEntidad(infoCastillo);
+	configDefault.agregarInfoEntidad(infoCuartel);
+	configDefault.agregarInfoEntidad(infoCentroCivico);
 	configDefault.agregarInfoEntidad(infoSoldado);
-	configDefault.agregarInfoEntidad(infoJuana);
+	configDefault.agregarInfoEntidad(infoAldeano);
 	configDefault.agregarInfoEntidad(infoAnimal);
 	configDefault.agregarInfoEntidad(infoTierra);
 
@@ -256,16 +272,11 @@ InfoEscenario Yaml::infoEscenarioDefault() {
 	infoEscenario.agregarEntidad(std::make_pair(5,5), ARBOL);
 	infoEscenario.agregarEntidad(std::make_pair(4,12), ARBOL);
 
-	infoEscenario.agregarEntidad(std::make_pair(0,10), CASTILLO);
 
 	infoEscenario.agregarEntidad(std::make_pair(10,14), ANIMAL);
 
 	//código de prueba
 	std::cout<<infoEscenario.getPosicionesEntidades().size()<<std::endl;
-
-	infoEscenario.protagonista = SOLDADO;
-	infoEscenario.posX_protagonista = 3;
-	infoEscenario.posY_protagonista = 3;
 
 	return infoEscenario;
 }
