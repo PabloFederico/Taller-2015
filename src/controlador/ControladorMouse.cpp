@@ -108,7 +108,7 @@ void ControladorMouse::procesarClickDerecho(Mouse* mouse){
 
 			// Interactuar con nueva entidad cliqueada
 			if (entidadReceptora != NULL) {
-				entidadReceptora->interactuarCon(entidadReceptora);
+				unidades[i]->interactuarCon(entidadReceptora);
 			// Moverse a una posición vacía
 			} else {
 				Sprite* spriteUnidad = juego->getSpritesEntidades()->find(unidades[i])->second;
