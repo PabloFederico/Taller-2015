@@ -80,15 +80,18 @@ void Controller::capturarEvento(SDL_Event &event){
 
 	while (SDL_PollEvent(&event)){
 		int x,y;
+		SDL_GetMouseState(&x,&y);
+		mouse->setXY(Coordenada(x,y));
 		switch (event.type){
 		case SDL_MOUSEBUTTONDOWN:
 			if (event.button.button == SDL_BUTTON_LEFT){
-				SDL_GetMouseState(&x,&y);
-				mouse->setXY(Coordenada(x,y));
-				mouse->pulsar_click_izq();
 				mouse->setEstado(CLICK_IZQUIERDO);
 			}
 			else{
+				if (mouse->getEstado() != CLICK_DER_MOV)
+					mouse->setEstado(CLICK_DERECHO);
+				}
+/*
 				bool siguePresionado = true;
 				SDL_GetMouseState(&x,&y);
 				mouse->inicializarCoordenadaAnterior(Coordenada(x,y));
@@ -106,26 +109,29 @@ void Controller::capturarEvento(SDL_Event &event){
 					std::cout <<mouse->getXY().x<<":"<<mouse->getXY().y<<"\n";
 					mouse->setEstado(CLICK_DER_MOV);
 				}else mouse->setEstado(CLICK_DERECHO);
-
-			}
+*/
 			//}
 			break;
 
 		case SDL_MOUSEBUTTONUP:
-			mouse->soltar_click_izq();
-			mouse->soltar_click_der();
+			mouse->setEstado(NO_CLICK);
 			break;
 
 		case SDL_MOUSEMOTION:
 			SDL_GetMouseState(&x,&y);
-			mouse->setXY(Coordenada(x,y));
 			break;
 
 		default:
-			//mouse->soltar_click_izq();
-			//mouse->soltar_click_der();
 			break;
 		}
+
+		if (event.type == SDL_MOUSEMOTION){
+			if (mouse->getEstado() == CLICK_DERECHO){
+				mouse->setXY_anterior(Coordenada(x,y));
+				mouse->setEstado(CLICK_DER_MOV);
+			}
+		}
+
 	} // End while
 
 

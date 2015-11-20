@@ -87,7 +87,7 @@ void Dibujador::dibujarRecuadroSeleccion(Escenario* esc){
 	Coordenada c_vert(c_final.x,c_inicial.y);
 
 	Coordenada c_pixel_ini = Calculador::calcularPosicionRelativa(c_inicial, Coordenada(*cero_x,*cero_y));
-	Coordenada c_pixel_fin = Calculador::calcularPosicionRelativa(Coordenada(c_inicial.x,c_final.y),Coordenada(*cero_x,*cero_y));
+	Coordenada c_pixel_fin = Calculador::calcularPosicionRelativa(Coordenada(c_inicial.x,c_final.y+1),Coordenada(*cero_x,*cero_y));
 
 	int dif_x = c_final.x - c_inicial.x;
 	int dif_y = c_final.y - c_inicial.y;
@@ -106,7 +106,7 @@ void Dibujador::dibujarRecuadroSeleccion(Escenario* esc){
 
 	Imagen* imagen_horiz = contenedor->getImagenUtilTipo(SELECT_TILE_02);
 	Imagen* imagen_vert = contenedor->getImagenUtilTipo(SELECT_TILE_01);
-	for (int i = 0; i < dif_x; i++){
+	for (int i = 0; i < dif_x+1; i++){
 		SDL_RenderCopy(renderer,imagen_horiz->getTexture(), NULL, &rect_1);
 		SDL_RenderCopy(renderer,imagen_horiz->getTexture(), NULL, &rect_2);
 		rect_1.x += DISTANCIA_ENTRE_X;
@@ -115,7 +115,7 @@ void Dibujador::dibujarRecuadroSeleccion(Escenario* esc){
 		rect_2.y += DISTANCIA_ENTRE_Y;
 	}
 
-	c_pixel_fin = Calculador::calcularPosicionRelativa(Coordenada(c_final.x,c_inicial.y),Coordenada(*cero_x,*cero_y));
+	c_pixel_fin = Calculador::calcularPosicionRelativa(Coordenada(c_final.x+1,c_inicial.y),Coordenada(*cero_x,*cero_y));
 
 	rect_1.x = c_pixel_ini.x;
 	rect_1.y = c_pixel_ini.y;
@@ -123,7 +123,7 @@ void Dibujador::dibujarRecuadroSeleccion(Escenario* esc){
 	rect_2.x = c_pixel_fin.x;
 	rect_2.y = c_pixel_fin.y;
 
-	for (int j = 0; j < dif_y; j++){
+	for (int j = 0; j < dif_y+1; j++){
 		SDL_RenderCopy(renderer,imagen_vert->getTexture(), NULL, &rect_1);
 		SDL_RenderCopy(renderer,imagen_vert->getTexture(), NULL, &rect_2);
 		rect_1.x -= DISTANCIA_ENTRE_X;

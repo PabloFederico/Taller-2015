@@ -31,8 +31,8 @@ void ControladorMouse::procesarMouse(Mouse* mouse){
 			case CLICK_IZQ_MOV:   break;
 			default : break;
 		}
-
-		mouse->setEstado(NO_CLICK);
+		if (mouse->getEstado() != CLICK_DER_MOV)
+			mouse->setEstado(NO_CLICK);
 	}
 }
 
@@ -75,7 +75,7 @@ void ControladorMouse::procesarClickIzquierdo(Mouse* mouse){
 
 	if (escenario->getEntidadSeleccionada() != NULL){
 		juego->getBarraEstado()->setInformacion(escenario->getEntidadSeleccionada()->getInfo());
-	}
+	}else juego->getBarraEstado()->setInformacion(" ");
 }
 
 void ControladorMouse::procesarClickDerecho(Mouse* mouse){
@@ -86,6 +86,7 @@ void ControladorMouse::procesarClickDerecho(Mouse* mouse){
 	int cant_unid_seleccionadas = unidades.size();
 
 	if (cant_unid_seleccionadas > 0) {
+	  juego->getEscenario()->setearTileClic(NULL,Coordenada(0,0));
 	  for (int i = 0; i <cant_unid_seleccionadas; i++){
 		Sprite* spriteUnidad = juego->getSpritesEntidades()->find(unidades[i])->second;
 		Coordenada coord_pixel_sprite = spriteUnidad->getPosPies();
@@ -118,7 +119,7 @@ void ControladorMouse::procesarArrastreClickDerecho(Mouse* mouse){
 		if (c_tile_inicial != c_tile_final){
 
 			juego->getEscenario()->agregarCoordenadasRecuadroSeleccion(c_tile_inicial,c_tile_final);
-
+			juego->getEscenario()->setearTileClic(NULL,Coordenada(0,0));
 			for (Coordenada c1 = c_tile_inicial; c1.y <= c_tile_final.y; c1.y++){
 				for (Coordenada c2 = c1; c2.x <= c_tile_final.x ; c2.x++){
 					Tile* tile = juego->getEscenario()->getTile(c2);
