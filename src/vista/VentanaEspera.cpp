@@ -18,8 +18,8 @@ VentanaEspera::VentanaEspera(Controller* controlador):Ventana(controlador) {
 
 void VentanaEspera::run(){
 	SDL_Rect rect_wait;
-	rect_wait.x = 700;
-	rect_wait.y = 590;
+	rect_wait.x = 500;
+	rect_wait.y = 550;
 	rect_wait.w = imagenEsperando->getPixelsX();
 	rect_wait.h = imagenEsperando->getPixelsY();
 
@@ -27,10 +27,10 @@ void VentanaEspera::run(){
 	std::string texto = "Esperando Conexiones";
 	int time = SDL_GetTicks();
 	bool esperando = true;
-
+	SDL_Event e;
 	while (esperando){
 		SDL_RenderClear(renderer);
-
+		SDL_PollEvent(&e);
 		if (SDL_GetTicks()-time > 1000){
 			texto = texto + ".";
 			imagenesBasura.push_back(imagenEsperando);
@@ -47,7 +47,7 @@ void VentanaEspera::run(){
 			rect_wait.w = imagenEsperando->getPixelsX();
 			rect_wait.h = imagenEsperando->getPixelsY();
 		}
-		if (contador > 5){
+		if (contador > 8){
 			esperando = false;
 		}
 

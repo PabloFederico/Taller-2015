@@ -4,6 +4,7 @@
 #include "../controlador/Controller.h"
 #include "../vista/VentanaJuego.h"
 #include "../vista/VentanaConexion.h"
+#include "../vista/VentanaEspera.h"
 //#include "../red/Connection.h"
 
 int main(int argc, char** argv) {
@@ -29,7 +30,8 @@ int main(int argc, char** argv) {
 		Controller *controller = new Controller();//lan);
 		VentanaJuego *ventana = new VentanaJuego(controller);
 		//VentanaConexion *ventana = new VentanaConexion(controller);
-		ventana->mostrar();
+		//VentanaEspera *ventana = new VentanaEspera(controller);
+		ventana->run();
 
 		delete ventana;
 		delete controller;
