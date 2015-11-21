@@ -276,7 +276,7 @@ bool Sprite::quedaCaminoPorRecorrer(){
 bool Sprite::revisarCamino(Coordenada c_punto_actual) {
 	Coordenada c_prox_punto = this->getCaminoARecorrer()[0];
 	try {
-		Coordenada   c_prox_tile = Calculador::tileParaPixel(  c_prox_punto, coord_ceros);
+		Coordenada c_prox_tile = Calculador::tileParaPixel(c_prox_punto, coord_ceros);
 		if (!(this->escenario->tileEsOcupable(c_prox_tile))) {
 			Coordenada c_pix_destino = getCaminoARecorrer().back();
 			Coordenada c_tile_destino = Calculador::tileParaPixel(c_pix_destino, coord_ceros);
