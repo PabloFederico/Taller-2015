@@ -7,6 +7,7 @@
 
 #include "../vista/VentanaJuego.h"
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_mixer.h>
 #include "../utils/Constantes.h"
 #include "../vista/Camara.h"
 
@@ -54,6 +55,13 @@ void VentanaJuego::cargarJuego(Juego *juego){
 
 		string nombreJugador = juego->getNombreJugador();
 		SDL_SetWindowTitle(window,nombreJugador.c_str());
+
+		//Cargamos la música de fondo.
+		Mix_Music *musica;
+		musica = Mix_LoadMUS("sound/fondo.mp3");
+		if (musica == NULL) printf("Error al cargar la cancion. Error: %s\n", Mix_GetError());
+		else this->musica_fondo = musica;
+
 	}
 }
 
@@ -81,7 +89,6 @@ void VentanaJuego::dibujar(){
 
 	dibujador->dibujarEscenario(escenario, fuenteTexto, pair<int,int>(this->SCREEN_WIDTH,this->SCREEN_HEIGHT));
 	dibujador->dibujarBarraEstado(escenario, barraEstado, fuenteTexto);
-	//dibujador->dibujarContorno(escenario, fuenteTexto);
 
 	SDL_RenderPresent(this->renderer);
 }
@@ -89,6 +96,11 @@ void VentanaJuego::dibujar(){
 /********************************************************************************/
 void VentanaJuego::run(){
 		bool run = true;
+
+		//Arranca la musica.
+		if (Mix_PlayingMusic() == 0){
+			Mix_PlayMusic(musica_fondo, -1);
+		}
 
 		SDL_Event event;
 		SDL_Cursor* cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_HAND);

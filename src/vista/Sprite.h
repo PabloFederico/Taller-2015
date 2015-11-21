@@ -8,6 +8,7 @@
 #ifndef VISTA_SPRITE_H_
 #define VISTA_SPRITE_H_
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
 #include <vector>
 #include "../utils/Calculador.h"
 #include "../utils/Structs.h"
@@ -109,7 +110,7 @@ public:
 
 	void acomodar();
 
-	void update(int vel_personaje);
+	void update(int vel_personaje, Mix_Chunk* sonido_caminar);
 
 	virtual ~Sprite();
 };
