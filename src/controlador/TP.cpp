@@ -1,5 +1,6 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_mixer.h>
 //#include "../red/Server.h"
 #include "../controlador/Controller.h"
 #include "../vista/VentanaJuego.h"
@@ -27,6 +28,13 @@ int main(int argc, char** argv) {
 	} else {//if (server == NULL) {
 		TTF_Init();
 
+		//Inicializo el Mixer:
+		if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0){
+			printf ("Error al inicializar SDL_mixer. Error: %s\n", Mix_GetError());
+			return -1;
+		}
+
+
 		Controller *controller = new Controller();//lan);
 		VentanaJuego *ventana = new VentanaJuego(controller);
 		//VentanaConexion *ventana = new VentanaConexion(controller);
@@ -38,6 +46,7 @@ int main(int argc, char** argv) {
 		SDL_Quit();
 		IMG_Quit();
 		TTF_Quit();
+		Mix_Quit();
 		//delete lan;
 	}
 

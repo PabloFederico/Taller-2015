@@ -6,6 +6,7 @@
  */
 
 #include "../vista/Sprite.h"
+#include "../utils/ContenedorDeSonidos.h"
 
 /********************************************************************************/
 Sprite::Sprite(int cant_Direcciones, Uint32 cant_Img_Distintas, Imagen* imagen,
@@ -298,9 +299,11 @@ void Sprite::acomodar(){
 
 
 /********************************************************************************/
-void Sprite::update(int vel_personaje) {
+void Sprite::update(int vel_personaje, Mix_Chunk* sonido_caminar) {
 	if (this->quedaCaminoPorRecorrer()) {
 
+		// Activo sonido del movimiento:
+		Mix_PlayChannel(1, sonido_caminar, 0);
 		/*	- calcular distancia al sig punto
 		 *  - si es mayor a 1, seguir moviendo la posicion
 		 *    sino cambiar al siguiente punto del camino (analizando la dirección)
@@ -345,12 +348,13 @@ void Sprite::update(int vel_personaje) {
 			} else // Se acaba de terminar el camino, que es de un solo paso.
 				throw PasoCompletado(entidad->getIDJug());
 		}
-
 	} else {
 		/* Cuando se deja de mover, se debería quedar en
 		 * una posición firme correspondiente a su dirección. */
 		 this->activarMovimiento(false);
 		 this->acomodar();
+		 // Paro el sonido:
+		 Mix_HaltChannel(1);
 	}
 
            // bool hayColision = DetectorDeColisiones::verificarColisiones(this,juego->getSpritesEntidades());

@@ -26,6 +26,8 @@ enum TipoMensajeRed { MENSAJE, PING, COMIENZO, ESCENARIO, MOVIMIENTO, PASO_COMPL
 
 enum TipoBoton { BOTON_NADA, BOTON_NAME, BOTON_NUEVA_PARTIDA, BOTON_SELECTOR_ESCENARIO, BOTON_CARGAR_PARTIDA, BOTON_EXIT };
 
+enum TipoSonido { CAMINAR };
+
 /* Tipos de Log:
  * * INFO = Error Informátivo
  * * WAR  = Warning

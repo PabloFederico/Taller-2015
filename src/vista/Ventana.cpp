@@ -17,6 +17,7 @@ Ventana::Ventana(Controller *controlador) {
 	this->window = NULL;
 	this->renderer = NULL;
 	this->fuenteTexto = NULL;
+	this->musica_fondo = NULL;
 	this->controlador = controlador;
 }
 
@@ -45,6 +46,9 @@ void Ventana::close(){
 
 	TTF_CloseFont(fuenteTexto);
 	fuenteTexto = NULL;
+
+	Mix_FreeMusic(musica_fondo);
+	musica_fondo = NULL;
 }
 
 /********************************************************************************/

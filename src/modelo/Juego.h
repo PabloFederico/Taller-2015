@@ -13,6 +13,7 @@
 
 #include "../utils/Map.h"
 #include "../utils/ContenedorDeRecursos.h"
+#include "../utils/ContenedorDeSonidos.h"
 #include "../utils/Exceptions.h"
 #include "../modelo/Entidad.h"
 #include "../modelo/BarraEstado.h"
@@ -39,6 +40,8 @@ private:
 	Escenario *escenario;
 
 	vector<Unidad* >* enemigos;
+
+	ContenedorDeSonidos *contenedorSonidos;
 
 	//Connection* connection;
 
@@ -85,6 +88,8 @@ public:
 	vector<Sprite*> getSpritesProtagonistas();
 
 	//PosEntidad getPosEntDeProtagonista();
+
+	Mix_Chunk* getSonidoTipo(TipoSonido tipo);
 
 	pair<int,int> getDimensionVentana();
 	int getVelocidad();

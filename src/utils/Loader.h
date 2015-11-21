@@ -11,6 +11,7 @@
 #include <SDL2/SDL_image.h>
 #include <string>
 #include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_mixer.h>
 #include "../vista/Imagen.h"
 
 class Loader {
@@ -47,6 +48,11 @@ public:
 		SDL_FreeSurface(surface);
 		surface = NULL;
 		return imagen;
+	}
+
+	static Mix_Chunk* cargarSonido(std::string path){
+		Mix_Chunk* sonido = Mix_LoadWAV(path.c_str());
+		return sonido;
 	}
 };
 

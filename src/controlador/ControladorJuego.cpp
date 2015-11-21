@@ -57,7 +57,7 @@ void ControladorJuego::actualizarJuego(Mouse* mouse){
 	for (vector<Sprite*>::iterator it = spritesProtagonistas.begin(); it < spritesProtagonistas.end(); ++it) {
 		if ((*it)->estaEnMovimiento())
 			try {
-				(*it)->update(juego->getVelocidad());
+				(*it)->update(juego->getVelocidad(), juego->getSonidoTipo(CAMINAR));
 			} catch ( PasoCompletado &e ) {
 				//Proxy::completePaso(lan, e.id);
 			}

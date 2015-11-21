@@ -9,6 +9,7 @@
 #define VISTA_VENTANA_H_
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_mixer.h>
 #include "../controlador/Controller.h"
 
 class Ventana {
@@ -17,6 +18,7 @@ protected:
 	SDL_Window *window;
 	SDL_Renderer *renderer;
 	TTF_Font *fuenteTexto;
+	Mix_Music *musica_fondo;
 	int SCREEN_WIDTH;
 	int SCREEN_HEIGHT;
 

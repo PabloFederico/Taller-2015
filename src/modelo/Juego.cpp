@@ -22,8 +22,10 @@ Juego::Juego(){
 	this->fabricaDeEntidades = NULL;
 	this->enemigos = new vector<Unidad*>();
 	this->jugador = NULL;
+	this->contenedorSonidos = NULL;
 	this->cargarNumJugador();
 	this->cargarJuego();//infoEscRed, posInicial);
+
 }
 
 /********************************************************************************/
@@ -104,6 +106,8 @@ void Juego::cargarJuego(){//InfoEscenario* infoEscRed = NULL, Coordenada *posIni
 	escenario->getCapa()->setRangoDeVision(configGame.rango_vision);
 	//this->protagonista = this->escenario->getProtagonista();
 	this->barraEstado = new BarraEstado(configGame.ancho_pantalla, 150, jugador); // Podría ser proporcional al tamaño de la ventana (MC)
+
+	this->contenedorSonidos = new ContenedorDeSonidos();
 }
 
 /********************************************************************************/
@@ -211,6 +215,12 @@ BarraEstado* Juego::getBarraEstado(){
 }
 
 /***************************************************/
+Mix_Chunk* Juego::getSonidoTipo(TipoSonido tipo){
+	return this->contenedorSonidos->getSonidoTipo(tipo);
+}
+
+
+/***************************************************/
 //bool Juego::esCliente() {
 //	return (this->connection != NULL);
 //}
@@ -312,5 +322,6 @@ Juego::~Juego() {
 	delete this->escenario;
 	delete this->contenedor;
 	delete this->barraEstado;
+	delete this->contenedorSonidos;
 	delete jugador;
 }
