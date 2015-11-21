@@ -179,8 +179,8 @@ ConfiguracionJuego Yaml::OdioYAML() {
 
 	configDefault.nombreJugador = "JugadorXXX";
 	configDefault.direccion_ip = "10.0.0.1";
-	configDefault.ancho_pantalla = 900;
-	configDefault.alto_pantalla = 600;
+	configDefault.ancho_pantalla = 1080;
+	configDefault.alto_pantalla = 640;
 	configDefault.margen_scroll = 20;
 	configDefault.vel_personaje = 50;
 	configDefault.rango_vision = 5;

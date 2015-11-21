@@ -227,7 +227,7 @@ void Escenario::setearTileClic(Tile* tile, Coordenada c_tile){
 	if (tile == NULL) entidadSeleccionada = NULL;
 	if ((tile != NULL) && (capa->getEstadoTile(c_tile.x, c_tile.y) == ESTADO_COLOR)) {
 		 Entidad *entAux = obtenerEntidadOcupadoraEnTile(tile);
-		 if (entAux != NULL)
+		// if (entAux != NULL)
 			 this->entidadSeleccionada = entAux;
 	}
 }

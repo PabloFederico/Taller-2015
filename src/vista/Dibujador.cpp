@@ -311,18 +311,18 @@ void Dibujador::dibujarBarraEstado(Escenario* esc, BarraEstado* barraEstado, TTF
 	Imagen* imagen_barra_negra = contenedor->getImagenUtilTipo(BARRA_NEGRA);
 	SDL_Rect rect_barra_negra;
 	rect_barra_negra.x = 0;
-	rect_barra_negra.y = rect_barra.y + 3;
-	rect_barra_negra.w = 60;
-	rect_barra_negra.h = 15;
+	rect_barra_negra.y = rect_barra.y + 1;
+	rect_barra_negra.w = 70;
+	rect_barra_negra.h = 20;
 
 	SDL_Rect rect_recurso;
 	rect_recurso.x = 5;
 	rect_recurso.y = rect_barra.y + 4;
-	rect_recurso.w = 10;
-	rect_recurso.h = 10;
+	rect_recurso.w = 15;
+	rect_recurso.h = 15;
 
 	SDL_Rect rect_num;
-	rect_num.x = rect_barra_negra.w - 10;
+	rect_num.x = rect_barra_negra.w - 15;
 	rect_num.y = rect_barra.y + 6;
 	rect_num.w = 10;
 	rect_num.h = 10;
@@ -347,7 +347,7 @@ void Dibujador::dibujarBarraEstado(Escenario* esc, BarraEstado* barraEstado, TTF
 		SDL_RenderCopy(renderer, image_num->getTexture(), NULL, &rect_num);
 		rect_barra_negra.x += rect_barra_negra.w + 15;
 		rect_recurso.x = rect_barra_negra.x + 5;
-		rect_num.x = rect_barra_negra.x + rect_barra_negra.w - 10;
+		rect_num.x = rect_barra_negra.x + rect_barra_negra.w - 15;
 	}
 
 	/********************************************************************************/

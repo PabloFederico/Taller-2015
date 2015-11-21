@@ -33,6 +33,11 @@ void ControladorMouse::procesarMouse(Mouse* mouse){
 		}
 		if (mouse->getEstado() != CLICK_DER_MOV)
 			mouse->setEstado(NO_CLICK);
+
+		// Actualizamos la barra
+		if (juego->getEscenario()->getEntidadSeleccionada() != NULL){
+			juego->getBarraEstado()->setInformacion(juego->getEscenario()->getEntidadSeleccionada()->getInfo());
+		} else juego->getBarraEstado()->setInformacion(" ");
 	}
 }
 
@@ -57,7 +62,7 @@ bool ControladorMouse::procesarClickEnVentana(Mouse* mouse, Tile** tile_clic, Co
 		// Cambiar el estado de la unidad
 	}
 	if (clicEnMapa){
-		juego->getJugador()->liberarUnidadesSeleccionadas();
+		if (mouse->getEstado() == CLICK_IZQUIERDO) juego->getJugador()->liberarUnidadesSeleccionadas();
 		try{
 			*c_tile_clic = Calculador::tileParaPixel(mouse->getXY(), coord_pixel_ceros);
 			if (Calculador::puntoContenidoEnEscenario(*c_tile_clic, escenario)) {
@@ -86,10 +91,6 @@ void ControladorMouse::procesarClickIzquierdo(Mouse* mouse){
 		if (escenario->getEntidadSeleccionada() != NULL && juego->getIDJugador() == escenario->getEntidadSeleccionada()->getIDJug())
 			juego->getJugador()->agregarUnidadSeleccionada((Unidad*)escenario->getEntidadSeleccionada());
 	}
-
-	if (escenario->getEntidadSeleccionada() != NULL){
-		juego->getBarraEstado()->setInformacion(escenario->getEntidadSeleccionada()->getInfo());
-	} else juego->getBarraEstado()->setInformacion(" ");
 }
 
 void ControladorMouse::procesarClickDerecho(Mouse* mouse){
@@ -103,12 +104,13 @@ void ControladorMouse::procesarClickDerecho(Mouse* mouse){
 	if (cant_unid_seleccionadas > 0 && procesarClickEnVentana(mouse, &tile_clic, &c_tile_clic)) {
 		escenario->setearTileClic(tile_clic, c_tile_clic);
 		Entidad* entidadReceptora = escenario->getEntidadSeleccionada();
-		//juego->getEscenario()->setearTileClic(NULL,Coordenada(0,0)); Para qué es esto???
+		juego->getEscenario()->setearTileClic(NULL,Coordenada(0,0)); //Para qué es esto???
 		for (int i = 0; i < cant_unid_seleccionadas; i++){
 
 			// Interactuar con nueva entidad cliqueada
 			if (entidadReceptora != NULL) {
 				unidades[i]->interactuarCon(entidadReceptora);
+				std::cout<<unidades[i]->getInfo()<<" intentó interactuar con Entidad : "<<entidadReceptora->getInfo()<<"\n";
 			// Moverse a una posición vacía
 			} else {
 				Sprite* spriteUnidad = juego->getSpritesEntidades()->find(unidades[i])->second;
