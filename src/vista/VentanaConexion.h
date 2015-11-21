@@ -19,7 +19,7 @@ private:
 public:
 	VentanaConexion(Controller *controlador);
 
-	void run();
+	EstadoFinVentana run();
 
 	virtual ~VentanaConexion();
 };

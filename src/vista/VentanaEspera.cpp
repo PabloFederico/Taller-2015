@@ -12,11 +12,13 @@ VentanaEspera::VentanaEspera(Controller* controlador):Ventana(controlador) {
 	if (!init()) std::cout << "error" << std::endl;
 	imagenFondo = Loader::cargarImagen(renderer,"images/fondo_ventana_espera.png");
 	fuenteTexto = TTF_OpenFont("images/censcbk.ttf",TAM_LETRA_CONEXION);
-	imagenEsperando = Loader::cargarTexto(renderer,fuenteTexto,"Esperando Conexiones...");
+	imagenEsperando = Loader::cargarTexto(renderer,fuenteTexto,"Esperando Conexiones");
 
 }
 
-void VentanaEspera::run(){
+EstadoFinVentana VentanaEspera::run(){
+	EstadoFinVentana estado = OK;
+
 	SDL_Rect rect_wait;
 	rect_wait.x = 500;
 	rect_wait.y = 550;
@@ -31,9 +33,13 @@ void VentanaEspera::run(){
 	while (esperando){
 		SDL_RenderClear(renderer);
 		SDL_PollEvent(&e);
+		if (e.type == SDL_QUIT){
+			esperando = false;
+			estado = EXIT;
+		}
 		if (SDL_GetTicks()-time > 1000){
 			texto = texto + ".";
-			imagenesBasura.push_back(imagenEsperando);
+			delete imagenEsperando;
 			imagenEsperando = Loader::cargarTexto(renderer,fuenteTexto,texto);
 			rect_wait.w = imagenEsperando->getPixelsX();
 			rect_wait.h = imagenEsperando->getPixelsY();
@@ -42,12 +48,12 @@ void VentanaEspera::run(){
 		}
 		if (contador % 4 == 0){
 			texto = "Esperando Conexiones";
-			imagenesBasura.push_back(imagenEsperando);
+			delete imagenEsperando;
 			imagenEsperando = Loader::cargarTexto(renderer,fuenteTexto,texto);
 			rect_wait.w = imagenEsperando->getPixelsX();
 			rect_wait.h = imagenEsperando->getPixelsY();
 		}
-		if (contador > 8){
+		if (contador > 5){
 			esperando = false;
 		}
 
@@ -57,15 +63,12 @@ void VentanaEspera::run(){
 		SDL_RenderPresent(renderer);
 
 	}
-	imagenesBasura.push_back(imagenEsperando);
+	return estado;
 }
 
 VentanaEspera::~VentanaEspera() {
-	for (unsigned i = 0; i < imagenesBasura.size(); i++){
-		delete imagenesBasura[i];
-	}
 	delete imagenFondo;
-	//delete imagenEsperando;
+	delete imagenEsperando;
 	close();
 }
 

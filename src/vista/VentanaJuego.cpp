@@ -94,9 +94,9 @@ void VentanaJuego::dibujar(){
 }
 
 /********************************************************************************/
-void VentanaJuego::run(){
+EstadoFinVentana VentanaJuego::run(){
 		bool run = true;
-
+		EstadoFinVentana estado = OK;
 		//Arranca la musica.
 		if (Mix_PlayingMusic() == 0){
 			Mix_PlayMusic(musica_fondo, -1);
@@ -111,7 +111,10 @@ void VentanaJuego::run(){
 
 				controlador->capturarEvento(event);
 
-				if (event.type == SDL_QUIT) run = false;
+				if (event.type == SDL_QUIT) {
+					estado = EXIT;
+					run = false;
+				}
 
 				controlador->procesarEvento();
 
@@ -129,6 +132,8 @@ void VentanaJuego::run(){
 	            }
 
 		} /* Fin del while*/
+
+		return estado;
 }
 
 /********************************************************************************/

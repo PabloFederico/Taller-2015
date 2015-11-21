@@ -13,11 +13,10 @@ class VentanaEspera: public Ventana {
 private:
 	Imagen* imagenFondo;
 	Imagen* imagenEsperando;
-	std::vector<Imagen*> imagenesBasura;
 
 public:
 	VentanaEspera(Controller* controlador);
-	void run();
+	EstadoFinVentana run();
 	virtual ~VentanaEspera();
 };
 

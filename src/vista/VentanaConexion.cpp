@@ -33,8 +33,9 @@ Campo campoACompletar(Mouse* mouse, vector<pair<SDL_Rect,Campo> > vec){
 	return campo;
 }
 
-void VentanaConexion::run(){
+EstadoFinVentana VentanaConexion::run(){
 	bool quit = false;
+	EstadoFinVentana estado = OK;
 	SDL_Event e;
 
 	Imagen *imageLabelIP = Loader::cargarTexto(renderer, fuenteTexto, "Ingrese IP del Servidor : ");
@@ -85,7 +86,7 @@ void VentanaConexion::run(){
 	rect_inputPort.y = rect_labelPort.y;
 
 	SDL_Rect rect_boton;
-	rect_boton.x = 380;
+	rect_boton.x = 450;
 	rect_boton.y = 500;
 	Boton* buttonConnect = new Boton("Connect",rect_boton);
 	Imagen* imageButtonConnect = Loader::cargarImagen(renderer,"images/boton_conectar.png");
@@ -117,7 +118,10 @@ void VentanaConexion::run(){
 
 		while( !quit && SDL_PollEvent( &e )){
 
-			if( e.type == SDL_QUIT ) quit = true;
+			if( e.type == SDL_QUIT ) {
+				estado = EXIT;
+				quit = true;
+			}
 
 			if (e.button.button == SDL_BUTTON_LEFT){
 				int x,y;
@@ -247,6 +251,8 @@ void VentanaConexion::run(){
 	delete imageInputIP;
 	delete imageInputName;
 	delete imageInputPort;
+
+	return estado;
 }
 
 VentanaConexion::~VentanaConexion() {

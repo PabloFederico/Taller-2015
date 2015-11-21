@@ -31,17 +31,32 @@ int main(int argc, char** argv) {
 		//Inicializo el Mixer:
 		if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0){
 			printf ("Error al inicializar SDL_mixer. Error: %s\n", Mix_GetError());
+			SDL_Quit();
+			IMG_Quit();
+			TTF_Quit();
 			return -1;
 		}
 
-
 		Controller *controller = new Controller();//lan);
-		VentanaJuego *ventana = new VentanaJuego(controller);
-		//VentanaConexion *ventana = new VentanaConexion(controller);
-		//VentanaEspera *ventana = new VentanaEspera(controller);
-		ventana->run();
 
-		delete ventana;
+		VentanaConexion *ventanaConexion = new VentanaConexion(controller);
+		EstadoFinVentana estado = ventanaConexion->run();
+		delete ventanaConexion;
+
+		if (estado == OK){
+			VentanaEspera *ventanaEspera = new VentanaEspera(controller);
+			estado = ventanaEspera->run();
+			delete ventanaEspera;
+
+			if (estado == OK){
+				VentanaJuego *ventanaJuego = new VentanaJuego(controller);
+				estado = ventanaJuego->run();
+				delete ventanaJuego;
+			}
+
+			// Meter una ventana de resultado de la partida (GANADO - PERDIDO)
+		}
+
 		delete controller;
 		SDL_Quit();
 		IMG_Quit();
