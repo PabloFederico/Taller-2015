@@ -25,7 +25,7 @@ void ContenedorDeRecursos::cargarImagenesEntidades(vector<InfoEntidad> infoEntid
 	this->mapImagenes->insert(PASTO,pasto);
 
 	Imagen *contorno = Loader::cargarImagen(this->renderer,"images/selector_tile.png");
-	this->mapImagenes->insert(CONTORNO,contorno);
+	this->mapImagenes->insert(CONTORNO,contorno);							// Esto no es una entidad...
 
 	Imagen *contorno_grande = Loader::cargarImagen(this->renderer,"images/selector_tile_2.png");
 	this->mapImagenes->insert(CONTORNOXL,contorno_grande);
@@ -48,7 +48,7 @@ void ContenedorDeRecursos::generarYGuardarSpritesEntidades(vector<Entidad*> *pos
 	for (unsigned i = 0; i < posEntidades->size(); i++) {
 		generarYGuardarSpriteEntidad((*posEntidades)[i], coord_ceros, escenario);
 	}
-	std::cout<<mapSpritesEntidades->size()<<" sprites creados"<<std::endl;
+	std::cout<<mapSpritesEntidades->size()<<" sprites creados"<<std::endl;//
 }
 
 void ContenedorDeRecursos::generarYGuardarSpriteEntidad(Entidad* entidad, Coordenada coord_ceros, Escenario* escenario) {
@@ -303,6 +303,15 @@ InfoEntidad ContenedorDeRecursos::getInfoTipo(TipoEntidad tipo){
 	SDL_SetTextureAlphaMod(spriteEntidad->getImagen()->getTexture(),canalAlpha);
 }
 */
+/********************************************************************************/
+void ContenedorDeRecursos::borrarSpriteDeEntidad(Entidad* entidad) {
+	map<Entidad*, Sprite*>::iterator it = this->mapSpritesEntidades->find(entidad);
+	if (it != this->mapSpritesEntidades->end()) {
+		delete (it->second);
+		this->mapSpritesEntidades->erase(it->first);
+	}
+}
+
 /********************************************************************************/
 ContenedorDeRecursos::~ContenedorDeRecursos() {
 	this->mapInfoEntidades.clear();

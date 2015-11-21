@@ -181,9 +181,10 @@ void Dibujador::dibujarEscenario(Escenario* esc, TTF_Font* fuenteTexto, pair<int
 						Entidad* entidad = entidades[k];
 
 						Sprite* sprite = this->contenedor->getSpriteDeEntidad(entidad);
+						if (!sprite) { std::cout<<"sprite muerto"<<std::endl; continue; }
 						SDL_Rect pos = sprite->getPosicion();
 
-						if ( (entidad->getIDJug() != 0 || entidad->esRecurso()) && ec == ESTADO_COLOR ){//falta incluir animales y otras entidades con vida no Unidad ni Edificio
+						if ( (/*entidad->getIDJug() != 0*/entidad->esAtacable() || entidad->esRecurso()) && ec == ESTADO_COLOR ){//falta incluir animales y otras entidades con vida no Unidad ni Edificio
 							Imagen* image_id;
 							if (entidad->getIDJug() != 0 && entidad->getIDJug() != esc->getIDJug())
 								image_id = Loader::cargarTexto(renderer,fuenteTexto,entidad->getInfo());

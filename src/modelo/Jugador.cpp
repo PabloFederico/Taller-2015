@@ -86,6 +86,45 @@ void Jugador::interaccionesDeUnidades() {
 	}
 }
 
+void Jugador::limpiarRastrosDeUnidadMuerta(Unidad* moribundo) {
+	for (vector<Unidad*>::iterator itAux = unidadesSeleccionadas.begin(); itAux < unidadesSeleccionadas.end(); ++itAux)
+		if ((*itAux) == moribundo) {
+			unidadesSeleccionadas.erase(itAux);
+			break;
+		}
+	if (unidadActiva == moribundo)
+		unidadActiva = NULL;
+}
+
+vector<Entidad*> Jugador::revisarMuertosPropios() {
+	vector<Entidad*> cuerpos;
+	for (std::vector<Unidad*>::iterator uniIt = this->vec_unidades.begin(); uniIt < this->vec_unidades.end(); ++uniIt) {
+		if (!(*uniIt)->sigueViva()) {
+			Unidad* moribundo = *uniIt;
+			moribundo->morir();
+
+			unidades.erase(moribundo->get_identificador());
+			limpiarRastrosDeUnidadMuerta(moribundo);
+			vec_unidades.erase(uniIt);
+			uniIt = this->vec_unidades.begin(); //por las dudas
+
+			cuerpos.push_back(moribundo);
+		}
+	}
+	for (std::map<int,Edificio*>::iterator ediIt = this->edificios.begin(); ediIt != this->edificios.end(); ++ediIt) {
+		if (!ediIt->second->sigueViva()) {
+			Edificio* dilapidado = ediIt->second;
+			dilapidado->morir();
+
+			edificios.erase(ediIt);
+			ediIt = this->edificios.begin(); //por las dudas
+
+			cuerpos.push_back(dilapidado);
+		}
+	}
+	return cuerpos;
+}
+
 Jugador::~Jugador() {
 	//for (unsigned i = 0; i < vec_unidades.size(); i++){
 	//	delete vec_unidades[i];

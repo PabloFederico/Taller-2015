@@ -17,11 +17,12 @@ private:
 	bool petrificado;
 
 public:
-	Unidad(TipoEntidad tipo, int id_jug);
+	Unidad(TipoEntidad tipo, int id_jug, int dni = 0);
 	bool esUnidad();
 
 	int generarGolpe();
 	void lastimar(Entidad* victima);
+	int recolectar(Entidad* recurso);
 	bool esRecolector();
 	void interactuar();
 
@@ -38,9 +39,9 @@ public:
 	void cambioEstado(EstadoEntidad est);
 
 	std::string enc();
-
 	static Unidad* dec(std::string);
 
+	void morir();
 	virtual ~Unidad();
 };
 

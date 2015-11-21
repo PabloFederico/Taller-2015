@@ -14,14 +14,19 @@ protected:
 	int dni;
 
 public:
-	Edificio(TipoEntidad tipo, int id_jug);
+	Edificio(TipoEntidad tipo, int id_jug, int dni = 0);
 
 	void set_id_jugador(int nuevoDuenio);
 
 	void set_identificador(int nuevoDNI);
+	int get_identificador();
 
 	bool esEdificio();
 
+	std::string enc();
+	Edificio* dec(std::string s);
+
+	void morir();
 	virtual ~Edificio();
 };
 

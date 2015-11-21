@@ -53,8 +53,8 @@ void ControladorJuego::actualizarJuego(Mouse* mouse){
 //			}
 	}// end while
 
-	vector<Sprite*> spritesProtagonistas = juego->getSpritesProtagonistas();
-	for (vector<Sprite*>::iterator it = spritesProtagonistas.begin(); it < spritesProtagonistas.end(); ++it) {
+	vector<Sprite*> spritesUnidades = juego->getSpritesUnidades();
+	for (vector<Sprite*>::iterator it = spritesUnidades.begin(); it < spritesUnidades.end(); ++it) {
 		if ((*it)->estaEnMovimiento())
 			try {
 				(*it)->update(juego->getVelocidad(), juego->getSonidoTipo(CAMINAR));

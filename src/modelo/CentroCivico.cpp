@@ -8,11 +8,14 @@
 #include "CentroCivico.h"
 
 CentroCivico::CentroCivico(int id_jug):Edificio(EDIFICIO,id_jug) {
-	this->id_jug = id_jug;
 }
 
 Unidad* CentroCivico::crearNuevaUnidad(TipoEntidad tipo){
-	return new Unidad(tipo,id_jug);
+	return new Unidad(tipo, this->idJug); // TODO usar EntidadFactory
+}
+
+void morir() {
+	// Acá se podría poner un throw CentroCivicoDestruido(int idJug);
 }
 
 CentroCivico::~CentroCivico() {

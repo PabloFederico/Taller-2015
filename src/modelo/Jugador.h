@@ -27,7 +27,7 @@ private:
 
 	Unidad* unidadActiva;
 
-	std::map<TipoEntidad, int> mapRecursosEconomicos;
+	std::map<TipoEntidad,int> mapRecursosEconomicos;
 
 public:
 	Jugador(std::string nombre, int id_jug);
@@ -55,6 +55,8 @@ public:
 	CentroCivico* getCentroCivico();
 
 	void interaccionesDeUnidades();
+	void limpiarRastrosDeUnidadMuerta(Unidad* moribundo);
+	vector<Entidad*> revisarMuertosPropios();
 
 	virtual ~Jugador();
 };

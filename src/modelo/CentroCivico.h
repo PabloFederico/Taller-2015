@@ -12,12 +12,12 @@
 
 class CentroCivico: public Edificio {
 private:
-	int id_jug;
-
 public:
 	CentroCivico(int id_jug);
 
 	Unidad* crearNuevaUnidad(TipoEntidad tipo);
+
+	void morir();
 
 	virtual ~CentroCivico();
 };

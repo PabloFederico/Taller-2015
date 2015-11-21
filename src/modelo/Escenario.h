@@ -19,6 +19,7 @@
 #include "../utils/Exceptions.h"
 #include "../utils/Log.h"
 #include "../modelo/Unidad.h"
+#include "../modelo/Edificio.h"
 using namespace std;
 
 class Escenario {
@@ -34,20 +35,21 @@ private:
 
 	EntidadFactory* fabricaDeEntidades;
 
-	vector<Unidad*>* enemigos;
+	vector<Unidad*>* unidadesEnemigos;
+	vector<Edificio*>* edificiosEnemigos;
 
 	Entidad* entidadSeleccionada;
 
 	Tile* tile_clic;
 	Coordenada c_tile_clic;
 
-	void inicializarMatrizTiles();
-
 	Coordenada c_tile_ini_recuadro;
 	Coordenada c_tile_fin_recuadro;
 
+	void inicializarMatrizTiles();
+
 public:
-	Escenario(InfoEscenario info, EntidadFactory* fabrica, vector<Unidad*>* enemigos = NULL);
+	Escenario(InfoEscenario infoEsc, EntidadFactory *fabrica, vector<Unidad*>* unidadesMalvadas = NULL, vector<Edificio*>* edificiosMalvados = NULL);
 
 	/* Devuelve las dimensiones del escenario en un par (x,y) */
 	pair<int,int> getDimension();

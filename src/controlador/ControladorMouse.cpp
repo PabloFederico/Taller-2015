@@ -91,6 +91,11 @@ void ControladorMouse::procesarClickIzquierdo(Mouse* mouse){
 		if (escenario->getEntidadSeleccionada() != NULL && juego->getIDJugador() == escenario->getEntidadSeleccionada()->getIDJug())
 			juego->getJugador()->agregarUnidadSeleccionada((Unidad*)escenario->getEntidadSeleccionada());
 	}
+
+	// Actualizamos la barra (MC: lo dejaría acá (borrarlo en procesarMouse) para que solo una nueva selección cambie la información. No alcanza para que el sprite abajo a la izquierda quede.)
+	//if (juego->getEscenario()->getEntidadSeleccionada() != NULL){
+	//	juego->getBarraEstado()->setInformacion(juego->getEscenario()->getEntidadSeleccionada()->getInfo());
+	//} else juego->getBarraEstado()->setInformacion(" ");
 }
 
 void ControladorMouse::procesarClickDerecho(Mouse* mouse){

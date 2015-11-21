@@ -13,8 +13,8 @@
 using namespace std;
 
 
-Unidad::Unidad(TipoEntidad tipo, int id_jug): Entidad(tipo,id_jug) {
-	this->dni = 0;
+Unidad::Unidad(TipoEntidad tipo, int id_jug, int dni): Entidad(tipo,id_jug) {
+	this->dni = dni;
 	petrificado = false;
 	ostringstream ssInfo;
 	ssInfo << info<<" (Jugador "<<id_jug<<")";
@@ -24,7 +24,7 @@ Unidad::Unidad(TipoEntidad tipo, int id_jug): Entidad(tipo,id_jug) {
 
 
 float distanciaEuclidiana(Coordenada a, Coordenada z) {
-	return sqrt( pow(z.x-a.x,2) + pow(z.y-a.y,2) );
+	return sqrt( pow(z.x-a.x,2)+pow(z.y-a.y,2) );
 }
 
 // throws Recoleccion cuando se recolectó algún recurso.
@@ -43,13 +43,13 @@ void Unidad::interactuar() {
 				if (distanciaEuclidiana(this->getPosicion(), Coordenada(i,j)) < 2) {
 					//std::cout << "Interacción de "<<getInfo()<<" "<<get_identificador()<<std::endl;//
 					//if (receptor->esConstruccion()) { cambioEstado(CONSTRUYENDO); // TODO } else
-					if (receptor->esEdificio() || receptor->esUnidad()) {
+					if (receptor->esAtacable()) {
 						cambioEstado(ATACANDO);
 						this->lastimar(this->receptor);
 					} else if (receptor->esRecurso() && this->esRecolector()) {
 						cambioEstado(RECOLECTANDO);
 						int recolectado = 0;
-						recolectado = receptor->sufrirRecoleccion();
+						recolectado = recolectar(this->receptor);
 						if (recolectado > 0) {
 							throw Recoleccion(receptor->getTipo(), recolectado);
 							// Ojo que si llega a este punto, no se correrá nada debajo
@@ -74,6 +74,10 @@ int Unidad::generarGolpe() {
 
 void Unidad::lastimar(Entidad* victima) {
 	victima->sufrirGolpe(this->generarGolpe());
+}
+
+int Unidad::recolectar(Entidad* recurso) {
+	return receptor->sufrirRecoleccion();
 }
 
 
@@ -114,22 +118,29 @@ void Unidad::cambioEstado(EstadoEntidad est) {
 }
 
 
+// Para red
 std::string Unidad::enc(){
 	ostringstream enc;
-	enc << idJug<<","<<tipo<<","<<ancho<<","<<alto;
+	enc << idJug<<","<<dni<<","<<tipo<<","<<ancho<<","<<alto;
 	return enc.str();
 }
-
 Unidad* Unidad::dec(std::string s){
-	int id,ti,an,al;
+	int id,dni,ti,an,al;
 	stringstream ss(s);
 	ss >> id; ss.ignore();
+	ss >> dni;ss.ignore();
 	ss >> ti; ss.ignore();
 	ss >> an; ss.ignore();
 	ss >> al;
-	Unidad *u = new Unidad(TipoEntidad(ti),id);
+	Unidad *u = new Unidad(TipoEntidad(ti),id,dni);
 	u->setTam(an, al);
 	return u;
+}
+//
+
+void Unidad::morir() {
+	Entidad::morir();
+	// play sonido de muerte
 }
 
 Unidad::~Unidad() {

@@ -11,6 +11,7 @@
 using namespace std;
 #include <string>
 #include <sstream>
+#include <iostream>
 #include "../utils/Enumerados.h"
 #include "../utils/Exceptions.h"
 #include "../utils/Common.h"
@@ -66,6 +67,7 @@ public:
 	std::string getInfo();
 	std::string getVidaString();
 
+	bool esAtacable();
 	bool esMovible();
 	bool ocupaSuTile();
 
@@ -75,6 +77,8 @@ public:
 	std::string enc();
 	static Entidad* dec(std::string);
 
+	bool sigueViva();
+	void morir();
 	virtual ~Entidad();
 };
 

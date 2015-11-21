@@ -52,6 +52,8 @@ public:
 
 	//void setearCanalAlphaParaEntidad(Entidad* entidad, int canalAlpha);
 
+	void borrarSpriteDeEntidad(Entidad* entidad);
+
 	virtual ~ContenedorDeRecursos();
 };
 
