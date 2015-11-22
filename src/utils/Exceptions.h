@@ -25,6 +25,14 @@ public:
 	EntidadMurio();
 };
 
+class ConstruccionTermino: public std::exception
+{
+public:
+	TipoEntidad tipoEdif;
+	int dni, idJug, x, y, vidaRestante;
+	ConstruccionTermino(TipoEntidad tipoEdif, int dni, int idJug, int x, int y, int vidaRestante);
+};
+
 class Recoleccion: public std::exception
 {
 public:

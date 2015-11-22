@@ -108,6 +108,7 @@ public:
 
 	void agregarContenedorDeRecursos(ContenedorDeRecursos *container);
 
+	void comenzarNuevaConstruccion(TipoEntidad tipoEdif, Coordenada coord, int id_jug);
 	void agregarRecurso(TipoEntidad recurso, Coordenada coord);
 
 	void toggleEnemigo(int id_jug, int idUnidad);

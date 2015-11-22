@@ -250,12 +250,29 @@ Mix_Chunk* Juego::getSonidoTipo(TipoSonido tipo){
 
 /***************************************************/
 void Juego::agregarRecurso(TipoEntidad recurso, Coordenada coord) {
-	Entidad* recurso_a_agregar = new Entidad(recurso); // AGHH MI FACTORYY TODO
+	Entidad* recurso_a_agregar = new Entidad(recurso); // factory todo?
 	recurso_a_agregar->setPosicion(coord);
 	try {
 		escenario->agregarEntidad(coord, recurso_a_agregar);
 		this->contenedor->generarYGuardarSpriteEntidad(recurso_a_agregar, Coordenada(*cero_x, *cero_y), escenario);
-	} catch ( FueraDeEscenario &e ) {}
+	} catch ( FueraDeEscenario &e ) {
+		delete recurso_a_agregar;
+	}
+}
+
+/***************************************************/
+void Juego::comenzarNuevaConstruccion(TipoEntidad tipoEdif, Coordenada coord, int id_jug = -1) {
+	if (id_jug == -1)
+		id_jug = this->idJug;
+	if (this->escenario->coordEnEscenario(coord)) {
+		Log::imprimirALog(ERR, "Se intentó construir fuera del Escenario.");
+		return;
+	}
+	Construccion *construccion = new Construccion(tipoEdif, id_jug);
+	construccion->setPosicion(coord);
+	this->jugador->agregarNuevoEdificio(construccion, id_jug);
+	this->escenario->agregarEntidad(coord, construccion);
+	this->contenedor->generarYGuardarSpriteEntidad(construccion, Coordenada(*cero_x, *cero_y), this->escenario);
 }
 
 /***************************************************/
@@ -371,7 +388,7 @@ vector<Entidad*> Juego::revisarMuertos() {
 
 /***************************************************/
 void Juego::continuar() {	// Modularizar si se pasa a usar threads
-	this->jugador->interaccionesDeUnidades();
+	this->jugador->interaccionesDeUnidades(this->escenario, this->contenedor, Coordenada(*cero_x, *cero_y));
 
 	// Limpiar muertes
 	vector<Entidad*> funeral = revisarMuertos();
@@ -385,11 +402,6 @@ void Juego::continuar() {	// Modularizar si se pasa a usar threads
 		//Falta algo todo?
 
 		delete muerto;
-		//if (muerto->esUnidad())
-		//	((Unidad*)muerto)->~Unidad();
-		//else if (muerto->esEdificio())
-		//	((Edificio*)muerto)->~Edificio();
-		//else muerto->~Entidad();
 	}
 }
 

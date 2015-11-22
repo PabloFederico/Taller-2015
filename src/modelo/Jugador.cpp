@@ -65,23 +65,50 @@ CentroCivico* Jugador::getCentroCivico(){
 	return centroCivico;
 }
 
-void Jugador::agregarNuevoEdificio(Edificio* edificio){
+void Jugador::agregarNuevoEdificio(Edificio* edificio, int idJug = -1){
+	if (idJug == -1)
+		idJug = this->id_jug;
 	contador_dni_edificios++;
-	edificios[contador_dni_edificios] = edificio;
-	edificio->set_id_jugador(id_jug);
-	edificio->set_identificador(contador_dni_edificios);
+	int id = contador_dni_edificios;
+	edificios[id] = edificio;
+	edificio->set_id_jugador(idJug);
+	edificio->set_identificador(id);
+}
+
+Edificio* Jugador::terminarConstruccion(ConstruccionTermino c) {
+	Edificio *construc = edificios[c.dni];
+	construc->morir();
+	delete construc;
+	edificios.erase(c.dni);
+
+	Edificio *nuevoEdificio = new Edificio(c.tipoEdif, c.idJug, c.dni);
+	nuevoEdificio->set_identificador(c.dni);
+	nuevoEdificio->set_id_jugador(c.idJug);
+	nuevoEdificio->setPosicion(Coordenada(c.x,c.y));
+	nuevoEdificio->setVidaRestante(c.vidaRestante);
+	edificios[c.dni] = nuevoEdificio;
+	return nuevoEdificio;
 }
 
 vector<Unidad*> Jugador::getUnidades(){
 	return vec_unidades;
 }
 
-void Jugador::interaccionesDeUnidades() {
+void Jugador::interaccionesDeUnidades(Escenario* escenario, ContenedorDeRecursos* contenedor, Coordenada coord_ceros) {
 	for (std::vector<Unidad*>::iterator uniIt = this->vec_unidades.begin(); uniIt < this->vec_unidades.end(); ++uniIt) {
 		try {
 			(*uniIt)->interactuar();
 		} catch ( Recoleccion &r ) {
 			agregarRecursoEconomico(r.tipo, r.cant);
+		} catch ( ConstruccionTermino &c ) {
+			Entidad *muerto = edificios[c.dni];
+			std::cout << muerto->enc()<<" construccion terminada"<<std::endl;//
+			escenario->quitarEntidad(muerto->getPosicion(), muerto);
+			contenedor->borrarSpriteDeEntidad(muerto);
+			//Falta algo todo?
+			Edificio* edif = terminarConstruccion(c);
+			escenario->agregarEntidad(edif->getPosicion(), edif);
+			contenedor->generarYGuardarSpriteEntidad(edif, coord_ceros, escenario);
 		}
 	}
 }

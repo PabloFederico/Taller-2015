@@ -40,8 +40,11 @@ void Unidad::interactuar() {
 			for (int j = posReceptor.y; j < posReceptor.y+tamReceptor.second; j++)
 				// Distancia máxima hardcodeada de 1 tile; TODO rangoAtaque
 				if (distanciaEuclidiana(this->getPosicion(), Coordenada(i,j)) < 2) {
-					//if (receptor->esConstruccion()) { cambioEstado(CONSTRUYENDO); // TODO } else
-					if (receptor->esAtacable()) {
+					if (receptor->esConstruccion() && this->esConstructor()) {
+						cambioEstado(CONSTRUYENDO);
+						this->continuarConstruccion();
+						// Ojo que si llega a este punto, puede que no se corra nada debajo
+					} else if (receptor->esAtacable()) {
 						cambioEstado(ATACANDO);
 						this->lastimar(this->receptor);
 					} else if (receptor->esRecurso() && this->esRecolector()) {
@@ -59,6 +62,9 @@ void Unidad::interactuar() {
 
 	} catch ( EntidadMurio &e ) {
 		this->olvidarInteraccion();
+	} catch ( ConstruccionTermino &e ) {
+		this->olvidarInteraccion();
+		throw e;
 	}
 }
 
@@ -69,6 +75,10 @@ int Unidad::generarGolpe() {
 	if (this->tipo == ALDEANO)
 		return 1;
 	return 0;
+}
+
+void Unidad::continuarConstruccion() {
+	((Construccion*)this->receptor)->continuarConstruyendo();
 }
 
 void Unidad::lastimar(Entidad* victima) {
@@ -102,6 +112,10 @@ bool Unidad::esUnidad() {
 }
 
 bool Unidad::esRecolector() {
+	return (tipo == ALDEANO);
+}
+
+bool Unidad::esConstructor() {
 	return (tipo == ALDEANO);
 }
 

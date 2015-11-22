@@ -11,8 +11,13 @@
 #include "Edificio.h"
 
 class Construccion: public Edificio {
+private:
+	TipoEntidad tipoEdif;
+	int progresoPorc;
 public:
-	Construccion(int id_jug);
+	Construccion(TipoEntidad tipo, int id_jug);
+	bool esConstruccion();
+	void continuarConstruyendo();
 	virtual ~Construccion();
 };
 

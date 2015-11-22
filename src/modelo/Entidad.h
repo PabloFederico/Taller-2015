@@ -42,6 +42,7 @@ public:
 	TipoEntidad getTipo();
 	EstadoEntidad getEstado();
 	int getVidaRestante();
+	void setVidaRestante(int valor);
 	int getIDJug();
 
 	void cambioEstado(EstadoEntidad est);
@@ -59,6 +60,7 @@ public:
 	void setPosicion(Coordenada c);
 
 	bool esRecurso();
+	bool esConstruccion();
 	bool esEdificio();
 	bool esUnidad();
 

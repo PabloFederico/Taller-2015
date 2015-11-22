@@ -103,6 +103,10 @@ int Entidad::getVidaRestante() {
 	return this->vidaRestante;
 }
 
+void Entidad::setVidaRestante(int valor) {
+	if (valor >= 0) this->vidaRestante = valor;
+}
+
 TipoEntidad Entidad::getTipo(){
 	return this->tipo;
 }
@@ -121,6 +125,9 @@ void Entidad::finalizaAccion() {
 
 bool Entidad::esRecurso(){
 	return EsRecurso(this->tipo);
+}
+bool Entidad::esConstruccion() {
+	return (tipo == CONSTRUCCION);
 }
 bool Entidad::esEdificio(){
 	return EsEdificio(this->tipo);

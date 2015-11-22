@@ -8,6 +8,7 @@
 #ifndef MODELO_UNIDAD_H_
 #define MODELO_UNIDAD_H_
 #include "../modelo/Entidad.h"
+#include "../modelo/Construccion.h"
 #include "../utils/Enumerados.h"
 #include "../utils/Constantes.h"
 
@@ -20,10 +21,12 @@ public:
 	Unidad(TipoEntidad tipo, int id_jug, int dni = 0);
 	bool esUnidad();
 
+	void continuarConstruccion();
 	int generarGolpe();
 	void lastimar(Entidad* victima);
 	int recolectar(Entidad* recurso);
 	bool esRecolector();
+	bool esConstructor();
 	void interactuar();
 
 	void set_id_jugador(int nuevoDuenio);
