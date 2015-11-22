@@ -175,6 +175,7 @@ ConfiguracionJuego Yaml::OdioYAML() {
 		tipos["centro_civico"] = CENTRO_CIVICO;
 		tipos["soldado"] = SOLDADO;
 		tipos["aldeano"] = ALDEANO;
+		tipos["arquero"] = ARQUERO;
 		tipos["animal"] = ANIMAL;
 
 	configDefault.nombreJugador = "JugadorXXX";
@@ -218,10 +219,16 @@ ConfiguracionJuego Yaml::OdioYAML() {
 	infoAldeano.fps = 40;
 	infoAldeano.descripcion = "Aldeano";
 
+	InfoEntidad infoArquero;
+	infoArquero.tipo = tipos["arquero"];
+	infoArquero.path = "images/arquero_camina.png";
+	infoArquero.fps = 20;
+	infoArquero.descripcion = "Arquero";
+
 	InfoEntidad infoAnimal;
 	infoAnimal.tipo = tipos["animal"];
-	infoAnimal.path = "images/animal1.png";
-	infoAnimal.delay = 3000;
+	infoAnimal.path = "images/vaca_come.png";
+	infoAnimal.delay = 5000;
 	infoAnimal.fps = 10;
 	infoAnimal.descripcion = "Animal";
 
@@ -240,6 +247,7 @@ ConfiguracionJuego Yaml::OdioYAML() {
 	configDefault.agregarInfoEntidad(infoCuartel);
 	configDefault.agregarInfoEntidad(infoCentroCivico);
 	configDefault.agregarInfoEntidad(infoSoldado);
+	configDefault.agregarInfoEntidad(infoArquero);
 	configDefault.agregarInfoEntidad(infoAldeano);
 	configDefault.agregarInfoEntidad(infoAnimal);
 	configDefault.agregarInfoEntidad(infoTierra);

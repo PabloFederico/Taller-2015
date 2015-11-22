@@ -91,17 +91,24 @@ void Juego::cargarJuego(){//InfoEscenario* infoEscRed = NULL, Coordenada *posIni
 	/* Las siguientes entidades son de prueba*/	
 	Unidad* soldado = new Unidad(SOLDADO,1);
 	Unidad* aldeano = new Unidad(ALDEANO,1);
+	Unidad* arquero = new Unidad(ARQUERO,1);
 	Unidad* aldeanoDesconocido = new Unidad(ALDEANO,2);
+	Unidad* arqueroDesconocido = new Unidad(ARQUERO,2);
 	soldado->setPosicion(Coordenada(20,20));
-	aldeano->setPosicion(Coordenada(15,15));
+	aldeano->setPosicion(Coordenada(17,17));
+	arquero->setPosicion(Coordenada(16,16));
 	aldeanoDesconocido->setPosicion(Coordenada(14,14));
+	arqueroDesconocido->setPosicion(Coordenada(0,0));
 
 	jugador->agregarNuevaUnidad(soldado);
 	jugador->agregarNuevaUnidad(aldeano);
+	jugador->agregarNuevaUnidad(arquero);
 
 	escenario->agregarEntidad(soldado->getPosicion(),soldado);
 	escenario->agregarEntidad(aldeano->getPosicion(),aldeano);
+	escenario->agregarEntidad(arquero->getPosicion(),arquero);
 	escenario->agregarEntidad(aldeanoDesconocido->getPosicion(),aldeanoDesconocido);
+	escenario->agregarEntidad(arqueroDesconocido->getPosicion(),arqueroDesconocido);
 
 	escenario->getCapa()->setRangoDeVision(configGame.rango_vision);
 	//this->protagonista = this->escenario->getProtagonista();

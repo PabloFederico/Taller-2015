@@ -44,9 +44,9 @@ int main(int argc, char** argv) {
 		delete ventanaConexion;
 
 		if (estado == OK){
-			VentanaEspera *ventanaEspera = new VentanaEspera(controller);
-			estado = ventanaEspera->run();
-			delete ventanaEspera;
+			//VentanaEspera *ventanaEspera = new VentanaEspera(controller);
+			//estado = ventanaEspera->run();
+			//delete ventanaEspera;
 
 			if (estado == OK){
 				VentanaJuego *ventanaJuego = new VentanaJuego(controller);

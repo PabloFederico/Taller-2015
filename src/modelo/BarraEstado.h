@@ -25,6 +25,10 @@ public:
 
 	std::string getDescripcion();
 
+	Unidad* getUnidadActualEnBarra();
+
+	int getIDJugador();
+
 	std::map<TipoEntidad,int> getMapRecursosEconomicos();
 
 	void setInformacion(std::string infoDescripcion);

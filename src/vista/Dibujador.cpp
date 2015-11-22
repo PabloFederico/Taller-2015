@@ -106,6 +106,8 @@ void Dibujador::dibujarRecuadroSeleccion(Escenario* esc){
 
 	Imagen* imagen_horiz = contenedor->getImagenUtilTipo(SELECT_TILE_02);
 	Imagen* imagen_vert = contenedor->getImagenUtilTipo(SELECT_TILE_01);
+
+	// Mejorar dibujado de recuadro (TODO)
 	for (int i = 0; i < dif_x+1; i++){
 		SDL_RenderCopy(renderer,imagen_horiz->getTexture(), NULL, &rect_1);
 		SDL_RenderCopy(renderer,imagen_horiz->getTexture(), NULL, &rect_2);
@@ -270,7 +272,7 @@ void Dibujador::dibujarBarraEstado(Escenario* esc, BarraEstado* barraEstado, TTF
 	SDL_RenderCopy(renderer,imagen->getTexture(),NULL,&rect_barra);
 
 	/* Muestra en el primer fondo la imagen seleccionada */
-	if (esc->getEntidadSeleccionada() != NULL){
+	if (esc->getEntidadSeleccionada() != NULL && esc->getEntidadSeleccionada()->getIDJug() != barraEstado->getIDJugador()){
 		Imagen* imagen_Select = contenedor->getSpriteDeEntidad(esc->getEntidadSeleccionada())->getImagen();
 		SDL_Rect frameActual = contenedor->getSpriteDeEntidad(esc->getEntidadSeleccionada())->getFrameActual();
 		SDL_Rect rect_image_select;
@@ -279,6 +281,30 @@ void Dibujador::dibujarBarraEstado(Escenario* esc, BarraEstado* barraEstado, TTF
 		rect_image_select.w = 40;
 		rect_image_select.h = 50;
 		SDL_RenderCopy(renderer,imagen_Select->getTexture(),&frameActual,&rect_image_select);
+	}else{
+		Unidad* unidad = barraEstado->getUnidadActualEnBarra();
+		if (unidad != NULL){
+			Imagen* image = NULL;
+			SDL_Rect rect_icono;
+			rect_icono.x = rect_barra.x + 30;
+			rect_icono.y = rect_barra.y + 40;
+			rect_icono.w = 30;
+			rect_icono.h = 30;
+			switch (unidad->getTipo()){
+				case ALDEANO:
+							 image = contenedor->getImagenUtilTipo(HERRAMIENTAS_ALDEANO);
+							 rect_icono.w = image->getPixelsX();
+							 break;
+				case SOLDADO:
+							 image = contenedor->getImagenUtilTipo(ESPADA_SOLDADO);
+							 break;
+				case ARQUERO:
+							 image = contenedor->getImagenUtilTipo(ARCO_ARQUERO);
+							 break;
+				default : break;
+			}
+			SDL_RenderCopy(renderer,image->getTexture(),NULL,&rect_icono);
+		}
 	}
 
 	/* Dibujamos el descriptor (Para la descripción de los elementos seleccionados) */

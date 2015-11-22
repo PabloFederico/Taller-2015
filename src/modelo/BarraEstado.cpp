@@ -16,6 +16,15 @@ std::pair<int, int> BarraEstado::getDimension(){
 	return std::make_pair(width,height);
 }
 
+int BarraEstado::getIDJugador(){
+	return jugador->getID();
+}
+
+Unidad* BarraEstado::getUnidadActualEnBarra(){
+	if (jugador->getUnidadesSeleccionadas().size() == 1)
+		return jugador->getUnidadesSeleccionadas()[0];
+	return NULL;
+}
 std::string BarraEstado::getDescripcion(){
 	return infoDescripcion;
 }

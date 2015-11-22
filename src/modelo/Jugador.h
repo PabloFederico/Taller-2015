@@ -36,6 +36,8 @@ public:
 
 	Unidad* getUnidadActiva();
 
+	int getID();
+
 	void agregarUnidadSeleccionada(Unidad* unidad);
 
 	vector<Unidad*> getUnidadesSeleccionadas();

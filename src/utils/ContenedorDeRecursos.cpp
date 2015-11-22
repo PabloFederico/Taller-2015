@@ -127,13 +127,29 @@ void ContenedorDeRecursos::generarYGuardarSpriteEntidad(Entidad* entidad, Coorde
 						sprite->agregarRectangulo(rect1);
 						}
 						break;
+		case ARQUERO :{
+						posicion.x -= ANCHO_PIXEL_PASTO * 0.25;
+						posicion.y -= 25;
+						posicion.w = 1.5*ANCHO_PIXEL_PASTO;
+						posicion.h = 2*ALTO_PIXEL_PASTO;
+						sprite = new Sprite(DIRECCIONES,12,this->getImagenTipo(entidad->getTipo()),posicion,escenario,coord_ceros,entidad);
+						//SDL_SetTextureColorMod(imagenPetrificadaSoldado->getTexture(),150,150,150);
+						//sprite->agregarImagenPetrificada(imagenPetrificadaSoldado);
+
+						int x_ini = posicion.x;
+						int y_ini = posicion.y;
+						Rectangulo rect1(x_ini + 0.3*posicion.w, 0.3*posicion.w, y_ini + 0.1 * posicion.h, 0.8*posicion.h);
+						sprite->agregarRectangulo(rect1);
+						}
+						break;
 		case ANIMAL :	{
 						posicion.x += ANCHO_PIXEL_PASTO / 8;
-						posicion.y -= (DISTANCIA_ENTRE_Y);
-						posicion.w = ANCHO_PIXEL_PASTO ;
-						posicion.h = 2*ALTO_PIXEL_PASTO;
-						sprite = new Sprite(DIRECCIONES,IMAGENES_DIFERENTES,this->getImagenTipo(ANIMAL),posicion,escenario,coord_ceros,entidad);
+						//posicion.y -= (DISTANCIA_ENTRE_Y);
+						posicion.w = ANCHO_PIXEL_PASTO * 0.8;
+						posicion.h = ALTO_PIXEL_PASTO * 0.8;
+						sprite = new Sprite(DIRECCIONES,10,this->getImagenTipo(ANIMAL),posicion,escenario,coord_ceros,entidad);
 						sprite->activarMovimiento(true);
+						sprite->setDireccion(ESTE);
 
 						int x_ini = posicion.x;
 						int y_ini = posicion.y;
@@ -265,6 +281,15 @@ void ContenedorDeRecursos::cargarImagenesUtil(){
 
 	imagen = Loader::cargarImagen(this->renderer,"images/cuadrado_rojo_1.png");
 	this->mapImagenesUtil->insert(CUADRADO_ROJO,imagen);
+
+	imagen = Loader::cargarImagen(this->renderer,"images/herramientas_aldeano.png");
+	this->mapImagenesUtil->insert(HERRAMIENTAS_ALDEANO,imagen);
+
+	imagen = Loader::cargarImagen(this->renderer,"images/arco_arquero.png");
+	this->mapImagenesUtil->insert(ARCO_ARQUERO,imagen);
+
+	imagen = Loader::cargarImagen(this->renderer,"images/espada_soldado.png");
+	this->mapImagenesUtil->insert(ESPADA_SOLDADO,imagen);
 }
 
 

@@ -43,6 +43,12 @@ Entidad::Entidad(TipoEntidad tipo, int num_jug): idJug(num_jug)  {
 			ocupador = true;
 			info = "Aldeano";
 			break;
+		case ARQUERO:
+			vidaRestante = 70;
+			movible = true;
+			ocupador = true;
+			info = "Arquero";
+			break;
 		case ANIMAL:
 			vidaRestante = 30;
 			movible = true;
@@ -90,8 +96,6 @@ Entidad::Entidad(TipoEntidad tipo, int num_jug): idJug(num_jug)  {
 			info = "";
 			break;
 	}
-	x = 0;
-	y = 0;
 }
 
 int Entidad::getIDJug(){
@@ -142,12 +146,11 @@ bool Entidad::ocupaSuTile() {
 }
 
 Coordenada Entidad::getPosicion(){
-	return Coordenada(x,y);
+	return c;
 }
 
 void Entidad::setPosicion(Coordenada nuevaCoord){
-	x = nuevaCoord.x;
-	y = nuevaCoord.y;	// Por qué no guardarla como Coordenada y listo? (MC)
+	c = nuevaCoord;
 }
 
 void Entidad::interactuarCon(Entidad* receptor) {

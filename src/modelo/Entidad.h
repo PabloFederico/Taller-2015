@@ -15,9 +15,6 @@ using namespace std;
 #include "../utils/Exceptions.h"
 #include "../utils/Common.h"
 
-//class Coordenada;
-
-//typedef Coordenada Coord;
 
 class Entidad {
 protected:
@@ -30,8 +27,7 @@ protected:
 	int ancho,alto;
 	std::string info;
 	Entidad* receptor;
-	//bool petrificado;
-	int x,y;
+	Coordenada c;
 
 	clock_t reloj;
 
