@@ -158,7 +158,6 @@ Unidad* Unidad::dec(std::string s){
 
 void Unidad::morir() {
 	Entidad::morir();
-	// play sonido de muerte
 }
 
 Unidad::~Unidad() {

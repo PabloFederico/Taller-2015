@@ -49,7 +49,6 @@ Edificio* Edificio::dec(std::string s){
 
 void Edificio::morir() {
 	Entidad::morir();
-	// play sonido de destrucción
 }
 
 Edificio::~Edificio() {
