@@ -11,7 +11,7 @@ Entidad::Entidad(TipoEntidad tipo, int num_jug): idJug(num_jug) {
 	this->reloj = clock();
 	this->receptor = NULL;
 	this->estado = QUIETO;
-	this->vidaRestante = 0;
+	this->vidaRestante = 1;
 	this->ancho = 1;
 	this->alto = 1;
 	this->tipo = tipo;
@@ -67,7 +67,7 @@ Entidad::Entidad(TipoEntidad tipo, int num_jug): idJug(num_jug) {
 			info = "Madera";
 			break;
 		case COMIDA:
-			vidaRestante = 150;
+			vidaRestante = 15;//150;
 			movible = false;
 			ocupador = true;
 			info = "Comida";
@@ -85,6 +85,7 @@ Entidad::Entidad(TipoEntidad tipo, int num_jug): idJug(num_jug) {
 			info = "Oro";
 			break;
 		default:
+			vidaRestante = 1; // Así nunca mueren
 			movible = false;
 			ocupador = true;
 			info = "";
@@ -96,6 +97,10 @@ Entidad::Entidad(TipoEntidad tipo, int num_jug): idJug(num_jug) {
 
 int Entidad::getIDJug(){
 	return idJug;
+}
+
+int Entidad::getVidaRestante() {
+	return this->vidaRestante;
 }
 
 TipoEntidad Entidad::getTipo(){
@@ -172,6 +177,7 @@ void Entidad::olvidarInteraccion() {
 
 
 void Entidad::sufrirGolpe(int fuerzaGolpe) {
+	if (!esAtacable()) return;
 	if (this->vidaRestante <= 0)
 		throw EntidadMurio();
 	this->vidaRestante -= fuerzaGolpe;
@@ -183,8 +189,9 @@ void Entidad::sufrirGolpe(int fuerzaGolpe) {
 	}
 }
 
-int Entidad::sufrirRecoleccion() {
-	int recolectado = 5;	// hardcodeado
+int Entidad::sufrirRecoleccion(int cant = 5) {
+	if (!esRecurso()) return 0;
+	int recolectado = cant;
 	if (this->vidaRestante <= 0)
 		throw EntidadMurio();
 	this->vidaRestante -= recolectado;

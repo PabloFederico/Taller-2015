@@ -31,7 +31,6 @@ float distanciaEuclidiana(Coordenada a, Coordenada z) {
 void Unidad::interactuar() {
 	// Verifica que haya con quien interactuar y de que haya pasado el tiempo requerido.
 	if (receptor == NULL || (clock() - this->reloj) < CLOCKS_PER_SEC*DELAY_INTERACCION) return;	//No está respetando el tiempo pedido. TODO
-	//std::cout << "Interacción "<<clock()<<" "<<this->reloj<<": "<<clock()-reloj<<" "<<CLOCKS_PER_SEC*DELAY_INTERACCION<<" - "<<(clock()-reloj)/CLOCKS_PER_SEC<<std::endl;//
 
 	this->reloj = clock();
 	try {
@@ -41,7 +40,6 @@ void Unidad::interactuar() {
 			for (int j = posReceptor.y; j < posReceptor.y+tamReceptor.second; j++)
 				// Distancia máxima hardcodeada de 1 tile; TODO rangoAtaque
 				if (distanciaEuclidiana(this->getPosicion(), Coordenada(i,j)) < 2) {
-					//std::cout << "Interacción de "<<getInfo()<<" "<<get_identificador()<<std::endl;//
 					//if (receptor->esConstruccion()) { cambioEstado(CONSTRUYENDO); // TODO } else
 					if (receptor->esAtacable()) {
 						cambioEstado(ATACANDO);
@@ -49,9 +47,10 @@ void Unidad::interactuar() {
 					} else if (receptor->esRecurso() && this->esRecolector()) {
 						cambioEstado(RECOLECTANDO);
 						int recolectado = 0;
+						TipoEntidad tipoRecurso = this->receptor->getTipo();
 						recolectado = recolectar(this->receptor);
 						if (recolectado > 0) {
-							throw Recoleccion(receptor->getTipo(), recolectado);
+							throw Recoleccion(tipoRecurso, recolectado);
 							// Ojo que si llega a este punto, no se correrá nada debajo
 						}
 					}
@@ -77,7 +76,12 @@ void Unidad::lastimar(Entidad* victima) {
 }
 
 int Unidad::recolectar(Entidad* recurso) {
-	return receptor->sufrirRecoleccion();
+	int cantidad = 5; // hardcodeado
+	bool acabeRecurso = (this->receptor->getVidaRestante() <= cantidad);
+	int recolectado = receptor->sufrirRecoleccion(cantidad);
+	if (acabeRecurso)
+		this->olvidarInteraccion();
+	return recolectado;
 }
 
 

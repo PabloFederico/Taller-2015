@@ -131,7 +131,6 @@ void ControladorMouse::procesarClickDerecho(Mouse* mouse){
 				// Si la hay, settear interacción con nueva entidad cliqueada.
 				if (entidadReceptora != NULL) {
 					unidades[i]->interactuarCon(entidadReceptora);
-					std::cout<<unidades[i]->getInfo()<<" intentó interactuar con Entidad : "<<entidadReceptora->getInfo()<<"\n";//
 				}
 			} catch ( FueraDeEscenario &e ) {}
 

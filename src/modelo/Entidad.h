@@ -41,6 +41,7 @@ public:
 
 	TipoEntidad getTipo();
 	EstadoEntidad getEstado();
+	int getVidaRestante();
 	int getIDJug();
 
 	void cambioEstado(EstadoEntidad est);
@@ -72,7 +73,7 @@ public:
 	bool ocupaSuTile();
 
 	void sufrirGolpe(int fuerza);
-	int sufrirRecoleccion();
+	int sufrirRecoleccion(int cant);
 
 	std::string enc();
 	static Entidad* dec(std::string);

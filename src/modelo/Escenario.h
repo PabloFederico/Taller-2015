@@ -98,6 +98,7 @@ public:
 	pair<Coordenada,Coordenada> getCoordenadasRecuadro();
 	void quitarRecuadroSeleccion();
 
+	vector<Entidad*> revisarMuertosDeNadie();
 	virtual ~Escenario();
 };
 

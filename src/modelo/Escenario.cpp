@@ -159,12 +159,12 @@ bool Escenario::agregarEntidad(Coordenada pos, Entidad* entidad){
 				else tile->agregarEntidad(entidad);
 			}
 		}
-		// Los recursos se manejan por separado, no se agregan y se borran desde el tile.
-		if (!EsRecurso(entidad->getTipo())) {
+		// NOT TRUE ANYMORE: Los recursos se manejan por separado, no se agregan y se borran desde el tile.
+		//if (!EsRecurso(entidad->getTipo())) {
 			//PosEntidad posEntidad(pos, entidad);
 			//this->posicionesEntidades->push_back(posEntidad);
 			posicionesEntidades->push_back(entidad);
-		}
+		//}
 	} catch ( TileEstaOcupado &e ) {
 		Log::imprimirALog(ERR,"Se intentó agregar una entidad en un tile ocupado");
 		return false;
@@ -189,7 +189,6 @@ void Escenario::quitarEntidad(Coordenada pos, Entidad* entidad) {
 				if (tile) tile->eliminarEntidad(entidad);
 			} catch ( NoSeRecibio &e ) {}
 		}
-	//} //else entidad no estaba en el vector posicionesEntidades... Algo TODO?
 }
 
 /********************************************************************************/
@@ -290,6 +289,19 @@ pair<Coordenada,Coordenada> Escenario::getCoordenadasRecuadro(){
 /********************************************************************************/
 void Escenario::quitarRecuadroSeleccion(){
 	c_tile_ini_recuadro = c_tile_fin_recuadro;
+}
+
+/********************************************************************************/
+vector<Entidad*> Escenario::revisarMuertosDeNadie() {
+	vector<Entidad*> cuerpos;
+	for (std::vector<Entidad*>::iterator entIt = this->posicionesEntidades->begin(); entIt < this->posicionesEntidades->end(); ++entIt) {
+		if (!(*entIt)->sigueViva() && (*entIt)->getIDJug() == 0) {
+			cuerpos.push_back(*entIt);
+			//this->posicionesEntidades->erase(entIt);		//Innecesarias porque se borra en quitarEntidad
+			//entIt = this->posicionesEntidades->begin(); //por las dudas
+		}
+	}
+	return cuerpos;
 }
 
 /********************************************************************************/

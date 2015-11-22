@@ -101,7 +101,6 @@ vector<Entidad*> Jugador::revisarMuertosPropios() {
 	for (std::vector<Unidad*>::iterator uniIt = this->vec_unidades.begin(); uniIt < this->vec_unidades.end(); ++uniIt) {
 		if (!(*uniIt)->sigueViva()) {
 			Unidad* moribundo = *uniIt;
-			moribundo->morir();
 
 			unidades.erase(moribundo->get_identificador());
 			limpiarRastrosDeUnidadMuerta(moribundo);
@@ -114,7 +113,6 @@ vector<Entidad*> Jugador::revisarMuertosPropios() {
 	for (std::map<int,Edificio*>::iterator ediIt = this->edificios.begin(); ediIt != this->edificios.end(); ++ediIt) {
 		if (!ediIt->second->sigueViva()) {
 			Edificio* dilapidado = ediIt->second;
-			dilapidado->morir();
 
 			edificios.erase(ediIt);
 			ediIt = this->edificios.begin(); //por las dudas

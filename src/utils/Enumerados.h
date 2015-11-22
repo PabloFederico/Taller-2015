@@ -64,7 +64,7 @@ inline const TipoMensajeRed StringToTipoMensajeRed(std::string s) {
 }
 
 inline const bool EsRecurso(TipoEntidad tipo) {
-	if (tipo == MADERA || tipo == COMIDA || tipo == ORO || tipo == PIEDRA)
+	if (tipo == MADERA || tipo == COMIDA || tipo == PIEDRA || tipo == ORO)
 		return true;
 	return false;
 }

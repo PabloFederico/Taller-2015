@@ -289,7 +289,7 @@ void Juego::cargarEnemigo(Entidad* enemigo) {
 			return;
 		}
 
-		/*
+		/*Mismo comentario que arriba
 		PosEntidad posEnt(enemigo->getPosicion().x, enemigo->getPosicion().y, enemigo);
 		bool resPosicionar = false;
 		int aux = posEnt.x;
@@ -344,7 +344,6 @@ vector<Entidad*> Juego::revisarMuertos() {
 	for (std::vector<Unidad*>::iterator uniIt = this->unidadesEnemigos->begin(); uniIt < this->unidadesEnemigos->end(); ++uniIt) {
 		if (!(*uniIt)->sigueViva()) {
 			Unidad* moribundo = *uniIt;
-			moribundo->morir();
 
 			this->jugador->limpiarRastrosDeUnidadMuerta(moribundo);
 			unidadesEnemigos->erase(uniIt);
@@ -356,7 +355,6 @@ vector<Entidad*> Juego::revisarMuertos() {
 	for (std::vector<Edificio*>::iterator ediIt = this->edificiosEnemigos->begin(); ediIt < this->edificiosEnemigos->end(); ++ediIt) {
 		if (!(*ediIt)->sigueViva()) {
 			Edificio* dilapidado = *ediIt;
-			dilapidado->morir();
 
 			edificiosEnemigos->erase(ediIt);
 			ediIt = this->edificiosEnemigos->begin(); //por las dudas
@@ -364,6 +362,10 @@ vector<Entidad*> Juego::revisarMuertos() {
 			funeral.push_back(dilapidado);
 		}
 	}
+	vector<Entidad*> basurero = this->escenario->revisarMuertosDeNadie();
+	for (std::vector<Entidad*>::iterator entIt = basurero.begin(); entIt < basurero.end(); ++entIt)
+		funeral.push_back(*entIt);
+
 	return funeral;
 }
 
@@ -375,15 +377,19 @@ void Juego::continuar() {	// Modularizar si se pasa a usar threads
 	vector<Entidad*> funeral = revisarMuertos();
 	for (vector<Entidad*>::iterator it = funeral.begin(); it < funeral.end(); ++it) {
 		Entidad* muerto = *it;
+		muerto->morir();
+
 		std::cout << muerto->enc()<<" sos un muerto"<<std::endl;//
 		this->escenario->quitarEntidad(muerto->getPosicion(), muerto);
 		this->contenedor->borrarSpriteDeEntidad(muerto);
 		//Falta algo todo?
-		if (muerto->esUnidad())
-			((Unidad*)muerto)->~Unidad();
-		else if (muerto->esEdificio())
-			((Edificio*)muerto)->~Edificio();
-		else muerto->~Entidad();
+
+		delete muerto;
+		//if (muerto->esUnidad())
+		//	((Unidad*)muerto)->~Unidad();
+		//else if (muerto->esEdificio())
+		//	((Edificio*)muerto)->~Edificio();
+		//else muerto->~Entidad();
 	}
 }
 
