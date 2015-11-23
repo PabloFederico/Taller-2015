@@ -403,6 +403,8 @@ void Juego::continuar() {	// Modularizar si se pasa a usar threads
 		Entidad* muerto = *it;
 		muerto->morir();
 
+		this->emitirSonido(muerto);
+
 		std::cout << muerto->enc()<<" sos un muerto"<<std::endl;//
 		this->escenario->quitarEntidad(muerto->getPosicion(), muerto);
 		this->contenedor->borrarSpriteDeEntidad(muerto);
@@ -411,6 +413,28 @@ void Juego::continuar() {	// Modularizar si se pasa a usar threads
 		delete muerto;
 	}
 }
+
+/***************************************************/
+
+void Juego::emitirSonido(Entidad* entidad){
+	//FALTAN CARGAR.
+	switch (entidad->getTipo()){
+		case SOLDADO:
+		case ALDEANO:
+			Mix_PlayChannel(1, this->contenedorSonidos->getSonidoTipo(MORIR_HUMANO), 0);
+			break;
+		case ANIMAL:
+			Mix_PlayChannel(1, this->contenedorSonidos->getSonidoTipo(MORIR_ANIMAL), 0);
+			break;
+		case EDIFICIO:
+		case ORO:
+			Mix_PlayChannel(1, this->contenedorSonidos->getSonidoTipo(DESTRUIR), 0);
+			break;
+		default :
+			break;
+	}
+}
+
 
 /***************************************************/
 Juego::~Juego() {

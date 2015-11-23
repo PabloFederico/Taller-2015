@@ -19,8 +19,16 @@ ContenedorDeSonidos::ContenedorDeSonidos(){
 
 void ContenedorDeSonidos::cargarSonidos(){
 	Mix_Chunk *caminar = Loader::cargarSonido("sound/pasoss.wav");
-	if (caminar == NULL) printf("Error al cargar la cancion. Error: %s\n", Mix_GetError());
-	this->mapSonidos->insert(CAMINAR,caminar);
+	if (caminar == NULL) printf("Error al cargar sonido CAMINAR. Error: %s\n", Mix_GetError());
+	this->mapSonidos->insert(CAMINAR, caminar);
+
+	Mix_Chunk *morir_humano = Loader::cargarSonido("sound/morir.wav");
+	if (morir_humano == NULL) printf("Error al cargar sonido MORIR HUMANO. Error: %s\n", Mix_GetError());
+	this->mapSonidos->insert(MORIR_HUMANO, morir_humano);
+
+	Mix_Chunk *morir_animal = Loader::cargarSonido("sound/muerteanimal.wav");
+	if (morir_animal == NULL) printf("Error al cargar sonido MORIR ANIMAL. Error: %s\n", Mix_GetError());
+	this->mapSonidos->insert(MORIR_ANIMAL, morir_animal);
 
 	//CARGAR LOS RESTANTES
 }

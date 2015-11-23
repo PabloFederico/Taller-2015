@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <map>
 #include <unistd.h>
+#include <SDL2/SDL_mixer.h>
 
 #include "../utils/Map.h"
 #include "../utils/ContenedorDeRecursos.h"
@@ -114,6 +115,8 @@ public:
 	void toggleEnemigo(int id_jug, int idUnidad);
 
 	void continuar();
+
+	void emitirSonido(Entidad* entidad);
 
 	void reiniciar();
 	virtual ~Juego();
