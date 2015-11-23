@@ -69,7 +69,7 @@ inline const bool EsRecurso(TipoEntidad tipo) {
 }
 
 inline const bool EsUnidad(TipoEntidad tipo) {
-	if (tipo == SOLDADO || tipo == ALDEANO)
+	if (tipo == SOLDADO || tipo == ALDEANO || tipo == ARQUERO)
 		return true;
 	return false;
 }
