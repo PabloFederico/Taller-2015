@@ -62,6 +62,7 @@ Entidad::Entidad(TipoEntidad tipo, int num_jug): idJug(num_jug) {
 			info = "Castillo";
 			break;
 		case ARBOL:
+			vidaRestante = 10;
 			movible = false;
 			ocupador = true;
 			info = "Arbol";
@@ -150,7 +151,7 @@ pair<int,int> Entidad::getTam() {
 }
 
 bool Entidad::esAtacable() {
-	return (esUnidad() || esEdificio() || tipo == ANIMAL); // medio harcodeo; reemplazable por una variable esAtacable
+	return (esUnidad() || esEdificio() || tipo == ANIMAL || tipo == ARBOL); // medio harcodeo; reemplazable por una variable esAtacable
 }
 
 bool Entidad::esMovible(){

@@ -30,6 +30,15 @@ void ContenedorDeSonidos::cargarSonidos(){
 	if (morir_animal == NULL) printf("Error al cargar sonido MORIR ANIMAL. Error: %s\n", Mix_GetError());
 	this->mapSonidos->insert(MORIR_ANIMAL, morir_animal);
 
+	Mix_Chunk *comer = Loader::cargarSonido("sound/comer.wav");
+	if (comer == NULL) printf("Error al cargar sonido COMER. Error: %s\n", Mix_GetError());
+	this->mapSonidos->insert(COMER, comer);
+
+	Mix_Chunk *talar = Loader::cargarSonido("sound/talar.wav");
+	if (talar == NULL) printf("Error al cargar sonido TALAR. Error: %s\n", Mix_GetError());
+	this->mapSonidos->insert(TALAR, talar);
+
+
 	//CARGAR LOS RESTANTES
 }
 

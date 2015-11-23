@@ -430,6 +430,12 @@ void Juego::emitirSonido(Entidad* entidad){
 		case ANIMAL:
 			Mix_PlayChannel(1, this->contenedorSonidos->getSonidoTipo(MORIR_ANIMAL), 0);
 			break;
+		case COMIDA:
+			Mix_PlayChannel(1, this->contenedorSonidos->getSonidoTipo(COMER), 0);
+			break;
+		case ARBOL:
+			Mix_PlayChannel(1, this->contenedorSonidos->getSonidoTipo(TALAR), 0);
+			break;
 		case EDIFICIO:
 		case ORO:
 			Mix_PlayChannel(1, this->contenedorSonidos->getSonidoTipo(DESTRUIR), 0);
