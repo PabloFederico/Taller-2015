@@ -10,6 +10,7 @@
 #include <iostream>
 #include <sstream>
 #include <math.h>
+#include <random>
 using namespace std;
 
 
@@ -69,13 +70,16 @@ void Unidad::interactuar() {
 }
 
 int Unidad::generarGolpe() {
-	// TODO: Fórmula mágica
-	if (this->tipo == SOLDADO)
-		return 3; // hardcodeado malll pero mallllll
-	if (this->tipo == ALDEANO)
-		return 1;
-	return 0;
-}
+	random_device rd_gen;
+	mt19937 gen(rd_gen());
+	uniform_int_distribution<int> distribucion(this->obtenerAtk()/2,this->obtenerAtk());
+	int num_rndm = distribucion(gen);
+	int dmg = num_rndm -receptor->obtenerArmor()/(num_rndm+this->obtenerArmor());
+	if (dmg < 0) return 0; //por ahi el ataque es muy poronga con respecto a la armor de un edificio, ponele
+	cout << "HAGO " << dmg << "DANO" << endl;
+	return dmg;
+
+	}
 
 void Unidad::continuarConstruccion() {
 	((Construccion*)this->receptor)->continuarConstruyendo();
