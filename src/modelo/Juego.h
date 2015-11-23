@@ -39,7 +39,8 @@ private:
 	
 	Escenario *escenario;
 
-	vector<Unidad* >* enemigos;
+	vector<Unidad*  >* unidadesEnemigos;
+	vector<Edificio*>* edificiosEnemigos;
 
 	ContenedorDeSonidos *contenedorSonidos;
 
@@ -54,6 +55,8 @@ private:
 	ContenedorDeRecursos *contenedor;
 
 	BarraEstado *barraEstado;
+
+	vector<Entidad*> revisarMuertos();
 
 public:
 	Juego();//Connection* lan, Coordenada* posInicial, InfoEscenario* infoEscRed);
@@ -73,7 +76,7 @@ public:
 	string getNombreJugador();
 	int getIDJugador();
 	void cargarNumJugador();
-	void cargarEnemigo(Unidad* enemigo);
+	void cargarEnemigo(Entidad* enemigo);
 
 	Map<Entidad*, Sprite*>* getSpritesEntidades();
 	vector<InfoEntidad> getInfoTiposEntidades();
@@ -85,7 +88,7 @@ public:
 
 	Entidad* getEntidadDeSprite(Sprite* spr);
 
-	vector<Sprite*> getSpritesProtagonistas();
+	vector<Sprite*> getSpritesUnidades();
 
 	//PosEntidad getPosEntDeProtagonista();
 
@@ -105,9 +108,10 @@ public:
 
 	void agregarContenedorDeRecursos(ContenedorDeRecursos *container);
 
+	void comenzarNuevaConstruccion(TipoEntidad tipoEdif, Coordenada coord, int id_jug);
 	void agregarRecurso(TipoEntidad recurso, Coordenada coord);
 
-	void toggleEnemigo(int id_jug);
+	void toggleEnemigo(int id_jug, int idUnidad);
 
 	void continuar();
 

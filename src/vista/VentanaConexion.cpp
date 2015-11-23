@@ -13,9 +13,9 @@
 
 VentanaConexion::VentanaConexion(Controller *controlador): Ventana(controlador) {
 	if ( !init() ) std::cout << "error" << std::endl;
-	 this->fuenteTexto = TTF_OpenFont("images/censcbk.ttf",TAM_LETRA_CONEXION);
-	imagenFondo = Loader::cargarImagen(renderer,"images/fondo_ventana.png");
-	imagenFondoCampo = Loader::cargarImagen(renderer,"images/fondo_campo1.png");
+	 this->fuenteTexto = TTF_OpenFont("images/utils/censcbk.ttf",TAM_LETRA_CONEXION);
+	imagenFondo = Loader::cargarImagen(renderer,"images/utils/fondo_ventana.png");
+	imagenFondoCampo = Loader::cargarImagen(renderer,"images/utils/fondo_campo1.png");
 }
 
 Campo campoACompletar(Mouse* mouse, vector<pair<SDL_Rect,Campo> > vec){
@@ -89,7 +89,7 @@ EstadoFinVentana VentanaConexion::run(){
 	rect_boton.x = 450;
 	rect_boton.y = 500;
 	Boton* buttonConnect = new Boton("Connect",rect_boton);
-	Imagen* imageButtonConnect = Loader::cargarImagen(renderer,"images/boton_conectar.png");
+	Imagen* imageButtonConnect = Loader::cargarImagen(renderer,"images/utils/boton_conectar.png");
 	buttonConnect->setImagen(imageButtonConnect);
 	rect_boton = buttonConnect->getPosicion();
 

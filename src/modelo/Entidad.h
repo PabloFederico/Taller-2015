@@ -11,6 +11,7 @@
 using namespace std;
 #include <string>
 #include <sstream>
+#include <iostream>
 #include "../utils/Enumerados.h"
 #include "../utils/Exceptions.h"
 #include "../utils/Common.h"
@@ -36,6 +37,8 @@ public:
 
 	TipoEntidad getTipo();
 	EstadoEntidad getEstado();
+	int getVidaRestante();
+	void setVidaRestante(int valor);
 	int getIDJug();
 
 	void cambioEstado(EstadoEntidad est);
@@ -53,6 +56,7 @@ public:
 	void setPosicion(Coordenada c);
 
 	bool esRecurso();
+	bool esConstruccion();
 	bool esEdificio();
 	bool esUnidad();
 
@@ -62,15 +66,18 @@ public:
 	std::string getInfo();
 	std::string getVidaString();
 
+	bool esAtacable();
 	bool esMovible();
 	bool ocupaSuTile();
 
 	void sufrirGolpe(int fuerza);
-	int sufrirRecoleccion();
+	int sufrirRecoleccion(int cant);
 
 	std::string enc();
 	static Entidad* dec(std::string);
 
+	bool sigueViva();
+	void morir();
 	virtual ~Entidad();
 };
 

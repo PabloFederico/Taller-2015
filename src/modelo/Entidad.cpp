@@ -7,11 +7,11 @@
 
 #include "../modelo/Entidad.h"
 
-Entidad::Entidad(TipoEntidad tipo, int num_jug): idJug(num_jug)  {
+Entidad::Entidad(TipoEntidad tipo, int num_jug): idJug(num_jug) {
 	this->reloj = clock();
 	this->receptor = NULL;
 	this->estado = QUIETO;
-	this->vidaRestante = 0;
+	this->vidaRestante = 1;
 	this->ancho = 1;
 	this->alto = 1;
 	this->tipo = tipo;
@@ -32,13 +32,13 @@ Entidad::Entidad(TipoEntidad tipo, int num_jug): idJug(num_jug)  {
 			info = "Agua";
 			break;
 		case SOLDADO:
-			vidaRestante = 100;
+			vidaRestante = 10;//100;
 			movible = true;
 			ocupador = true;
 			info = "Soldado";
 			break;
 		case ALDEANO:
-			vidaRestante = 50;
+			vidaRestante = 5;//50;
 			movible = true;
 			ocupador = true;
 			info = "Aldeano";
@@ -73,7 +73,7 @@ Entidad::Entidad(TipoEntidad tipo, int num_jug): idJug(num_jug)  {
 			info = "Madera";
 			break;
 		case COMIDA:
-			vidaRestante = 150;
+			vidaRestante = 15;//150;
 			movible = false;
 			ocupador = true;
 			info = "Comida";
@@ -91,6 +91,7 @@ Entidad::Entidad(TipoEntidad tipo, int num_jug): idJug(num_jug)  {
 			info = "Oro";
 			break;
 		default:
+			vidaRestante = 1; // Así nunca mueren
 			movible = false;
 			ocupador = true;
 			info = "";
@@ -100,6 +101,14 @@ Entidad::Entidad(TipoEntidad tipo, int num_jug): idJug(num_jug)  {
 
 int Entidad::getIDJug(){
 	return idJug;
+}
+
+int Entidad::getVidaRestante() {
+	return this->vidaRestante;
+}
+
+void Entidad::setVidaRestante(int valor) {
+	if (valor >= 0) this->vidaRestante = valor;
 }
 
 TipoEntidad Entidad::getTipo(){
@@ -121,6 +130,9 @@ void Entidad::finalizaAccion() {
 bool Entidad::esRecurso(){
 	return EsRecurso(this->tipo);
 }
+bool Entidad::esConstruccion() {
+	return (tipo == CONSTRUCCION);
+}
 bool Entidad::esEdificio(){
 	return EsEdificio(this->tipo);
 }
@@ -135,6 +147,10 @@ void Entidad::setTam(int ancho, int alto) {
 
 pair<int,int> Entidad::getTam() {
 	return std::pair<int,int>(this->ancho, this->alto);
+}
+
+bool Entidad::esAtacable() {
+	return (esUnidad() || esEdificio() || tipo == ANIMAL); // medio harcodeo; reemplazable por una variable esAtacable
 }
 
 bool Entidad::esMovible(){
@@ -155,11 +171,11 @@ void Entidad::setPosicion(Coordenada nuevaCoord){
 
 void Entidad::interactuarCon(Entidad* receptor) {
 	if (this->getIDJug() == receptor->getIDJug())
-		return;	// No existe acción contra otra entidad propia (por ahora).
-	if (receptor->esEdificio() || receptor->esUnidad() || receptor->esRecurso()) {
+		return;	// No existe acción contra otra entidad propia (al menos por ahora).
+	if (receptor->esAtacable() || receptor->esRecurso()) {
 		this->receptor = receptor;
 		this->reloj = clock();
-		// SOLDADO, ALDEANO, ANIMAL // EDIFICIO, CENTRO_CIVICO, CUARTEL, CASTILLO // MADERA, COMIDA, ORO, PIEDRA
+		// SOLDADO, ALDEANO, ANIMAL; EDIFICIO, CENTRO_CIVICO, CUARTEL, CASTILLO // MADERA, COMIDA, PIEDRA, ORO
 	}
 	// ARBOL, DEFAULT
 }
@@ -171,15 +187,21 @@ void Entidad::olvidarInteraccion() {
 
 
 void Entidad::sufrirGolpe(int fuerzaGolpe) {
+	if (!esAtacable()) return;
 	if (this->vidaRestante <= 0)
 		throw EntidadMurio();
 	this->vidaRestante -= fuerzaGolpe;
-	if (this->vidaRestante <= 0 && !esRecurso())
-		throw EntidadMurio();
+	if (this->vidaRestante <= 0) {
+		this->vidaRestante = 0;
+		if (!esRecurso())
+			throw EntidadMurio();
+		else std::cout << "Esto sí es posible, de alguna forma"<<std::endl;//
+	}
 }
 
-int Entidad::sufrirRecoleccion() {
-	int recolectado = 5;	// hardcodeado
+int Entidad::sufrirRecoleccion(int cant = 5) {
+	if (!esRecurso()) return 0;
+	int recolectado = cant;
 	if (this->vidaRestante <= 0)
 		throw EntidadMurio();
 	this->vidaRestante -= recolectado;
@@ -207,13 +229,12 @@ std::string Entidad::getVidaString() {
 	return enc.str();
 }
 
-
+// Para comunicación de redes
 std::string Entidad::enc() {
 	ostringstream enc;
 	enc << idJug<<","<<tipo<<","<<ancho<<","<<alto;
 	return enc.str();
 }
-
 Entidad* Entidad::dec(std::string s) {
 	int id,ti,an,al;
 	stringstream ss(s);
@@ -224,6 +245,15 @@ Entidad* Entidad::dec(std::string s) {
 	Entidad *e = new Entidad(TipoEntidad(ti), id);
 	e->setTam(an, al);
 	return e;
+}
+//
+
+bool Entidad::sigueViva() {
+	return (this->vidaRestante > 0);
+}
+
+void Entidad::morir() {
+	//
 }
 
 Entidad::~Entidad() {

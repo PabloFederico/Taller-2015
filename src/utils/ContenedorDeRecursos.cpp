@@ -21,13 +21,13 @@ ContenedorDeRecursos::ContenedorDeRecursos(SDL_Renderer *renderer) {
 /********************************************************************************/
 void ContenedorDeRecursos::cargarImagenesEntidades(vector<InfoEntidad> infoEntidades){
 	/* Primero cargamos la imagen del relieve por default */
-	Imagen *pasto = Loader::cargarImagen(this->renderer,"images/pasto.png");
+	Imagen *pasto = Loader::cargarImagen(this->renderer,"images/relieve/pasto.png");
 	this->mapImagenes->insert(PASTO,pasto);
 
-	Imagen *contorno = Loader::cargarImagen(this->renderer,"images/selector_tile.png");
-	this->mapImagenes->insert(CONTORNO,contorno);
+	Imagen *contorno = Loader::cargarImagen(this->renderer,"images/utils/selector_tile.png");
+	this->mapImagenes->insert(CONTORNO,contorno);							// Esto no es una entidad...
 
-	Imagen *contorno_grande = Loader::cargarImagen(this->renderer,"images/selector_tile_2.png");
+	Imagen *contorno_grande = Loader::cargarImagen(this->renderer,"images/utils/selector_tile_2.png");
 	this->mapImagenes->insert(CONTORNOXL,contorno_grande);
 
 	for (unsigned i = 0; i < infoEntidades.size(); i++){
@@ -48,7 +48,7 @@ void ContenedorDeRecursos::generarYGuardarSpritesEntidades(vector<Entidad*> *pos
 	for (unsigned i = 0; i < posEntidades->size(); i++) {
 		generarYGuardarSpriteEntidad((*posEntidades)[i], coord_ceros, escenario);
 	}
-	std::cout<<mapSpritesEntidades->size()<<" sprites creados"<<std::endl;
+	std::cout<<mapSpritesEntidades->size()<<" sprites creados"<<std::endl;//
 }
 
 void ContenedorDeRecursos::generarYGuardarSpriteEntidad(Entidad* entidad, Coordenada coord_ceros, Escenario* escenario) {
@@ -100,11 +100,16 @@ void ContenedorDeRecursos::generarYGuardarSpriteEntidad(Entidad* entidad, Coorde
 						}
 						break;
 		case SOLDADO  : {
-						posicion.x += ANCHO_PIXEL_PASTO / 4;
-						posicion.y -= 2;
-						posicion.w = ANCHO_PIXEL_PASTO / 2;
-						posicion.h = ALTO_PIXEL_PASTO;
-						sprite = new Sprite(DIRECCIONES,8,this->getImagenTipo(entidad->getTipo()),posicion,escenario,coord_ceros,entidad);
+						/* FRAMES:
+						 * ATAQUE : 15 frames
+						 * CAMINAR : 10 frames
+						 * MUERE : (NO ENCONTRE SPRITES)
+						 * */
+						posicion.x += 0.25 * ANCHO_PIXEL_PASTO;
+						posicion.y -= DISTANCIA_ENTRE_Y;
+						posicion.w = 0.5*ANCHO_PIXEL_PASTO;
+						posicion.h = 1.25*ALTO_PIXEL_PASTO;
+						sprite = new Sprite(DIRECCIONES,10,this->getImagenTipo(entidad->getTipo()),posicion,escenario,coord_ceros,entidad);
 
 						int x_ini = posicion.x;
 						int y_ini = posicion.y;
@@ -114,10 +119,16 @@ void ContenedorDeRecursos::generarYGuardarSpriteEntidad(Entidad* entidad, Coorde
 						break;
 
 		case ALDEANO :{
-						posicion.x += ANCHO_PIXEL_PASTO / 4;
-						posicion.w = ANCHO_PIXEL_PASTO / 2;
-						posicion.h = ALTO_PIXEL_PASTO * 3 / 4;
-						sprite = new Sprite(DIRECCIONES,14,this->getImagenTipo(entidad->getTipo()),posicion,escenario,coord_ceros,entidad);
+						/* FRAMES:
+						 * ATAQUE : 15 frames
+						 * CAMINAR : 15 frames
+						 * MUERE : 10 frames
+						 * */
+						posicion.x += ANCHO_PIXEL_PASTO * 0.25;
+						posicion.y -= DISTANCIA_ENTRE_Y;
+						posicion.w = ANCHO_PIXEL_PASTO*0.8;// / 2;
+						posicion.h = 1.25*ALTO_PIXEL_PASTO;// * 3 / 4;
+						sprite = new Sprite(DIRECCIONES,15,this->getImagenTipo(entidad->getTipo()),posicion,escenario,coord_ceros,entidad);
 						//SDL_SetTextureColorMod(imagenPetrificadaSoldado->getTexture(),150,150,150);
 						//sprite->agregarImagenPetrificada(imagenPetrificadaSoldado);
 
@@ -128,11 +139,16 @@ void ContenedorDeRecursos::generarYGuardarSpriteEntidad(Entidad* entidad, Coorde
 						}
 						break;
 		case ARQUERO :{
-						posicion.x -= ANCHO_PIXEL_PASTO * 0.25;
+						/* FRAMES:
+						 * ATAQUE : 10 frames
+						 * CAMINAR : 10 frames
+						 * MUERE : 10 frames
+						 * */
+						//posicion.x += ANCHO_PIXEL_PASTO * 0.25;
 						posicion.y -= 25;
-						posicion.w = 1.5*ANCHO_PIXEL_PASTO;
-						posicion.h = 2*ALTO_PIXEL_PASTO;
-						sprite = new Sprite(DIRECCIONES,12,this->getImagenTipo(entidad->getTipo()),posicion,escenario,coord_ceros,entidad);
+						posicion.w = 1.25*ANCHO_PIXEL_PASTO;
+						posicion.h = 1.75*ALTO_PIXEL_PASTO;
+						sprite = new Sprite(DIRECCIONES,10,this->getImagenTipo(entidad->getTipo()),posicion,escenario,coord_ceros,entidad);
 						//SDL_SetTextureColorMod(imagenPetrificadaSoldado->getTexture(),150,150,150);
 						//sprite->agregarImagenPetrificada(imagenPetrificadaSoldado);
 
@@ -143,13 +159,16 @@ void ContenedorDeRecursos::generarYGuardarSpriteEntidad(Entidad* entidad, Coorde
 						}
 						break;
 		case ANIMAL :	{
+						/* FRAMES:
+						 * COMER : 10 frames
+						 * */
 						posicion.x += ANCHO_PIXEL_PASTO / 8;
 						//posicion.y -= (DISTANCIA_ENTRE_Y);
 						posicion.w = ANCHO_PIXEL_PASTO * 0.8;
 						posicion.h = ALTO_PIXEL_PASTO * 0.8;
 						sprite = new Sprite(DIRECCIONES,10,this->getImagenTipo(ANIMAL),posicion,escenario,coord_ceros,entidad);
 						sprite->activarMovimiento(true);
-						sprite->setDireccion(ESTE);
+						sprite->setDireccion(NORTE);
 
 						int x_ini = posicion.x;
 						int y_ini = posicion.y;
@@ -210,101 +229,101 @@ void ContenedorDeRecursos::actualizarPosicionesEntidades(int corrimiento_x, int 
 
 /********************************************************************************/
 void ContenedorDeRecursos::cargarImagenesUtil(){
-	Imagen *imagen = Loader::cargarImagen(this->renderer,"images/barra_fondo.png");
+	Imagen *imagen = Loader::cargarImagen(this->renderer,"images/utils_barra_estado/barra_fondo.png");
 	this->mapImagenesUtil->insert(BARRA_FONDO,imagen);
 
-	imagen = Loader::cargarImagen(this->renderer,"images/barra_descripcion.png");
+	imagen = Loader::cargarImagen(this->renderer,"images/utils_barra_estado/barra_descripcion.png");
 	this->mapImagenesUtil->insert(BARRA_DESCRIPCION,imagen);
 
-	imagen = Loader::cargarImagen(this->renderer,"images/barra_negra.png");
+	imagen = Loader::cargarImagen(this->renderer,"images/utils/barra_negra.png");
 	this->mapImagenesUtil->insert(BARRA_NEGRA,imagen);
 
-	imagen = Loader::cargarImagen(this->renderer,"images/selector_tile_0.png");
+	imagen = Loader::cargarImagen(this->renderer,"images/utils/selector_tile_0.png");
 	this->mapImagenesUtil->insert(SELECT_TILE,imagen);
 
-	imagen = Loader::cargarImagen(this->renderer,"images/selector_tile_01.png");
+	imagen = Loader::cargarImagen(this->renderer,"images/utils/selector_tile_01.png");
 	this->mapImagenesUtil->insert(SELECT_TILE_01,imagen);
 
-	imagen = Loader::cargarImagen(this->renderer,"images/selector_tile_02.png");
+	imagen = Loader::cargarImagen(this->renderer,"images/utils/selector_tile_02.png");
 	this->mapImagenesUtil->insert(SELECT_TILE_02,imagen);
 
-	imagen = Loader::cargarImagen(this->renderer,"images/selector_tile_03.png");
+	imagen = Loader::cargarImagen(this->renderer,"images/utils/selector_tile_03.png");
 	this->mapImagenesUtil->insert(SELECT_TILE_03,imagen);
 
-	imagen = Loader::cargarImagen(this->renderer,"images/selector_tile_04.png");
+	imagen = Loader::cargarImagen(this->renderer,"images/utils/selector_tile_04.png");
 	this->mapImagenesUtil->insert(SELECT_TILE_04,imagen);
 
-	imagen = Loader::cargarImagen(this->renderer,"images/ubicacion_minimapa.png");
+	imagen = Loader::cargarImagen(this->renderer,"images/utils/ubicacion_minimapa.png");
 	this->mapImagenesUtil->insert(CUADRO_UBICACION,imagen);
 
-	imagen = Loader::cargarImagen(this->renderer,"images/icono_rojo_1.png");
+	imagen = Loader::cargarImagen(this->renderer,"images/utils/icono_rojo_1.png");
 	this->mapImagenesUtil->insert(ICONO_ROJO,imagen);
 
-	imagen = Loader::cargarImagen(this->renderer,"images/icono_azul_1.png");
+	imagen = Loader::cargarImagen(this->renderer,"images/utils/icono_azul_1.png");
 	this->mapImagenesUtil->insert(ICONO_AZUL,imagen);
 
-	imagen = Loader::cargarImagen(this->renderer,"images/icono_amarillo_1.png");
+	imagen = Loader::cargarImagen(this->renderer,"images/utils/icono_amarillo_1.png");
 	this->mapImagenesUtil->insert(ICONO_AMARILLO,imagen);
 
-	imagen = Loader::cargarImagen(this->renderer,"images/icono_naranja_1.png");
+	imagen = Loader::cargarImagen(this->renderer,"images/utils/icono_naranja_1.png");
 	this->mapImagenesUtil->insert(ICONO_NARANJA,imagen);
 
-	imagen = Loader::cargarImagen(this->renderer,"images/icono_verde_2.png");
+	imagen = Loader::cargarImagen(this->renderer,"images/utils/icono_verde_2.png");
 	this->mapImagenesUtil->insert(ICONO_VERDE,imagen);
 
-	imagen = Loader::cargarImagen(this->renderer,"images/icono_rosa_1.png");
+	imagen = Loader::cargarImagen(this->renderer,"images/utils/icono_rosa_1.png");
 	this->mapImagenesUtil->insert(ICONO_ROSA,imagen);
 
-	imagen = Loader::cargarImagen(this->renderer,"images/icono_blanco_1.png");
+	imagen = Loader::cargarImagen(this->renderer,"images/utils/icono_blanco_1.png");
 	this->mapImagenesUtil->insert(ICONO_BLANCO,imagen);
 
-	imagen = Loader::cargarImagen(this->renderer,"images/icono_gris_1.png");
+	imagen = Loader::cargarImagen(this->renderer,"images/utils/icono_gris_1.png");
 	this->mapImagenesUtil->insert(ICONO_GRIS,imagen);
 
-	imagen = Loader::cargarImagen(this->renderer,"images/icono_violeta_1.png");
+	imagen = Loader::cargarImagen(this->renderer,"images/utils/icono_violeta_1.png");
 	this->mapImagenesUtil->insert(ICONO_VIOLETA,imagen);
 
-	imagen = Loader::cargarImagen(this->renderer,"images/capa_gris.png");
+	imagen = Loader::cargarImagen(this->renderer,"images/utils/capa_gris.png");
 	this->mapImagenesUtil->insert(CAPA_GRIS,imagen);
 
-	imagen = Loader::cargarImagen(this->renderer,"images/capa_negra.png");
+	imagen = Loader::cargarImagen(this->renderer,"images/utils/capa_negra.png");
 	this->mapImagenesUtil->insert(CAPA_NEGRA,imagen);
 
-	imagen = Loader::cargarImagen(this->renderer,"images/cuadrado_magenta_1.png");
+	imagen = Loader::cargarImagen(this->renderer,"images/utils/cuadrado_magenta_1.png");
 	this->mapImagenesUtil->insert(CUADRADO_MAGENTA,imagen);
 
-	imagen = Loader::cargarImagen(this->renderer,"images/cuadrado_verde_1.png");
+	imagen = Loader::cargarImagen(this->renderer,"images/utils/cuadrado_verde_1.png");
 	this->mapImagenesUtil->insert(CUADRADO_VERDE,imagen);
 
-	imagen = Loader::cargarImagen(this->renderer,"images/cuadrado_azul_1.png");
+	imagen = Loader::cargarImagen(this->renderer,"images/utils/cuadrado_azul_1.png");
 	this->mapImagenesUtil->insert(CUADRADO_AZUL,imagen);
 
-	imagen = Loader::cargarImagen(this->renderer,"images/cuadrado_rojo_1.png");
+	imagen = Loader::cargarImagen(this->renderer,"images/utils/cuadrado_rojo_1.png");
 	this->mapImagenesUtil->insert(CUADRADO_ROJO,imagen);
 
-	imagen = Loader::cargarImagen(this->renderer,"images/herramientas_aldeano.png");
+	imagen = Loader::cargarImagen(this->renderer,"images/utils_barra_estado/herramientas_aldeano.png");
 	this->mapImagenesUtil->insert(HERRAMIENTAS_ALDEANO,imagen);
 
-	imagen = Loader::cargarImagen(this->renderer,"images/arco_arquero.png");
+	imagen = Loader::cargarImagen(this->renderer,"images/utils_barra_estado/arco_arquero.png");
 	this->mapImagenesUtil->insert(ARCO_ARQUERO,imagen);
 
-	imagen = Loader::cargarImagen(this->renderer,"images/espada_soldado.png");
+	imagen = Loader::cargarImagen(this->renderer,"images/utils_barra_estado/espada_soldado.png");
 	this->mapImagenesUtil->insert(ESPADA_SOLDADO,imagen);
 }
 
 
 /********************************************************************************/
 void ContenedorDeRecursos::cargarImagenesRecursos(){
-	Imagen *imagen = Loader::cargarImagen(this->renderer,"images/moneda_1.png");
+	Imagen *imagen = Loader::cargarImagen(this->renderer,"images/utils/moneda_1.png");
 	this->mapImagenes->insert(ORO,imagen);
 
-	imagen = Loader::cargarImagen(this->renderer,"images/madera_1.png");
+	imagen = Loader::cargarImagen(this->renderer,"images/utils/madera_1.png");
 	this->mapImagenes->insert(MADERA,imagen);
 
-	imagen = Loader::cargarImagen(this->renderer,"images/comida_1.png");
+	imagen = Loader::cargarImagen(this->renderer,"images/utils/comida_1.png");
 	this->mapImagenes->insert(COMIDA,imagen);
 
-	imagen = Loader::cargarImagen(this->renderer,"images/missing1.png");	// TODO AGREGAR ACÁ PATH DE PNG DE PIEDRA
+	imagen = Loader::cargarImagen(this->renderer,"images/utils/missing1.png");	// TODO AGREGAR ACÁ PATH DE PNG DE PIEDRA
 	this->mapImagenes->insert(PIEDRA,imagen);
 }
 
@@ -328,6 +347,15 @@ InfoEntidad ContenedorDeRecursos::getInfoTipo(TipoEntidad tipo){
 	SDL_SetTextureAlphaMod(spriteEntidad->getImagen()->getTexture(),canalAlpha);
 }
 */
+/********************************************************************************/
+void ContenedorDeRecursos::borrarSpriteDeEntidad(Entidad* entidad) {
+	map<Entidad*, Sprite*>::iterator it = this->mapSpritesEntidades->find(entidad);
+	if (it != this->mapSpritesEntidades->end()) {
+		delete (it->second);
+		this->mapSpritesEntidades->erase(it->first);
+	}
+}
+
 /********************************************************************************/
 ContenedorDeRecursos::~ContenedorDeRecursos() {
 	this->mapInfoEntidades.clear();

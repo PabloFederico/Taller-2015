@@ -189,16 +189,16 @@ ConfiguracionJuego Yaml::OdioYAML() {
 
 	InfoEntidad infoArbol;
 	infoArbol.tipo = tipos["arbol"];
-	infoArbol.path = "images/arbol.png";
+	infoArbol.path = "images/utils/arbol.png";
 	infoArbol.descripcion = "Arbol";
 
 	InfoEntidad infoTierra;
 	infoTierra.tipo = tipos["tierra"];
-	infoTierra.path = "images/tierra.png";
+	infoTierra.path = "images/relieve/tierra.png";
 
 	InfoEntidad infoAgua;
 	infoAgua.tipo = tipos["agua"];
-	infoAgua.path = "images/agua.png";
+	infoAgua.path = "images/relieve/agua.png";
 /*
 	InfoEntidad infoCastillo;
 	infoCastillo.tipo = tipos["castillo"];
@@ -209,37 +209,37 @@ ConfiguracionJuego Yaml::OdioYAML() {
 */
 	InfoEntidad infoSoldado;
 	infoSoldado.tipo = tipos["soldado"];
-	infoSoldado.path = "images/soldado.png";
-	infoSoldado.fps = 40;
+	infoSoldado.path = "images/sprites/soldado_camina.png";
+	infoSoldado.fps = 30;
 	infoSoldado.descripcion = "Soldado";
 
 	InfoEntidad infoAldeano;
 	infoAldeano.tipo = tipos["aldeano"];
-	infoAldeano.path = "images/aldeano.png";
+	infoAldeano.path = "images/sprites/aldeano_camina.png";
 	infoAldeano.fps = 40;
 	infoAldeano.descripcion = "Aldeano";
 
 	InfoEntidad infoArquero;
 	infoArquero.tipo = tipos["arquero"];
-	infoArquero.path = "images/arquero_camina.png";
+	infoArquero.path = "images/sprites/arquero_camina_.png";
 	infoArquero.fps = 20;
 	infoArquero.descripcion = "Arquero";
 
 	InfoEntidad infoAnimal;
 	infoAnimal.tipo = tipos["animal"];
-	infoAnimal.path = "images/vaca_come.png";
+	infoAnimal.path = "images/sprites/vaca_come.png";
 	infoAnimal.delay = 5000;
 	infoAnimal.fps = 10;
 	infoAnimal.descripcion = "Animal";
 
 	InfoEntidad infoCuartel;
 	infoCuartel.tipo = tipos["cuartel"];
-	infoCuartel.path = "images/cuartel.png";
+	infoCuartel.path = "images/utils/cuartel.png";
 	infoCuartel.descripcion = "Cuartel";
 
 	InfoEntidad infoCentroCivico;
 	infoCentroCivico.tipo = tipos["centro_civico"];
-	infoCentroCivico.path = "images/centro_civico.png";
+	infoCentroCivico.path = "images/utils/centro_civico.png";
 	infoCentroCivico.descripcion = "Centro Civico";
 
 	configDefault.agregarInfoEntidad(infoArbol);

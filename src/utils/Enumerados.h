@@ -10,8 +10,7 @@
 
 #include <string>
 
-
-enum TipoEntidad  { OTROS , PASTO, TIERRA , AGUA , ARBOL , CASTILLO, SOLDADO, ALDEANO, ARQUERO, ANIMAL, MADERA, COMIDA, PIEDRA, ORO, DEFAULT, CONTORNO, CONTORNOXL, EDIFICIO, CENTRO_CIVICO, CUARTEL };
+enum TipoEntidad  { OTROS , PASTO, TIERRA , AGUA , ARBOL , CASTILLO, SOLDADO, ARQUERO, ALDEANO, ANIMAL, MADERA, COMIDA, PIEDRA, ORO, DEFAULT, CONTORNO, CONTORNOXL, EDIFICIO, CONSTRUCCION, CENTRO_CIVICO, CUARTEL };
 
 enum TipoImagenUtil { CUADRADO_MAGENTA, CUADRADO_ROJO, CUADRADO_AZUL, CUADRADO_VERDE,
 					BARRA_FONDO , BARRA_DESCRIPCION, BARRA_NEGRA, SELECT_TILE,
@@ -64,7 +63,7 @@ inline const TipoMensajeRed StringToTipoMensajeRed(std::string s) {
 }
 
 inline const bool EsRecurso(TipoEntidad tipo) {
-	if (tipo == MADERA || tipo == COMIDA || tipo == ORO || tipo == PIEDRA)
+	if (tipo == MADERA || tipo == COMIDA || tipo == PIEDRA || tipo == ORO)
 		return true;
 	return false;
 }

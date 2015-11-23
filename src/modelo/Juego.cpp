@@ -20,7 +20,8 @@ Juego::Juego(){
 	this->barraEstado = NULL;
 	this->escenario = NULL;
 	this->fabricaDeEntidades = NULL;
-	this->enemigos = new vector<Unidad*>();
+	this->unidadesEnemigos = new vector<Unidad*>();
+	this->edificiosEnemigos = new vector<Edificio*>();
 	this->jugador = NULL;
 	this->contenedorSonidos = NULL;
 	this->cargarNumJugador();
@@ -86,28 +87,30 @@ void Juego::cargarJuego(){//InfoEscenario* infoEscRed = NULL, Coordenada *posIni
 	}*/
 	this->jugador = new Jugador(configGame.nombreJugador,idJug);
 	this->fabricaDeEntidades = new EntidadFactory(this->idJug, configGame.entidades);
-	this->escenario = new Escenario(configGame.escenarios[0], this->fabricaDeEntidades, this->enemigos);
+	this->escenario = new Escenario(configGame.escenarios[0], this->fabricaDeEntidades, this->unidadesEnemigos, this->edificiosEnemigos);
 
-	/* Las siguientes entidades son de prueba*/	
+	/* Las siguientes entidades son de prueba */
 	Unidad* soldado = new Unidad(SOLDADO,1);
 	Unidad* aldeano = new Unidad(ALDEANO,1);
 	Unidad* arquero = new Unidad(ARQUERO,1);
 	Unidad* aldeanoDesconocido = new Unidad(ALDEANO,2);
 	Unidad* arqueroDesconocido = new Unidad(ARQUERO,2);
-	soldado->setPosicion(Coordenada(20,20));
-	aldeano->setPosicion(Coordenada(17,17));
-	arquero->setPosicion(Coordenada(16,16));
+	soldado->setPosicion(Coordenada(0,5));
+	aldeano->setPosicion(Coordenada(0,6));
+	arquero->setPosicion(Coordenada(1,8));
 	aldeanoDesconocido->setPosicion(Coordenada(14,14));
 	arqueroDesconocido->setPosicion(Coordenada(0,0));
 
 	jugador->agregarNuevaUnidad(soldado);
 	jugador->agregarNuevaUnidad(aldeano);
 	jugador->agregarNuevaUnidad(arquero);
+	this->cargarEnemigo(aldeanoDesconocido);
 
 	escenario->agregarEntidad(soldado->getPosicion(),soldado);
 	escenario->agregarEntidad(aldeano->getPosicion(),aldeano);
 	escenario->agregarEntidad(arquero->getPosicion(),arquero);
 	escenario->agregarEntidad(aldeanoDesconocido->getPosicion(),aldeanoDesconocido);
+
 	escenario->agregarEntidad(arqueroDesconocido->getPosicion(),arqueroDesconocido);
 
 	escenario->getCapa()->setRangoDeVision(configGame.rango_vision);
@@ -168,7 +171,7 @@ Sprite* Juego::getSpriteDeEntidad(Entidad* entidad){
 // Devuelve Sprite protagonista de jugador idJug; en caso de no encontrarlo devuelve el propio.
 // Solo para una entidad de adversario; no chequea tipo.
 Sprite* Juego::getSpritePlayer(int id_jug, int identificador) {
-	for (vector<Unidad*>::iterator it = enemigos->begin(); it < enemigos->end(); ++it)
+	for (vector<Unidad*>::iterator it = unidadesEnemigos->begin(); it < unidadesEnemigos->end(); ++it)
 		if ((*it)->getIDJug() == id_jug && (*it)->get_identificador() == identificador)
 			return this->contenedor->getSpriteDeEntidad(*it);
 	throw NoSeRecibio();
@@ -176,9 +179,9 @@ Sprite* Juego::getSpritePlayer(int id_jug, int identificador) {
 }
 
 /***************************************************/
-vector<Sprite*> Juego::getSpritesProtagonistas() {
+vector<Sprite*> Juego::getSpritesUnidades() {
 	vector<Sprite*> v;
-	for (vector<Unidad*>::iterator it = enemigos->begin(); it < enemigos->end(); ++it)
+	for (vector<Unidad*>::iterator it = unidadesEnemigos->begin(); it < unidadesEnemigos->end(); ++it)
 		v.push_back(this->contenedor->getSpriteDeEntidad(*it)); // ajenos
 
 	vector<Unidad*> unidades = jugador->getUnidades();
@@ -254,32 +257,68 @@ Mix_Chunk* Juego::getSonidoTipo(TipoSonido tipo){
 
 /***************************************************/
 void Juego::agregarRecurso(TipoEntidad recurso, Coordenada coord) {
-	Entidad* recurso_a_agregar = new Entidad(recurso); // AGHH MI FACTORYY TODO
+	Entidad* recurso_a_agregar = new Entidad(recurso); // factory todo?
 	recurso_a_agregar->setPosicion(coord);
 	try {
 		escenario->agregarEntidad(coord, recurso_a_agregar);
 		this->contenedor->generarYGuardarSpriteEntidad(recurso_a_agregar, Coordenada(*cero_x, *cero_y), escenario);
-	} catch ( FueraDeEscenario &e ) {}
+	} catch ( FueraDeEscenario &e ) {
+		delete recurso_a_agregar;
+	}
 }
 
 /***************************************************/
-void Juego::cargarEnemigo(Unidad* enemigo) {
-	if (enemigo->getIDJug() == getIDJugador())
-		return;	// Si es el propio, no hacer nada...
-	try {
-		for (vector<Unidad*>::iterator it = enemigos->begin(); it < enemigos->end(); ++it)
-			if ((*it)->getIDJug() == enemigo->getIDJug() && (*it)->get_identificador() == enemigo->get_identificador()) {
-				Camino camCorreccion;
-				camCorreccion.agregar(enemigo->getPosicion());
-				getSpritePlayer(enemigo->getIDJug(),enemigo->get_identificador())->setearNuevoCamino(camCorreccion, getCoordCeros());
-				return;		// Si ya hay una entidad de ese jugador, corrije su posición nomás.
-			}
+void Juego::comenzarNuevaConstruccion(TipoEntidad tipoEdif, Coordenada coord, int id_jug = -1) {
+	if (id_jug == -1)
+		id_jug = this->idJug;
+	if (this->escenario->coordEnEscenario(coord)) {
+		Log::imprimirALog(ERR, "Se intentó construir fuera del Escenario.");
+		return;
+	}
+	Construccion *construccion = new Construccion(tipoEdif, id_jug);
+	construccion->setPosicion(coord);
+	this->jugador->agregarNuevoEdificio(construccion, id_jug);
+	this->escenario->agregarEntidad(coord, construccion);
+	this->contenedor->generarYGuardarSpriteEntidad(construccion, Coordenada(*cero_x, *cero_y), this->escenario);
+}
 
+/***************************************************/
+void Juego::cargarEnemigo(Entidad* enemigo) {
+	if (enemigo->getIDJug() == getIDJugador())
+		return;	// Si es propio, no hacer nada...
+	try {
+		if (enemigo->esUnidad()) {
+			Unidad* enemigoUni = (Unidad*)enemigo;
+			for (vector<Unidad*>::iterator it = unidadesEnemigos->begin(); it < unidadesEnemigos->end(); ++it) {
+				if ((*it)->getIDJug() == enemigoUni->getIDJug() && (*it)->get_identificador() == enemigoUni->get_identificador()) {
+					Camino camCorreccion;
+					camCorreccion.agregar(enemigoUni->getPosicion());
+					getSpritePlayer(enemigoUni->getIDJug(),enemigoUni->get_identificador())->setearNuevoCamino(camCorreccion, getCoordCeros());
+					return;		// Si ya hay una entidad de ese jugador, corrije su posición nomás.
+				}
+			}
+		} else if (enemigo->esEdificio()) {
+			Edificio* enemigoEdi = (Edificio*)enemigo;
+			for (vector<Edificio*>::iterator it = edificiosEnemigos->begin(); it < edificiosEnemigos->end(); ++it) {
+				if ((*it)->getIDJug() == enemigoEdi->getIDJug() && (*it)->get_identificador() == enemigoEdi->get_identificador()) {
+					///Esto es cualquier cosa. Si todo lo demás funciona correcto (en el setteo de escenario y etc), borrarlo.
+						//Camino camCorreccion;
+						//camCorreccion.agregar(enemigoEdi->getPosicion());
+						//getSpritePlayer(enemigoEdi->getIDJug(),enemigoEdi->get_identificador())->setearNuevoCamino(camCorreccion, getCoordCeros());
+					return;		// Si ya hay una entidad de ese jugador, corrije su posición nomás.
+				}
+			}
+		} else {
+			Log::imprimirALog(ERR, "Se intentó cargar enemigo ni edificio ni unidad (Juego::cargarEnemigo).");
+			return;
+		}
+
+		/*Mismo comentario que arriba
 		PosEntidad posEnt(enemigo->getPosicion().x, enemigo->getPosicion().y, enemigo);
 		bool resPosicionar = false;
 		int aux = posEnt.x;
 		int *d = &posEnt.x;
-		// cabeza para resolver situación inicial, se las arregla para el 9# % de los casos
+		// bien cabeza para resolver situación inicial, se las arregla para el noventialgo % de los casos
 		while (!resPosicionar) {
 			try {
 				resPosicionar = escenario->agregarEntidad(posEnt.coord(), enemigo);
@@ -290,18 +329,22 @@ void Juego::cargarEnemigo(Unidad* enemigo) {
 				*d = aux;
 				d = &posEnt.y;
 			}
-		}
-		enemigo->setPosicion(Coordenada(posEnt.x,posEnt.y));
-		enemigos->push_back(enemigo);
-		this->contenedor->generarYGuardarSpriteEntidad(enemigo, Coordenada(*cero_x, *cero_y), escenario);
+		}*/
+		//enemigo->setPosicion(Coordenada(posEnt.x,posEnt.y));
+		if (enemigo->esUnidad())
+			unidadesEnemigos->push_back((Unidad*)enemigo);
+		else
+			edificiosEnemigos->push_back((Edificio*)enemigo);
+
+		//this->contenedor->generarYGuardarSpriteEntidad(enemigo, Coordenada(*cero_x, *cero_y), escenario);
 	} catch ( NoSeRecibio &e ) {}
 }
 
 /***************************************************/
-void Juego::toggleEnemigo(int id_jug) {
+void Juego::toggleEnemigo(int id_jug, int idUnidad) {
 	Unidad* entidadEnemigo = NULL;
-	for (vector<Unidad*>::iterator it = enemigos->begin(); it < enemigos->end(); ++it)
-		if ((*it)->getIDJug() == id_jug) {
+	for (vector<Unidad*>::iterator it = unidadesEnemigos->begin(); it < unidadesEnemigos->end(); ++it)
+		if ((*it)->getIDJug() == id_jug && (*it)->get_identificador() == idUnidad) {
 			entidadEnemigo = *it;
 			if (entidadEnemigo->estaPetrificado()) {
 				// Si está congelado, lo pasamos a color
@@ -309,7 +352,6 @@ void Juego::toggleEnemigo(int id_jug) {
 				std::cout << id_jug<<" despetrificado"<<std::endl;//
 			} else {
 				// Si no, lo pasamos a gris
-
 				entidadEnemigo->petrificar();
 				std::cout << id_jug<<" petrificado"<<std::endl;//
 			}
@@ -319,13 +361,61 @@ void Juego::toggleEnemigo(int id_jug) {
 }
 
 /***************************************************/
-void Juego::continuar() {	//Modularizar si se pasa a usar threads
-	this->jugador->interaccionesDeUnidades();
+vector<Entidad*> Juego::revisarMuertos() {
+	// Propios
+	vector<Entidad*> funeral = this->jugador->revisarMuertosPropios();
+	// Enemigos
+	for (std::vector<Unidad*>::iterator uniIt = this->unidadesEnemigos->begin(); uniIt < this->unidadesEnemigos->end(); ++uniIt) {
+		if (!(*uniIt)->sigueViva()) {
+			Unidad* moribundo = *uniIt;
+
+			this->jugador->limpiarRastrosDeUnidadMuerta(moribundo);
+			unidadesEnemigos->erase(uniIt);
+			uniIt = this->unidadesEnemigos->begin(); //por las dudas
+
+			funeral.push_back(moribundo);
+		}
+	}
+	for (std::vector<Edificio*>::iterator ediIt = this->edificiosEnemigos->begin(); ediIt < this->edificiosEnemigos->end(); ++ediIt) {
+		if (!(*ediIt)->sigueViva()) {
+			Edificio* dilapidado = *ediIt;
+
+			edificiosEnemigos->erase(ediIt);
+			ediIt = this->edificiosEnemigos->begin(); //por las dudas
+
+			funeral.push_back(dilapidado);
+		}
+	}
+	vector<Entidad*> basurero = this->escenario->revisarMuertosDeNadie();
+	for (std::vector<Entidad*>::iterator entIt = basurero.begin(); entIt < basurero.end(); ++entIt)
+		funeral.push_back(*entIt);
+
+	return funeral;
+}
+
+/***************************************************/
+void Juego::continuar() {	// Modularizar si se pasa a usar threads
+	this->jugador->interaccionesDeUnidades(this->escenario, this->contenedor, Coordenada(*cero_x, *cero_y));
+
+	// Limpiar muertes
+	vector<Entidad*> funeral = revisarMuertos();
+	for (vector<Entidad*>::iterator it = funeral.begin(); it < funeral.end(); ++it) {
+		Entidad* muerto = *it;
+		muerto->morir();
+
+		std::cout << muerto->enc()<<" sos un muerto"<<std::endl;//
+		this->escenario->quitarEntidad(muerto->getPosicion(), muerto);
+		this->contenedor->borrarSpriteDeEntidad(muerto);
+		//Falta algo todo?
+
+		delete muerto;
+	}
 }
 
 /***************************************************/
 Juego::~Juego() {
-	this->enemigos->clear();
+	this->unidadesEnemigos->clear();
+	this->edificiosEnemigos->clear();
 	delete this->escenario;
 	delete this->contenedor;
 	delete this->barraEstado;

@@ -134,7 +134,7 @@ void Controller::capturarEvento(SDL_Event &event){
 	} // End while
 
 
-	//juego->continuar();
+	juego->continuar();
 /*
 	if (this->juego->esCliente()) {
 		try {

@@ -8,8 +8,8 @@
 
 
 
-Escenario::Escenario(InfoEscenario infoEsc, EntidadFactory *fabrica, vector<Unidad*>* malvados):
-		fabricaDeEntidades(fabrica), enemigos(malvados) {
+Escenario::Escenario(InfoEscenario infoEsc, EntidadFactory *fabrica, vector<Unidad*>* unidadesMalvadas, vector<Edificio*>* edificiosMalvados):
+		fabricaDeEntidades(fabrica), unidadesEnemigos(unidadesMalvadas), edificiosEnemigos(edificiosMalvados) {
 	this->size_x = infoEsc.size_x;
 	this->size_y = infoEsc.size_y;
 
@@ -82,7 +82,6 @@ void Escenario::actualizarPosicionParaEntidad(Coordenada c, Entidad* entidad){
 				tile->eliminarEntidad(entidad);
 		} catch ( NoSeRecibio &e ) {}
 
-
 		/* agregamos la entidad a su nuevo tile */
 		tile = getTile(c.x, c.y);
 		if (tile != NULL)
@@ -145,10 +144,10 @@ bool Escenario::agregarEntidad(Coordenada pos, Entidad* entidad){
 		throw FueraDeEscenario();
 	try {
 		pair<int,int> dim = entidad->getTam();
+		// Se fija que todos los tiles a ocupar estén vacíos antes de ocuparlos
 		for (int j = 0; j < dim.second; j++)
 			for (int i = 0; i < dim.first; i++){
-				// pregunta si ese tile está vacío
-				Tile* tile = matriz_tiles[pos.x+i][pos.y+j];
+				Tile* tile = this->matriz_tiles[pos.x+i][pos.y+j];
 				if (!tile->estaLibre())
 					throw TileEstaOcupado();
 			}
@@ -160,12 +159,12 @@ bool Escenario::agregarEntidad(Coordenada pos, Entidad* entidad){
 				else tile->agregarEntidad(entidad);
 			}
 		}
-		// Los recursos se manejan por separado, no se agregan y se borran desde el tile.
-		if (!EsRecurso(entidad->getTipo())) {
+		// NOT TRUE ANYMORE: Los recursos se manejan por separado, no se agregan y se borran desde el tile.
+		//if (!EsRecurso(entidad->getTipo())) {
 			//PosEntidad posEntidad(pos, entidad);
 			//this->posicionesEntidades->push_back(posEntidad);
 			posicionesEntidades->push_back(entidad);
-		}
+		//}
 	} catch ( TileEstaOcupado &e ) {
 		Log::imprimirALog(ERR,"Se intentó agregar una entidad en un tile ocupado");
 		return false;
@@ -180,18 +179,16 @@ void Escenario::quitarEntidad(Coordenada pos, Entidad* entidad) {
 	std::vector<Entidad*>::iterator it = std::find(this->posicionesEntidades->begin(), this->posicionesEntidades->end(), entidad);
 	if (it != this->posicionesEntidades->end()) {
 		this->posicionesEntidades->erase(it);
-
-		// La quita de los Tile que ocupaba.
-		pair<int,int> dim = entidad->getTam();
-		for (int j = 0; j < dim.second; j++)
-			for (int i = 0; i < dim.first; i++) {
-				Tile* tile = getTile(pos.x+i, pos.y+j);
-				vector<Entidad*> entidades = tile->getEntidades();
-				vector<Entidad*>::iterator it2 = find(entidades.begin(), entidades.end(), entidad);
-				if (it2 != entidades.end())
-					entidades.erase(it2);
-			}
-	} //else entidad no estaba en el vector posicionesEntidades... Algo TODO?
+	}
+	// La quita de los Tile que ocupaba.
+	pair<int,int> dim = entidad->getTam();
+	for (int j = 0; j < dim.second; j++)
+		for (int i = 0; i < dim.first; i++) {
+			Tile* tile = getTile(pos.x+i, pos.y+j);
+			try {
+				if (tile) tile->eliminarEntidad(entidad);
+			} catch ( NoSeRecibio &e ) {}
+		}
 }
 
 /********************************************************************************/
@@ -256,7 +253,7 @@ CapaFog* Escenario::getCapa() {
 
 Coordenada Escenario::generarCoordenadaRandom(int size_x_final, int size_x_inicial, int size_y_final, int size_y_inicial, int seed = 0) {
 	int x_rand, y_rand;
-	srand(((int)time(0)) * SDL_GetTicks()); //seedeo el random bien
+	srand(((int)time(0)) * SDL_GetTicks());
 	x_rand = (rand() % (size_x_final - size_x_inicial)) + size_x_inicial;
 	y_rand = (rand() % (size_y_final - size_y_inicial)) + size_y_inicial;
 
@@ -292,6 +289,19 @@ pair<Coordenada,Coordenada> Escenario::getCoordenadasRecuadro(){
 /********************************************************************************/
 void Escenario::quitarRecuadroSeleccion(){
 	c_tile_ini_recuadro = c_tile_fin_recuadro;
+}
+
+/********************************************************************************/
+vector<Entidad*> Escenario::revisarMuertosDeNadie() {
+	vector<Entidad*> cuerpos;
+	for (std::vector<Entidad*>::iterator entIt = this->posicionesEntidades->begin(); entIt < this->posicionesEntidades->end(); ++entIt) {
+		if (!(*entIt)->sigueViva() && (*entIt)->getIDJug() == 0) {
+			cuerpos.push_back(*entIt);
+			//this->posicionesEntidades->erase(entIt);		//Innecesarias porque se borra en quitarEntidad
+			//entIt = this->posicionesEntidades->begin(); //por las dudas
+		}
+	}
+	return cuerpos;
 }
 
 /********************************************************************************/

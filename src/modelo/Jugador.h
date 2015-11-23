@@ -8,6 +8,8 @@
 #ifndef MODELO_JUGADOR_H_
 #define MODELO_JUGADOR_H_
 #include "../modelo/CentroCivico.h"
+#include "../modelo/Escenario.h"
+#include "../utils/ContenedorDeRecursos.h"
 #include <map>
 #include <vector>
 
@@ -27,7 +29,7 @@ private:
 
 	Unidad* unidadActiva;
 
-	std::map<TipoEntidad, int> mapRecursosEconomicos;
+	std::map<TipoEntidad,int> mapRecursosEconomicos;
 
 public:
 	Jugador(std::string nombre, int id_jug);
@@ -48,7 +50,8 @@ public:
 
 	void agregarNuevaUnidad(Unidad* unidad);
 
-	void agregarNuevoEdificio(Edificio* edificio);
+	void agregarNuevoEdificio(Edificio* edificio, int idJug);
+	Edificio* terminarConstruccion(ConstruccionTermino c);
 
 	void agregarRecursoEconomico(TipoEntidad tipo, int cant);
 
@@ -56,7 +59,9 @@ public:
 
 	CentroCivico* getCentroCivico();
 
-	void interaccionesDeUnidades();
+	void interaccionesDeUnidades(Escenario* escenario, ContenedorDeRecursos* contenedor, Coordenada coord_ceros);
+	void limpiarRastrosDeUnidadMuerta(Unidad* moribundo);
+	vector<Entidad*> revisarMuertosPropios();
 
 	virtual ~Jugador();
 };

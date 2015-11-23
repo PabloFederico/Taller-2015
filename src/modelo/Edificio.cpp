@@ -7,8 +7,8 @@
 
 #include "Edificio.h"
 
-Edificio::Edificio(TipoEntidad tipo, int id_jug):Entidad(tipo,id_jug) {
-	dni = 0;
+Edificio::Edificio(TipoEntidad tipo, int id_jug, int dni):Entidad(tipo,id_jug) {
+	this->dni = dni;
 }
 
 void Edificio::set_id_jugador(int nuevoDuenio){
@@ -19,8 +19,37 @@ void Edificio::set_identificador(int nuevoDNI){
 	dni = nuevoDNI;
 }
 
+int Edificio::get_identificador(){
+	return dni;
+}
+
 bool Edificio::esEdificio(){
 	return true;
+}
+
+// Para red
+std::string Edificio::enc(){
+	ostringstream enc;
+	enc << idJug<<","<<dni<<","<<tipo<<","<<ancho<<","<<alto;
+	return enc.str();
+}
+Edificio* Edificio::dec(std::string s){
+	int id,dni,ti,an,al;
+	stringstream ss(s);
+	ss >> id; ss.ignore();
+	ss >> dni;ss.ignore();
+	ss >> ti; ss.ignore();
+	ss >> an; ss.ignore();
+	ss >> al;
+	Edificio *e = new Edificio(TipoEntidad(ti),id,dni);
+	e->setTam(an, al);
+	return e;
+}
+//
+
+void Edificio::morir() {
+	Entidad::morir();
+	// play sonido de destrucción
 }
 
 Edificio::~Edificio() {

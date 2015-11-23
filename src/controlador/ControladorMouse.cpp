@@ -91,6 +91,11 @@ void ControladorMouse::procesarClickIzquierdo(Mouse* mouse){
 		if (escenario->getEntidadSeleccionada() != NULL && juego->getIDJugador() == escenario->getEntidadSeleccionada()->getIDJug())
 			juego->getJugador()->agregarUnidadSeleccionada((Unidad*)escenario->getEntidadSeleccionada());
 	}
+
+	// Actualizamos la barra (MC: lo dejaría acá (borrarlo en procesarMouse) para que solo una nueva selección cambie la información. No alcanza para que el sprite abajo a la izquierda quede.)
+	//if (juego->getEscenario()->getEntidadSeleccionada() != NULL){
+	//	juego->getBarraEstado()->setInformacion(juego->getEscenario()->getEntidadSeleccionada()->getInfo());
+	//} else juego->getBarraEstado()->setInformacion(" ");
 }
 
 void ControladorMouse::procesarClickDerecho(Mouse* mouse){
@@ -107,27 +112,27 @@ void ControladorMouse::procesarClickDerecho(Mouse* mouse){
 		juego->getEscenario()->setearTileClic(NULL,Coordenada(0,0)); //Para qué es esto???
 		for (int i = 0; i < cant_unid_seleccionadas; i++){
 
-			// Interactuar con nueva entidad cliqueada
-			if (entidadReceptora != NULL) {
-				unidades[i]->interactuarCon(entidadReceptora);
-				std::cout<<unidades[i]->getInfo()<<" intentó interactuar con Entidad : "<<entidadReceptora->getInfo()<<"\n";
 			// Moverse a una posición vacía
-			} else {
-				Sprite* spriteUnidad = juego->getSpritesEntidades()->find(unidades[i])->second;
-				Coordenada coord_pixel_sprite = spriteUnidad->getPosPies();
-				try {
-					Camino camino = Calculador::obtenerCaminoMin(escenario, coord_pixel_sprite, mouse->getXY(), coord_pixel_ceros);
+			Sprite* spriteUnidad = juego->getSpritesEntidades()->find(unidades[i])->second;
+			Coordenada coord_pixel_sprite = spriteUnidad->getPosPies();
+			try {
+				Camino camino = Calculador::obtenerCaminoMin(escenario, coord_pixel_sprite, mouse->getXY(), coord_pixel_ceros);
+				if (camino.size() > 0) {
+					/* Si se está jugando en red, enviar el movimiento a los demás jugadores. */
+					//if (juego->esCliente())
+						//Proxy::enviar(juego->getConnection(), camino);
+					//else
+						/* Activamos localmente el movimiento del sprite y seteamos el nuevo camino que debe recorrer. */
+						spriteUnidad->setearNuevoCamino(camino, coord_pixel_ceros);
+						// Si yo muevo la(s) unidad(es), espero que deje de interactuar con su último receptor.
+						unidades[i]->olvidarInteraccion();
+				}
 
-					if (camino.size() > 0) {
-						/* Si se está jugando en red, enviar el movimiento a los demás jugadores. */
-						//if (juego->esCliente())
-							//Proxy::enviar(juego->getConnection(), camino);
-						//else
-							spriteUnidad->setearNuevoCamino(camino, coord_pixel_ceros);
-							/* Activamos localmente el movimiento del sprite y seteamos el nuevo camino que debe recorrer. */
-					}
-				} catch ( FueraDeEscenario &e ) {}
-			}
+				// Si la hay, settear interacción con nueva entidad cliqueada.
+				if (entidadReceptora != NULL) {
+					unidades[i]->interactuarCon(entidadReceptora);
+				}
+			} catch ( FueraDeEscenario &e ) {}
 
 		} // End for
 	} // End if

@@ -73,8 +73,8 @@ Direccion Calculador::calcularDireccion(Coordenada coord_pixel_dest, Coordenada 
 				else direccion = ESTE;
 	}
 	else if (x_result > 0){
-			if (y_result < 0) direccion = NORESTE;
-				else direccion = SURESTE;
+			if (y_result > 0) direccion = SURESTE;
+				else direccion = NORESTE;
 	}else{
 		  if (y_result < 0) direccion = NOROESTE;
 		  else direccion = SUROESTE;
@@ -218,7 +218,8 @@ Camino Calculador::obtenerCaminoMin(Escenario *esc, Coordenada coord_pixel_orig,
 		pos_tile_inicial = tileParaPixel(coord_pixel_orig, coord_ceros);
 		pos_tile_destino = tileParaPixel(coord_pixel_dest, coord_ceros);
 
-		if ((!esc->tileEsOcupable(pos_tile_destino)) || (pos_tile_inicial == pos_tile_destino))
+		//if ((!esc->tileEsOcupable(pos_tile_destino)) || (pos_tile_inicial == pos_tile_destino))
+		if ((pos_tile_inicial == pos_tile_destino) || ((!esc->tileEsOcupable(pos_tile_destino)) && distEuclidiana(pos_tile_inicial, pos_tile_destino) < 2))
 			return camino;
 	} catch ( FueraDeEscenario &e ) {
 		return camino;
@@ -240,7 +241,7 @@ Camino Calculador::obtenerCaminoMin(Escenario *esc, Coordenada coord_pixel_orig,
 
 			for (c.y = pActual->pos.y-1; c.y <= pActual->pos.y+1; c.y++) {
 				for (c.x = pActual->pos.x-1; c.x <= pActual->pos.x+1; c.x++) {
-					if ( (!pActual->padre || !pActual->padre->esTile(c)) && (!pActual->esTile(c)) && esc->tileEsOcupable(c) ) {
+					if ( (!pActual->padre || !pActual->padre->esTile(c)) && (!pActual->esTile(c)) ) {
 
 						if (c == pos_tile_destino) {
 							Nodo nodoAux(c, pActual, pos_tile_destino);
@@ -248,7 +249,7 @@ Camino Calculador::obtenerCaminoMin(Escenario *esc, Coordenada coord_pixel_orig,
 								nodoFinal = nodoAux;
 							encontrado = true;
 
-						} else if (std::find_if(visitados.begin(), visitados.end(), Nodo::CmpPointerXY(c)) == visitados.end()) {
+						} else if (esc->tileEsOcupable(c) && std::find_if(visitados.begin(), visitados.end(), Nodo::CmpPointerXY(c)) == visitados.end()) {
 							it = std::find_if(vecinos.begin(), vecinos.end(), Nodo::CmpPointerXY(c));
 							if (it == vecinos.end()) {
 								std::vector<Nodo*>::iterator itV = std::lower_bound(vecinos.begin(), vecinos.end(), Nodo(c, pActual, pos_tile_destino), Nodo::CmpNodoVsPointerF());
@@ -278,7 +279,9 @@ Camino Calculador::obtenerCaminoMin(Escenario *esc, Coordenada coord_pixel_orig,
 				pActual = pActual->padre;
 			}
 			camino.invertir();
-			camino.agregar( pos_tile_destino );
+			if (esc->tileEsOcupable(pos_tile_destino))	//Borrable porque revisarCamino lo chequearía... (probar comentarla)
+				camino.agregar( pos_tile_destino );
+			// Nuevo: En el caso de que se pueda hacer el camino entero hasta el lugar anterior porque el destino está ocupado, lo hará.
 	}
 
 	for (pActualIt = visitados.begin(); pActualIt < visitados.end(); ++pActualIt)
@@ -293,8 +296,8 @@ Camino Calculador::obtenerCaminoMin(Escenario *esc, Coordenada coord_pixel_orig,
 
 
 Coordenada Calculador::generarPosRandom(int size_x_final, int size_x_inicial, int size_y_final, int size_y_inicial, int seed = 0){
-	int x_rand, y_rand;	// Esto FRUSTRA el randomness, siempre va a dar lo mismo, porque vuelve al número múltiplo de 50...
-	srand((time(0)) * SDL_GetTicks()); //seedeo el random bien
+	int x_rand, y_rand;
+	srand((time(0)) * SDL_GetTicks());	// Esto FRUSTRA el randomness, siempre va a dar lo mismo, porque vuelve al número múltiplo de 50...
 	x_rand = (rand() % (size_x_final - size_x_inicial)) + size_x_inicial;
 	y_rand = (rand() % (size_y_final - size_y_inicial)) + size_y_inicial;
 

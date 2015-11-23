@@ -58,10 +58,10 @@ int main(int argc, char** argv) {
 		}
 
 		delete controller;
-		SDL_Quit();
-		IMG_Quit();
-		TTF_Quit();
 		Mix_Quit();
+		TTF_Quit();
+		IMG_Quit();
+		SDL_Quit();
 		//delete lan;
 	}
 

@@ -13,8 +13,8 @@
 using namespace std;
 
 
-Unidad::Unidad(TipoEntidad tipo, int id_jug): Entidad(tipo,id_jug) {
-	this->dni = 0;
+Unidad::Unidad(TipoEntidad tipo, int id_jug, int dni): Entidad(tipo,id_jug) {
+	this->dni = dni;
 	petrificado = false;
 	ostringstream ssInfo;
 	ssInfo << info<<" (Jugador "<<id_jug<<")";
@@ -24,14 +24,13 @@ Unidad::Unidad(TipoEntidad tipo, int id_jug): Entidad(tipo,id_jug) {
 
 
 float distanciaEuclidiana(Coordenada a, Coordenada z) {
-	return sqrt( pow(z.x-a.x,2) + pow(z.y-a.y,2) );
+	return sqrt( pow(z.x-a.x,2)+pow(z.y-a.y,2) );
 }
 
 // throws Recoleccion cuando se recolectó algún recurso.
 void Unidad::interactuar() {
 	// Verifica que haya con quien interactuar y de que haya pasado el tiempo requerido.
 	if (receptor == NULL || (clock() - this->reloj) < CLOCKS_PER_SEC*DELAY_INTERACCION) return;	//No está respetando el tiempo pedido. TODO
-	//std::cout << "Interacción "<<clock()<<" "<<this->reloj<<": "<<clock()-reloj<<" "<<CLOCKS_PER_SEC*DELAY_INTERACCION<<" - "<<(clock()-reloj)/CLOCKS_PER_SEC<<std::endl;//
 
 	this->reloj = clock();
 	try {
@@ -41,17 +40,20 @@ void Unidad::interactuar() {
 			for (int j = posReceptor.y; j < posReceptor.y+tamReceptor.second; j++)
 				// Distancia máxima hardcodeada de 1 tile; TODO rangoAtaque
 				if (distanciaEuclidiana(this->getPosicion(), Coordenada(i,j)) < 2) {
-					//std::cout << "Interacción de "<<getInfo()<<" "<<get_identificador()<<std::endl;//
-					//if (receptor->esConstruccion()) { cambioEstado(CONSTRUYENDO); // TODO } else
-					if (receptor->esEdificio() || receptor->esUnidad()) {
+					if (receptor->esConstruccion() && this->esConstructor()) {
+						cambioEstado(CONSTRUYENDO);
+						this->continuarConstruccion();
+						// Ojo que si llega a este punto, puede que no se corra nada debajo
+					} else if (receptor->esAtacable()) {
 						cambioEstado(ATACANDO);
 						this->lastimar(this->receptor);
 					} else if (receptor->esRecurso() && this->esRecolector()) {
 						cambioEstado(RECOLECTANDO);
 						int recolectado = 0;
-						recolectado = receptor->sufrirRecoleccion();
+						TipoEntidad tipoRecurso = this->receptor->getTipo();
+						recolectado = recolectar(this->receptor);
 						if (recolectado > 0) {
-							throw Recoleccion(receptor->getTipo(), recolectado);
+							throw Recoleccion(tipoRecurso, recolectado);
 							// Ojo que si llega a este punto, no se correrá nada debajo
 						}
 					}
@@ -60,6 +62,9 @@ void Unidad::interactuar() {
 
 	} catch ( EntidadMurio &e ) {
 		this->olvidarInteraccion();
+	} catch ( ConstruccionTermino &e ) {
+		this->olvidarInteraccion();
+		throw e;
 	}
 }
 
@@ -72,8 +77,21 @@ int Unidad::generarGolpe() {
 	return 0;
 }
 
+void Unidad::continuarConstruccion() {
+	((Construccion*)this->receptor)->continuarConstruyendo();
+}
+
 void Unidad::lastimar(Entidad* victima) {
 	victima->sufrirGolpe(this->generarGolpe());
+}
+
+int Unidad::recolectar(Entidad* recurso) {
+	int cantidad = 5; // hardcodeado
+	bool acabeRecurso = (this->receptor->getVidaRestante() <= cantidad);
+	int recolectado = receptor->sufrirRecoleccion(cantidad);
+	if (acabeRecurso)
+		this->olvidarInteraccion();
+	return recolectado;
 }
 
 
@@ -97,6 +115,10 @@ bool Unidad::esRecolector() {
 	return (tipo == ALDEANO);
 }
 
+bool Unidad::esConstructor() {
+	return (tipo == ALDEANO);
+}
+
 bool Unidad::estaPetrificado(){
 	return petrificado;
 }
@@ -114,22 +136,29 @@ void Unidad::cambioEstado(EstadoEntidad est) {
 }
 
 
+// Para red
 std::string Unidad::enc(){
 	ostringstream enc;
-	enc << idJug<<","<<tipo<<","<<ancho<<","<<alto;
+	enc << idJug<<","<<dni<<","<<tipo<<","<<ancho<<","<<alto;
 	return enc.str();
 }
-
 Unidad* Unidad::dec(std::string s){
-	int id,ti,an,al;
+	int id,dni,ti,an,al;
 	stringstream ss(s);
 	ss >> id; ss.ignore();
+	ss >> dni;ss.ignore();
 	ss >> ti; ss.ignore();
 	ss >> an; ss.ignore();
 	ss >> al;
-	Unidad *u = new Unidad(TipoEntidad(ti),id);
+	Unidad *u = new Unidad(TipoEntidad(ti),id,dni);
 	u->setTam(an, al);
 	return u;
+}
+//
+
+void Unidad::morir() {
+	Entidad::morir();
+	// play sonido de muerte
 }
 
 Unidad::~Unidad() {

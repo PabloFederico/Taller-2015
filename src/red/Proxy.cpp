@@ -121,7 +121,7 @@ void Proxy::procesarRecursoComido(Juego* juego, string posEnc) {
 
 void Proxy::procesarToggle(Juego* juego, string encodeado) {
 	string aux;
-	juego->toggleEnemigo(Red::extraerNumeroYResto(encodeado, &aux));
+	//juego->toggleEnemigo(Red::extraerNumeroYResto(encodeado, &aux));
 }
 
 //void procesarAtaque(Juego* juego, string encodeado)

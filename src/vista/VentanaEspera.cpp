@@ -10,8 +10,8 @@
 
 VentanaEspera::VentanaEspera(Controller* controlador):Ventana(controlador) {
 	if (!init()) std::cout << "error" << std::endl;
-	imagenFondo = Loader::cargarImagen(renderer,"images/fondo_ventana_espera.png");
-	fuenteTexto = TTF_OpenFont("images/censcbk.ttf",TAM_LETRA_CONEXION);
+	imagenFondo = Loader::cargarImagen(renderer,"images/utils/fondo_ventana_espera.png");
+	fuenteTexto = TTF_OpenFont("images/utils/censcbk.ttf",TAM_LETRA_CONEXION);
 	imagenEsperando = Loader::cargarTexto(renderer,fuenteTexto,"Esperando Conexiones");
 
 }

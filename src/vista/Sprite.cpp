@@ -94,6 +94,8 @@ Entidad* Sprite::getEntidad(){
 
 /********************************************************************************/
 Coordenada Sprite::getPosPies() {
+	if (entidad->getTipo() == ARQUERO)
+		return Coordenada( posicion.x + posicion.w/2, posicion.y + posicion.h * 0.75 );
 	return Coordenada( posicion.x + (posicion.w / 2), posicion.y + posicion.h );
 }
 
@@ -276,7 +278,7 @@ bool Sprite::quedaCaminoPorRecorrer(){
 bool Sprite::revisarCamino(Coordenada c_punto_actual) {
 	Coordenada c_prox_punto = this->getCaminoARecorrer()[0];
 	try {
-		Coordenada   c_prox_tile = Calculador::tileParaPixel(  c_prox_punto, coord_ceros);
+		Coordenada c_prox_tile = Calculador::tileParaPixel(c_prox_punto, coord_ceros);
 		if (!(this->escenario->tileEsOcupable(c_prox_tile))) {
 			Coordenada c_pix_destino = getCaminoARecorrer().back();
 			Coordenada c_tile_destino = Calculador::tileParaPixel(c_pix_destino, coord_ceros);
@@ -294,7 +296,7 @@ bool Sprite::revisarCamino(Coordenada c_punto_actual) {
 
 /********************************************************************************/
 void Sprite::acomodar(){
-	this->frameActual = this->frames[this->direccion][cant_Direcciones-1];
+	this->frameActual = this->frames[this->direccion][0];
 }
 
 
