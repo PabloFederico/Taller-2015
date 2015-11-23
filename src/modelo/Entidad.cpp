@@ -46,7 +46,7 @@ Entidad::Entidad(TipoEntidad tipo, int num_jug): idJug(num_jug) {
 			movible = true;
 			ocupador = true;
 			info = "Aldeano";
-			armadura = 1;
+			armadura = 10;
 			ataque = 3;
 			break;
 		case ARQUERO:

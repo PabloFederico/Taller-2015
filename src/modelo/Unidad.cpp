@@ -74,9 +74,8 @@ int Unidad::generarGolpe() {
 	mt19937 gen(rd_gen());
 	uniform_int_distribution<int> distribucion(this->obtenerAtk()/2,this->obtenerAtk());
 	int num_rndm = distribucion(gen);
-	int dmg = num_rndm -receptor->obtenerArmor()/(num_rndm+this->obtenerArmor());
+	int dmg = num_rndm -(receptor->obtenerArmor()*0.25);
 	if (dmg < 0) return 0; //por ahi el ataque es muy poronga con respecto a la armor de un edificio, ponele
-	cout << "HAGO " << dmg << "DANO" << endl;
 	return dmg;
 
 	}
