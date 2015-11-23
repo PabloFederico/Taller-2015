@@ -51,8 +51,9 @@ bool ControladorMouse::procesarClickEnVentana(Mouse* mouse, Tile** tile_clic, Co
 	int limiteY_camara = juego->getDimensionVentana().second - juego->getBarraEstado()->getDimension().second;
 
 	if (limiteY_camara < mouse->getXY().y) {
-		clicSobreBarra = true;
-		clicEnMapa = false;
+		return false;
+		//clicSobreBarra = true;
+		//clicEnMapa = false;
 	}
 
 	int cant_unid_seleccionadas = juego->getJugador()->getUnidadesSeleccionadas().size();
@@ -80,6 +81,32 @@ bool ControladorMouse::procesarClickEnVentana(Mouse* mouse, Tile** tile_clic, Co
 	return false;
 }
 
+TipoEntidad iconoSeleccionado(Mouse* mouse, Juego* juego){
+	TipoEntidad tipo = DEFAULT;
+	Coordenada c_mouse = mouse->getXY();
+	Imagen* imagenIconosEdificios = juego->getContenedorRecursos()->getImagenUtilTipo(HERRAMIENTAS_ALDEANO);
+	int ancho_imagen = imagenIconosEdificios->getPixelsX();
+	int alto_imagen = 30;
+	int cant_iconos = 4;
+	int ancho_icono = ancho_imagen / cant_iconos;
+	int x_icono = 30;
+	int y_icono = juego->getDimensionVentana().second - juego->getBarraEstado()->getDimension().second + 40;
+	int edificio_int = (int)BARRACK_1;
+	// Va a recorrer BARRACK_1, BARRACK_2, BARRACK_3, CUARTEL
+	for (int i = 0; i < cant_iconos; i++){
+		if (c_mouse.x > x_icono &&
+			c_mouse.x < x_icono + ancho_icono &&
+			c_mouse.y > y_icono &&
+			c_mouse.y < y_icono + alto_imagen){
+			tipo = (TipoEntidad)edificio_int;
+			break;
+		}
+		x_icono += ancho_icono;
+		edificio_int++;
+	}
+	return tipo;
+}
+
 void ControladorMouse::procesarClickIzquierdo(Mouse* mouse){
 	Escenario *escenario = juego->getEscenario();
 	Tile *tile_clic = NULL;
@@ -90,6 +117,16 @@ void ControladorMouse::procesarClickIzquierdo(Mouse* mouse){
 		escenario->setearTileClic(tile_clic, c_tile_clic);
 		if (escenario->getEntidadSeleccionada() != NULL && juego->getIDJugador() == escenario->getEntidadSeleccionada()->getIDJug())
 			juego->getJugador()->agregarUnidadSeleccionada((Unidad*)escenario->getEntidadSeleccionada());
+	}else{
+		// CASO CLICK EN LA BARRA DE ESTADO (si selecciona icono de edificio a contruír)
+		BarraEstado* barra = juego->getBarraEstado();
+		// TODO Hardcodeo mal
+		if (barra->getUnidadActualEnBarra() != NULL && barra->getUnidadActualEnBarra()->getTipo() == ALDEANO){
+			TipoEntidad edificioAConstruir = iconoSeleccionado(mouse,juego);
+			if (edificioAConstruir != DEFAULT){
+				std::cout << "se eligió un edificio para contruír : "<<edificioAConstruir<<"\n";
+			}
+		}
 	}
 
 	// Actualizamos la barra (MC: lo dejaría acá (borrarlo en procesarMouse) para que solo una nueva selección cambie la información. No alcanza para que el sprite abajo a la izquierda quede.)

@@ -159,6 +159,10 @@ void Juego::agregarContenedorDeRecursos(ContenedorDeRecursos *container){
 	this->contenedor->cargarImagenesRecursos();
 }
 
+/********************************************************************************/
+ContenedorDeRecursos* Juego::getContenedorRecursos(){
+	 return contenedor;
+ }
 /***************************************************/
 //Sprite* Juego::getSpritePlayer(){
 //	return this->contenedor->getSpriteDeEntidad(protagonista);

@@ -109,6 +109,8 @@ public:
 
 	void agregarContenedorDeRecursos(ContenedorDeRecursos *container);
 
+	ContenedorDeRecursos* getContenedorRecursos();
+
 	void comenzarNuevaConstruccion(TipoEntidad tipoEdif, Coordenada coord, int id_jug);
 	void agregarRecurso(TipoEntidad recurso, Coordenada coord);
 

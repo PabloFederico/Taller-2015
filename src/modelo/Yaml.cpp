@@ -199,14 +199,14 @@ ConfiguracionJuego Yaml::OdioYAML() {
 	InfoEntidad infoAgua;
 	infoAgua.tipo = tipos["agua"];
 	infoAgua.path = "images/relieve/agua.png";
-/*
-	InfoEntidad infoCastillo;
-	infoCastillo.tipo = tipos["castillo"];
-	infoCastillo.path = "images/casss.png";
-	infoCastillo.ancho = 4;
-	infoCastillo.alto = 4;
-	infoCastillo.descripcion = "Castillo";
-*/
+
+	InfoEntidad infoBarraca1;
+	infoBarraca1.tipo = tipos["castillo"];
+	infoBarraca1.path = "images/utils/Barracks3.png";
+	infoBarraca1.ancho = 4;
+	infoBarraca1.alto = 4;
+	infoBarraca1.descripcion = "Castillo";
+
 	InfoEntidad infoSoldado;
 	infoSoldado.tipo = tipos["soldado"];
 	infoSoldado.path = "images/sprites/soldado_camina.png";
@@ -250,6 +250,7 @@ ConfiguracionJuego Yaml::OdioYAML() {
 	configDefault.agregarInfoEntidad(infoArquero);
 	configDefault.agregarInfoEntidad(infoAldeano);
 	configDefault.agregarInfoEntidad(infoAnimal);
+	configDefault.agregarInfoEntidad(infoBarraca1);
 	configDefault.agregarInfoEntidad(infoTierra);
 
 	tipos.clear();
@@ -279,6 +280,8 @@ InfoEscenario Yaml::infoEscenarioDefault() {
 	infoEscenario.agregarEntidad(std::make_pair(4,6), ARBOL);
 	infoEscenario.agregarEntidad(std::make_pair(5,5), ARBOL);
 	infoEscenario.agregarEntidad(std::make_pair(4,12), ARBOL);
+
+	infoEscenario.agregarEntidad(std::make_pair(18,18),CASTILLO);
 
 
 	infoEscenario.agregarEntidad(std::make_pair(10,14), ANIMAL);
