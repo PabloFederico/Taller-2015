@@ -63,9 +63,10 @@ void ContenedorDeRecursos::generarYGuardarSpriteEntidad(Entidad* entidad, Coorde
 
 	switch (entidad->getTipo()){
 		case ARBOL 	  : {
-						posicion.y -= (1.5 * DISTANCIA_ENTRE_Y);
-						posicion.w = ANCHO_PIXEL_PASTO;
-						posicion.h = 2 * ALTO_PIXEL_PASTO;
+			 	 	 	posicion.x -= 0.25 * ANCHO_PIXEL_PASTO;
+						posicion.y -= (2.5 * DISTANCIA_ENTRE_Y);
+						posicion.w = 1.5*ANCHO_PIXEL_PASTO;
+						posicion.h = 3 * ALTO_PIXEL_PASTO;
 						sprite = new Sprite(1,1,this->getImagenTipo(ARBOL),posicion,escenario,coord_ceros,entidad);
 
 						int x_ini = posicion.x;
@@ -94,16 +95,26 @@ void ContenedorDeRecursos::generarYGuardarSpriteEntidad(Entidad* entidad, Coorde
 						}
 						break;
 
-		case CASTILLO : {
-						posicion.x -= DISTANCIA_ENTRE_X * (this->mapInfoEntidades[entidad->getTipo()].ancho - 1);
-						posicion.y = posicion.y - ALTO_PIXEL_PASTO +  DISTANCIA_ENTRE_Y / 4;
-						//posicion.w = ANCHO_PIXEL_PASTO;
-						//posicion.h = (ALTO_PIXEL_PASTO * this->mapInfoEntidades[CASTILLO].ancho + ALTO_PIXEL_PASTO) / this->mapInfoEntidades[CASTILLO].ancho;
-						//sprite = new Sprite(mapInfoEntidades[CASTILLO].ancho,mapInfoEntidades[CASTILLO].ancho,this->getImagenTipo(CASTILLO),posicion);
+		case BARRACK_1 :
+		case BARRACK_3 : {
+						posicion.x -= (DISTANCIA_ENTRE_X * (this->mapInfoEntidades[entidad->getTipo()].ancho - 1)) - DISTANCIA_ENTRE_X * 0.25;
+						posicion.y -= 2*ALTO_PIXEL_PASTO;
 						posicion.w = ANCHO_PIXEL_PASTO * this->mapInfoEntidades[entidad->getTipo()].ancho;
-						posicion.h = ALTO_PIXEL_PASTO * this->mapInfoEntidades[entidad->getTipo()].alto + (ALTO_PIXEL_PASTO -  DISTANCIA_ENTRE_Y / 2);
+						posicion.h = 30 + ALTO_PIXEL_PASTO * this->mapInfoEntidades[entidad->getTipo()].alto + (ALTO_PIXEL_PASTO -  DISTANCIA_ENTRE_Y / 2);
 						sprite = new Sprite(1,1,this->getImagenTipo(entidad->getTipo()),posicion,escenario,coord_ceros,entidad);
 
+						int x_ini = posicion.x;
+						int y_ini = posicion.y;
+						Rectangulo rect1(x_ini, mapInfoEntidades[entidad->getTipo()].ancho*ANCHO_PIXEL_PASTO, y_ini, mapInfoEntidades[entidad->getTipo()].ancho*ALTO_PIXEL_PASTO);
+						sprite->agregarRectangulo(rect1);
+						}
+						break;
+		case BARRACK_2 : {
+						posicion.x -= (DISTANCIA_ENTRE_X * (this->mapInfoEntidades[entidad->getTipo()].ancho - 1));// + DISTANCIA_ENTRE_X * 0.25);
+						posicion.y -= 2*ALTO_PIXEL_PASTO;
+						posicion.w = ANCHO_PIXEL_PASTO * this->mapInfoEntidades[entidad->getTipo()].ancho + 20;
+						posicion.h = 40 + ALTO_PIXEL_PASTO * this->mapInfoEntidades[entidad->getTipo()].alto + (ALTO_PIXEL_PASTO -  DISTANCIA_ENTRE_Y / 2);
+						sprite = new Sprite(1,1,this->getImagenTipo(entidad->getTipo()),posicion,escenario,coord_ceros,entidad);
 						int x_ini = posicion.x;
 						int y_ini = posicion.y;
 						Rectangulo rect1(x_ini, mapInfoEntidades[entidad->getTipo()].ancho*ANCHO_PIXEL_PASTO, y_ini, mapInfoEntidades[entidad->getTipo()].ancho*ALTO_PIXEL_PASTO);
@@ -320,6 +331,39 @@ void ContenedorDeRecursos::cargarImagenesUtil(){
 
 	imagen = Loader::cargarImagen(this->renderer,"images/utils_barra_estado/espada_soldado.png");
 	this->mapImagenesUtil->insert(ESPADA_SOLDADO,imagen);
+
+	// Imagenes tralucidas
+	imagen = Loader::cargarImagen(this->renderer,"images/utils/Barracks3.png");
+	this->mapImagenesUtil->insert(BARRACK_1_TRANS,imagen);
+	SDL_SetTextureAlphaMod(imagen->getTexture(),150);
+
+	imagen = Loader::cargarImagen(this->renderer,"images/utils/Barracks3_rojizo.png");
+	this->mapImagenesUtil->insert(BARRACK_1_ROJIZO,imagen);
+	SDL_SetTextureAlphaMod(imagen->getTexture(),150);
+
+	imagen = Loader::cargarImagen(this->renderer,"images/utils/Barracks4.png");
+	this->mapImagenesUtil->insert(BARRACK_2_TRANS,imagen);
+	SDL_SetTextureAlphaMod(imagen->getTexture(),150);
+
+	imagen = Loader::cargarImagen(this->renderer,"images/utils/Barracks4_rojizo.png");
+	this->mapImagenesUtil->insert(BARRACK_2_ROJIZO,imagen);
+	SDL_SetTextureAlphaMod(imagen->getTexture(),150);
+
+	imagen = Loader::cargarImagen(this->renderer,"images/utils/Barracks5.png");
+	this->mapImagenesUtil->insert(BARRACK_3_TRANS,imagen);
+	SDL_SetTextureAlphaMod(imagen->getTexture(),150);
+
+	imagen = Loader::cargarImagen(this->renderer,"images/utils/Barracks5_rojizo.png");
+	this->mapImagenesUtil->insert(BARRACK_3_ROJIZO,imagen);
+	SDL_SetTextureAlphaMod(imagen->getTexture(),150);
+
+	imagen = Loader::cargarImagen(this->renderer,"images/utils/cuartel.png");
+	this->mapImagenesUtil->insert(CUARTEL_TRANS,imagen);
+	SDL_SetTextureAlphaMod(imagen->getTexture(),150);
+
+	imagen = Loader::cargarImagen(this->renderer,"images/utils/cuartel_rojizo.png");
+	this->mapImagenesUtil->insert(CUARTEL_ROJIZO,imagen);
+	SDL_SetTextureAlphaMod(imagen->getTexture(),150);
 }
 
 
@@ -352,12 +396,6 @@ InfoEntidad ContenedorDeRecursos::getInfoTipo(TipoEntidad tipo){
 	return info;
 }
 
-/********************************************************************************/
-/*void ContenedorDeRecursos::setearCanalAlphaParaEntidad(Entidad* entidad, int canalAlpha){
-	Sprite* spriteEntidad = this->getSpriteDeEntidad(entidad);
-	SDL_SetTextureAlphaMod(spriteEntidad->getImagen()->getTexture(),canalAlpha);
-}
-*/
 /********************************************************************************/
 void ContenedorDeRecursos::borrarSpriteDeEntidad(Entidad* entidad) {
 	map<Entidad*, Sprite*>::iterator it = this->mapSpritesEntidades->find(entidad);

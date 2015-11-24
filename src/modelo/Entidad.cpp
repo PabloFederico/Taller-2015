@@ -61,6 +61,30 @@ Entidad::Entidad(TipoEntidad tipo, int num_jug): idJug(num_jug) {
 			ocupador = true;
 			info = "Castillo";
 			break;
+		case CUARTEL:
+			vidaRestante = 300;
+			movible = false;
+			ocupador = true;
+			info = "Cuartel";
+			break;
+		case BARRACK_1:
+			vidaRestante = 300;
+			movible = false;
+			ocupador = true;
+			info = "Barraca_1";
+			break;
+		case BARRACK_2:
+			vidaRestante = 300;
+			movible = false;
+			ocupador = true;
+			info = "Barraca_2";
+			break;
+		case BARRACK_3:
+			vidaRestante = 300;
+			movible = false;
+			ocupador = true;
+			info = "Barraca_3";
+			break;
 		case ARBOL:
 			movible = false;
 			ocupador = true;

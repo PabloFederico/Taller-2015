@@ -48,6 +48,7 @@ Escenario::Escenario(InfoEscenario infoEsc, EntidadFactory *fabrica, vector<Unid
 */
 	this->tile_clic = NULL;
 	this->entidadSeleccionada = NULL;
+	entidadTemporal = NULL;
 }
 
 /********************************************************************************/
@@ -284,6 +285,29 @@ pair<Coordenada,Coordenada> Escenario::getCoordenadasRecuadro(){
 		c_tile_ini_recuadro = aux;
 	}
 	return make_pair(c_tile_ini_recuadro,c_tile_fin_recuadro);
+}
+
+/********************************************************************************/
+bool Escenario::lugarHabilitadoParaConstruir(Coordenada c, Entidad* entidad){
+	for (int i = c.x; i < c.x + entidad->getTam().first; i++){
+		for (int j = c.y; j < c.y + entidad->getTam().second; j++){
+			Tile* tile = this->matriz_tiles[i][j];
+			if (!tile->estaLibre()) return false;
+		}
+	}
+	return true;
+}
+
+void Escenario::iniciarEntidadTemporal(Entidad* entidad){
+	entidadTemporal = entidad;
+}
+
+void Escenario::resetEntidadTemporal(){
+	entidadTemporal = NULL;
+}
+
+Entidad* Escenario::getEntidadTemporal(){
+	return entidadTemporal;
 }
 
 /********************************************************************************/

@@ -11,6 +11,7 @@
 #include "../utils/ContenedorDeRecursos.h"
 #include "../modelo/Escenario.h"
 #include "../vista/CapaFog.h"
+#include "../controlador/Mouse.h"
 #include <SDL2/SDL_ttf.h>
 
 class Dibujador {
@@ -37,6 +38,8 @@ public:
 
 	void dibujarEscenario(Escenario* esc, TTF_Font* fuenteTexto, pair<int,int> tamVentana);
 	void dibujarBarraEstado(Escenario* esc, BarraEstado* barraEstado, TTF_Font *fuenteTexto);
+
+	void dibujarEfectosTraslucidos(Coordenada c, Escenario* escenario);
 
 	///
 	void repintarOcupado(Escenario* esc);

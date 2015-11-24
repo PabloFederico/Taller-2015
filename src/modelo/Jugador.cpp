@@ -17,6 +17,7 @@ Jugador::Jugador(std::string nombre, int id) {
 	edificios.clear();
 	vec_unidades.clear();
 	unidadActiva = NULL;
+	edificioSeleccionado = NULL;
 
 	for (int i = (int)MADERA; i <= (int)ORO; i++)
 		mapRecursosEconomicos[(TipoEntidad)i] = 0;
@@ -26,16 +27,30 @@ int Jugador::getID(){
 	return id_jug;
 }
 
+void Jugador::agregarEntidadSeleccionada(Entidad* entidad){
+	if (entidad->esUnidad())
+		unidadesSeleccionadas.push_back((Unidad*)entidad);
+	else edificioSeleccionado = (Edificio*)entidad;
+}
+/*
 void Jugador::agregarUnidadSeleccionada(Unidad* unidad){
 	unidadesSeleccionadas.push_back(unidad);
 }
-
+*/
 vector<Unidad*> Jugador::getUnidadesSeleccionadas(){
 	return unidadesSeleccionadas;
 }
 
+Edificio* Jugador::getEdificioSeleccionado(){
+	return edificioSeleccionado;
+}
+
 void Jugador::liberarUnidadesSeleccionadas(){
 	unidadesSeleccionadas.clear();
+}
+
+void Jugador::liberarEdificioSeleccionado(){
+	edificioSeleccionado = NULL;
 }
 
 void Jugador::agregarCentroCivico(CentroCivico* centro){

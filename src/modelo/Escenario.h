@@ -48,6 +48,8 @@ private:
 
 	void inicializarMatrizTiles();
 
+	Entidad* entidadTemporal;
+
 public:
 	Escenario(InfoEscenario infoEsc, EntidadFactory *fabrica, vector<Unidad*>* unidadesMalvadas = NULL, vector<Edificio*>* edificiosMalvados = NULL);
 
@@ -93,10 +95,16 @@ public:
 
 	CapaFog* getCapa();
 
+	bool lugarHabilitadoParaConstruir(Coordenada c, Entidad* entidad);
+
 	bool tieneRecuadroSeleccion();
 	void agregarCoordenadasRecuadroSeleccion(Coordenada c_inicial, Coordenada c_final);
 	pair<Coordenada,Coordenada> getCoordenadasRecuadro();
 	void quitarRecuadroSeleccion();
+
+	void iniciarEntidadTemporal(Entidad* entidad);
+	void resetEntidadTemporal();
+	Entidad* getEntidadTemporal();
 
 	vector<Entidad*> revisarMuertosDeNadie();
 	virtual ~Escenario();

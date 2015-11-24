@@ -25,6 +25,7 @@ private:
 	std::map<int,Unidad* > unidades;
 	std::vector<Unidad*> vec_unidades;
 	vector<Unidad*> unidadesSeleccionadas;
+	Edificio* edificioSeleccionado;
 	std::map<int,Edificio*> edificios;
 
 	Unidad* unidadActiva;
@@ -40,11 +41,19 @@ public:
 
 	int getID();
 
+	void agregarEntidadSeleccionada(Entidad* entidad);
+/*
 	void agregarUnidadSeleccionada(Unidad* unidad);
 
+	void agregarEdificioSeleccionado(Edificio* edificio);
+*/
 	vector<Unidad*> getUnidadesSeleccionadas();
 
+	Edificio* getEdificioSeleccionado();
+
 	void liberarUnidadesSeleccionadas();
+
+	void liberarEdificioSeleccionado();
 
 	void agregarCentroCivico(CentroCivico* centro);
 

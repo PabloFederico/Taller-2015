@@ -88,6 +88,11 @@ void VentanaJuego::dibujar(){
 	BarraEstado* barraEstado = controlador->getJuego()->getBarraEstado();
 
 	dibujador->dibujarEscenario(escenario, fuenteTexto, pair<int,int>(this->SCREEN_WIDTH,this->SCREEN_HEIGHT));
+
+	Mouse* mouse = controlador->getMouse();
+	if (mouse->estaMoviendoImagen())
+		dibujador->dibujarEfectosTraslucidos(mouse->getXY(),escenario);
+
 	dibujador->dibujarBarraEstado(escenario, barraEstado, fuenteTexto);
 
 	SDL_RenderPresent(this->renderer);

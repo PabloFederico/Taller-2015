@@ -9,6 +9,7 @@
 
 Mouse::Mouse(){
 	estado = NO_CLICK;
+	moviendoImagen = false;
 }
 
 EstadoMouse Mouse::getEstado(){
@@ -33,6 +34,14 @@ Coordenada Mouse::getXY(){
 
 Coordenada Mouse::getXY_anterior(){
 	return c_anterior;
+}
+
+void Mouse::setearMoviendoImagen(bool valor){
+	moviendoImagen = valor;
+}
+
+bool Mouse::estaMoviendoImagen(){
+	return moviendoImagen;
 }
 
 bool Mouse::click(){

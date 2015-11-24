@@ -439,7 +439,6 @@ void Juego::emitirSonido(Entidad* entidad){
 	}
 }
 
-
 /***************************************************/
 Juego::~Juego() {
 	this->unidadesEnemigos->clear();
