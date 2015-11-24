@@ -77,8 +77,7 @@ int Unidad::generarGolpe() {
 	int dmg = num_rndm -(receptor->obtenerArmor()*0.25);
 	if (dmg < 0) return 0; //por ahi el ataque es muy poronga con respecto a la armor de un edificio, ponele
 	return dmg;
-
-	}
+}
 
 void Unidad::continuarConstruccion() {
 	((Construccion*)this->receptor)->continuarConstruyendo();

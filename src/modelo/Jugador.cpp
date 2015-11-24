@@ -79,7 +79,7 @@ void Jugador::agregarNuevoEdificio(Edificio* edificio, int idJug = -1){
 	edificio->set_identificador(id);
 }
 
-Edificio* Jugador::terminarConstruccion(ConstruccionTermino c) {
+Edificio* Jugador::terminarConstruccion(ConstruccionTermino c) {	/// SOLO LOCALES !!!
 	Edificio *construc = edificios[c.dni];
 	construc->morir();
 	delete construc;
@@ -111,7 +111,7 @@ void Jugador::interaccionesDeUnidades(Escenario* escenario, ContenedorDeRecursos
 			contenedor->borrarSpriteDeEntidad(muerto);
 			//Falta algo todo?
 
-			Edificio* edif = terminarConstruccion(c);
+			Edificio* edif = terminarConstruccion(c);					/// SOLO LOCALES !!!
 			contenedor->generarYGuardarSpriteEntidad(edif, coord_ceros, escenario);
 			escenario->agregarEntidad(edif->getPosicion(), edif);
 		}
