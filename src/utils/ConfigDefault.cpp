@@ -5,7 +5,7 @@
  *      Author: martin
  */
 
-#include "../modelo/ConfigDefault.h"
+#include "../utils/ConfigDefault.h"
 
 
 void crearConfigDefault () {

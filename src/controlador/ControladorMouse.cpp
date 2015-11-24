@@ -198,7 +198,7 @@ void ControladorMouse::procesarArrastreClickDerecho(Mouse* mouse){
 						TipoEntidad tipo = entidades[i]->getTipo();
 						int id = entidades[i]->getIDJug();
 						// Se guardan las unidades seleccionadas en el Jugador
-						if (id == juego->getIDJugador() && (tipo == ALDEANO || tipo == SOLDADO || tipo == ARQUERO)){	// bastante hardcodeador; necesario?
+						if (id == juego->getIDJugador() && entidades[i]->esUnidad()) {//(tipo == ALDEANO || tipo == SOLDADO || tipo == ARQUERO)){	// bastante hardcodeador; necesario?
 							juego->getJugador()->agregarUnidadSeleccionada((Unidad*)entidades[i]);
 							break;
 						}

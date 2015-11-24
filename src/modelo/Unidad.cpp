@@ -42,7 +42,7 @@ void Unidad::interactuar() {
 				if (distanciaEuclidiana(this->getPosicion(), Coordenada(i,j)) < 2) {
 					if (receptor->esConstruccion() && this->esConstructor()) {
 						cambioEstado(CONSTRUYENDO);
-						this->continuarConstruccion();
+						this->continuarConstruccion();	// throws ConstruccionTermino
 						// Ojo que si llega a este punto, puede que no se corra nada debajo
 					} else if (receptor->esAtacable()) {
 						cambioEstado(ATACANDO);

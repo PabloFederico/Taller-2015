@@ -17,10 +17,22 @@ bool Construccion::esConstruccion() {
 }
 
 void Construccion::continuarConstruyendo() {
-	this->progresoPorc += 25; //hardcodeo
+	this->progresoPorc += 20; //hardcodeo
 	if (this->progresoPorc == 100) {
 		throw ConstruccionTermino(this->tipoEdif,this->dni,this->idJug,this->getPosicion().x,this->getPosicion().y,this->vidaRestante);
 	}
+}
+
+std::string Construccion::getInfo() {
+	ostringstream o;
+	o << Edificio::getInfo()<<" en construcción";
+	return o.str();
+}
+
+std::string Construccion::getVidaString() {
+	ostringstream o;
+	o << Entidad::getVidaString()<<" construido: "<<this->progresoPorc;
+	return o.str();
 }
 
 Construccion::~Construccion() {}

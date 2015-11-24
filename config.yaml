@@ -67,6 +67,10 @@ tipos:
     imagen: images/aldeano.png
     descripcion: Aldeano
 
+  - nombre: construccion
+    imagen: images/utils/cuartel.png #!!!
+    descripcion: Aldeano
+
 escenario:
   - nombre: orleans
     size_x: 50

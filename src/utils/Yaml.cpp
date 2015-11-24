@@ -5,10 +5,11 @@
  *      Author: emanuel
  */
 
-#include "Yaml.h"
+#include "../utils/Yaml.h"
+
 #include <yaml-cpp/yaml.h>
-#include "../modelo/ConfigDefault.h"
 #include "../utils/Calculador.h"
+#include "../utils/ConfigDefault.h"
 #include "../utils/Log.h"
 
 ConfiguracionJuego Yaml::cargarConfiguracionJuego(std::string archivoConfig){
@@ -21,6 +22,7 @@ ConfiguracionJuego Yaml::cargarConfiguracionJuego(std::string archivoConfig){
 		tipos["castillo"] = CASTILLO;
 		tipos["cuartel"] = CUARTEL;
 		tipos["centro_civico"] = CENTRO_CIVICO;
+		tipos["construccion"] = CONSTRUCCION;
 		tipos["soldado"] = SOLDADO;
 		tipos["aldeano"] = ALDEANO;
 		tipos["animal"] = ANIMAL;
@@ -163,6 +165,8 @@ ConfiguracionJuego Yaml::cargarConfiguracionJuego(std::string archivoConfig){
 	return conf_game;
 }
 
+
+
 ConfiguracionJuego Yaml::OdioYAML() {
 	ConfiguracionJuego configDefault;
 
@@ -173,6 +177,7 @@ ConfiguracionJuego Yaml::OdioYAML() {
 		tipos["castillo"] = CASTILLO;
 		tipos["cuartel"] = CUARTEL;
 		tipos["centro_civico"] = CENTRO_CIVICO;
+		tipos["construccion"] = CONSTRUCCION;
 		tipos["soldado"] = SOLDADO;
 		tipos["aldeano"] = ALDEANO;
 		tipos["arquero"] = ARQUERO;
@@ -242,10 +247,18 @@ ConfiguracionJuego Yaml::OdioYAML() {
 	infoCentroCivico.path = "images/utils/centro_civico.png";
 	infoCentroCivico.descripcion = "Centro Civico";
 
+	InfoEntidad infoConstruccion;
+	infoConstruccion.tipo = tipos["construccion"];
+	infoConstruccion.path = "images/utils/centro_civico.png";
+	infoConstruccion.descripcion = "Construcción";
+	infoConstruccion.ancho = 4;
+	infoConstruccion.alto = 4;
+
 	configDefault.agregarInfoEntidad(infoArbol);
 	configDefault.agregarInfoEntidad(infoAgua);
 	configDefault.agregarInfoEntidad(infoCuartel);
 	configDefault.agregarInfoEntidad(infoCentroCivico);
+	configDefault.agregarInfoEntidad(infoConstruccion);
 	configDefault.agregarInfoEntidad(infoSoldado);
 	configDefault.agregarInfoEntidad(infoArquero);
 	configDefault.agregarInfoEntidad(infoAldeano);

@@ -186,11 +186,16 @@ void Dibujador::dibujarEscenario(Escenario* esc, TTF_Font* fuenteTexto, pair<int
 						if (!sprite) { std::cout<<"sprite muerto"<<std::endl; continue; }
 						SDL_Rect pos = sprite->getPosicion();
 
-						if ( (/*entidad->getIDJug() != 0*/entidad->esAtacable() || entidad->esRecurso()) && ec == ESTADO_COLOR ){//falta incluir animales y otras entidades con vida no Unidad ni Edificio
+						if ( (entidad->esAtacable() || entidad->esRecurso()) && ec == ESTADO_COLOR ){
 							Imagen* image_id;
 							if (entidad->getIDJug() != 0 && entidad->getIDJug() != esc->getIDJug())
+								// Mostrar información completa de entidades ajenas.
 								image_id = Loader::cargarTexto(renderer,fuenteTexto,entidad->getInfo());
+							else if (entidad->esConstruccion())
+								// Mostrar vida restante y progreso de construcciones.
+								image_id = Loader::cargarTexto(renderer,fuenteTexto,((Construccion*)entidad)->getVidaString());
 							else
+								// Mostrar cuánta vida le queda a entidades propias y recursos.
 								image_id = Loader::cargarTexto(renderer,fuenteTexto,entidad->getVidaString());
 
 							SDL_Rect rect_id;
@@ -284,13 +289,14 @@ void Dibujador::dibujarBarraEstado(Escenario* esc, BarraEstado* barraEstado, TTF
 		SDL_RenderCopy(renderer,imagen_Select->getTexture(),&frameActual,&rect_image_select);
 	}else{
 		Unidad* unidad = barraEstado->getUnidadActualEnBarra();
-		if (unidad != NULL){
+		if (unidad != NULL) {
 			Imagen* image = NULL;
 			SDL_Rect rect_icono;
 			rect_icono.x = rect_barra.x + 30;
 			rect_icono.y = rect_barra.y + 40;
 			rect_icono.w = 30;
 			rect_icono.h = 30;
+			bool seDibuja = true;		// Arreglo bastante bobo. Habría q hacer q el vector de seleccion sea de Entidades.
 			switch (unidad->getTipo()){
 				case ALDEANO:
 							 image = contenedor->getImagenUtilTipo(HERRAMIENTAS_ALDEANO);
@@ -302,9 +308,10 @@ void Dibujador::dibujarBarraEstado(Escenario* esc, BarraEstado* barraEstado, TTF
 				case ARQUERO:
 							 image = contenedor->getImagenUtilTipo(ARCO_ARQUERO);
 							 break;
-				default : break;
+				default : 	seDibuja = false;
+							break;
 			}
-			SDL_RenderCopy(renderer,image->getTexture(),NULL,&rect_icono);
+			if (seDibuja) SDL_RenderCopy(renderer,image->getTexture(),NULL,&rect_icono);
 		}
 	}
 

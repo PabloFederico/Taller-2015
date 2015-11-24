@@ -61,6 +61,20 @@ Entidad::Entidad(TipoEntidad tipo, int num_jug): idJug(num_jug) {
 			ocupador = true;
 			info = "Castillo";
 			break;
+		case CONSTRUCCION:
+			vidaRestante = 100;
+			movible = false;
+			ocupador = true;
+			info = "Construccion";
+			break;
+		case CENTRO_CIVICO:
+			vidaRestante = 300;
+			movible = false;
+			ocupador = true;
+			info = "Centro civico";
+			ancho = 4;
+			alto = 4;
+			break;
 		case ARBOL:
 			vidaRestante = 10;
 			movible = false;
@@ -171,9 +185,9 @@ void Entidad::setPosicion(Coordenada nuevaCoord){
 }
 
 void Entidad::interactuarCon(Entidad* receptor) {
-	if (this->getIDJug() == receptor->getIDJug())
+	if (this->getIDJug() == receptor->getIDJug() && !receptor->esConstruccion())
 		return;	// No existe acción contra otra entidad propia (al menos por ahora).
-	if (receptor->esAtacable() || receptor->esRecurso()) {
+	if (receptor->esAtacable() || receptor->esRecurso() || receptor->esConstruccion()) {
 		this->receptor = receptor;
 		this->reloj = clock();
 		// SOLDADO, ALDEANO, ANIMAL; EDIFICIO, CENTRO_CIVICO, CUARTEL, CASTILLO // MADERA, COMIDA, PIEDRA, ORO

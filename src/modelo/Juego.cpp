@@ -6,7 +6,8 @@
  */
 
 #include "../modelo/Juego.h"
-#include "../modelo/Yaml.h"
+
+#include "../utils/Yaml.h"
 
 
 //Juego::Juego(Connection* lan = NULL, Coordenada* posInicial = NULL, InfoEscenario* infoEscRed = NULL):
@@ -275,15 +276,15 @@ void Juego::agregarRecurso(TipoEntidad recurso, Coordenada coord) {
 void Juego::comenzarNuevaConstruccion(TipoEntidad tipoEdif, Coordenada coord, int id_jug = -1) {
 	if (id_jug == -1)
 		id_jug = this->idJug;
-	if (this->escenario->coordEnEscenario(coord)) {
+	if (!this->escenario->coordEnEscenario(coord)) {
 		Log::imprimirALog(ERR, "Se intentó construir fuera del Escenario.");
 		return;
 	}
-	Construccion *construccion = new Construccion(tipoEdif, id_jug);
+	Construccion *construccion = new Construccion(tipoEdif, id_jug);	// Factory todo?
 	construccion->setPosicion(coord);
 	this->jugador->agregarNuevoEdificio(construccion, id_jug);
-	this->escenario->agregarEntidad(coord, construccion);
 	this->contenedor->generarYGuardarSpriteEntidad(construccion, Coordenada(*cero_x, *cero_y), this->escenario);
+	this->escenario->agregarEntidad(coord, construccion);
 }
 
 /***************************************************/
@@ -373,7 +374,7 @@ vector<Entidad*> Juego::revisarMuertos() {
 		if (!(*uniIt)->sigueViva()) {
 			Unidad* moribundo = *uniIt;
 
-			this->jugador->limpiarRastrosDeUnidadMuerta(moribundo);
+			this->jugador->limpiarSeleccionDeUnidadMuerta(moribundo);
 			unidadesEnemigos->erase(uniIt);
 			uniIt = this->unidadesEnemigos->begin(); //por las dudas
 

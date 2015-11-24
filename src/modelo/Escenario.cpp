@@ -154,7 +154,7 @@ bool Escenario::agregarEntidad(Coordenada pos, Entidad* entidad){
 		for (int j = 0; j < dim.second; j++){
 			for (int i = 0; i < dim.first; i++){
 				Tile* tile = this->matriz_tiles[pos.x+i][pos.y+j];
-				if (i==dim.first/2 && j==dim.second/2)
+				if (i==round(dim.first/2.0)-1 && j==round(dim.second/2.0)-1)
 					tile->agregarEntidad(entidad, true);
 				else tile->agregarEntidad(entidad);
 			}

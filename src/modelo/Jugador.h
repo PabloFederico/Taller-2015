@@ -60,7 +60,7 @@ public:
 	CentroCivico* getCentroCivico();
 
 	void interaccionesDeUnidades(Escenario* escenario, ContenedorDeRecursos* contenedor, Coordenada coord_ceros);
-	void limpiarRastrosDeUnidadMuerta(Unidad* moribundo);
+	void limpiarSeleccionDeUnidadMuerta(Unidad* moribundo);
 	vector<Entidad*> revisarMuertosPropios();
 
 	virtual ~Jugador();
