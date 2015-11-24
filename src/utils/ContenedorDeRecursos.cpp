@@ -169,6 +169,30 @@ void ContenedorDeRecursos::generarYGuardarSpriteEntidad(Entidad* entidad, Coorde
 						sprite->agregarRectangulo(rect1);
 						}
 						break;
+		case MINA_PIEDRA: {
+						posicion.y -= (1.5 * DISTANCIA_ENTRE_Y);
+						posicion.w = ANCHO_PIXEL_PASTO;
+						posicion.h = 2 * ALTO_PIXEL_PASTO;
+						sprite = new Sprite(1,1,this->getImagenTipo(MINA_PIEDRA),posicion,escenario,coord_ceros,entidad);
+
+						int x_ini = posicion.x;
+						int y_ini = posicion.y;
+						Rectangulo rect1(x_ini + 0.25*ANCHO_PIXEL_PASTO, 0.5* ANCHO_PIXEL_PASTO, y_ini, 0.75*posicion.h);
+						sprite->agregarRectangulo(rect1);
+						}
+						break;
+		case MINA_ORO  : {
+						posicion.y -= (1.5 * DISTANCIA_ENTRE_Y);
+						posicion.w = ANCHO_PIXEL_PASTO;
+						posicion.h = 2 * ALTO_PIXEL_PASTO;
+						sprite = new Sprite(1,1,this->getImagenTipo(MINA_ORO),posicion,escenario,coord_ceros,entidad);
+
+						int x_ini = posicion.x;
+						int y_ini = posicion.y;
+						Rectangulo rect1(x_ini + 0.25*ANCHO_PIXEL_PASTO, 0.5* ANCHO_PIXEL_PASTO, y_ini, 0.75*posicion.h);
+						sprite->agregarRectangulo(rect1);
+						}
+						break;
 		default       :
 						/* AGUA ó TIERRA */
 						{sprite = new Sprite(1,1,this->getImagenTipo(entidad->getTipo()),posicion,escenario,coord_ceros,entidad);

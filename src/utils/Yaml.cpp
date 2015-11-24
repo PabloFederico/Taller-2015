@@ -26,6 +26,8 @@ ConfiguracionJuego Yaml::cargarConfiguracionJuego(std::string archivoConfig){
 		tipos["soldado"] = SOLDADO;
 		tipos["aldeano"] = ALDEANO;
 		tipos["animal"] = ANIMAL;
+		tipos["mina_oro"] = MINA_ORO;
+		tipos["mina_piedra"] = MINA_PIEDRA;
 
 
 	YAML::Node config;
@@ -182,6 +184,8 @@ ConfiguracionJuego Yaml::OdioYAML() {
 		tipos["aldeano"] = ALDEANO;
 		tipos["arquero"] = ARQUERO;
 		tipos["animal"] = ANIMAL;
+		tipos["mina_oro"] = MINA_ORO;
+		tipos["mina_piedra"] = MINA_PIEDRA;
 
 	configDefault.nombreJugador = "JugadorXXX";
 	configDefault.direccion_ip = "10.0.0.1";
@@ -254,6 +258,16 @@ ConfiguracionJuego Yaml::OdioYAML() {
 	infoConstruccion.ancho = 4;
 	infoConstruccion.alto = 4;
 
+	InfoEntidad infoMinaPiedra;
+	infoMinaPiedra.tipo = tipos["mina_piedra"];
+	infoMinaPiedra.path = "images/utils/mina_piedra2.png";
+	infoMinaPiedra.descripcion = "Mina de Piedra";
+
+	InfoEntidad infoMinaOro;
+	infoMinaOro.tipo = tipos["mina_oro"];
+	infoMinaOro.path = "images/utils/mina_oro.png";
+	infoMinaOro.descripcion = "Mina de Oro";
+
 	configDefault.agregarInfoEntidad(infoArbol);
 	configDefault.agregarInfoEntidad(infoAgua);
 	configDefault.agregarInfoEntidad(infoCuartel);
@@ -265,6 +279,8 @@ ConfiguracionJuego Yaml::OdioYAML() {
 	configDefault.agregarInfoEntidad(infoAnimal);
 	configDefault.agregarInfoEntidad(infoBarraca1);
 	configDefault.agregarInfoEntidad(infoTierra);
+	configDefault.agregarInfoEntidad(infoMinaOro);
+	configDefault.agregarInfoEntidad(infoMinaPiedra);
 
 	tipos.clear();
 	configDefault.agregarInfoEscenarios(infoEscenarioDefault());
@@ -298,6 +314,9 @@ InfoEscenario Yaml::infoEscenarioDefault() {
 
 
 	infoEscenario.agregarEntidad(std::make_pair(10,14), ANIMAL);
+
+	infoEscenario.agregarEntidad(std::make_pair(10,12), MINA_PIEDRA);
+	infoEscenario.agregarEntidad(std::make_pair(8,10), MINA_ORO);
 
 	//código de prueba
 	std::cout<<infoEscenario.getPosicionesEntidades().size()<<std::endl;

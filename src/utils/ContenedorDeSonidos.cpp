@@ -38,6 +38,14 @@ void ContenedorDeSonidos::cargarSonidos(){
 	if (talar == NULL) printf("Error al cargar sonido TALAR. Error: %s\n", Mix_GetError());
 	this->mapSonidos->insert(TALAR, talar);
 
+	Mix_Chunk *oros = Loader::cargarSonido("sound/oro.wav");
+	if (oros == NULL) printf("Error al cargar sonido OROS. Error: %s\n", Mix_GetError());
+	this->mapSonidos->insert(OBTENER_ORO, oros);
+
+	Mix_Chunk *piedras = Loader::cargarSonido("sound/piedras.wav");
+	if (piedras == NULL) printf("Error al cargar sonido PIEDRAS. Error: %s\n", Mix_GetError());
+	this->mapSonidos->insert(OBTENER_PIEDRA, piedras);
+
 
 	//CARGAR LOS RESTANTES
 }

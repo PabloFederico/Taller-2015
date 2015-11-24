@@ -124,6 +124,7 @@ void Juego::cargarJuego(){//InfoEscenario* infoEscRed = NULL, Coordenada *posIni
 /********************************************************************************/
 void Juego::cargaInicialDeRecursos() {
 	// bieeen hardcodeado, de prueba
+	// Actualizacion: esto ya no va. Borrar una vez terminado el tp. Lo dejo para pruebas. todo
 	agregarRecurso(ORO, Coordenada(22,22));
 	agregarRecurso(COMIDA, Coordenada(20,22));
 }
@@ -413,6 +414,11 @@ void Juego::continuar() {	// Modularizar si se pasa a usar threads
 		std::cout << muerto->enc()<<" sos un muerto"<<std::endl;//
 		this->escenario->quitarEntidad(muerto->getPosicion(), muerto);
 		this->contenedor->borrarSpriteDeEntidad(muerto);
+
+		//Si la entidad muerta se convierte en recurso, lo colocamos:
+		Coordenada coord = muerto->getPosicion();
+		this->reemplazarEntidadPorRecurso(muerto, coord);
+
 		//Falta algo todo?
 
 		delete muerto;
@@ -431,21 +437,47 @@ void Juego::emitirSonido(Entidad* entidad){
 		case ANIMAL:
 			Mix_PlayChannel(1, this->contenedorSonidos->getSonidoTipo(MORIR_ANIMAL), 0);
 			break;
-		case COMIDA:
-			Mix_PlayChannel(1, this->contenedorSonidos->getSonidoTipo(COMER), 0);
-			break;
 		case ARBOL:
 			Mix_PlayChannel(1, this->contenedorSonidos->getSonidoTipo(TALAR), 0);
 			break;
-		case EDIFICIO:
+		case MINA_ORO:
 		case ORO:
-			Mix_PlayChannel(1, this->contenedorSonidos->getSonidoTipo(DESTRUIR), 0);
+			Mix_PlayChannel(1, this->contenedorSonidos->getSonidoTipo(OBTENER_ORO), 0);
+			break;
+		case COMIDA:
+			Mix_PlayChannel(1, this->contenedorSonidos->getSonidoTipo(COMER), 0);
+			break;
+		case MINA_PIEDRA:
+		case PIEDRA:
+			Mix_PlayChannel(1, this->contenedorSonidos->getSonidoTipo(OBTENER_PIEDRA), 0);
 			break;
 		default :
 			break;
 	}
 }
 
+
+/***************************************************/
+
+void Juego::reemplazarEntidadPorRecurso(Entidad* entidad, Coordenada coord){
+	//FALTAN CARGAR.
+	switch (entidad->getTipo()){
+		case ARBOL:
+			this->agregarRecurso(MADERA, coord);
+			break;
+		case ANIMAL:
+			this->agregarRecurso(COMIDA, coord);
+			break;
+		case MINA_PIEDRA:
+			this->agregarRecurso(PIEDRA, coord);
+			break;
+		case MINA_ORO:
+			this->agregarRecurso(ORO, coord);
+			break;
+		default :
+			break;
+	}
+}
 
 /***************************************************/
 Juego::~Juego() {

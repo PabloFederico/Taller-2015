@@ -114,6 +114,8 @@ public:
 	void comenzarNuevaConstruccion(TipoEntidad tipoEdif, Coordenada coord, int id_jug);
 	void agregarRecurso(TipoEntidad recurso, Coordenada coord);
 
+	void reemplazarEntidadPorRecurso(Entidad* entidad, Coordenada coord);
+
 	void toggleEnemigo(int id_jug, int idUnidad);
 
 	void continuar();
