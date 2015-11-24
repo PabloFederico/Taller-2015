@@ -12,6 +12,8 @@ Entidad::Entidad(TipoEntidad tipo, int num_jug): idJug(num_jug) {
 	this->receptor = NULL;
 	this->estado = QUIETO;
 	this->vidaRestante = 1;
+	this->armadura = 0;
+	this->ataque = 0;
 	this->ancho = 1;
 	this->alto = 1;
 	this->tipo = tipo;
@@ -36,18 +38,24 @@ Entidad::Entidad(TipoEntidad tipo, int num_jug): idJug(num_jug) {
 			movible = true;
 			ocupador = true;
 			info = "Soldado";
+			armadura = 3;
+			ataque = 10;
 			break;
 		case ALDEANO:
-			vidaRestante = 5;//50;
+			vidaRestante = 25;//50;
 			movible = true;
 			ocupador = true;
 			info = "Aldeano";
+			armadura = 10;
+			ataque = 3;
 			break;
 		case ARQUERO:
 			vidaRestante = 70;
 			movible = true;
 			ocupador = true;
 			info = "Arquero";
+			armadura = 2;
+			ataque = 6;
 			break;
 		case ANIMAL:
 			vidaRestante = 30;
@@ -147,6 +155,13 @@ bool Entidad::esRecurso(){
 }
 bool Entidad::esConstruccion() {
 	return (tipo == CONSTRUCCION);
+}
+
+int Entidad::obtenerArmor(){
+	return this->armadura;
+}
+int Entidad::obtenerAtk(){
+	return this->ataque;
 }
 bool Entidad::esEdificio(){
 	return EsEdificio(this->tipo);

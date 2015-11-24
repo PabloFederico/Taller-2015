@@ -22,6 +22,8 @@ protected:
 	TipoEntidad tipo;
 	int idJug;
 
+	int armadura;
+	int ataque;
 	int vidaRestante;
 	EstadoEntidad estado;
 	bool movible,ocupador;
@@ -72,6 +74,8 @@ public:
 
 	void sufrirGolpe(int fuerza);
 	int sufrirRecoleccion(int cant);
+	int obtenerArmor();
+	int obtenerAtk();
 
 	std::string enc();
 	static Entidad* dec(std::string);
