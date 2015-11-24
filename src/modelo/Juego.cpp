@@ -95,33 +95,11 @@ void Juego::cargarJuego(){//InfoEscenario* infoEscRed = NULL, Coordenada *posIni
 	crearNuevaUnidad(ALDEANO, Coordenada( 0, 6), 1);
 	crearNuevaUnidad(ARQUERO, Coordenada( 1, 8), 1);
 	crearNuevaUnidad(ALDEANO, Coordenada(14,14), 2);
-	crearNuevaUnidad(ARQUERO, Coordenada( 10, 16), 2);
-	crearNuevaUnidad(ARQUERO, Coordenada( 12, 16), 2);
-
-	/*Unidad* soldado = new Unidad(SOLDADO,1);
-	Unidad* aldeano = new Unidad(ALDEANO,1);
-	Unidad* arquero = new Unidad(ARQUERO,1);
-	Unidad* aldeanoDesconocido = new Unidad(ALDEANO,2);
-	Unidad* arqueroDesconocido = new Unidad(ARQUERO,2);
-	soldado->setPosicion(Coordenada(0,5));
-	aldeano->setPosicion(Coordenada(0,6));
-	arquero->setPosicion(Coordenada(1,8));
-	aldeanoDesconocido->setPosicion(Coordenada(14,14));
-	arqueroDesconocido->setPosicion(Coordenada(0,0));
-
-	jugador->agregarNuevaUnidad(soldado);
-	jugador->agregarNuevaUnidad(aldeano);
-	jugador->agregarNuevaUnidad(arquero);
-	this->cargarEnemigo(aldeanoDesconocido);
-
-	escenario->agregarEntidad(soldado->getPosicion(),soldado);
-	escenario->agregarEntidad(aldeano->getPosicion(),aldeano);
-	escenario->agregarEntidad(arquero->getPosicion(),arquero);
-	escenario->agregarEntidad(aldeanoDesconocido->getPosicion(),aldeanoDesconocido);
-	escenario->agregarEntidad(arqueroDesconocido->getPosicion(),arqueroDesconocido);*/
+	crearNuevaUnidad(ARQUERO, Coordenada(10,16), 2);
+	crearNuevaUnidad(ARQUERO, Coordenada(12,16), 2);
+	///
 
 	escenario->getCapa()->setRangoDeVision(configGame.rango_vision);
-	//this->protagonista = this->escenario->getProtagonista();
 	this->barraEstado = new BarraEstado(configGame.ancho_pantalla, 150, jugador); // Podría ser proporcional al tamaño de la ventana (MC)
 
 	this->contenedorSonidos = new ContenedorDeSonidos();
@@ -400,10 +378,6 @@ vector<Entidad*> Juego::revisarMuertos() {
 		if (!(*uniIt)->sigueViva()) {
 			Unidad* moribundo = *uniIt;
 
-			if ((Entidad*)moribundo == escenario->getEntidadSeleccionada())
-				escenario->setearTileClic(NULL,Coordenada(0,0));
-
-			this->jugador->limpiarSeleccionDeUnidadMuerta(moribundo);
 			unidadesEnemigos->erase(uniIt);
 			uniIt = this->unidadesEnemigos->begin(); //por las dudas
 
@@ -440,6 +414,10 @@ void Juego::continuar() {	// Modularizar si se pasa a usar threads
 		this->emitirSonido(muerto);
 
 		std::cout << muerto->enc()<<" sos un muerto"<<std::endl;//
+		if (muerto == escenario->getEntidadSeleccionada())
+			escenario->setearTileClic(NULL,Coordenada(0,0));
+		this->jugador->limpiarSeleccionDeUnidadMuerta((Unidad*)muerto);
+
 		this->escenario->quitarEntidad(muerto->getPosicion(), muerto);
 		this->contenedor->borrarSpriteDeEntidad(muerto);
 

@@ -150,7 +150,6 @@ vector<Entidad*> Jugador::revisarMuertosPropios() {
 			Unidad* moribundo = *uniIt;
 
 			unidades.erase(moribundo->get_identificador());
-			limpiarSeleccionDeUnidadMuerta(moribundo);
 			vec_unidades.erase(uniIt);
 			uniIt = this->vec_unidades.begin(); //por las dudas
 

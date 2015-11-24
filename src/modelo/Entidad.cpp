@@ -161,6 +161,10 @@ int Entidad::getIDJug(){
 	return idJug;
 }
 
+bool Entidad::perteneceAJugador(int id_jug) {
+	return (id_jug == this->idJug);
+}
+
 int Entidad::getVidaRestante() {
 	return this->vidaRestante;
 }

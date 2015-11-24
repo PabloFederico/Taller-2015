@@ -41,11 +41,11 @@ void Unidad::interactuar() {
 			for (int j = posReceptor.y; j < posReceptor.y+tamReceptor.second; j++)
 				// Distancia máxima hardcodeada de 1 tile; TODO rangoAtaque
 				if (distanciaEuclidiana(this->getPosicion(), Coordenada(i,j)) < 2) {
-					if (receptor->esConstruccion() && this->esConstructor()) {
+					if (receptor->esConstruccion() && this->esConstructor() && receptor->perteneceAJugador(this->idJug)) {
 						cambioEstado(CONSTRUYENDO);
 						this->continuarConstruccion();	// throws ConstruccionTermino
 						// Ojo que si llega a este punto, puede que no se corra nada debajo
-					} else if (receptor->esAtacable()) {
+					} else if (receptor->esAtacable() && !receptor->perteneceAJugador(this->idJug)) {
 						cambioEstado(ATACANDO);
 						this->lastimar(this->receptor);
 					} else if (receptor->esRecurso() && this->esRecolector()) {

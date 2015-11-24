@@ -56,11 +56,10 @@ void VentanaJuego::cargarJuego(Juego *juego){
 		string nombreJugador = juego->getNombreJugador();
 		SDL_SetWindowTitle(window,nombreJugador.c_str());
 
-		//Cargamos la música de fondo.
-		Mix_Music *musica;
-		musica = Mix_LoadMUS("sound/fondo.mp3");
-		if (musica == NULL) printf("Error al cargar la cancion. Error: %s\n", Mix_GetError());
-		else this->musica_fondo = musica;
+		//Cargamos la música de fondo. COMENTADO POR SANIDAD PROPIA
+		//Mix_Music *musica = Mix_LoadMUS("sound/fondo.mp3");
+		//if (musica == NULL) printf("Error al cargar la cancion. Error: %s\n", Mix_GetError());
+		//else this->musica_fondo = musica;
 	}
 }
 
@@ -113,6 +112,8 @@ EstadoFinVentana VentanaJuego::run(){
 
 		///cdp
 		this->controlador->getJuego()->comenzarNuevaConstruccion(CENTRO_CIVICO, Coordenada(4,15), 1);//
+		this->controlador->getJuego()->comenzarNuevaConstruccion(CUARTEL, Coordenada(10,22), 1);//
+		this->controlador->getJuego()->comenzarNuevaConstruccion(CENTRO_CIVICO, Coordenada(15,22), 2);//
 
 		while ( run ) {
 

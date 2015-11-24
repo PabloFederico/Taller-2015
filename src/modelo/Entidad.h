@@ -42,6 +42,7 @@ public:
 	int getVidaRestante();
 	void setVidaRestante(int valor);
 	int getIDJug();
+	bool perteneceAJugador(int id_jug);
 
 	void cambioEstado(EstadoEntidad est);
 	void finalizaAccion();
