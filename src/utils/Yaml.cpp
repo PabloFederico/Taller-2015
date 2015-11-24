@@ -5,10 +5,11 @@
  *      Author: emanuel
  */
 
-#include "Yaml.h"
+#include "../utils/Yaml.h"
+
 #include <yaml-cpp/yaml.h>
-#include "../modelo/ConfigDefault.h"
 #include "../utils/Calculador.h"
+#include "../utils/ConfigDefault.h"
 #include "../utils/Log.h"
 
 ConfiguracionJuego Yaml::cargarConfiguracionJuego(std::string archivoConfig){
@@ -21,9 +22,12 @@ ConfiguracionJuego Yaml::cargarConfiguracionJuego(std::string archivoConfig){
 		tipos["castillo"] = CASTILLO;
 		tipos["cuartel"] = CUARTEL;
 		tipos["centro_civico"] = CENTRO_CIVICO;
+		tipos["construccion"] = CONSTRUCCION;
 		tipos["soldado"] = SOLDADO;
 		tipos["aldeano"] = ALDEANO;
 		tipos["animal"] = ANIMAL;
+		tipos["mina_oro"] = MINA_ORO;
+		tipos["mina_piedra"] = MINA_PIEDRA;
 
 
 	YAML::Node config;
@@ -163,6 +167,8 @@ ConfiguracionJuego Yaml::cargarConfiguracionJuego(std::string archivoConfig){
 	return conf_game;
 }
 
+
+
 ConfiguracionJuego Yaml::OdioYAML() {
 	ConfiguracionJuego configDefault;
 
@@ -175,10 +181,13 @@ ConfiguracionJuego Yaml::OdioYAML() {
 		tipos["barraca_3"] = BARRACK_3;
 		tipos["cuartel"] = CUARTEL;
 		tipos["centro_civico"] = CENTRO_CIVICO;
+		tipos["construccion"] = CONSTRUCCION;
 		tipos["soldado"] = SOLDADO;
 		tipos["aldeano"] = ALDEANO;
 		tipos["arquero"] = ARQUERO;
 		tipos["animal"] = ANIMAL;
+		tipos["mina_oro"] = MINA_ORO;
+		tipos["mina_piedra"] = MINA_PIEDRA;
 
 	configDefault.nombreJugador = "JugadorXXX";
 	configDefault.direccion_ip = "10.0.0.1";
@@ -251,21 +260,40 @@ ConfiguracionJuego Yaml::OdioYAML() {
 	InfoEntidad infoCuartel;
 	infoCuartel.tipo = tipos["cuartel"];
 	infoCuartel.path = "images/utils/cuartel.png";
+	infoCuartel.descripcion = "Cuartel";
 	infoCuartel.ancho = 4;
 	infoCuartel.alto = 4;
-	infoCuartel.descripcion = "Cuartel";
+
 
 	InfoEntidad infoCentroCivico;
 	infoCentroCivico.tipo = tipos["centro_civico"];
 	infoCentroCivico.path = "images/utils/centro_civico.png";
+	infoCentroCivico.descripcion = "Centro Civico";
 	infoCentroCivico.ancho = 4;
 	infoCentroCivico.alto = 4;
-	infoCentroCivico.descripcion = "Centro Civico";
+
+	InfoEntidad infoConstruccion;
+	infoConstruccion.tipo = tipos["construccion"];
+	infoConstruccion.path = "images/utils/centro_civico.png";
+	infoConstruccion.descripcion = "Construcción";
+	infoConstruccion.ancho = 4;
+	infoConstruccion.alto = 4;
+
+	InfoEntidad infoMinaPiedra;
+	infoMinaPiedra.tipo = tipos["mina_piedra"];
+	infoMinaPiedra.path = "images/utils/mina_piedra2.png";
+	infoMinaPiedra.descripcion = "Mina de Piedra";
+
+	InfoEntidad infoMinaOro;
+	infoMinaOro.tipo = tipos["mina_oro"];
+	infoMinaOro.path = "images/utils/mina_oro.png";
+	infoMinaOro.descripcion = "Mina de Oro";
 
 	configDefault.agregarInfoEntidad(infoArbol);
 	configDefault.agregarInfoEntidad(infoAgua);
 	configDefault.agregarInfoEntidad(infoCuartel);
 	configDefault.agregarInfoEntidad(infoCentroCivico);
+	configDefault.agregarInfoEntidad(infoConstruccion);
 	configDefault.agregarInfoEntidad(infoSoldado);
 	configDefault.agregarInfoEntidad(infoArquero);
 	configDefault.agregarInfoEntidad(infoAldeano);
@@ -274,6 +302,8 @@ ConfiguracionJuego Yaml::OdioYAML() {
 	configDefault.agregarInfoEntidad(infoBarraca2);
 	configDefault.agregarInfoEntidad(infoBarraca3);
 	configDefault.agregarInfoEntidad(infoTierra);
+	configDefault.agregarInfoEntidad(infoMinaOro);
+	configDefault.agregarInfoEntidad(infoMinaPiedra);
 
 	tipos.clear();
 	configDefault.agregarInfoEscenarios(infoEscenarioDefault());
@@ -308,8 +338,13 @@ InfoEscenario Yaml::infoEscenarioDefault() {
 	infoEscenario.agregarEntidad(std::make_pair(15,0),BARRACK_3);
 	infoEscenario.agregarEntidad(std::make_pair(6,7),CUARTEL);
 
-
 	infoEscenario.agregarEntidad(std::make_pair(10,14), ANIMAL);
+
+	infoEscenario.agregarEntidad(std::make_pair(10,12), MINA_PIEDRA);
+	infoEscenario.agregarEntidad(std::make_pair(8,10), MINA_ORO);
+
+	//código de prueba
+	std::cout<<infoEscenario.getPosicionesEntidades().size()<<std::endl;
 
 	return infoEscenario;
 }

@@ -94,7 +94,7 @@ void Jugador::agregarNuevoEdificio(Edificio* edificio, int idJug = -1){
 	edificio->set_identificador(id);
 }
 
-Edificio* Jugador::terminarConstruccion(ConstruccionTermino c) {
+Edificio* Jugador::terminarConstruccion(ConstruccionTermino c) {	/// SOLO LOCALES !!!
 	Edificio *construc = edificios[c.dni];
 	construc->morir();
 	delete construc;
@@ -104,7 +104,7 @@ Edificio* Jugador::terminarConstruccion(ConstruccionTermino c) {
 	nuevoEdificio->set_identificador(c.dni);
 	nuevoEdificio->set_id_jugador(c.idJug);
 	nuevoEdificio->setPosicion(Coordenada(c.x,c.y));
-	nuevoEdificio->setVidaRestante(c.vidaRestante);
+	nuevoEdificio->sufrirGolpe(100 - c.vidaRestante); // hardcodeo de vida inicial de construcción
 	edificios[c.dni] = nuevoEdificio;
 	return nuevoEdificio;
 }
@@ -125,14 +125,15 @@ void Jugador::interaccionesDeUnidades(Escenario* escenario, ContenedorDeRecursos
 			escenario->quitarEntidad(muerto->getPosicion(), muerto);
 			contenedor->borrarSpriteDeEntidad(muerto);
 			//Falta algo todo?
-			Edificio* edif = terminarConstruccion(c);
-			escenario->agregarEntidad(edif->getPosicion(), edif);
+
+			Edificio* edif = terminarConstruccion(c);					/// SOLO LOCALES !!!
 			contenedor->generarYGuardarSpriteEntidad(edif, coord_ceros, escenario);
+			escenario->agregarEntidad(edif->getPosicion(), edif);
 		}
 	}
 }
 
-void Jugador::limpiarRastrosDeUnidadMuerta(Unidad* moribundo) {
+void Jugador::limpiarSeleccionDeUnidadMuerta(Unidad* moribundo) {
 	for (vector<Unidad*>::iterator itAux = unidadesSeleccionadas.begin(); itAux < unidadesSeleccionadas.end(); ++itAux)
 		if ((*itAux) == moribundo) {
 			unidadesSeleccionadas.erase(itAux);
@@ -149,7 +150,7 @@ vector<Entidad*> Jugador::revisarMuertosPropios() {
 			Unidad* moribundo = *uniIt;
 
 			unidades.erase(moribundo->get_identificador());
-			limpiarRastrosDeUnidadMuerta(moribundo);
+			limpiarSeleccionDeUnidadMuerta(moribundo);
 			vec_unidades.erase(uniIt);
 			uniIt = this->vec_unidades.begin(); //por las dudas
 

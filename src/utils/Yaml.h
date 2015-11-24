@@ -5,8 +5,8 @@
  *      Author: emanuel
  */
 
-#ifndef MODELO_YAML_H_
-#define MODELO_YAML_H_
+#ifndef UTILS_YAML_H_
+#define UTILS_YAML_H_
 #include "../utils/Structs.h"
 
 class Yaml {
@@ -20,4 +20,4 @@ public:
 	static InfoEscenario infoEscenarioDefault();
 };
 
-#endif /* MODELO_YAML_H_ */
+#endif /* UTILS_YAML_H_ */

@@ -18,6 +18,8 @@ public:
 	Construccion(TipoEntidad tipo, int id_jug);
 	bool esConstruccion();
 	void continuarConstruyendo();
+	std::string getInfo();
+	std::string getVidaString();
 	virtual ~Construccion();
 };
 

@@ -6,7 +6,8 @@
  */
 
 #include "../modelo/Juego.h"
-#include "../modelo/Yaml.h"
+
+#include "../utils/Yaml.h"
 
 
 //Juego::Juego(Connection* lan = NULL, Coordenada* posInicial = NULL, InfoEscenario* infoEscRed = NULL):
@@ -90,7 +91,13 @@ void Juego::cargarJuego(){//InfoEscenario* infoEscRed = NULL, Coordenada *posIni
 	this->escenario = new Escenario(configGame.escenarios[0], this->fabricaDeEntidades, this->unidadesEnemigos, this->edificiosEnemigos);
 
 	/* Las siguientes entidades son de prueba */
-	Unidad* soldado = new Unidad(SOLDADO,1);
+	crearNuevaUnidad(SOLDADO, Coordenada( 0, 5), 1);
+	crearNuevaUnidad(ALDEANO, Coordenada( 0, 6), 1);
+	crearNuevaUnidad(ARQUERO, Coordenada( 1, 8), 1);
+	crearNuevaUnidad(ALDEANO, Coordenada(14,14), 2);
+	crearNuevaUnidad(ARQUERO, Coordenada( 0, 0), 2);
+
+	/*Unidad* soldado = new Unidad(SOLDADO,1);
 	Unidad* aldeano = new Unidad(ALDEANO,1);
 	Unidad* arquero = new Unidad(ARQUERO,1);
 	Unidad* aldeanoDesconocido = new Unidad(ALDEANO,2);
@@ -110,8 +117,7 @@ void Juego::cargarJuego(){//InfoEscenario* infoEscRed = NULL, Coordenada *posIni
 	escenario->agregarEntidad(aldeano->getPosicion(),aldeano);
 	escenario->agregarEntidad(arquero->getPosicion(),arquero);
 	escenario->agregarEntidad(aldeanoDesconocido->getPosicion(),aldeanoDesconocido);
-
-	escenario->agregarEntidad(arqueroDesconocido->getPosicion(),arqueroDesconocido);
+	escenario->agregarEntidad(arqueroDesconocido->getPosicion(),arqueroDesconocido);*/
 
 	escenario->getCapa()->setRangoDeVision(configGame.rango_vision);
 	//this->protagonista = this->escenario->getProtagonista();
@@ -123,6 +129,7 @@ void Juego::cargarJuego(){//InfoEscenario* infoEscRed = NULL, Coordenada *posIni
 /********************************************************************************/
 void Juego::cargaInicialDeRecursos() {
 	// bieeen hardcodeado, de prueba
+	// Actualizacion: esto ya no va. Borrar una vez terminado el tp. Lo dejo para pruebas. todo
 	agregarRecurso(ORO, Coordenada(22,22));
 	agregarRecurso(COMIDA, Coordenada(20,22));
 }
@@ -275,15 +282,33 @@ void Juego::agregarRecurso(TipoEntidad recurso, Coordenada coord) {
 void Juego::comenzarNuevaConstruccion(TipoEntidad tipoEdif, Coordenada coord, int id_jug = -1) {
 	if (id_jug == -1)
 		id_jug = this->idJug;
-	if (this->escenario->coordEnEscenario(coord)) {
+	if (!this->escenario->coordEnEscenario(coord)) {
 		Log::imprimirALog(ERR, "Se intentó construir fuera del Escenario.");
 		return;
 	}
-	Construccion *construccion = new Construccion(tipoEdif, id_jug);
+	Construccion *construccion = new Construccion(tipoEdif, id_jug);	// Factory todo?
 	construccion->setPosicion(coord);
 	this->jugador->agregarNuevoEdificio(construccion, id_jug);
-	this->escenario->agregarEntidad(coord, construccion);
 	this->contenedor->generarYGuardarSpriteEntidad(construccion, Coordenada(*cero_x, *cero_y), this->escenario);
+	this->escenario->agregarEntidad(coord, construccion);
+}
+
+/***************************************************/
+void Juego::crearNuevaUnidad(TipoEntidad tipoUnid, Coordenada coord, int id_jug = -1) {
+	if (id_jug == -1)
+		id_jug = this->idJug;
+	if (!this->escenario->coordEnEscenario(coord)) {
+		Log::imprimirALog(ERR, "Se intentó posicionar fuera del Escenario.");
+		return;
+	}
+	Unidad *unidad = new Unidad(tipoUnid, id_jug);	// Factory todo?
+	unidad->setPosicion(coord);
+	if (id_jug == this->idJug)
+		this->jugador->agregarNuevaUnidad(unidad);
+	else
+		this->cargarEnemigo(unidad);
+	//this->contenedor->generarYGuardarSpriteEntidad(unidad, Coordenada(*cero_x, *cero_y), this->escenario); COMENTADA SI SE CORRE ANTES QUE VENTANAJUEGO
+	this->escenario->agregarEntidad(coord, unidad);
 }
 
 /***************************************************/
@@ -291,6 +316,7 @@ void Juego::cargarEnemigo(Entidad* enemigo) {
 	if (enemigo->getIDJug() == getIDJugador())
 		return;	// Si es propio, no hacer nada...
 	try {
+		/*	Comento: Asumo por ahora que no puedo recibir entidades enemigas repetidas.
 		if (enemigo->esUnidad()) {
 			Unidad* enemigoUni = (Unidad*)enemigo;
 			for (vector<Unidad*>::iterator it = unidadesEnemigos->begin(); it < unidadesEnemigos->end(); ++it) {
@@ -315,7 +341,7 @@ void Juego::cargarEnemigo(Entidad* enemigo) {
 		} else {
 			Log::imprimirALog(ERR, "Se intentó cargar enemigo ni edificio ni unidad (Juego::cargarEnemigo).");
 			return;
-		}
+		}*/
 
 		/*Mismo comentario que arriba
 		PosEntidad posEnt(enemigo->getPosicion().x, enemigo->getPosicion().y, enemigo);
@@ -373,7 +399,7 @@ vector<Entidad*> Juego::revisarMuertos() {
 		if (!(*uniIt)->sigueViva()) {
 			Unidad* moribundo = *uniIt;
 
-			this->jugador->limpiarRastrosDeUnidadMuerta(moribundo);
+			this->jugador->limpiarSeleccionDeUnidadMuerta(moribundo);
 			unidadesEnemigos->erase(uniIt);
 			uniIt = this->unidadesEnemigos->begin(); //por las dudas
 
@@ -412,6 +438,11 @@ void Juego::continuar() {	// Modularizar si se pasa a usar threads
 		std::cout << muerto->enc()<<" sos un muerto"<<std::endl;//
 		this->escenario->quitarEntidad(muerto->getPosicion(), muerto);
 		this->contenedor->borrarSpriteDeEntidad(muerto);
+
+		//Si la entidad muerta se convierte en recurso, lo colocamos:
+		Coordenada coord = muerto->getPosicion();
+		this->reemplazarEntidadPorRecurso(muerto, coord);
+
 		//Falta algo todo?
 
 		delete muerto;
@@ -430,9 +461,41 @@ void Juego::emitirSonido(Entidad* entidad){
 		case ANIMAL:
 			Mix_PlayChannel(1, this->contenedorSonidos->getSonidoTipo(MORIR_ANIMAL), 0);
 			break;
-		case EDIFICIO:
+		case ARBOL:
+			Mix_PlayChannel(1, this->contenedorSonidos->getSonidoTipo(TALAR), 0);
+			break;
+		case MINA_ORO:
 		case ORO:
-			Mix_PlayChannel(1, this->contenedorSonidos->getSonidoTipo(DESTRUIR), 0);
+			Mix_PlayChannel(1, this->contenedorSonidos->getSonidoTipo(OBTENER_ORO), 0);
+			break;
+		case COMIDA:
+			Mix_PlayChannel(1, this->contenedorSonidos->getSonidoTipo(COMER), 0);
+			break;
+		case MINA_PIEDRA:
+		case PIEDRA:
+			Mix_PlayChannel(1, this->contenedorSonidos->getSonidoTipo(OBTENER_PIEDRA), 0);
+			break;
+		default :
+			break;
+	}
+}
+
+/***************************************************/
+
+void Juego::reemplazarEntidadPorRecurso(Entidad* entidad, Coordenada coord){
+	//FALTAN CARGAR.
+	switch (entidad->getTipo()){
+		case ARBOL:
+			this->agregarRecurso(MADERA, coord);
+			break;
+		case ANIMAL:
+			this->agregarRecurso(COMIDA, coord);
+			break;
+		case MINA_PIEDRA:
+			this->agregarRecurso(PIEDRA, coord);
+			break;
+		case MINA_ORO:
+			this->agregarRecurso(ORO, coord);
 			break;
 		default :
 			break;

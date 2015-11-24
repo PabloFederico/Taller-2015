@@ -12,6 +12,8 @@ Entidad::Entidad(TipoEntidad tipo, int num_jug): idJug(num_jug) {
 	this->receptor = NULL;
 	this->estado = QUIETO;
 	this->vidaRestante = 1;
+	this->armadura = 0;
+	this->ataque = 0;
 	this->ancho = 1;
 	this->alto = 1;
 	this->tipo = tipo;
@@ -36,24 +38,42 @@ Entidad::Entidad(TipoEntidad tipo, int num_jug): idJug(num_jug) {
 			movible = true;
 			ocupador = true;
 			info = "Soldado";
+			armadura = 3;
+			ataque = 10;
 			break;
 		case ALDEANO:
-			vidaRestante = 5;//50;
+			vidaRestante = 25;//50;
 			movible = true;
 			ocupador = true;
 			info = "Aldeano";
+			armadura = 10;
+			ataque = 3;
 			break;
 		case ARQUERO:
 			vidaRestante = 70;
 			movible = true;
 			ocupador = true;
 			info = "Arquero";
+			armadura = 2;
+			ataque = 6;
 			break;
 		case ANIMAL:
 			vidaRestante = 30;
 			movible = true;
 			ocupador = true;
 			info = "Animal";
+			break;
+		case MINA_ORO:
+			vidaRestante = 20;
+			movible = false;
+			ocupador = true;
+			info = "Mina de Oro";
+			break;
+		case MINA_PIEDRA:
+			vidaRestante = 10;
+			movible = false;
+			ocupador = true;
+			info = "Mina de Piedra";
 			break;
 		case CASTILLO:
 			vidaRestante = 300;
@@ -84,8 +104,22 @@ Entidad::Entidad(TipoEntidad tipo, int num_jug): idJug(num_jug) {
 			movible = false;
 			ocupador = true;
 			info = "Barraca_3";
+		case CONSTRUCCION:
+			vidaRestante = 100;
+			movible = false;
+			ocupador = true;
+			info = "Construccion";
+			break;
+		case CENTRO_CIVICO:
+			vidaRestante = 300;
+			movible = false;
+			ocupador = true;
+			info = "Centro civico";
+			ancho = 4;
+			alto = 4;
 			break;
 		case ARBOL:
+			vidaRestante = 10;
 			movible = false;
 			ocupador = true;
 			info = "Arbol";
@@ -157,6 +191,13 @@ bool Entidad::esRecurso(){
 bool Entidad::esConstruccion() {
 	return (tipo == CONSTRUCCION);
 }
+
+int Entidad::obtenerArmor(){
+	return this->armadura;
+}
+int Entidad::obtenerAtk(){
+	return this->ataque;
+}
 bool Entidad::esEdificio(){
 	return EsEdificio(this->tipo);
 }
@@ -174,7 +215,7 @@ pair<int,int> Entidad::getTam() {
 }
 
 bool Entidad::esAtacable() {
-	return (esUnidad() || esEdificio() || tipo == ANIMAL); // medio harcodeo; reemplazable por una variable esAtacable
+	return (esUnidad() || esEdificio() || tipo == ANIMAL || tipo == ARBOL || tipo == MINA_ORO || tipo == MINA_PIEDRA); // medio harcodeo; reemplazable por una variable esAtacable
 }
 
 bool Entidad::esMovible(){
@@ -194,9 +235,9 @@ void Entidad::setPosicion(Coordenada nuevaCoord){
 }
 
 void Entidad::interactuarCon(Entidad* receptor) {
-	if (this->getIDJug() == receptor->getIDJug())
+	if (this->getIDJug() == receptor->getIDJug() && !receptor->esConstruccion())
 		return;	// No existe acción contra otra entidad propia (al menos por ahora).
-	if (receptor->esAtacable() || receptor->esRecurso()) {
+	if (receptor->esAtacable() || receptor->esRecurso() || receptor->esConstruccion()) {
 		this->receptor = receptor;
 		this->reloj = clock();
 		// SOLDADO, ALDEANO, ANIMAL; EDIFICIO, CENTRO_CIVICO, CUARTEL, CASTILLO // MADERA, COMIDA, PIEDRA, ORO

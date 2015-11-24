@@ -5,8 +5,8 @@
  *      Author: martin
  */
 
-#ifndef MODELO_CONFIGDEFAULT_H_
-#define MODELO_CONFIGDEFAULT_H_
+#ifndef UTILS_CONFIGDEFAULT_H_
+#define UTILS_CONFIGDEFAULT_H_
 
 #include <yaml-cpp/yaml.h>
 
@@ -20,4 +20,4 @@
 void crearConfigDefault ();
 
 
-#endif /* MODELO_CONFIGDEFAULT_H_ */
+#endif /* UTILS_CONFIGDEFAULT_H_ */

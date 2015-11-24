@@ -61,7 +61,6 @@ void VentanaJuego::cargarJuego(Juego *juego){
 		musica = Mix_LoadMUS("sound/fondo.mp3");
 		if (musica == NULL) printf("Error al cargar la cancion. Error: %s\n", Mix_GetError());
 		else this->musica_fondo = musica;
-
 	}
 }
 
@@ -76,7 +75,7 @@ void VentanaJuego::cargarImagenesYSprites(Juego* juego){
 	Coordenada coord_ceros(*juego->getCeros().first, *juego->getCeros().second);
 	contenedor->generarYGuardarSpritesEntidades(posEntidades,coord_ceros,juego->getEscenario());
 
-	this->controlador->getJuego()->agregarContenedorDeRecursos(contenedor);
+	juego->agregarContenedorDeRecursos(contenedor);
 	this->dibujador->setContenedorDeRecursos(contenedor);
 }
 
@@ -111,6 +110,9 @@ EstadoFinVentana VentanaJuego::run(){
 		SDL_Cursor* cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_HAND);
 		if (cursor == NULL) printf("Falló la creación del cursor %s",SDL_GetError());
 		SDL_SetCursor(cursor);
+
+		///cdp
+		this->controlador->getJuego()->comenzarNuevaConstruccion(CENTRO_CIVICO, Coordenada(4,15), 1);//
 
 		while ( run ) {
 

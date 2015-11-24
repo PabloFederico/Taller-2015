@@ -46,11 +46,8 @@ void ContenedorDeRecursos::generarYGuardarSpritesEntidades(vector<Entidad*> *pos
 }
 
 void ContenedorDeRecursos::generarYGuardarSpriteEntidad(Entidad* entidad, Coordenada coord_ceros, Escenario* escenario) {
-	int tile_x = entidad->getPosicion().x;
-	int tile_y = entidad->getPosicion().y;
-	Coordenada coord_tile(tile_x, tile_y);
 	entidad->setTam(mapInfoEntidades[entidad->getTipo()].ancho, mapInfoEntidades[entidad->getTipo()].alto);	// Esto ya lo hace la clase FactoryEntidades
-	Coordenada coordenada = Calculador::calcularPosicionRelativa(coord_tile,coord_ceros);
+	Coordenada coordenada = Calculador::calcularPosicionRelativa(entidad->getPosicion(), coord_ceros);
 
 	SDL_Rect posicion;
 	/* Cargamos por default los siguientes valores para TIERRA ó AGUA */
@@ -62,12 +59,14 @@ void ContenedorDeRecursos::generarYGuardarSpriteEntidad(Entidad* entidad, Coorde
 	Sprite *sprite;
 
 	switch (entidad->getTipo()){
+		case MINA_ORO:
+		case MINA_PIEDRA:
 		case ARBOL 	  : {
 			 	 	 	posicion.x -= 0.25 * ANCHO_PIXEL_PASTO;
 						posicion.y -= (2.5 * DISTANCIA_ENTRE_Y);
 						posicion.w = 1.5*ANCHO_PIXEL_PASTO;
 						posicion.h = 3 * ALTO_PIXEL_PASTO;
-						sprite = new Sprite(1,1,this->getImagenTipo(ARBOL),posicion,escenario,coord_ceros,entidad);
+						sprite = new Sprite(1,1,this->getImagenTipo(entidad->getTipo()),posicion,escenario,coord_ceros,entidad);
 
 						int x_ini = posicion.x;
 						int y_ini = posicion.y;
@@ -95,10 +94,13 @@ void ContenedorDeRecursos::generarYGuardarSpriteEntidad(Entidad* entidad, Coorde
 						}
 						break;
 
+		case CONSTRUCCION:
 		case BARRACK_1 :
 		case BARRACK_3 : {
 						posicion.x -= (DISTANCIA_ENTRE_X * (this->mapInfoEntidades[entidad->getTipo()].ancho - 1)) - DISTANCIA_ENTRE_X * 0.25;
 						posicion.y -= 2*ALTO_PIXEL_PASTO;
+						//posicion.h = (ALTO_PIXEL_PASTO * this->mapInfoEntidades[CASTILLO].ancho + ALTO_PIXEL_PASTO) / this->mapInfoEntidades[CASTILLO].ancho;
+						//sprite = new Sprite(mapInfoEntidades[CASTILLO].ancho,mapInfoEntidades[CASTILLO].ancho,this->getImagenTipo(CASTILLO),posicion);
 						posicion.w = ANCHO_PIXEL_PASTO * this->mapInfoEntidades[entidad->getTipo()].ancho;
 						posicion.h = 30 + ALTO_PIXEL_PASTO * this->mapInfoEntidades[entidad->getTipo()].alto + (ALTO_PIXEL_PASTO -  DISTANCIA_ENTRE_Y / 2);
 						sprite = new Sprite(1,1,this->getImagenTipo(entidad->getTipo()),posicion,escenario,coord_ceros,entidad);
