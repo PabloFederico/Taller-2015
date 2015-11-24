@@ -320,6 +320,7 @@ vector<Entidad*> Escenario::revisarMuertosDeNadie() {
 	vector<Entidad*> cuerpos;
 	for (std::vector<Entidad*>::iterator entIt = this->posicionesEntidades->begin(); entIt < this->posicionesEntidades->end(); ++entIt) {
 		if (!(*entIt)->sigueViva() && (*entIt)->getIDJug() == 0) {
+			if (entidadSeleccionada == (*entIt)) entidadSeleccionada = NULL;
 			cuerpos.push_back(*entIt);
 			//this->posicionesEntidades->erase(entIt);		//Innecesarias porque se borra en quitarEntidad
 			//entIt = this->posicionesEntidades->begin(); //por las dudas
