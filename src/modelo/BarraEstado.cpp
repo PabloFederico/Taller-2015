@@ -20,9 +20,11 @@ int BarraEstado::getIDJugador(){
 	return jugador->getID();
 }
 
-Unidad* BarraEstado::getUnidadActualEnBarra(){
+Entidad* BarraEstado::getEntidadActualEnBarra(){
 	if (jugador->getUnidadesSeleccionadas().size() == 1)
 		return jugador->getUnidadesSeleccionadas()[0];
+	if (jugador->getEdificioSeleccionado() != NULL)
+		return jugador->getEdificioSeleccionado();
 	return NULL;
 }
 std::string BarraEstado::getDescripcion(){

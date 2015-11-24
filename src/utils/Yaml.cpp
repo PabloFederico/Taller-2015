@@ -176,7 +176,9 @@ ConfiguracionJuego Yaml::OdioYAML() {
 		tipos["arbol"] = ARBOL;
 		tipos["tierra"] = TIERRA;
 		tipos["agua"] = AGUA;
-		tipos["castillo"] = CASTILLO;
+		tipos["barraca_1"] = BARRACK_1;
+		tipos["barraca_2"] = BARRACK_2;
+		tipos["barraca_3"] = BARRACK_3;
 		tipos["cuartel"] = CUARTEL;
 		tipos["centro_civico"] = CENTRO_CIVICO;
 		tipos["construccion"] = CONSTRUCCION;
@@ -210,11 +212,25 @@ ConfiguracionJuego Yaml::OdioYAML() {
 	infoAgua.path = "images/relieve/agua.png";
 
 	InfoEntidad infoBarraca1;
-	infoBarraca1.tipo = tipos["castillo"];
+	infoBarraca1.tipo = tipos["barraca_1"];
 	infoBarraca1.path = "images/utils/Barracks3.png";
 	infoBarraca1.ancho = 4;
 	infoBarraca1.alto = 4;
-	infoBarraca1.descripcion = "Castillo";
+	infoBarraca1.descripcion = "Barraca_1";
+
+	InfoEntidad infoBarraca2;
+	infoBarraca2.tipo = tipos["barraca_2"];
+	infoBarraca2.path = "images/utils/Barracks4.png";
+	infoBarraca2.ancho = 4;
+	infoBarraca2.alto = 4;
+	infoBarraca2.descripcion = "Barraca_2";
+
+	InfoEntidad infoBarraca3;
+	infoBarraca3.tipo = tipos["barraca_3"];
+	infoBarraca3.path = "images/utils/Barracks5.png";
+	infoBarraca3.ancho = 4;
+	infoBarraca3.alto = 4;
+	infoBarraca3.descripcion = "Barraca_3";
 
 	InfoEntidad infoSoldado;
 	infoSoldado.tipo = tipos["soldado"];
@@ -245,11 +261,16 @@ ConfiguracionJuego Yaml::OdioYAML() {
 	infoCuartel.tipo = tipos["cuartel"];
 	infoCuartel.path = "images/utils/cuartel.png";
 	infoCuartel.descripcion = "Cuartel";
+	infoCuartel.ancho = 4;
+	infoCuartel.alto = 4;
+
 
 	InfoEntidad infoCentroCivico;
 	infoCentroCivico.tipo = tipos["centro_civico"];
 	infoCentroCivico.path = "images/utils/centro_civico.png";
 	infoCentroCivico.descripcion = "Centro Civico";
+	infoCentroCivico.ancho = 4;
+	infoCentroCivico.alto = 4;
 
 	InfoEntidad infoConstruccion;
 	infoConstruccion.tipo = tipos["construccion"];
@@ -278,6 +299,8 @@ ConfiguracionJuego Yaml::OdioYAML() {
 	configDefault.agregarInfoEntidad(infoAldeano);
 	configDefault.agregarInfoEntidad(infoAnimal);
 	configDefault.agregarInfoEntidad(infoBarraca1);
+	configDefault.agregarInfoEntidad(infoBarraca2);
+	configDefault.agregarInfoEntidad(infoBarraca3);
 	configDefault.agregarInfoEntidad(infoTierra);
 	configDefault.agregarInfoEntidad(infoMinaOro);
 	configDefault.agregarInfoEntidad(infoMinaPiedra);
@@ -292,14 +315,14 @@ InfoEscenario Yaml::infoEscenarioDefault() {
 
 	infoEscenario.size_x = 50;
 	infoEscenario.size_y = 50;
-	infoEscenario.agregarEntidad(std::make_pair(10,0), AGUA);
-	infoEscenario.agregarEntidad(std::make_pair(11,0), AGUA);
-	infoEscenario.agregarEntidad(std::make_pair(12,0), AGUA);
-	infoEscenario.agregarEntidad(std::make_pair(13,0), AGUA);
-	infoEscenario.agregarEntidad(std::make_pair(10,1), AGUA);
-	infoEscenario.agregarEntidad(std::make_pair(11,1), AGUA);
-	infoEscenario.agregarEntidad(std::make_pair(12,1), AGUA);
-	infoEscenario.agregarEntidad(std::make_pair(13,1), AGUA);
+	infoEscenario.agregarEntidad(std::make_pair(10,10), AGUA);
+	infoEscenario.agregarEntidad(std::make_pair(11,10), AGUA);
+	infoEscenario.agregarEntidad(std::make_pair(12,10), AGUA);
+	infoEscenario.agregarEntidad(std::make_pair(13,10), AGUA);
+	infoEscenario.agregarEntidad(std::make_pair(10,11), AGUA);
+	infoEscenario.agregarEntidad(std::make_pair(11,11), AGUA);
+	infoEscenario.agregarEntidad(std::make_pair(12,11), AGUA);
+	infoEscenario.agregarEntidad(std::make_pair(13,11), AGUA);
 
 	infoEscenario.agregarEntidad(std::make_pair(4,10), TIERRA);
 	infoEscenario.agregarEntidad(std::make_pair(4,11), TIERRA);
@@ -310,8 +333,10 @@ InfoEscenario Yaml::infoEscenarioDefault() {
 	infoEscenario.agregarEntidad(std::make_pair(5,5), ARBOL);
 	infoEscenario.agregarEntidad(std::make_pair(4,12), ARBOL);
 
-	infoEscenario.agregarEntidad(std::make_pair(18,18),CASTILLO);
-
+	infoEscenario.agregarEntidad(std::make_pair(3,0),BARRACK_1);
+	infoEscenario.agregarEntidad(std::make_pair(9,0),BARRACK_2);
+	infoEscenario.agregarEntidad(std::make_pair(15,0),BARRACK_3);
+	infoEscenario.agregarEntidad(std::make_pair(6,7),CUARTEL);
 
 	infoEscenario.agregarEntidad(std::make_pair(10,14), ANIMAL);
 

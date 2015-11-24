@@ -95,7 +95,8 @@ void Juego::cargarJuego(){//InfoEscenario* infoEscRed = NULL, Coordenada *posIni
 	crearNuevaUnidad(ALDEANO, Coordenada( 0, 6), 1);
 	crearNuevaUnidad(ARQUERO, Coordenada( 1, 8), 1);
 	crearNuevaUnidad(ALDEANO, Coordenada(14,14), 2);
-	crearNuevaUnidad(ARQUERO, Coordenada( 0, 0), 2);
+	crearNuevaUnidad(ARQUERO, Coordenada( 10, 16), 2);
+	crearNuevaUnidad(ARQUERO, Coordenada( 12, 16), 2);
 
 	/*Unidad* soldado = new Unidad(SOLDADO,1);
 	Unidad* aldeano = new Unidad(ALDEANO,1);
@@ -399,6 +400,9 @@ vector<Entidad*> Juego::revisarMuertos() {
 		if (!(*uniIt)->sigueViva()) {
 			Unidad* moribundo = *uniIt;
 
+			if ((Entidad*)moribundo == escenario->getEntidadSeleccionada())
+				escenario->setearTileClic(NULL,Coordenada(0,0));
+
 			this->jugador->limpiarSeleccionDeUnidadMuerta(moribundo);
 			unidadesEnemigos->erase(uniIt);
 			uniIt = this->unidadesEnemigos->begin(); //por las dudas
@@ -479,7 +483,6 @@ void Juego::emitirSonido(Entidad* entidad){
 			break;
 	}
 }
-
 
 /***************************************************/
 

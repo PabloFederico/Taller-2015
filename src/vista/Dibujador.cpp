@@ -254,6 +254,58 @@ void Dibujador::dibujarEscenario(Escenario* esc, TTF_Font* fuenteTexto, pair<int
 }
 
 /********************************************************************************/
+void Dibujador::dibujarEfectosTraslucidos(Coordenada c, Escenario* escenario){
+	Entidad* entidad = escenario->getEntidadTemporal();
+	bool lugarHabilitado = escenario->lugarHabilitadoParaConstruir(entidad->getPosicion(),entidad);
+	Imagen* imagenTraslucida = NULL;
+	SDL_Rect posicion;
+	posicion.x = c.x - DISTANCIA_ENTRE_X;
+	posicion.y = c.y - DISTANCIA_ENTRE_Y;
+
+	switch (entidad->getTipo()){
+			case CUARTEL:
+			case CENTRO_CIVICO :
+							posicion.x -= DISTANCIA_ENTRE_X * (this->mapInfoEntidades[entidad->getTipo()].ancho - 1);
+							posicion.y = posicion.y - ALTO_PIXEL_PASTO +  DISTANCIA_ENTRE_Y / 4;
+							posicion.w = ANCHO_PIXEL_PASTO * this->mapInfoEntidades[entidad->getTipo()].ancho;
+							posicion.h = ALTO_PIXEL_PASTO * this->mapInfoEntidades[entidad->getTipo()].alto + (ALTO_PIXEL_PASTO -  DISTANCIA_ENTRE_Y / 2);
+							if (lugarHabilitado && entidad->getTipo() == CUARTEL)
+								imagenTraslucida = contenedor->getImagenUtilTipo(CUARTEL_TRANS);
+							else imagenTraslucida = contenedor->getImagenUtilTipo(CUARTEL_ROJIZO);
+							break;
+
+			case BARRACK_1 :
+			case BARRACK_3 :
+							posicion.x -= (DISTANCIA_ENTRE_X * (this->mapInfoEntidades[entidad->getTipo()].ancho - 1)) - DISTANCIA_ENTRE_X * 0.25;
+							posicion.y -= 2*ALTO_PIXEL_PASTO;
+							posicion.w = ANCHO_PIXEL_PASTO * this->mapInfoEntidades[entidad->getTipo()].ancho;
+							posicion.h = 30 + ALTO_PIXEL_PASTO * this->mapInfoEntidades[entidad->getTipo()].alto + (ALTO_PIXEL_PASTO -  DISTANCIA_ENTRE_Y / 2);
+							if (lugarHabilitado){
+								if (entidad->getTipo() == BARRACK_1)
+									imagenTraslucida = contenedor->getImagenUtilTipo(BARRACK_1_TRANS);
+								else imagenTraslucida = contenedor->getImagenUtilTipo(BARRACK_3_TRANS);
+							}else{
+								if (entidad->getTipo() == BARRACK_1)
+									imagenTraslucida = contenedor->getImagenUtilTipo(BARRACK_1_ROJIZO);
+								else imagenTraslucida = contenedor->getImagenUtilTipo(BARRACK_3_ROJIZO);
+							}
+							break;
+			case BARRACK_2 :
+							posicion.x -= (DISTANCIA_ENTRE_X * (this->mapInfoEntidades[entidad->getTipo()].ancho - 1));// + DISTANCIA_ENTRE_X * 0.25);
+							posicion.y -= 2*ALTO_PIXEL_PASTO;
+							posicion.w = ANCHO_PIXEL_PASTO * this->mapInfoEntidades[entidad->getTipo()].ancho + 20;
+							posicion.h = 40 + ALTO_PIXEL_PASTO * this->mapInfoEntidades[entidad->getTipo()].alto + (ALTO_PIXEL_PASTO -  DISTANCIA_ENTRE_Y / 2);
+							if (lugarHabilitado)
+								imagenTraslucida = contenedor->getImagenUtilTipo(BARRACK_2_TRANS);
+							else contenedor->getImagenUtilTipo(BARRACK_2_ROJIZO);
+							break;
+			default : break;
+	}
+	if (imagenTraslucida != NULL)
+		SDL_RenderCopy(renderer,imagenTraslucida->getTexture(),NULL,&posicion);
+}
+
+/********************************************************************************/
 void Dibujador::dibujarBarraEstado(Escenario* esc, BarraEstado* barraEstado, TTF_Font* fuenteTexto){
 	for (unsigned i = 0; i < imagenesBasura.size(); i++){
 		delete imagenesBasura[i];
@@ -278,42 +330,65 @@ void Dibujador::dibujarBarraEstado(Escenario* esc, BarraEstado* barraEstado, TTF
 	SDL_RenderCopy(renderer,imagen->getTexture(),NULL,&rect_barra);
 
 	/* Muestra en el primer fondo la imagen seleccionada */
-	if (esc->getEntidadSeleccionada() != NULL && esc->getEntidadSeleccionada()->getIDJug() != barraEstado->getIDJugador()){
-		Imagen* imagen_Select = contenedor->getSpriteDeEntidad(esc->getEntidadSeleccionada())->getImagen();
-		SDL_Rect frameActual = contenedor->getSpriteDeEntidad(esc->getEntidadSeleccionada())->getFrameActual();
-		SDL_Rect rect_image_select;
-		rect_image_select.x = rect_barra.x + 30;
-		rect_image_select.y = rect_barra.y + 40;
-		rect_image_select.w = 40;
-		rect_image_select.h = 50;
-		SDL_RenderCopy(renderer,imagen_Select->getTexture(),&frameActual,&rect_image_select);
+	Entidad* entidad_seleccionada_jugador = barraEstado->getEntidadActualEnBarra();
+	if (entidad_seleccionada_jugador != NULL){
+		// Quiere decir que la entidad le pertenece al jugador (Edificio ó Unidad)
+		Entidad* entidad = entidad_seleccionada_jugador;
+		Imagen* image = NULL;
+		SDL_Rect rect;
+		rect.x = rect_barra.x + 30;
+		rect.y = rect_barra.y + 40;
+		rect.w = 30;
+		rect.h = 30;
+		switch (entidad->getTipo()){
+			case ALDEANO:
+						 image = contenedor->getImagenUtilTipo(HERRAMIENTAS_ALDEANO);
+						 rect.w = image->getPixelsX();
+						 break;
+			case SOLDADO:
+						 image = contenedor->getImagenUtilTipo(ESPADA_SOLDADO);
+						 break;
+			case ARQUERO:
+						 image = contenedor->getImagenUtilTipo(ARCO_ARQUERO);
+						 break;
+			case CUARTEL:
+						 image = contenedor->getImagenTipo(CUARTEL);
+						 rect.w = 40;
+						 rect.h = 50;
+						 break;
+			case BARRACK_1:
+						 image = contenedor->getImagenTipo(BARRACK_1);
+						 rect.w = 40;
+						 rect.h = 50;
+						 break;
+			case BARRACK_2:
+						 image = contenedor->getImagenTipo(BARRACK_2);
+						 rect.w = 40;
+						 rect.h = 50;
+						 break;
+			case BARRACK_3:
+						 image = contenedor->getImagenTipo(BARRACK_3);
+						 rect.w = 40;
+						 rect.h = 50;
+						 break;
+			default : break;
+		}// Fin switch
+		if (image != NULL)
+			SDL_RenderCopy(renderer,image->getTexture(),NULL,&rect);
+
 	}else{
-		Unidad* unidad = barraEstado->getUnidadActualEnBarra();
-		if (unidad != NULL) {
-			Imagen* image = NULL;
-			SDL_Rect rect_icono;
-			rect_icono.x = rect_barra.x + 30;
-			rect_icono.y = rect_barra.y + 40;
-			rect_icono.w = 30;
-			rect_icono.h = 30;
-			bool seDibuja = true;		// Arreglo bastante bobo. Habría q hacer q el vector de seleccion sea de Entidades.
-			switch (unidad->getTipo()){
-				case ALDEANO:
-							 image = contenedor->getImagenUtilTipo(HERRAMIENTAS_ALDEANO);
-							 rect_icono.w = image->getPixelsX();
-							 break;
-				case SOLDADO:
-							 image = contenedor->getImagenUtilTipo(ESPADA_SOLDADO);
-							 break;
-				case ARQUERO:
-							 image = contenedor->getImagenUtilTipo(ARCO_ARQUERO);
-							 break;
-				default : 	seDibuja = false;
-							break;
-			}
-			if (seDibuja) SDL_RenderCopy(renderer,image->getTexture(),NULL,&rect_icono);
+		// Otra entidad que no sea del jugador
+		if (esc->getEntidadSeleccionada() != NULL && esc->getEntidadSeleccionada()->getIDJug() != barraEstado->getIDJugador()){
+			Imagen* imagen_Select = contenedor->getSpriteDeEntidad(esc->getEntidadSeleccionada())->getImagen();
+			SDL_Rect frameActual = contenedor->getSpriteDeEntidad(esc->getEntidadSeleccionada())->getFrameActual();
+			SDL_Rect rect_image_select;
+			rect_image_select.x = rect_barra.x + 30;
+			rect_image_select.y = rect_barra.y + 40;
+			rect_image_select.w = 40;
+			rect_image_select.h = 50;
+			SDL_RenderCopy(renderer,imagen_Select->getTexture(),&frameActual,&rect_image_select);
 		}
-	}
+	}// Fin del dibujado de iconos
 
 	/* Dibujamos el descriptor (Para la descripción de los elementos seleccionados) */
 	rect_barra.x += rect_barra.w;

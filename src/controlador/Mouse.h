@@ -15,6 +15,7 @@ private:
 	EstadoMouse estado;
 	Coordenada c;
 	Coordenada c_anterior;
+	bool moviendoImagen;
 
 public:
 	Mouse();
@@ -32,6 +33,10 @@ public:
 	Coordenada getXY_anterior();
 
 	bool click();
+
+	void setearMoviendoImagen(bool valor);
+
+	bool estaMoviendoImagen();
 
 	bool botonFuePresionado(Boton* boton);
 

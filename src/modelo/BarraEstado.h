@@ -25,7 +25,7 @@ public:
 
 	std::string getDescripcion();
 
-	Unidad* getUnidadActualEnBarra();
+	Entidad* getEntidadActualEnBarra();
 
 	int getIDJugador();
 

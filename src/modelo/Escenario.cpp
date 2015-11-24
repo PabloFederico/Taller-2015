@@ -48,6 +48,7 @@ Escenario::Escenario(InfoEscenario infoEsc, EntidadFactory *fabrica, vector<Unid
 */
 	this->tile_clic = NULL;
 	this->entidadSeleccionada = NULL;
+	entidadTemporal = NULL;
 }
 
 /********************************************************************************/
@@ -287,6 +288,29 @@ pair<Coordenada,Coordenada> Escenario::getCoordenadasRecuadro(){
 }
 
 /********************************************************************************/
+bool Escenario::lugarHabilitadoParaConstruir(Coordenada c, Entidad* entidad){
+	for (int i = c.x; i < c.x + entidad->getTam().first; i++){
+		for (int j = c.y; j < c.y + entidad->getTam().second; j++){
+			Tile* tile = this->matriz_tiles[i][j];
+			if (!tile->estaLibre()) return false;
+		}
+	}
+	return true;
+}
+
+void Escenario::iniciarEntidadTemporal(Entidad* entidad){
+	entidadTemporal = entidad;
+}
+
+void Escenario::resetEntidadTemporal(){
+	entidadTemporal = NULL;
+}
+
+Entidad* Escenario::getEntidadTemporal(){
+	return entidadTemporal;
+}
+
+/********************************************************************************/
 void Escenario::quitarRecuadroSeleccion(){
 	c_tile_ini_recuadro = c_tile_fin_recuadro;
 }
@@ -296,6 +320,7 @@ vector<Entidad*> Escenario::revisarMuertosDeNadie() {
 	vector<Entidad*> cuerpos;
 	for (std::vector<Entidad*>::iterator entIt = this->posicionesEntidades->begin(); entIt < this->posicionesEntidades->end(); ++entIt) {
 		if (!(*entIt)->sigueViva() && (*entIt)->getIDJug() == 0) {
+			if (entidadSeleccionada == (*entIt)) entidadSeleccionada = NULL;
 			cuerpos.push_back(*entIt);
 			//this->posicionesEntidades->erase(entIt);		//Innecesarias porque se borra en quitarEntidad
 			//entIt = this->posicionesEntidades->begin(); //por las dudas
