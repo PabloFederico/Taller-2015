@@ -59,11 +59,13 @@ void ContenedorDeRecursos::generarYGuardarSpriteEntidad(Entidad* entidad, Coorde
 	Sprite *sprite;
 
 	switch (entidad->getTipo()){
+		case MINA_ORO:
+		case MINA_PIEDRA:
 		case ARBOL 	  : {
 						posicion.y -= (1.5 * DISTANCIA_ENTRE_Y);
 						posicion.w = ANCHO_PIXEL_PASTO;
 						posicion.h = 2 * ALTO_PIXEL_PASTO;
-						sprite = new Sprite(1,1,this->getImagenTipo(ARBOL),posicion,escenario,coord_ceros,entidad);
+						sprite = new Sprite(1,1,this->getImagenTipo(entidad->getTipo()),posicion,escenario,coord_ceros,entidad);
 
 						int x_ini = posicion.x;
 						int y_ini = posicion.y;
@@ -166,30 +168,6 @@ void ContenedorDeRecursos::generarYGuardarSpriteEntidad(Entidad* entidad, Coorde
 						int x_ini = posicion.x;
 						int y_ini = posicion.y;
 						Rectangulo rect1(x_ini + 0.3*ANCHO_PIXEL_PASTO, 0.6* ANCHO_PIXEL_PASTO, y_ini + 0.2*posicion.h, 0.6*posicion.h);
-						sprite->agregarRectangulo(rect1);
-						}
-						break;
-		case MINA_PIEDRA: {
-						posicion.y -= (1.5 * DISTANCIA_ENTRE_Y);
-						posicion.w = ANCHO_PIXEL_PASTO;
-						posicion.h = 2 * ALTO_PIXEL_PASTO;
-						sprite = new Sprite(1,1,this->getImagenTipo(MINA_PIEDRA),posicion,escenario,coord_ceros,entidad);
-
-						int x_ini = posicion.x;
-						int y_ini = posicion.y;
-						Rectangulo rect1(x_ini + 0.25*ANCHO_PIXEL_PASTO, 0.5* ANCHO_PIXEL_PASTO, y_ini, 0.75*posicion.h);
-						sprite->agregarRectangulo(rect1);
-						}
-						break;
-		case MINA_ORO  : {
-						posicion.y -= (1.5 * DISTANCIA_ENTRE_Y);
-						posicion.w = ANCHO_PIXEL_PASTO;
-						posicion.h = 2 * ALTO_PIXEL_PASTO;
-						sprite = new Sprite(1,1,this->getImagenTipo(MINA_ORO),posicion,escenario,coord_ceros,entidad);
-
-						int x_ini = posicion.x;
-						int y_ini = posicion.y;
-						Rectangulo rect1(x_ini + 0.25*ANCHO_PIXEL_PASTO, 0.5* ANCHO_PIXEL_PASTO, y_ini, 0.75*posicion.h);
 						sprite->agregarRectangulo(rect1);
 						}
 						break;
