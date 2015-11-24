@@ -195,7 +195,6 @@ void ControladorMouse::procesarArrastreClickDerecho(Mouse* mouse){
 					vector<Entidad*> entidades = tile->getEntidades();
 
 					for (unsigned i = 0; i < entidades.size(); i++){
-						TipoEntidad tipo = entidades[i]->getTipo();
 						int id = entidades[i]->getIDJug();
 						// Se guardan las unidades seleccionadas en el Jugador
 						if (id == juego->getIDJugador() && entidades[i]->esUnidad()) {//(tipo == ALDEANO || tipo == SOLDADO || tipo == ARQUERO)){	// bastante hardcodeador; necesario?
