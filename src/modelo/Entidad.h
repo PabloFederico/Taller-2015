@@ -46,14 +46,14 @@ public:
 	int getIDJug();
 	bool perteneceAJugador(int id_jug);
 
-	void cambioEstado(EstadoEntidad est);
+	virtual void cambioEstado(EstadoEntidad est);
 	void finalizaAccion();
 	//bool estaPetrificado();
 	//void petrificar();
 	//void despetrificar();
 
 	void interactuarCon(Entidad* receptor);
-	void olvidarInteraccion();
+	void virtual olvidarInteraccion();
 	//void interactuar();
 
 	Coordenada getPosicion();

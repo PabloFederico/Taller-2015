@@ -246,7 +246,7 @@ ConfiguracionJuego Yaml::OdioYAML() {
 
 	InfoEntidad infoArquero;
 	infoArquero.tipo = tipos["arquero"];
-	infoArquero.path = "images/sprites/arquero_camina_.png";
+	infoArquero.path = "images/sprites/arquero_camina.png";
 	infoArquero.fps = 20;
 	infoArquero.descripcion = "Arquero";
 
