@@ -16,57 +16,85 @@ using namespace std;
 
 Unidad::Unidad(TipoEntidad tipo, int id_jug, int dni): Entidad(tipo,id_jug) {
 	this->dni = dni;
+	this->rangoAccion = 1; // tiles de alcance, hardcodeado
 	petrificado = false;
 	ostringstream ssInfo;
 	ssInfo << info<<" (Jugador "<<id_jug<<")";
 	info = ssInfo.str();
-}
 
+	if (tipo == ARQUERO)
+		this->rangoAccion = 3; // hardcodeado
+}
 
 
 float distanciaEuclidiana(Coordenada a, Coordenada z) {
-	return sqrt( pow(z.x-a.x,2)+pow(z.y-a.y,2) );
+	return sqrt( pow(z.x-a.x,2) + pow(z.y-a.y,2) );
 }
 
-// throws Recoleccion cuando se recolectó algún recurso.
+// Buscar posición más cercana del receptor, si no fue buscada antes.
+void Unidad::setCoordMasProximaDelReceptor() {
+	Coordenada posReceptor = receptor->getPosicion();
+	pair<int,int> tamReceptor = receptor->getTam();
+
+	float distMinima = 10000;
+	for (int i = posReceptor.x; i < posReceptor.x+tamReceptor.first; i++)
+		for (int j = posReceptor.y; j < posReceptor.y+tamReceptor.second; j++) {
+			float distAux = distanciaEuclidiana(this->getPosicion(), Coordenada(i,j));
+			if (distAux < distMinima) {
+				delete coordMasProximaDelReceptor;
+				coordMasProximaDelReceptor = new Coordenada(i,j);
+				distMinima = distAux;
+			}
+		}
+}
+
+bool Unidad::estaEnRangoDelReceptor() {
+	return (distanciaEuclidiana(this->getPosicion(), *coordMasProximaDelReceptor) < (this->rangoAccion + 1));
+}
+
+// throws Recoleccion, ConstruccionTermino, UnidadDebeAcercarse
 void Unidad::interactuar() {
-	// Verifica que haya con quien interactuar y de que haya pasado el tiempo requerido.
-	if (receptor == NULL || (clock() - this->reloj) < CLOCKS_PER_SEC*DELAY_INTERACCION) return;	//No está respetando el tiempo pedido. TODO
+	if (receptor == NULL)
+		return;
+	if (coordMasProximaDelReceptor == NULL) {
+		setCoordMasProximaDelReceptor();
 
-	this->reloj = clock();
-	try {
-		Coordenada posReceptor = receptor->getPosicion();
-		pair<int,int> tamReceptor = receptor->getTam();
-		for (int i = posReceptor.x; i < posReceptor.x+tamReceptor.first; i++)
-			for (int j = posReceptor.y; j < posReceptor.y+tamReceptor.second; j++)
-				// Distancia máxima hardcodeada de 1 tile; TODO rangoAtaque
-				if (distanciaEuclidiana(this->getPosicion(), Coordenada(i,j)) < 2) {
-					if (receptor->esConstruccion() && this->esConstructor() && receptor->perteneceAJugador(this->idJug)) {
-						cambioEstado(CONSTRUYENDO);
-						this->continuarConstruccion();	// throws ConstruccionTermino
-						// Ojo que si llega a este punto, puede que no se corra nada debajo
-					} else if (receptor->esAtacable() && !receptor->perteneceAJugador(this->idJug)) {
-						cambioEstado(ATACANDO);
-						this->lastimar(this->receptor);
-					} else if (receptor->esRecurso() && this->esRecolector()) {
-						cambioEstado(RECOLECTANDO);
-						int recolectado = 0;
-						TipoEntidad tipoRecurso = this->receptor->getTipo();
-						recolectado = recolectar(this->receptor);
-						if (recolectado > 0) {
-							throw Recoleccion(tipoRecurso, recolectado);
-							// Ojo que si llega a este punto, no se correrá nada debajo
-						}
-					}
-					return;
+	} else if (estaEnRangoDelReceptor()) {
+		if ((clock() - this->reloj) < CLOCKS_PER_SEC*DELAY_INTERACCION) return;	//No está respetando el tiempo pedido. TODO
+
+		this->reloj = clock();
+		try {
+			if (receptor->esConstruccion() && this->esConstructor() && receptor->perteneceAJugador(this->idJug)) {
+				cambioEstado(CONSTRUYENDO);
+				this->continuarConstruccion();	// throws ConstruccionTermino
+			} else if (receptor->esAtacable() && !receptor->perteneceAJugador(this->idJug)) {
+				//cambioEstado(ATACANDO);
+				this->lastimar(this->receptor);
+			} else if (receptor->esRecurso() && this->esRecolector()) {
+				cambioEstado(RECOLECTANDO);
+				int recolectado = 0;
+				TipoEntidad tipoRecurso = this->receptor->getTipo();
+				recolectado = recolectar(this->receptor);
+				if (recolectado > 0) {
+					throw Recoleccion(tipoRecurso, recolectado);
 				}
+			}
+			return;
 
-	} catch ( EntidadMurio &e ) {
-		this->olvidarInteraccion();
-	} catch ( ConstruccionTermino &e ) {
-		this->olvidarInteraccion();
-		throw e;
+		} catch ( EntidadMurio &e ) {
+			this->olvidarInteraccion();
+		} catch ( ConstruccionTermino &e ) {
+			this->olvidarInteraccion();
+			throw e;
+		}
+	} else {
+		throw UnidadDebeAcercarse(coordMasProximaDelReceptor->x, coordMasProximaDelReceptor->y);
 	}
+}
+
+void Unidad::olvidarInteraccion() {
+	Entidad::olvidarInteraccion();
+	this->coordMasProximaDelReceptor = NULL;
 }
 
 int Unidad::generarGolpe() {
@@ -107,6 +135,10 @@ int Unidad::get_identificador(){
 
 void Unidad::set_identificador(int nuevoDNI){
 	dni = nuevoDNI;
+}
+
+int Unidad::getRangoAccion() {
+	return this->rangoAccion;
 }
 
 bool Unidad::esUnidad() {

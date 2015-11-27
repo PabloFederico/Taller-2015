@@ -44,8 +44,8 @@ public:
 
 
 	//static float distEuclidiana(Coordenada a, Coordenada z);
-
-	static Camino obtenerCaminoMin(Escenario *esc, Coordenada coord_pixel_orig, Coordenada coord_pixel_dest, Coordenada coord_ceros_pixel);
+	static Camino obtenerCaminoMinParaAcercarse(Escenario *esc, Coordenada coord_tile_orig, Coordenada coord_tile_dest, Coordenada coord_ceros, int rango_accion);
+	static Camino obtenerCaminoMin(Escenario *esc, Coordenada coord_orig, Coordenada coord_dest, Coordenada coord_ceros_pixel, bool coord_en_pixeles = true);
 
 	static Coordenada generarPosRandom(int size_x_final, int size_x_inicial, int size_y_final, int size_y_inicial, int seed);
 

@@ -210,13 +210,32 @@ struct Nodo {
 	};
 };
 
-// PRE: Chequeo de destino ocupable; posiciones en píxeles. POST: camino posee pares de posiciones EN TILES que debe recorrer secuencialmente.
-Camino Calculador::obtenerCaminoMin(Escenario *esc, Coordenada coord_pixel_orig, Coordenada coord_pixel_dest, Coordenada coord_ceros) {
+// PRE: posiciones en tiles. POST: Devuelve camino que termina en primera posición que está a distancia euclidiana <= rangoAtaque.
+Camino Calculador::obtenerCaminoMinParaAcercarse(Escenario *esc, Coordenada coord_tile_orig, Coordenada coord_tile_dest, Coordenada coord_ceros, int rango_accion) {
+	Coordenada c_actual;
+	Camino camino, caminoCompleto = obtenerCaminoMin(esc, coord_tile_orig, coord_tile_dest, coord_ceros, false);
+
+	if (caminoCompleto.empty()) return caminoCompleto;
+	do {
+		c_actual = caminoCompleto.sacarProximaCoordenada();
+		camino.agregar(c_actual);
+	} while (distEuclidiana(c_actual, coord_tile_dest) > (rango_accion + 1) && !caminoCompleto.empty());
+
+	return camino;
+}
+
+// PRE: coord_en_pixeles=false si se pasan posiciones en tiles. POST: camino posee pares de posiciones EN TILES que debe recorrer secuencialmente.
+Camino Calculador::obtenerCaminoMin(Escenario *esc, Coordenada coord_orig, Coordenada coord_dest, Coordenada coord_ceros, bool coord_en_pixeles) {
 	Camino camino;
 	Coordenada pos_tile_inicial, pos_tile_destino;
 	try {
-		pos_tile_inicial = tileParaPixel(coord_pixel_orig, coord_ceros);
-		pos_tile_destino = tileParaPixel(coord_pixel_dest, coord_ceros);
+		if (coord_en_pixeles) {
+			pos_tile_inicial = tileParaPixel(coord_orig, coord_ceros);
+			pos_tile_destino = tileParaPixel(coord_dest, coord_ceros);
+		} else {
+			pos_tile_inicial = coord_orig;
+			pos_tile_destino = coord_dest;
+		}
 
 		//if ((!esc->tileEsOcupable(pos_tile_destino)) || (pos_tile_inicial == pos_tile_destino))
 		if ((pos_tile_inicial == pos_tile_destino) || ((!esc->tileEsOcupable(pos_tile_destino)) && distEuclidiana(pos_tile_inicial, pos_tile_destino) < 2))
@@ -279,7 +298,7 @@ Camino Calculador::obtenerCaminoMin(Escenario *esc, Coordenada coord_pixel_orig,
 				pActual = pActual->padre;
 			}
 			camino.invertir();
-			if (esc->tileEsOcupable(pos_tile_destino))	//Borrable porque revisarCamino lo chequearía... (probar comentarla)
+			if (esc->tileEsOcupable(pos_tile_destino))
 				camino.agregar( pos_tile_destino );
 			// Nuevo: En el caso de que se pueda hacer el camino entero hasta el lugar anterior porque el destino está ocupado, lo hará.
 	}

@@ -15,11 +15,15 @@
 class Unidad: public Entidad {
 private:
 	int dni;
+	int rangoAccion;
 	bool petrificado;
 
 public:
 	Unidad(TipoEntidad tipo, int id_jug, int dni = 0);
 	bool esUnidad();
+
+	void setCoordMasProximaDelReceptor();
+	bool estaEnRangoDelReceptor();
 
 	void continuarConstruccion();
 	int generarGolpe();
@@ -28,10 +32,12 @@ public:
 	bool esRecolector();
 	bool esConstructor();
 	void interactuar();
+	void olvidarInteraccion();
 
 	void set_id_jugador(int nuevoDuenio);
 	void set_identificador(int nuevoDNI);
 	int get_identificador();
+	int getRangoAccion();
 
 	bool estaPetrificado();
 	void petrificar();

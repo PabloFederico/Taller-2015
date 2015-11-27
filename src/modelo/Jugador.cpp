@@ -117,8 +117,18 @@ void Jugador::interaccionesDeUnidades(Escenario* escenario, ContenedorDeRecursos
 	for (std::vector<Unidad*>::iterator uniIt = this->vec_unidades.begin(); uniIt < this->vec_unidades.end(); ++uniIt) {
 		try {
 			(*uniIt)->interactuar();
+
 		} catch ( Recoleccion &r ) {
 			agregarRecursoEconomico(r.tipo, r.cant);
+
+		} catch ( UnidadDebeAcercarse &u ) {
+			Sprite *sprite = contenedor->getSpriteDeEntidad(*uniIt);
+			if (!sprite->estaEnMovimiento()) {
+				Coordenada pos_tile_sprite = Calculador::tileParaPixel(sprite->getPosPies(), coord_ceros);
+				Camino cam = Calculador::obtenerCaminoMinParaAcercarse(escenario, pos_tile_sprite, Coordenada(u.x,u.y), coord_ceros, (*uniIt)->getRangoAccion());
+				sprite->setearNuevoCamino(cam, coord_ceros);
+			}
+
 		} catch ( ConstruccionTermino &c ) {
 			Entidad *muerto = edificios[c.dni];
 			std::cout << muerto->enc()<<" construccion terminada"<<std::endl;//

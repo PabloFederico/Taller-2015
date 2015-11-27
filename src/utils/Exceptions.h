@@ -72,6 +72,13 @@ public:
 	PasoCompletado(int ID);
 };
 
+class UnidadDebeAcercarse: public std::exception
+{
+public:
+	int x,y;
+	UnidadDebeAcercarse(int x, int y);
+};
+
 class NoSeRecibio: public std::exception
 {
 public:

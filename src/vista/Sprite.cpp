@@ -237,8 +237,9 @@ Coordenada Sprite::coordPixelSprite() {
 void Sprite::setearNuevoCamino(Camino nuevoCamino, Coordenada coord_ceros){
 	this->coord_ceros = coord_ceros;
 	this->caminoARecorrer.clear();
-	if (nuevoCamino.size() == 0) {
+	if (nuevoCamino.empty()) {
 		this->caminoARecorrer = nuevoCamino.v;
+		//this->activarMovimiento(false);
 		return;
 	}
 
@@ -360,7 +361,7 @@ void Sprite::update(int vel_personaje, Mix_Chunk* sonido_caminar) {
 	}
 
            // bool hayColision = DetectorDeColisiones::verificarColisiones(this,juego->getSpritesEntidades());
-           // if (hayColision) this->activarMovimiento(false);
+           // if (hayColision) this->activarMovimiento(false); todo?
 }
 
 /********************************************************************************/

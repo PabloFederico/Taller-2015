@@ -31,6 +31,7 @@ TileEstaOcupado::TileEstaOcupado() {}
 
 CaminoVacio::CaminoVacio() {}
 PasoCompletado::PasoCompletado(int ID): id(ID) {}
+UnidadDebeAcercarse::UnidadDebeAcercarse(int x, int y): x(x), y(y) {}
 
 NoSeRecibio::NoSeRecibio() {}
 

@@ -10,6 +10,7 @@
 Entidad::Entidad(TipoEntidad tipo, int num_jug): idJug(num_jug) {
 	this->reloj = clock();
 	this->receptor = NULL;
+	this->coordMasProximaDelReceptor = NULL;
 	this->estado = QUIETO;
 	this->vidaRestante = 1;
 	this->armadura = 0;
@@ -240,11 +241,11 @@ void Entidad::setPosicion(Coordenada nuevaCoord){
 
 void Entidad::interactuarCon(Entidad* receptor) {
 	if (this->getIDJug() == receptor->getIDJug() && !receptor->esConstruccion())
-		return;	// No existe acción contra otra entidad propia (al menos por ahora).
+		return;	// No existe acción contra otra entidad propia salvo construcciones.
 	if (receptor->esAtacable() || receptor->esRecurso() || receptor->esConstruccion()) {
+		olvidarInteraccion(); //verificar que se llame a la de Unidad
 		this->receptor = receptor;
 		this->reloj = clock();
-		// SOLDADO, ALDEANO, ANIMAL; EDIFICIO, CENTRO_CIVICO, CUARTEL, CASTILLO // MADERA, COMIDA, PIEDRA, ORO
 	}
 	// ARBOL, DEFAULT
 }
@@ -252,6 +253,7 @@ void Entidad::interactuarCon(Entidad* receptor) {
 void Entidad::olvidarInteraccion() {
 	finalizaAccion();
 	this->receptor = NULL;
+	this->coordMasProximaDelReceptor = NULL;
 }
 
 

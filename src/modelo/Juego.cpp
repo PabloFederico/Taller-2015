@@ -403,7 +403,7 @@ vector<Entidad*> Juego::revisarMuertos() {
 
 /***************************************************/
 void Juego::continuar() {	// Modularizar si se pasa a usar threads
-	this->jugador->interaccionesDeUnidades(this->escenario, this->contenedor, Coordenada(*cero_x, *cero_y));
+	this->jugador->interaccionesDeUnidades(this->escenario, this->contenedor, getCoordCeros());
 
 	// Limpiar muertes
 	vector<Entidad*> funeral = revisarMuertos();

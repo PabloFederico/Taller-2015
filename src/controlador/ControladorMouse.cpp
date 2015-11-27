@@ -177,7 +177,7 @@ void ControladorMouse::procesarClickDerecho(Mouse* mouse){
 	if (cant_unid_seleccionadas > 0 && procesarClickEnVentana(mouse, &tile_clic, &c_tile_clic)) {
 		escenario->setearTileClic(tile_clic, c_tile_clic);
 		Entidad* entidadReceptora = escenario->getEntidadSeleccionada();
-		juego->getEscenario()->setearTileClic(NULL,Coordenada(0,0)); //Para qué es esto???
+		juego->getEscenario()->setearTileClic(NULL,Coordenada(0,0)); //Para qué es esto??? (MC)
 		for (int i = 0; i < cant_unid_seleccionadas; i++){
 
 			// Moverse a una posición vacía
@@ -191,7 +191,8 @@ void ControladorMouse::procesarClickDerecho(Mouse* mouse){
 						//Proxy::enviar(juego->getConnection(), camino);
 					//else
 						/* Activamos localmente el movimiento del sprite y seteamos el nuevo camino que debe recorrer. */
-						spriteUnidad->setearNuevoCamino(camino, coord_pixel_ceros);
+						if (entidadReceptora == NULL)	// Caso contrario, la interacción se debe ocupar de acercarlo hasta donde deba
+							spriteUnidad->setearNuevoCamino(camino, coord_pixel_ceros);
 						// Si yo muevo la(s) unidad(es), espero que deje de interactuar con su último receptor.
 						unidades[i]->olvidarInteraccion();
 				}

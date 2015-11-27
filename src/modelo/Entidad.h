@@ -12,6 +12,7 @@ using namespace std;
 #include <string>
 #include <sstream>
 #include <iostream>
+#include "../utils/Constantes.h"
 #include "../utils/Enumerados.h"
 #include "../utils/Exceptions.h"
 #include "../utils/Common.h"
@@ -31,6 +32,7 @@ protected:
 	std::string info;
 	Entidad* receptor;
 	Coordenada c;
+	Coordenada* coordMasProximaDelReceptor;
 
 	clock_t reloj;
 
