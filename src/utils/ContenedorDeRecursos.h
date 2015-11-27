@@ -23,6 +23,7 @@ private:
 	Map<Entidad*, Sprite*> *mapSpritesEntidades;
 	map<TipoEntidad, InfoEntidad> mapInfoEntidades;
 	Map<TipoImagenUtil, Imagen*> *mapImagenesUtil; /* para las imagenes de barra de estado */
+	map<TipoImagenUnidadEstado, Imagen*> mapImagenUnidades;
 
 public:
 	ContenedorDeRecursos(SDL_Renderer *renderer);
@@ -50,7 +51,7 @@ public:
 
 	void cargarImagenesRecursos();
 
-	//void setearCanalAlphaParaEntidad(Entidad* entidad, int canalAlpha);
+	void cargarFramesFaltantesDeUnidades();
 
 	void borrarSpriteDeEntidad(Entidad* entidad);
 

@@ -68,6 +68,9 @@ void VentanaJuego::cargarJuego(Juego *juego){
 void VentanaJuego::cargarImagenesYSprites(Juego* juego){
 	ContenedorDeRecursos * contenedor = new ContenedorDeRecursos(renderer);
 	contenedor->cargarImagenesEntidades(juego->getInfoTiposEntidades());
+	contenedor->cargarImagenesUtil();
+	contenedor->cargarImagenesRecursos();
+	contenedor->cargarFramesFaltantesDeUnidades();
 
 	vector<Entidad*>* posEntidades = juego->getEscenario()->getVectorEntidades();
 

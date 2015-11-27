@@ -33,8 +33,7 @@ Sprite::Sprite(int cant_Direcciones, Uint32 cant_Img_Distintas, Imagen* imagen,
 	this->miliseg_inicial = SDL_GetTicks();
 	this->tiempoTranscurridoAlFinDeCiclo = 0;
 
-	this->cargarFrames();
-
+	this->cargarFrames(cant_Direcciones, cant_Img_Distintas, imagen, frames);
 	imagenPetrificada = NULL;
 
 	this->direccion = 0;
@@ -46,20 +45,20 @@ Sprite::Sprite(int cant_Direcciones, Uint32 cant_Img_Distintas, Imagen* imagen,
 }
 
 /********************************************************************************/
-void Sprite::cargarFrames(){
+void Sprite::cargarFrames(int dir, int dif_frames, Imagen* image, SDL_Rect** frames){
 	int posX;
 	int posY = 0;
-	int ancho = this->imagen->getPixelsX() / this->cant_Img_Distintas;
-	int alto = this->imagen->getPixelsY() / this->cant_Direcciones;
-	for (int i = 0; i < this->cant_Direcciones; i++){
+	int ancho = image->getPixelsX() / dif_frames;
+	int alto = image->getPixelsY() / dir;
+	for (int i = 0; i < dir; i++){
 		posX = 0;
-		for (int j = 0; j < this->cant_Img_Distintas; j++){
+		for (int j = 0; j < dif_frames; j++){
 			SDL_Rect frame;
 			frame.x = posX;
 			frame.y = posY;
 			frame.w = ancho;
 			frame.h = alto;
-			this->frames[i][j] = frame;
+			frames[i][j] = frame;
 			posX = posX + ancho;
 		}
 		posY = posY + alto;
@@ -94,8 +93,8 @@ Entidad* Sprite::getEntidad(){
 
 /********************************************************************************/
 Coordenada Sprite::getPosPies() {
-	if (entidad->getTipo() == ARQUERO)
-		return Coordenada( posicion.x + posicion.w/2, posicion.y + posicion.h * 0.75 );
+	//if (entidad->getTipo() == ARQUERO)
+	//	return Coordenada( posicion.x + posicion.w/2, posicion.y + posicion.h * 0.75 );
 	return Coordenada( posicion.x + (posicion.w / 2), posicion.y + posicion.h );
 }
 
@@ -146,7 +145,7 @@ void Sprite::setDireccion(int direccion){
 
 /********************************************************************************/
 bool Sprite::estaEnMovimiento(){
-	return this->enMovimiento;
+	return (this->enMovimiento || entidad->getEstado() != QUIETO);
 }
 
 /********************************************************************************/
@@ -366,9 +365,11 @@ void Sprite::update(int vel_personaje, Mix_Chunk* sonido_caminar) {
 
 /********************************************************************************/
 Sprite::~Sprite() {
-	for (int i = 0; i < this->cant_Direcciones; i++){
-		delete[] this->frames[i];
+	if (!entidad->esUnidad()){
+		for (int i = 0; i < this->cant_Direcciones; i++){
+			delete[] this->frames[i];
+		}
+		delete[] this->frames;
 	}
-	delete[] this->frames;
 }
 

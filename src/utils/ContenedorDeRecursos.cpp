@@ -9,6 +9,7 @@
 #include "../utils/Constantes.h"
 #include "../utils/Calculador.h"
 #include "../utils/Loader.h"
+#include "../vista/SpriteUnidad.h"
 
 /********************************************************************************/
 ContenedorDeRecursos::ContenedorDeRecursos(SDL_Renderer *renderer) {
@@ -130,10 +131,15 @@ void ContenedorDeRecursos::generarYGuardarSpriteEntidad(Entidad* entidad, Coorde
 						 * MUERE : (NO ENCONTRE SPRITES)
 						 * */
 						posicion.x += 0.25 * ANCHO_PIXEL_PASTO;
-						posicion.y -= DISTANCIA_ENTRE_Y;
+						posicion.y -= DISTANCIA_ENTRE_Y + 5;
 						posicion.w = 0.5*ANCHO_PIXEL_PASTO;
-						posicion.h = 1.25*ALTO_PIXEL_PASTO;
-						sprite = new Sprite(DIRECCIONES,10,this->getImagenTipo(entidad->getTipo()),posicion,escenario,coord_ceros,entidad);
+						posicion.h = 1.4*ALTO_PIXEL_PASTO;
+
+						SpriteUnidad *spriteUnidad = new SpriteUnidad(DIRECCIONES,10,this->getImagenTipo(entidad->getTipo()),posicion,escenario,coord_ceros,entidad);
+						spriteUnidad->cargarFramesAtaque(mapImagenUnidades[SOLDADO_ATACANDO]);
+						spriteUnidad->cargarFramesQuieto(mapImagenUnidades[SOLDADO_QUIETO]);
+						spriteUnidad->cargarFramesMuerte(mapImagenUnidades[SOLDADO_MURIENDO]);
+						sprite = spriteUnidad;
 
 						int x_ini = posicion.x;
 						int y_ini = posicion.y;
@@ -151,10 +157,14 @@ void ContenedorDeRecursos::generarYGuardarSpriteEntidad(Entidad* entidad, Coorde
 						posicion.x += ANCHO_PIXEL_PASTO * 0.25;
 						posicion.y -= DISTANCIA_ENTRE_Y;
 						posicion.w = ANCHO_PIXEL_PASTO*0.8;// / 2;
-						posicion.h = 1.25*ALTO_PIXEL_PASTO;// * 3 / 4;
-						sprite = new Sprite(DIRECCIONES,15,this->getImagenTipo(entidad->getTipo()),posicion,escenario,coord_ceros,entidad);
-						//SDL_SetTextureColorMod(imagenPetrificadaSoldado->getTexture(),150,150,150);
-						//sprite->agregarImagenPetrificada(imagenPetrificadaSoldado);
+						posicion.h = 1.3*ALTO_PIXEL_PASTO;// * 3 / 4;
+
+						SpriteUnidad *spriteUnidad = new SpriteUnidad(DIRECCIONES,15,this->getImagenTipo(entidad->getTipo()),posicion,escenario,coord_ceros,entidad);
+						spriteUnidad->cargarFramesAtaque(mapImagenUnidades[ALDEANO_ATACANDO]);
+						spriteUnidad->cargarFramesConstruccion(mapImagenUnidades[ALDEANO_CONSTRUYENDO]);
+						spriteUnidad->cargarFramesQuieto(mapImagenUnidades[ALDEANO_QUIETO]);
+						spriteUnidad->cargarFramesMuerte(mapImagenUnidades[ALDEANO_MURIENDO]);
+						sprite = spriteUnidad;
 
 						int x_ini = posicion.x;
 						int y_ini = posicion.y;
@@ -172,9 +182,12 @@ void ContenedorDeRecursos::generarYGuardarSpriteEntidad(Entidad* entidad, Coorde
 						posicion.y -= 25;
 						posicion.w = 1.25*ANCHO_PIXEL_PASTO;
 						posicion.h = 1.75*ALTO_PIXEL_PASTO;
-						sprite = new Sprite(DIRECCIONES,10,this->getImagenTipo(entidad->getTipo()),posicion,escenario,coord_ceros,entidad);
-						//SDL_SetTextureColorMod(imagenPetrificadaSoldado->getTexture(),150,150,150);
-						//sprite->agregarImagenPetrificada(imagenPetrificadaSoldado);
+
+						SpriteUnidad *spriteUnidad = new SpriteUnidad(DIRECCIONES,10,this->getImagenTipo(entidad->getTipo()),posicion,escenario,coord_ceros,entidad);
+						spriteUnidad->cargarFramesAtaque(mapImagenUnidades[ARQUERO_ATACANDO]);
+						spriteUnidad->cargarFramesQuieto(mapImagenUnidades[ARQUERO_QUIETO]);
+						spriteUnidad->cargarFramesMuerte(mapImagenUnidades[ARQUERO_MURIENDO]);
+						sprite = spriteUnidad;
 
 						int x_ini = posicion.x;
 						int y_ini = posicion.y;
@@ -190,6 +203,7 @@ void ContenedorDeRecursos::generarYGuardarSpriteEntidad(Entidad* entidad, Coorde
 						//posicion.y -= (DISTANCIA_ENTRE_Y);
 						posicion.w = ANCHO_PIXEL_PASTO * 0.8;
 						posicion.h = ALTO_PIXEL_PASTO;
+
 						sprite = new Sprite(DIRECCIONES,10,this->getImagenTipo(ANIMAL),posicion,escenario,coord_ceros,entidad);
 						sprite->activarMovimiento(true);
 						sprite->setDireccion(NORTE);
@@ -216,6 +230,39 @@ void ContenedorDeRecursos::generarYGuardarSpriteEntidad(Entidad* entidad, Coorde
 	sprite->setFps(this->mapInfoEntidades[entidad->getTipo()].fps);
 	this->mapSpritesEntidades->insert(entidad,sprite);
 	std::cout<<"entidad : "<<entidad->getInfo()<<"   Posición : "<< entidad->getPosicion().x<<" "<<entidad->getPosicion().y<<std::endl;//
+}
+
+/********************************************************************************/
+void ContenedorDeRecursos::cargarFramesFaltantesDeUnidades(){
+	Imagen *imagen = Loader::cargarImagen(this->renderer,"images/sprites/aldeano_atacando.png");
+	mapImagenUnidades[ALDEANO_ATACANDO] = imagen;
+
+	imagen = Loader::cargarImagen(this->renderer,"images/sprites/aldeano_construye.png");
+	mapImagenUnidades[ALDEANO_CONSTRUYENDO] = imagen;
+
+	imagen = Loader::cargarImagen(this->renderer,"images/sprites/aldeano_muriendo.png");
+	mapImagenUnidades[ALDEANO_MURIENDO] = imagen;
+
+	imagen = Loader::cargarImagen(this->renderer,"images/sprites/aldeano_quieto.png");
+	mapImagenUnidades[ALDEANO_QUIETO] = imagen;
+
+	imagen = Loader::cargarImagen(this->renderer,"images/sprites/soldado_ataca.png");
+	mapImagenUnidades[SOLDADO_ATACANDO] = imagen;
+
+	imagen = Loader::cargarImagen(this->renderer,"images/sprites/soldado_quieto.png"); // TODO conseguir sprite soldado muriendo
+	mapImagenUnidades[SOLDADO_MURIENDO] = imagen;
+
+	imagen = Loader::cargarImagen(this->renderer,"images/sprites/soldado_quieto.png");
+	mapImagenUnidades[SOLDADO_QUIETO] = imagen;
+
+	imagen = Loader::cargarImagen(this->renderer,"images/sprites/arquero_dispara.png");
+	mapImagenUnidades[ARQUERO_ATACANDO] = imagen;
+
+	imagen = Loader::cargarImagen(this->renderer,"images/sprites/arquero_muere.png");
+	mapImagenUnidades[ARQUERO_MURIENDO] = imagen;
+
+	imagen = Loader::cargarImagen(this->renderer,"images/sprites/arquero_quieto.png");
+	mapImagenUnidades[ARQUERO_QUIETO] = imagen;
 }
 
 /********************************************************************************/
@@ -434,5 +481,12 @@ ContenedorDeRecursos::~ContenedorDeRecursos() {
 		delete sprite;
 	}
 	delete this->mapSpritesEntidades;
+
+	map<TipoImagenUnidadEstado, Imagen* >::iterator p = mapImagenUnidades.begin();
+	while (p != mapImagenUnidades.end()){
+		Imagen *image = p->second;
+		p++;
+		delete image;
+	}
 }
 

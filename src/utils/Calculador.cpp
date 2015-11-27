@@ -64,11 +64,11 @@ Direccion Calculador::calcularDireccion(Coordenada coord_pixel_dest, Coordenada 
 	int x_result = coord_pixel_dest.x - coord_pixel_orig.x; //x_dest - x_orig;
 	int y_result = coord_pixel_dest.y - coord_pixel_orig.y; //y_dest - y_orig;
 
-	if (abs(x_result) < 15){
+	if (abs(x_result) < 20){
 		if (y_result < 0) direccion = NORTE;
 		else direccion = SUR;
 	}
-	else if (abs(y_result) < 10){
+	else if (abs(y_result) < 15){
 			if (x_result < 0) direccion = OESTE;
 				else direccion = ESTE;
 	}

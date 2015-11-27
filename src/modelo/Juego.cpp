@@ -92,7 +92,7 @@ void Juego::cargarJuego(){//InfoEscenario* infoEscRed = NULL, Coordenada *posIni
 
 	/* Las siguientes entidades son de prueba */
 	crearNuevaUnidad(SOLDADO, Coordenada( 0, 5), 1);
-	crearNuevaUnidad(ALDEANO, Coordenada( 0, 6), 1);
+	crearNuevaUnidad(ALDEANO, Coordenada( 20, 16), 1);
 	crearNuevaUnidad(ARQUERO, Coordenada( 1, 8), 1);
 	crearNuevaUnidad(ALDEANO, Coordenada(14,14), 2);
 	crearNuevaUnidad(ARQUERO, Coordenada(10,16), 2);
@@ -141,8 +141,6 @@ int Juego::getVelocidad(){
 /***************************************************/
 void Juego::agregarContenedorDeRecursos(ContenedorDeRecursos *container){
 	this->contenedor = container;
-	this->contenedor->cargarImagenesUtil();
-	this->contenedor->cargarImagenesRecursos();
 }
 
 /********************************************************************************/

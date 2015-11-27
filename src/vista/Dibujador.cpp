@@ -297,7 +297,7 @@ void Dibujador::dibujarEfectosTraslucidos(Coordenada c, Escenario* escenario){
 							posicion.h = 40 + ALTO_PIXEL_PASTO * this->mapInfoEntidades[entidad->getTipo()].alto + (ALTO_PIXEL_PASTO -  DISTANCIA_ENTRE_Y / 2);
 							if (lugarHabilitado)
 								imagenTraslucida = contenedor->getImagenUtilTipo(BARRACK_2_TRANS);
-							else contenedor->getImagenUtilTipo(BARRACK_2_ROJIZO);
+							else imagenTraslucida = contenedor->getImagenUtilTipo(BARRACK_2_ROJIZO);
 							break;
 			default : break;
 	}

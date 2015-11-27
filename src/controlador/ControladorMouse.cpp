@@ -190,11 +190,12 @@ void ControladorMouse::procesarClickDerecho(Mouse* mouse){
 					//if (juego->esCliente())
 						//Proxy::enviar(juego->getConnection(), camino);
 					//else
+						unidades[i]->olvidarInteraccion();
 						/* Activamos localmente el movimiento del sprite y seteamos el nuevo camino que debe recorrer. */
 						if (entidadReceptora == NULL)	// Caso contrario, la interacción se debe ocupar de acercarlo hasta donde deba
 							spriteUnidad->setearNuevoCamino(camino, coord_pixel_ceros);
 						// Si yo muevo la(s) unidad(es), espero que deje de interactuar con su último receptor.
-						unidades[i]->olvidarInteraccion();
+						//unidades[i]->olvidarInteraccion();
 				}
 
 				// Si la hay, settear interacción con nueva entidad cliqueada.

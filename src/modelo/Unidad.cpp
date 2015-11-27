@@ -68,7 +68,7 @@ void Unidad::interactuar() {
 				cambioEstado(CONSTRUYENDO);
 				this->continuarConstruccion();	// throws ConstruccionTermino
 			} else if (receptor->esAtacable() && !receptor->perteneceAJugador(this->idJug)) {
-				//cambioEstado(ATACANDO);
+				cambioEstado(ATACANDO);
 				this->lastimar(this->receptor);
 			} else if (receptor->esRecurso() && this->esRecolector()) {
 				cambioEstado(RECOLECTANDO);

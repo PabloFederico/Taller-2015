@@ -15,7 +15,7 @@
 #include "Imagen.h"
 
 class Sprite {
-private:
+protected:
 	Entidad* entidad;
 
 	int cant_Direcciones;
@@ -48,7 +48,7 @@ private:
 
 	Imagen* imagenPetrificada;
 
-	void cargarFrames();
+	void cargarFrames(int dir, int dif, Imagen* image, SDL_Rect** frames);
 
 	void resetTime();
 public:
@@ -77,10 +77,10 @@ public:
 
 	Coordenada getPosPies();
 
-	void setPosX(int x);
-	void setPosY(int y);
+	virtual void setPosX(int x);
+	virtual void setPosY(int y);
 
-	void mover(int cant_x, int cant_y);
+	virtual void mover(int cant_x, int cant_y);
 
 	SDL_Rect getFrameActual();
 
@@ -110,7 +110,7 @@ public:
 
 	void acomodar();
 
-	void update(int vel_personaje, Mix_Chunk* sonido_caminar);
+	virtual void update(int vel_personaje, Mix_Chunk* sonido_caminar);
 
 	virtual ~Sprite();
 };
