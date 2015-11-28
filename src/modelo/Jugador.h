@@ -7,7 +7,6 @@
 
 #ifndef MODELO_JUGADOR_H_
 #define MODELO_JUGADOR_H_
-#include "../modelo/CentroCivico.h"
 #include "../modelo/Escenario.h"
 #include "../utils/ContenedorDeRecursos.h"
 #include <map>
@@ -21,7 +20,6 @@ private:
 	int contador_dni_unidades;
 	int contador_dni_edificios;
 
-	CentroCivico* centroCivico;
 	std::map<int,Unidad* > unidades;
 	std::vector<Unidad*> vec_unidades;
 	vector<Unidad*> unidadesSeleccionadas;
@@ -41,6 +39,10 @@ public:
 
 	int getID();
 
+	int getRecursosDisponibles();
+
+	void descontarRecursos(int cant);
+
 	void agregarEntidadSeleccionada(Entidad* entidad);
 /*
 	void agregarUnidadSeleccionada(Unidad* unidad);
@@ -55,8 +57,6 @@ public:
 
 	void liberarEdificioSeleccionado();
 
-	void agregarCentroCivico(CentroCivico* centro);
-
 	void agregarNuevaUnidad(Unidad* unidad);
 
 	void agregarNuevoEdificio(Edificio* edificio, int idJug);
@@ -65,8 +65,6 @@ public:
 	void agregarRecursoEconomico(TipoEntidad tipo, int cant);
 
 	std::map<TipoEntidad,int> getMapRecursosEconomicos();
-
-	CentroCivico* getCentroCivico();
 
 	void interaccionesDeUnidades(Escenario* escenario, ContenedorDeRecursos* contenedor, Coordenada coord_ceros);
 	void limpiarSeleccionDeUnidadMuerta(Unidad* moribundo);

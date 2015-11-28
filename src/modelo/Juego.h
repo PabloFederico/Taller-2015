@@ -123,6 +123,8 @@ public:
 
 	void emitirSonido(Entidad* entidad);
 
+	void crearNuevaUnidadApartirDeEdificioSeleccionado(TipoEntidad tipoEntidadACrear);
+
 	void reiniciar();
 	virtual ~Juego();
 };

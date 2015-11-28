@@ -27,6 +27,15 @@ bool Edificio::esEdificio(){
 	return true;
 }
 
+int Edificio::getCostoPorUnidad(){
+	switch (this->tipo){
+	case CUARTEL: return COSTO_SOLDADO;
+	case BARRACK : return COSTO_ARQUERO;
+	case CENTRO_CIVICO : return COSTO_ALDEANO;
+	default : return COSTO_ALDEANO;
+	}
+}
+
 // Para red
 std::string Edificio::enc(){
 	ostringstream enc;

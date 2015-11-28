@@ -31,17 +31,18 @@ SpriteUnidad::SpriteUnidad(int cant_dir, int frames_dif, Imagen* image, SDL_Rect
 
 	switch (entidad->getTipo()){
 		case ALDEANO:
-					 rectAtaque.x -= 40;
-					 //rectAtaque.y -= 3;
-					 rectAtaque.w *= 2.5;
-					 rectAtaque.h *= 1.5;
+					 rectAtaque.x -= 20;
+					 rectAtaque.y += 5;
+					 rectAtaque.w *= 2.2;
+					 rectAtaque.h *= 1.3;
 
-					 //rectMuere.x -= 40;
+					 rectMuere.x -= 40;
 					 //rectMuere.y -= 10;
-					 rectMuere.w *= 2.5;
-					 rectMuere.h *= 1.5;
+					 rectMuere.w *= 2;
+					 rectMuere.h *= 1;
 
-					 rectQuieto.h *= 1.15;
+					 rectQuieto.h *= 1;
+					 rectQuieto.w *= 0.9;
 					 //rectQuieto.x -= 5;
 					 //rectQuieto.y -= 10;
 
@@ -60,7 +61,7 @@ SpriteUnidad::SpriteUnidad(int cant_dir, int frames_dif, Imagen* image, SDL_Rect
 
 					 rectQuieto.x -= 5;
 					 rectQuieto.y += 3;
-					 rectQuieto.h *= 0.9;
+					 rectQuieto.h *= 1;
 
 					 FRAMES_ATAQUE = 10;
 					 FRAMES_MUERTE = 10;
@@ -188,6 +189,15 @@ void SpriteUnidad::mover(int cant_x, int cant_y){
 	}
 }
 
+Coordenada SpriteUnidad::getPosPies(){
+	switch (estadoSprite){
+	case CAMINANDO : return Coordenada( posicion.x + (posicion.w / 2), posicion.y + posicion.h );
+	case ATACANDO : return Coordenada( posicion.x + (posicion.w / 2), posicion.y + posicion.h / 2 );
+
+	default : return Coordenada( posicion.x + (posicion.w / 2), posicion.y + posicion.h );
+	}
+}
+
 void SpriteUnidad::verificarEstadoEntidadConImagen(){
 	if (entidad->getEstado() != estadoSprite){
 		estadoSprite = entidad->getEstado();
@@ -196,25 +206,20 @@ void SpriteUnidad::verificarEstadoEntidadConImagen(){
 					   imagen = imagenCaminando;
 					   posicion = mapRectEstado[CAMINANDO];
 					   frames = framesCaminata;
-					   if (entidad->getTipo() == ALDEANO)
-						   cant_Img_Distintas = 15;
-					   else cant_Img_Distintas = 10;
+					   cant_Img_Distintas = FRAMES_CAMINATA;
 				       break;
 		case ATACANDO:
 					   imagen = imagenAtaque;
 					   posicion = mapRectEstado[ATACANDO];
 					   frames = framesAtaque;
-					   if (entidad->getTipo() == ARQUERO)
-						   cant_Img_Distintas = 10;
-					   else cant_Img_Distintas = 15;
+					   cant_Img_Distintas = FRAMES_ATAQUE;
 				       break;
 		case MURIENDO:
 					   imagen = imagenMuerte;
 					   posicion = mapRectEstado[MURIENDO];
 					   frames = framesMuerte;
-					   if (entidad->getTipo() == SOLDADO)
-						   cant_Img_Distintas = 1;
-					   else cant_Img_Distintas = 10;
+					   cant_Img_Distintas = FRAMES_MUERTE;
+					   indexSpriteActual = 0;
 				       break;
 		case CONSTRUYENDO:
 					   imagen = imagenConstruyendo;
@@ -290,11 +295,15 @@ void SpriteUnidad::update(int vel_personaje, Mix_Chunk* sonido_caminar){
 							 * una posición firme correspondiente a su dirección. */
 							 this->activarMovimiento(false);
 							 entidad->cambioEstado(QUIETO);
-							 this->acomodar();
 							 // Paro el sonido:
 							 Mix_HaltChannel(1);
 						}
 					   break;
+		case MURIENDO :
+						if (indexSpriteActual+1 == FRAMES_MUERTE)
+							entidad->cambioEstado(MUERTO);
+						break;
+
 		default : break;
 	}
 /*

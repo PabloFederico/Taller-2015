@@ -10,7 +10,6 @@
 Jugador::Jugador(std::string nombre, int id) {
 	this->nombre = nombre;
 	id_jug = id;
-	centroCivico = NULL;
 	contador_dni_edificios = 0;
 	contador_dni_unidades = 0;
 	unidades.clear();
@@ -53,10 +52,6 @@ void Jugador::liberarEdificioSeleccionado(){
 	edificioSeleccionado = NULL;
 }
 
-void Jugador::agregarCentroCivico(CentroCivico* centro){
-	centroCivico = centro;
-}
-
 void Jugador::agregarNuevaUnidad(Unidad* nuevaUnidad){
 	contador_dni_unidades++;
 	unidades[contador_dni_unidades] = nuevaUnidad;
@@ -78,10 +73,6 @@ std::map<TipoEntidad,int> Jugador::getMapRecursosEconomicos() {
 
 Unidad* Jugador::getUnidadActiva(){
 	return unidadActiva;
-}
-
-CentroCivico* Jugador::getCentroCivico(){
-	return centroCivico;
 }
 
 void Jugador::agregarNuevoEdificio(Edificio* edificio, int idJug = -1){
@@ -111,6 +102,39 @@ Edificio* Jugador::terminarConstruccion(ConstruccionTermino c) {	/// SOLO LOCALE
 
 vector<Unidad*> Jugador::getUnidades(){
 	return vec_unidades;
+}
+
+int Jugador::getRecursosDisponibles(){
+	int total = 0;
+	map<TipoEntidad,int>::iterator it = mapRecursosEconomicos.begin();
+	while (it != mapRecursosEconomicos.end()){
+		total += it->second;
+		it++;
+	}
+	return total;
+}
+
+void Jugador::descontarRecursos(int cant){
+	if (mapRecursosEconomicos[MADERA] >= cant){
+		mapRecursosEconomicos[MADERA] -= cant;
+	}else{
+		int resto = cant - mapRecursosEconomicos[MADERA];
+		mapRecursosEconomicos[MADERA] = 0;
+		if (mapRecursosEconomicos[PIEDRA] >= resto){
+			mapRecursosEconomicos[PIEDRA] -= resto;
+		}else{
+			int resto2 = resto - mapRecursosEconomicos[PIEDRA];
+			mapRecursosEconomicos[PIEDRA] = 0;
+			if (mapRecursosEconomicos[ORO] >= resto2){
+				mapRecursosEconomicos[ORO] -= resto2;
+			}else{
+				int resto3 = resto2 - mapRecursosEconomicos[ORO];
+				mapRecursosEconomicos[ORO] = 0;
+
+				mapRecursosEconomicos[COMIDA] -= resto3;
+			}
+		}
+	}
 }
 
 void Jugador::interaccionesDeUnidades(Escenario* escenario, ContenedorDeRecursos* contenedor, Coordenada coord_ceros) {
@@ -156,7 +180,8 @@ void Jugador::limpiarSeleccionDeUnidadMuerta(Unidad* moribundo) {
 vector<Entidad*> Jugador::revisarMuertosPropios() {
 	vector<Entidad*> cuerpos;
 	for (std::vector<Unidad*>::iterator uniIt = this->vec_unidades.begin(); uniIt < this->vec_unidades.end(); ++uniIt) {
-		if (!(*uniIt)->sigueViva()) {
+		//if (!(*uniIt)->sigueViva()) {
+		if ((*uniIt)->getEstado() == MUERTO){
 			Unidad* moribundo = *uniIt;
 
 			unidades.erase(moribundo->get_identificador());
@@ -184,6 +209,5 @@ Jugador::~Jugador() {
 	//	delete vec_unidades[i];
 	//}
 	mapRecursosEconomicos.clear();
-	delete centroCivico;
 }
 

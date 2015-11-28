@@ -115,8 +115,8 @@ EstadoFinVentana VentanaJuego::run(){
 
 		///cdp
 		//this->controlador->getJuego()->comenzarNuevaConstruccion(CENTRO_CIVICO, Coordenada(4,15), 1);//
-		this->controlador->getJuego()->comenzarNuevaConstruccion(CUARTEL, Coordenada(10,22), 1);//
-		this->controlador->getJuego()->comenzarNuevaConstruccion(CENTRO_CIVICO, Coordenada(15,22), 2);//
+		//this->controlador->getJuego()->comenzarNuevaConstruccion(CUARTEL, Coordenada(10,22), 1);//
+		//this->controlador->getJuego()->comenzarNuevaConstruccion(CENTRO_CIVICO, Coordenada(15,22), 1);//
 
 		while ( run ) {
 

@@ -289,6 +289,25 @@ void Juego::crearNuevaUnidad(TipoEntidad tipoUnid, Coordenada coord, int id_jug 
 }
 
 /***************************************************/
+void Juego::crearNuevaUnidadApartirDeEdificioSeleccionado(TipoEntidad tipoEntidadACrear){
+	Edificio* edificio = jugador->getEdificioSeleccionado();
+	if (edificio == NULL) return;
+	if (jugador->getRecursosDisponibles() >= edificio->getCostoPorUnidad()){
+		Coordenada c = Calculador::obtenerCoordenadaLibreCercaDeEdificio(edificio,escenario);
+		if (c.x < 0 || c.y < 0) return;
+		Unidad* nuevaUnidad = new Unidad(tipoEntidadACrear,this->idJug);
+		//TODO mandarle una señal al Servidor por creación de nueva unidad
+		std::cout <<"creando nueva unidad tipo "<<tipoEntidadACrear<<" en : "<<c.x<<","<<c.y<<"\n";
+		nuevaUnidad->setPosicion(c);
+		escenario->agregarEntidad(c,nuevaUnidad);
+		contenedor->generarYGuardarSpriteEntidad(nuevaUnidad,Coordenada(*cero_x,*cero_y),escenario);
+		jugador->descontarRecursos(edificio->getCostoPorUnidad());
+		jugador->agregarNuevaUnidad(nuevaUnidad);
+	}
+
+}
+
+/***************************************************/
 void Juego::cargarEnemigo(Entidad* enemigo) {
 	if (enemigo->getIDJug() == getIDJugador())
 		return;	// Si es propio, no hacer nada...
@@ -373,7 +392,8 @@ vector<Entidad*> Juego::revisarMuertos() {
 	vector<Entidad*> funeral = this->jugador->revisarMuertosPropios();
 	// Enemigos
 	for (std::vector<Unidad*>::iterator uniIt = this->unidadesEnemigos->begin(); uniIt < this->unidadesEnemigos->end(); ++uniIt) {
-		if (!(*uniIt)->sigueViva()) {
+		//if (!(*uniIt)->sigueViva()) {
+		if ((*uniIt)->getEstado() == MUERTO) {
 			Unidad* moribundo = *uniIt;
 
 			unidadesEnemigos->erase(uniIt);
