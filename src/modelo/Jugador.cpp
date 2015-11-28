@@ -6,6 +6,7 @@
  */
 
 #include "Jugador.h"
+#include "../vista/SpriteUnidad.h"
 
 Jugador::Jugador(std::string nombre, int id) {
 	this->nombre = nombre;
@@ -154,6 +155,8 @@ void Jugador::interaccionesDeUnidades(Escenario* escenario, ContenedorDeRecursos
 			}
 
 		} catch ( ConstruccionTermino &c ) {
+			SpriteUnidad *sprite = (SpriteUnidad*)contenedor->getSpriteDeEntidad(*uniIt);
+			sprite->verificarEstadoEntidadConImagen();
 			Entidad *muerto = edificios[c.dni];
 			std::cout << muerto->enc()<<" construccion terminada"<<std::endl;//
 			escenario->quitarEntidad(muerto->getPosicion(), muerto);

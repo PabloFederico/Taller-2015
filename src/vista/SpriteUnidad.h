@@ -29,7 +29,7 @@ protected:
 	int FRAMES_MUERTE;
 	std::map<EstadoEntidad,SDL_Rect> mapRectEstado;
 
-	void verificarEstadoEntidadConImagen();
+
 
 public:
 	SpriteUnidad(int cant_dir, int frames_dif, Imagen* image, SDL_Rect pos, Escenario* esc, Coordenada c_ceros, Entidad* entidad);
@@ -37,6 +37,7 @@ public:
 	void cargarFramesConstruccion(Imagen* imagenConstruccion);
 	void cargarFramesQuieto(Imagen*imagenQuieto);
 	void cargarFramesMuerte(Imagen* imagenMuerte);
+	void verificarEstadoEntidadConImagen();
 	Coordenada getPosPies();
 	void setPosX(int x);
 	void setPosY(int y);

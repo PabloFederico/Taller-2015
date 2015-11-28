@@ -79,14 +79,25 @@ void ContenedorDeRecursos::generarYGuardarSpriteEntidad(Entidad* entidad, Coorde
 			 * los tiles que le corresponden */
 		case CONSTRUCCION:
 						{
-						posicion.x -= DISTANCIA_ENTRE_X * (this->mapInfoEntidades[entidad->getTipo()].ancho - 1);
-						posicion.y = posicion.y - ALTO_PIXEL_PASTO +  DISTANCIA_ENTRE_Y / 4;
-						//posicion.w = ANCHO_PIXEL_PASTO;
+						Imagen* imageConstruccion = NULL;
+						if (((Construccion*)entidad)->getTipoEdificio() == CUARTEL)
+						   imageConstruccion = getImagenUtilTipo(CUARTEL_TRANS);
+						else imageConstruccion = getImagenUtilTipo(BARRACK_TRANS);
+
+						posicion.x -= (DISTANCIA_ENTRE_X * (this->mapInfoEntidades[entidad->getTipo()].ancho - 1)) - DISTANCIA_ENTRE_X * 0.25;
+						posicion.y -= 2*ALTO_PIXEL_PASTO;
 						//posicion.h = (ALTO_PIXEL_PASTO * this->mapInfoEntidades[CASTILLO].ancho + ALTO_PIXEL_PASTO) / this->mapInfoEntidades[CASTILLO].ancho;
 						//sprite = new Sprite(mapInfoEntidades[CASTILLO].ancho,mapInfoEntidades[CASTILLO].ancho,this->getImagenTipo(CASTILLO),posicion);
 						posicion.w = ANCHO_PIXEL_PASTO * this->mapInfoEntidades[entidad->getTipo()].ancho;
-						posicion.h = ALTO_PIXEL_PASTO * this->mapInfoEntidades[entidad->getTipo()].alto + (ALTO_PIXEL_PASTO -  DISTANCIA_ENTRE_Y / 2);
-						sprite = new Sprite(1,1,this->getImagenTipo(entidad->getTipo()),posicion,escenario,coord_ceros,entidad);
+						posicion.h = 30 + ALTO_PIXEL_PASTO * this->mapInfoEntidades[entidad->getTipo()].alto + (ALTO_PIXEL_PASTO -  DISTANCIA_ENTRE_Y / 2);
+						//posicion.x -= DISTANCIA_ENTRE_X * (this->mapInfoEntidades[entidad->getTipo()].ancho - 1);
+						//posicion.y = posicion.y - ALTO_PIXEL_PASTO +  DISTANCIA_ENTRE_Y / 4;
+						//posicion.w = ANCHO_PIXEL_PASTO;
+						//posicion.h = (ALTO_PIXEL_PASTO * this->mapInfoEntidades[CASTILLO].ancho + ALTO_PIXEL_PASTO) / this->mapInfoEntidades[CASTILLO].ancho;
+						//sprite = new Sprite(mapInfoEntidades[CASTILLO].ancho,mapInfoEntidades[CASTILLO].ancho,this->getImagenTipo(CASTILLO),posicion);
+						//posicion.w = ANCHO_PIXEL_PASTO * this->mapInfoEntidades[entidad->getTipo()].ancho;
+						//posicion.h = 30 + ALTO_PIXEL_PASTO * this->mapInfoEntidades[entidad->getTipo()].alto + (ALTO_PIXEL_PASTO -  DISTANCIA_ENTRE_Y / 2);
+						sprite = new Sprite(1,1,imageConstruccion,posicion,escenario,coord_ceros,entidad);
 
 						int x_ini = posicion.x;
 						int y_ini = posicion.y;
@@ -95,7 +106,6 @@ void ContenedorDeRecursos::generarYGuardarSpriteEntidad(Entidad* entidad, Coorde
 						}
 						break;
 
-		//case CONSTRUCCION:
 		case CENTRO_CIVICO:
 		case CUARTEL:
 		case BARRACK : {
@@ -242,7 +252,7 @@ void ContenedorDeRecursos::cargarFramesFaltantesDeUnidades(){
 	imagen = Loader::cargarImagen(this->renderer,"images/sprites/soldado_ataca.png");
 	mapImagenUnidades[SOLDADO_ATACANDO] = imagen;
 
-	imagen = Loader::cargarImagen(this->renderer,"images/sprites/soldado_quieto.png"); // TODO conseguir sprite soldado muriendo
+	imagen = Loader::cargarImagen(this->renderer,"images/sprites/soldado_muriendo.png"); // TODO conseguir sprite soldado muriendo
 	mapImagenUnidades[SOLDADO_MURIENDO] = imagen;
 
 	imagen = Loader::cargarImagen(this->renderer,"images/sprites/soldado_quieto.png");

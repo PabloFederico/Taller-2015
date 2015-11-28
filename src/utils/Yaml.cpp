@@ -235,7 +235,7 @@ ConfiguracionJuego Yaml::OdioYAML() {
 	InfoEntidad infoSoldado;
 	infoSoldado.tipo = tipos["soldado"];
 	infoSoldado.path = "images/sprites/soldado_camina.png";
-	infoSoldado.fps = 30;
+	infoSoldado.fps = 15;
 	infoSoldado.descripcion = "Soldado";
 
 	InfoEntidad infoAldeano;

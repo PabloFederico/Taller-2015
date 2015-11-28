@@ -91,12 +91,15 @@ void Juego::cargarJuego(){//InfoEscenario* infoEscRed = NULL, Coordenada *posIni
 	this->escenario = new Escenario(configGame.escenarios[0], this->fabricaDeEntidades, this->unidadesEnemigos, this->edificiosEnemigos);
 
 	/* Las siguientes entidades son de prueba */
-	crearNuevaUnidad(SOLDADO, Coordenada( 0, 5), 1);
+	crearNuevaUnidad(SOLDADO, Coordenada( 16, 20), 1);
 	crearNuevaUnidad(ALDEANO, Coordenada( 20, 16), 1);
+	crearNuevaUnidad(ALDEANO, Coordenada( 22, 16), 1);
 	crearNuevaUnidad(ARQUERO, Coordenada( 1, 8), 1);
 	crearNuevaUnidad(ALDEANO, Coordenada(14,14), 2);
 	crearNuevaUnidad(ARQUERO, Coordenada(10,16), 2);
 	crearNuevaUnidad(ARQUERO, Coordenada(12,16), 2);
+	crearNuevaUnidad(SOLDADO, Coordenada( 14, 18), 2);
+	crearNuevaUnidad(SOLDADO, Coordenada( 16, 18), 2);
 	///
 
 	escenario->getCapa()->setRangoDeVision(configGame.rango_vision);
@@ -421,7 +424,7 @@ vector<Entidad*> Juego::revisarMuertos() {
 
 /***************************************************/
 void Juego::continuar() {	// Modularizar si se pasa a usar threads
-	this->jugador->interaccionesDeUnidades(this->escenario, this->contenedor, getCoordCeros());
+	this->jugador->interaccionesDeUnidades(this->escenario, this->contenedor, Coordenada(*cero_x,*cero_y));
 
 	// Limpiar muertes
 	vector<Entidad*> funeral = revisarMuertos();

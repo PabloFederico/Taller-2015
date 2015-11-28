@@ -80,9 +80,36 @@ bool ControladorMouse::procesarClickEnVentana(Mouse* mouse, Tile** tile_clic, Co
 				juego->getContenedorRecursos()->generarYGuardarSpriteEntidad(entidad,c_ceros,escenario);
 				escenario->agregarEntidad(c,entidad);
 				escenario->resetEntidadTemporal();
+				juego->getJugador()->agregarNuevoEdificio((Edificio*)entidad,juego->getIDJugador());
 
 				// TODO Las unidades seleccionadas anteriormente (aldeanos)
 				//      deberían comenzar a interactuar
+				Entidad* entidadReceptora = entidad;
+				vector<Unidad*> unidades = juego->getJugador()->getUnidadesSeleccionadas();
+				for (unsigned i = 0; i < unidades.size() && unidades[i]->esConstructor(); i++){
+					Sprite* spriteUnidad = juego->getSpritesEntidades()->find(unidades[i])->second;
+					Coordenada coord_pixel_sprite = spriteUnidad->getPosPies();
+					try {
+						Camino camino = Calculador::obtenerCaminoMin(escenario, coord_pixel_sprite, mouse->getXY(), coord_pixel_ceros);
+						if (camino.size() > 0) {
+							/* Si se está jugando en red, enviar el movimiento a los demás jugadores. */
+							//if (juego->esCliente())
+								//Proxy::enviar(juego->getConnection(), camino);
+							//else
+								unidades[i]->olvidarInteraccion();
+								/* Activamos localmente el movimiento del sprite y seteamos el nuevo camino que debe recorrer. */
+								if (entidadReceptora == NULL)	// Caso contrario, la interacción se debe ocupar de acercarlo hasta donde deba
+									spriteUnidad->setearNuevoCamino(camino, coord_pixel_ceros);
+								// Si yo muevo la(s) unidad(es), espero que deje de interactuar con su último receptor.
+								//unidades[i]->olvidarInteraccion();
+						}
+
+						// Si la hay, settear interacción con nueva entidad cliqueada.
+						if (entidadReceptora != NULL) {
+							unidades[i]->interactuarCon(entidadReceptora);
+						}
+					} catch ( FueraDeEscenario &e ) {}
+				}
 
 			}
 			return true;
@@ -209,7 +236,7 @@ void ControladorMouse::procesarClickIzquierdo(Mouse* mouse){
 					std::cout << "se eligió un edificio para contruír : "<<edificioAConstruir<<"\n";
 					// TODO debería crearse una entidad tipo CONSTRUCCIÓN y cuando finalice convertirlo a edificio
 					if (escenario->getEntidadTemporal() != NULL) delete escenario->getEntidadTemporal();
-					Entidad* entidadConstruccion = new Edificio(edificioAConstruir,juego->getIDJugador());
+					Entidad* entidadConstruccion = new Construccion(edificioAConstruir,juego->getIDJugador());
 					entidadConstruccion->setTam(4,4); //hardcodeo prueba
 					juego->getEscenario()->iniciarEntidadTemporal(entidadConstruccion);
 					mouse->setearMoviendoImagen(true);
