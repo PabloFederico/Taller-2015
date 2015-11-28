@@ -89,23 +89,12 @@ Entidad::Entidad(TipoEntidad tipo, int num_jug, int identificador): idJug(num_ju
 			ocupador = true;
 			info = "Cuartel";
 			break;
-		case BARRACK_1:
+		case BARRACK:
 			vidaRestante = 300;
 			movible = false;
 			ocupador = true;
-			info = "Barraca_1";
+			info = "Barraca_Arquero";
 			break;
-		case BARRACK_2:
-			vidaRestante = 300;
-			movible = false;
-			ocupador = true;
-			info = "Barraca_2";
-			break;
-		case BARRACK_3:
-			vidaRestante = 300;
-			movible = false;
-			ocupador = true;
-			info = "Barraca_3";
 		case CONSTRUCCION:
 			vidaRestante = 100;
 			movible = false;
@@ -264,13 +253,17 @@ void Entidad::olvidarInteraccion() {
 
 void Entidad::sufrirGolpe(int fuerzaGolpe) {
 	if (!esAtacable()) return;
-	if (this->vidaRestante <= 0)
+	if (this->vidaRestante <= 0){
+		estado = MURIENDO;
 		throw EntidadMurio();
+	}
 	this->vidaRestante -= fuerzaGolpe;
 	if (this->vidaRestante <= 0) {
 		this->vidaRestante = 0;
-		if (!esRecurso())
+		if (!esRecurso()){
+			estado = MURIENDO;
 			throw EntidadMurio();
+		}
 		else std::cout << "Esto sí es posible, de alguna forma"<<std::endl;//
 	}
 }

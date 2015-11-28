@@ -9,6 +9,10 @@
 #define MODELO_EDIFICIO_H_
 #include "../modelo/Entidad.h"
 
+const int COSTO_ALDEANO = 10;
+const int COSTO_ARQUERO = 10;
+const int COSTO_SOLDADO = 10;
+
 class Edificio: public Entidad {
 
 public:
@@ -18,6 +22,8 @@ public:
 
 	void set_identificador(int nuevoDNI);
 	int get_identificador();
+
+	int getCostoPorUnidad();
 
 	bool esEdificio();
 

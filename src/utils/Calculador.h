@@ -49,6 +49,8 @@ public:
 
 	static Coordenada generarPosRandom(int size_x_final, int size_x_inicial, int size_y_final, int size_y_inicial, int seed);
 
+	static Coordenada obtenerCoordenadaLibreCercaDeEdificio(Edificio* edificio,Escenario* escenario);
+
 	static int ChequeoDeBorde(int max, int input);
 };
 

@@ -116,6 +116,7 @@ public:
 	void iniciarInteraccionEntre(TipoEntidad tipo_ejecutor, int idJug_ejecutor, int dni_ejecutor,
 								 TipoEntidad tipo_receptor, int idJug_receptor, int dni_receptor);
 
+	void ejecutoresOlvidarInteraccionCon(Entidad* muerto);
 	void reemplazarEntidadPorRecurso(Entidad* entidad);
 
 	Edificio* terminarConstruccion(ConstruccionTermino c);
@@ -123,6 +124,8 @@ public:
 	void continuar();
 
 	void emitirSonido(Entidad* entidad);
+
+	void crearNuevaUnidadApartirDeEdificioSeleccionado(TipoEntidad tipoEntidadACrear);
 
 	//void toggleEnemigo(int id_jug, int idUnidad);
 	void reiniciar();

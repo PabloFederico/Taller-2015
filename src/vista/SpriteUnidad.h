@@ -37,6 +37,7 @@ public:
 	void cargarFramesConstruccion(Imagen* imagenConstruccion);
 	void cargarFramesQuieto(Imagen*imagenQuieto);
 	void cargarFramesMuerte(Imagen* imagenMuerte);
+	Coordenada getPosPies();
 	void setPosX(int x);
 	void setPosY(int y);
 	void mover(int cant_x, int cant_y);

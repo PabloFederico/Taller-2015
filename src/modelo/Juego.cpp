@@ -90,15 +90,6 @@ void Juego::cargarJuego(){//InfoEscenario* infoEscRed = NULL, Coordenada *posIni
 	this->fabricaDeEntidades = new EntidadFactory(this->idJug, configGame.entidades);
 	this->escenario = new Escenario(configGame.escenarios[0], this->fabricaDeEntidades, this->unidadesEnemigos, this->edificiosEnemigos);
 
-	/* Las siguientes entidades son de prueba */
-	crearNuevaUnidad(SOLDADO, Coordenada( 0, 5), 1);//
-	crearNuevaUnidad(ALDEANO, Coordenada( 20, 16), 1);//
-	crearNuevaUnidad(ARQUERO, Coordenada( 1, 8), 1);//
-	crearNuevaUnidad(ALDEANO, Coordenada(14,14), 2);//
-	crearNuevaUnidad(ARQUERO, Coordenada(10,16), 2);//
-	crearNuevaUnidad(ARQUERO, Coordenada(12,16), 2);//
-	///
-
 	escenario->getCapa()->setRangoDeVision(configGame.rango_vision);
 	this->barraEstado = new BarraEstado(configGame.ancho_pantalla, 150, jugador); // Podría ser proporcional al tamaño de la ventana (MC)
 
@@ -278,7 +269,7 @@ Unidad* Juego::crearNuevaUnidad(TipoEntidad tipoUnid, Coordenada coord, int id_j
 		this->jugador->agregarNuevaUnidad(unidad);
 	else
 		cargarEnemigo(unidad);
-	//this->contenedor->generarYGuardarSpriteEntidad(unidad, Coordenada(*cero_x, *cero_y), this->escenario); COMENTADA SI SE CORRE ANTES QUE VENTANAJUEGO
+	this->contenedor->generarYGuardarSpriteEntidad(unidad, Coordenada(*cero_x, *cero_y), this->escenario); // COMENTADA SI SE CORRE ANTES QUE VENTANAJUEGO TODO
 	this->escenario->agregarEntidad(coord, unidad);
 	return unidad;
 }
@@ -299,7 +290,7 @@ Construccion* Juego::comenzarNuevaConstruccion(TipoEntidad tipoEdif, Coordenada 
 		this->jugador->agregarNuevoEdificio(construccion);
 	else
 		cargarEnemigo(construccion);
-	this->contenedor->generarYGuardarSpriteEntidad(construccion, Coordenada(*cero_x, *cero_y), this->escenario);	// COMENTADA SI SE CORRE ANTES QUE VENTANAJUEGO
+	this->contenedor->generarYGuardarSpriteEntidad(construccion, Coordenada(*cero_x, *cero_y), this->escenario);	// COMENTADA SI SE CORRE ANTES QUE VENTANAJUEGO TODO
 	this->escenario->agregarEntidad(coord, construccion);
 	return construccion;
 }
@@ -321,9 +312,28 @@ Edificio* Juego::crearNuevoEdificio(TipoEntidad tipoEdif, Coordenada coord, int 
 		this->jugador->agregarNuevoEdificio(edificio);
 	else
 		cargarEnemigo(edificio);
-	//this->contenedor->generarYGuardarSpriteEntidad(unidad, Coordenada(*cero_x, *cero_y), this->escenario); COMENTADA SI SE CORRE ANTES QUE VENTANAJUEGO
+	this->contenedor->generarYGuardarSpriteEntidad(edificio, Coordenada(*cero_x, *cero_y), this->escenario); // COMENTADA SI SE CORRE ANTES QUE VENTANAJUEGO TODO
 	this->escenario->agregarEntidad(coord, edificio);
 	return edificio;
+}
+
+/***************************************************/
+void Juego::crearNuevaUnidadApartirDeEdificioSeleccionado(TipoEntidad tipoEntidadACrear){
+	Edificio* edificio = jugador->getEdificioSeleccionado();
+	if (edificio == NULL) return;
+	if (jugador->getRecursosDisponibles() >= edificio->getCostoPorUnidad()){
+		Coordenada c = Calculador::obtenerCoordenadaLibreCercaDeEdificio(edificio,escenario);
+		if (!escenario->coordEnEscenario(c)) return;
+		//TODO mandarle una señal al Servidor por creación de nueva unidad
+//		Unidad* nuevaUnidad = new Unidad(tipoEntidadACrear,this->idJug);
+		/*Unidad* nuevaUnidad = */crearNuevaUnidad(tipoEntidadACrear, c, this->getIDJugador());
+//		nuevaUnidad->setPosicion(c);
+//		escenario->agregarEntidad(c,nuevaUnidad);
+		//contenedor->generarYGuardarSpriteEntidad(nuevaUnidad,Coordenada(*cero_x,*cero_y),escenario);	// LO DEJO ACÁ PQ EN crearNuevaUnidad SIGUE COMENTADO TODO
+		jugador->descontarRecursos(edificio->getCostoPorUnidad());
+//		jugador->agregarNuevaUnidad(nuevaUnidad);
+		std::cout <<"creando nueva unidad tipo "<<tipoEntidadACrear<<" en : "<<c.x<<","<<c.y<<"\n";
+	}
 }
 
 /***************************************************/
@@ -399,7 +409,8 @@ vector<Entidad*> Juego::revisarMuertos() {
 	vector<Entidad*> funeral = this->jugador->revisarMuertosPropios();
 	// Enemigos
 	for (std::vector<Unidad*>::iterator uniIt = this->unidadesEnemigos->begin(); uniIt < this->unidadesEnemigos->end(); ++uniIt) {
-		if (!(*uniIt)->sigueViva()) {
+		//if (!(*uniIt)->sigueViva()) {
+		if ((*uniIt)->getEstado() == MUERTO) {
 			Unidad* moribundo = *uniIt;
 
 			unidadesEnemigos->erase(uniIt);
@@ -491,8 +502,9 @@ void Juego::continuar() {
 		this->escenario->quitarEntidad(muerto);
 		this->contenedor->borrarSpriteDeEntidad(muerto);
 
+		ejecutoresOlvidarInteraccionCon(muerto);
 		//Si la entidad muerta se convierte en recurso, lo colocamos:
-		this->reemplazarEntidadPorRecurso(muerto);
+		reemplazarEntidadPorRecurso(muerto);
 
 		delete muerto;
 	}
@@ -532,6 +544,12 @@ void Juego::emitirSonido(Entidad* entidad){
 }
 
 /***************************************************/
+
+void Juego::ejecutoresOlvidarInteraccionCon(Entidad* muerto) {
+	this->jugador->ejecutoresOlvidarInteraccionCon(muerto);
+	for (std::vector<Unidad*>::iterator uniIt = this->unidadesEnemigos->begin(); uniIt < this->unidadesEnemigos->end(); ++uniIt)
+		(*uniIt)->olvidarReceptorSiEs(muerto);
+}
 
 void Juego::reemplazarEntidadPorRecurso(Entidad* entidad){
 	Coordenada coord = entidad->getPosicion();

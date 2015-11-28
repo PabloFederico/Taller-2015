@@ -42,7 +42,11 @@ void Controller::posicionarCamaraEnProtagonista(){
 	int width_camera = juego->getDimensionVentana().first;
 	int height_camera = juego->getDimensionVentana().second - juego->getBarraEstado()->getDimension().second;
 	/* Agarra cualquier unidad y posiciona la camara sobre esa unidad */
-	Sprite* spriteUnidad = juego->getSpriteDeEntidad((Entidad*)juego->getJugador()->getUnidadActiva());
+	Entidad *entidad = (Entidad*)juego->getJugador()->getUnidadActiva();
+	if (!entidad)
+		entidad = juego->getEntidad(ALDEANO, juego->getIDJugador(), 1);
+	if (!entidad) return;
+	Sprite *spriteUnidad = juego->getSpriteDeEntidad(entidad);
 
 	while (!playerEstaEnElCentro){
 		SDL_Rect posicion = spriteUnidad->getPosicion();

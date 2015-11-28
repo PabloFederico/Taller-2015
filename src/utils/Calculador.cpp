@@ -330,3 +330,26 @@ int Calculador::ChequeoDeBorde(int max, int input) {
 		else return max;
 	} else return 0;
 }
+
+Coordenada Calculador::obtenerCoordenadaLibreCercaDeEdificio(Edificio* edificio,Escenario* escenario){
+	Coordenada c_edificio = edificio->getPosicion();
+	pair<int,int> tam = edificio->getTam();
+	int max_distancia = 3;
+	int x_ini = c_edificio.x - max_distancia;
+	int y_ini = c_edificio.y - max_distancia;
+	int x_fin = c_edificio.x+tam.first+max_distancia;
+	int y_fin = c_edificio.y+tam.second+max_distancia;
+	Coordenada c_inicial(x_ini, y_ini);
+	Coordenada c_final(x_fin, y_fin);
+	for (Coordenada c1 = c_inicial; c1.y <= c_final.y; c1.y++){
+		for (Coordenada c2 = c1; c2.x <= c_final.x; c2.x++){
+			if (puntoContenidoEnEscenario(c2,escenario)){
+				Tile* tile = escenario->getTile(c2);
+				if (tile->estaLibre())
+					return c2;
+			}
+		}
+	}
+
+	return Coordenada(-1,-1);
+}

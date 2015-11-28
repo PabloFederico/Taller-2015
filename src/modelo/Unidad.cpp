@@ -93,7 +93,8 @@ void Unidad::interactuar() {
 }
 
 void Unidad::olvidarInteraccion() {
-	Entidad::olvidarInteraccion();
+	finalizaAccion();
+	this->receptor = NULL;
 	this->coordMasProximaDelReceptor = NULL;
 }
 
@@ -122,6 +123,12 @@ int Unidad::recolectar(Entidad* recurso) {
 	if (acabeRecurso)
 		this->olvidarInteraccion();
 	return recolectado;
+}
+
+
+void Unidad::olvidarReceptorSiEs(Entidad* entidad) {
+	if (this->receptor == entidad)
+		olvidarInteraccion();
 }
 
 

@@ -75,7 +75,7 @@ public:
 
 	Entidad* getEntidad();
 
-	Coordenada getPosPies();
+	virtual Coordenada getPosPies();
 
 	virtual void setPosX(int x);
 	virtual void setPosY(int y);
@@ -108,7 +108,7 @@ public:
 
 	bool revisarCamino(Coordenada c_punto_actual);
 
-	void acomodar();
+	virtual void acomodar();
 
 	virtual void update(int vel_personaje, Mix_Chunk* sonido_caminar);
 

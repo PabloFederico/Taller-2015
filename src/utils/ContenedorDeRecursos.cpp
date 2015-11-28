@@ -77,8 +77,8 @@ void ContenedorDeRecursos::generarYGuardarSpriteEntidad(Entidad* entidad, Coorde
 						break;
 			/* Modificamos los tamanios de la imagen castillo para que ocupe
 			 * los tiles que le corresponden */
-		case CUARTEL:
-		case CENTRO_CIVICO : {
+		case CONSTRUCCION:
+						{
 						posicion.x -= DISTANCIA_ENTRE_X * (this->mapInfoEntidades[entidad->getTipo()].ancho - 1);
 						posicion.y = posicion.y - ALTO_PIXEL_PASTO +  DISTANCIA_ENTRE_Y / 4;
 						//posicion.w = ANCHO_PIXEL_PASTO;
@@ -95,9 +95,10 @@ void ContenedorDeRecursos::generarYGuardarSpriteEntidad(Entidad* entidad, Coorde
 						}
 						break;
 
-		case CONSTRUCCION:
-		case BARRACK_1 :
-		case BARRACK_3 : {
+		//case CONSTRUCCION:
+		case CENTRO_CIVICO:
+		case CUARTEL:
+		case BARRACK : {
 						posicion.x -= (DISTANCIA_ENTRE_X * (this->mapInfoEntidades[entidad->getTipo()].ancho - 1)) - DISTANCIA_ENTRE_X * 0.25;
 						posicion.y -= 2*ALTO_PIXEL_PASTO;
 						//posicion.h = (ALTO_PIXEL_PASTO * this->mapInfoEntidades[CASTILLO].ancho + ALTO_PIXEL_PASTO) / this->mapInfoEntidades[CASTILLO].ancho;
@@ -112,18 +113,7 @@ void ContenedorDeRecursos::generarYGuardarSpriteEntidad(Entidad* entidad, Coorde
 						sprite->agregarRectangulo(rect1);
 						}
 						break;
-		case BARRACK_2 : {
-						posicion.x -= (DISTANCIA_ENTRE_X * (this->mapInfoEntidades[entidad->getTipo()].ancho - 1));// + DISTANCIA_ENTRE_X * 0.25);
-						posicion.y -= 2*ALTO_PIXEL_PASTO;
-						posicion.w = ANCHO_PIXEL_PASTO * this->mapInfoEntidades[entidad->getTipo()].ancho + 20;
-						posicion.h = 40 + ALTO_PIXEL_PASTO * this->mapInfoEntidades[entidad->getTipo()].alto + (ALTO_PIXEL_PASTO -  DISTANCIA_ENTRE_Y / 2);
-						sprite = new Sprite(1,1,this->getImagenTipo(entidad->getTipo()),posicion,escenario,coord_ceros,entidad);
-						int x_ini = posicion.x;
-						int y_ini = posicion.y;
-						Rectangulo rect1(x_ini, mapInfoEntidades[entidad->getTipo()].ancho*ANCHO_PIXEL_PASTO, y_ini, mapInfoEntidades[entidad->getTipo()].ancho*ALTO_PIXEL_PASTO);
-						sprite->agregarRectangulo(rect1);
-						}
-						break;
+
 		case SOLDADO  : {
 						/* FRAMES:
 						 * ATAQUE : 15 frames
@@ -139,6 +129,7 @@ void ContenedorDeRecursos::generarYGuardarSpriteEntidad(Entidad* entidad, Coorde
 						spriteUnidad->cargarFramesAtaque(mapImagenUnidades[SOLDADO_ATACANDO]);
 						spriteUnidad->cargarFramesQuieto(mapImagenUnidades[SOLDADO_QUIETO]);
 						spriteUnidad->cargarFramesMuerte(mapImagenUnidades[SOLDADO_MURIENDO]);
+						spriteUnidad->acomodar();
 						sprite = spriteUnidad;
 
 						int x_ini = posicion.x;
@@ -164,6 +155,7 @@ void ContenedorDeRecursos::generarYGuardarSpriteEntidad(Entidad* entidad, Coorde
 						spriteUnidad->cargarFramesConstruccion(mapImagenUnidades[ALDEANO_CONSTRUYENDO]);
 						spriteUnidad->cargarFramesQuieto(mapImagenUnidades[ALDEANO_QUIETO]);
 						spriteUnidad->cargarFramesMuerte(mapImagenUnidades[ALDEANO_MURIENDO]);
+						spriteUnidad->acomodar();
 						sprite = spriteUnidad;
 
 						int x_ini = posicion.x;
@@ -187,6 +179,7 @@ void ContenedorDeRecursos::generarYGuardarSpriteEntidad(Entidad* entidad, Coorde
 						spriteUnidad->cargarFramesAtaque(mapImagenUnidades[ARQUERO_ATACANDO]);
 						spriteUnidad->cargarFramesQuieto(mapImagenUnidades[ARQUERO_QUIETO]);
 						spriteUnidad->cargarFramesMuerte(mapImagenUnidades[ARQUERO_MURIENDO]);
+						spriteUnidad->acomodar();
 						sprite = spriteUnidad;
 
 						int x_ini = posicion.x;
@@ -372,7 +365,7 @@ void ContenedorDeRecursos::cargarImagenesUtil(){
 	imagen = Loader::cargarImagen(this->renderer,"images/utils/cuadrado_rojo_1.png");
 	this->mapImagenesUtil->insert(CUADRADO_ROJO,imagen);
 
-	imagen = Loader::cargarImagen(this->renderer,"images/utils/iconos_edificios.png");
+	imagen = Loader::cargarImagen(this->renderer,"images/utils/iconos_edificios_.png");
 	this->mapImagenesUtil->insert(HERRAMIENTAS_ALDEANO,imagen);
 
 	imagen = Loader::cargarImagen(this->renderer,"images/utils_barra_estado/arco_arquero.png");
@@ -381,15 +374,18 @@ void ContenedorDeRecursos::cargarImagenesUtil(){
 	imagen = Loader::cargarImagen(this->renderer,"images/utils_barra_estado/espada_soldado.png");
 	this->mapImagenesUtil->insert(ESPADA_SOLDADO,imagen);
 
+	imagen = Loader::cargarImagen(this->renderer,"images/utils_barra_estado/arma_aldeano.png");
+	this->mapImagenesUtil->insert(ARMA_ALDEANO,imagen);
+
 	// Imagenes tralucidas
-	imagen = Loader::cargarImagen(this->renderer,"images/utils/Barracks3.png");
-	this->mapImagenesUtil->insert(BARRACK_1_TRANS,imagen);
+	imagen = Loader::cargarImagen(this->renderer,"images/utils/Barracks5.png");
+	this->mapImagenesUtil->insert(BARRACK_TRANS,imagen);
 	SDL_SetTextureAlphaMod(imagen->getTexture(),150);
 
-	imagen = Loader::cargarImagen(this->renderer,"images/utils/Barracks3_rojizo.png");
-	this->mapImagenesUtil->insert(BARRACK_1_ROJIZO,imagen);
+	imagen = Loader::cargarImagen(this->renderer,"images/utils/Barracks5_rojizo.png");
+	this->mapImagenesUtil->insert(BARRACK_ROJIZO,imagen);
 	SDL_SetTextureAlphaMod(imagen->getTexture(),150);
-
+/*
 	imagen = Loader::cargarImagen(this->renderer,"images/utils/Barracks4.png");
 	this->mapImagenesUtil->insert(BARRACK_2_TRANS,imagen);
 	SDL_SetTextureAlphaMod(imagen->getTexture(),150);
@@ -405,12 +401,12 @@ void ContenedorDeRecursos::cargarImagenesUtil(){
 	imagen = Loader::cargarImagen(this->renderer,"images/utils/Barracks5_rojizo.png");
 	this->mapImagenesUtil->insert(BARRACK_3_ROJIZO,imagen);
 	SDL_SetTextureAlphaMod(imagen->getTexture(),150);
-
-	imagen = Loader::cargarImagen(this->renderer,"images/utils/cuartel.png");
+*/
+	imagen = Loader::cargarImagen(this->renderer,"images/utils/Barracks7.png");
 	this->mapImagenesUtil->insert(CUARTEL_TRANS,imagen);
 	SDL_SetTextureAlphaMod(imagen->getTexture(),150);
 
-	imagen = Loader::cargarImagen(this->renderer,"images/utils/cuartel_rojizo.png");
+	imagen = Loader::cargarImagen(this->renderer,"images/utils/Barracks7_rojizo.png");
 	this->mapImagenesUtil->insert(CUARTEL_ROJIZO,imagen);
 	SDL_SetTextureAlphaMod(imagen->getTexture(),150);
 }

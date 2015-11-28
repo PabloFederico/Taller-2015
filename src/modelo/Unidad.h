@@ -33,6 +33,8 @@ public:
 	void interactuar();
 	void olvidarInteraccion();
 
+	void olvidarReceptorSiEs(Entidad* entidad);
+
 	void set_id_jugador(int nuevoDuenio);
 	void set_identificador(int nuevoDNI);
 	int get_identificador();

@@ -109,17 +109,17 @@ bool ControladorMouse::procesarClickEnVentana(Mouse* mouse, Tile** tile_clic, Co
 	return false;
 }
 
-TipoEntidad iconoSeleccionado(Mouse* mouse, Juego* juego){
+TipoEntidad iconoEdificioSeleccionado(Mouse* mouse, Juego* juego){
 	TipoEntidad tipo = DEFAULT;
 	Coordenada c_mouse = mouse->getXY();
 	Imagen* imagenIconosEdificios = juego->getContenedorRecursos()->getImagenUtilTipo(HERRAMIENTAS_ALDEANO);
 	int ancho_imagen = imagenIconosEdificios->getPixelsX();
 	int alto_imagen = 30;
-	int cant_iconos = 4;
+	int cant_iconos = 2; // (CUARTEL , BARRACA_ARQUERO)
 	int ancho_icono = ancho_imagen / cant_iconos;
 	int x_icono = 30;
 	int y_icono = juego->getDimensionVentana().second - juego->getBarraEstado()->getDimension().second + 40;
-	int edificio_int = (int)BARRACK_1;
+	int edificio_int = (int)CUARTEL;
 	// Va a recorrer BARRACK_1, BARRACK_2, BARRACK_3, CUARTEL (edificios que puede construír)
 	for (int i = 0; i < cant_iconos; i++){
 		if (c_mouse.x > x_icono &&
@@ -131,6 +131,55 @@ TipoEntidad iconoSeleccionado(Mouse* mouse, Juego* juego){
 		}
 		x_icono += ancho_icono;
 		edificio_int++;
+	}
+	return tipo;
+}
+
+TipoEntidad iconoSeleccionado(Mouse* mouse, Juego* juego){
+	TipoEntidad tipo = DEFAULT;
+	Coordenada c_mouse = mouse->getXY();
+	Imagen* imagenIconos = NULL;
+	int cant_iconos;
+	int index;
+	TipoEntidad tipoEntidadSeleccionada = juego->getBarraEstado()->getEntidadActualEnBarra()->getTipo();
+	switch (tipoEntidadSeleccionada){
+	case ALDEANO:
+				imagenIconos = juego->getContenedorRecursos()->getImagenUtilTipo(HERRAMIENTAS_ALDEANO);
+				index = (int)CUARTEL;
+				cant_iconos = 2;
+				break;
+
+	case CENTRO_CIVICO :
+	case CUARTEL:
+	case BARRACK :
+				imagenIconos = juego->getContenedorRecursos()->getImagenUtilTipo(ARCO_ARQUERO);
+				if (tipoEntidadSeleccionada == CENTRO_CIVICO) index = (int)ALDEANO;
+				else if (tipoEntidadSeleccionada == CUARTEL) index = (int)SOLDADO;
+				else index = (int)ARQUERO;
+				cant_iconos = 1;
+				break;
+
+	default :
+			return DEFAULT;
+			break;
+	}
+	int ancho_imagen = imagenIconos->getPixelsX();
+	int alto_imagen = 30;
+	int ancho_icono = ancho_imagen / cant_iconos;
+	int x_icono = 30;
+	int y_icono = juego->getDimensionVentana().second - juego->getBarraEstado()->getDimension().second + 40;
+	// Va a recorrer CUARTEL , BARRACK (edificios que puede construír) ó
+	//				 ALDEANO, ARQUERO, SOLDADO
+	for (int i = 0; i < cant_iconos; i++){
+		if (c_mouse.x > x_icono &&
+			c_mouse.x < x_icono + ancho_icono &&
+			c_mouse.y > y_icono &&
+			c_mouse.y < y_icono + alto_imagen){
+			tipo = (TipoEntidad)index;
+			break;
+		}
+		x_icono += ancho_icono;
+		index++;
 	}
 	return tipo;
 }
@@ -150,18 +199,30 @@ void ControladorMouse::procesarClickIzquierdo(Mouse* mouse){
 	}else{
 		// CASO CLICK EN LA BARRA DE ESTADO (si selecciona icono de edificio a contruír)
 		BarraEstado* barra = juego->getBarraEstado();
-		// TODO Hardcodeo mal (para procesar si se quiere contruír)
-		if (barra->getEntidadActualEnBarra() != NULL && barra->getEntidadActualEnBarra()->getTipo() == ALDEANO){
-			TipoEntidad edificioAConstruir = iconoSeleccionado(mouse,juego);
-			if (edificioAConstruir != DEFAULT){
-				std::cout << "se eligió un edificio para contruír : "<<edificioAConstruir<<"\n";
-				// TODO debería crearse una entidad tipo CONSTRUCCIÓN y cuando finalice convertirlo a edificio
-				if (escenario->getEntidadTemporal() != NULL) delete escenario->getEntidadTemporal();
-				Entidad* entidadConstruccion = new Edificio(edificioAConstruir,juego->getIDJugador());
-				entidadConstruccion->setTam(4,4); //hardcodeo prueba
-				juego->getEscenario()->iniciarEntidadTemporal(entidadConstruccion);
-				mouse->setearMoviendoImagen(true);
+		// TODO Hardcodeo mal (para procesar si se quiere contruír ó crear nueva unidad)
+		if (barra->getEntidadActualEnBarra() != NULL){
+
+			TipoEntidad tipoEntidadSeleccion = barra->getEntidadActualEnBarra()->getTipo();
+			if (barra->getEntidadActualEnBarra()->esUnidad() && tipoEntidadSeleccion == ALDEANO){
+				TipoEntidad edificioAConstruir = iconoSeleccionado(mouse,juego);
+				if (edificioAConstruir != DEFAULT){
+					std::cout << "se eligió un edificio para contruír : "<<edificioAConstruir<<"\n";
+					// TODO debería crearse una entidad tipo CONSTRUCCIÓN y cuando finalice convertirlo a edificio
+					if (escenario->getEntidadTemporal() != NULL) delete escenario->getEntidadTemporal();
+					Entidad* entidadConstruccion = new Edificio(edificioAConstruir,juego->getIDJugador());
+					entidadConstruccion->setTam(4,4); //hardcodeo prueba
+					juego->getEscenario()->iniciarEntidadTemporal(entidadConstruccion);
+					mouse->setearMoviendoImagen(true);
+				}
+			}else{
+				// Es un edificio
+				TipoEntidad unidadACrear = iconoSeleccionado(mouse,juego);
+				if (unidadACrear != DEFAULT){
+					juego->crearNuevaUnidadApartirDeEdificioSeleccionado(unidadACrear);
+				}
+
 			}
+
 		}
 	}
 }

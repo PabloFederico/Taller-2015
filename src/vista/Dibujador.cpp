@@ -264,40 +264,23 @@ void Dibujador::dibujarEfectosTraslucidos(Coordenada c, Escenario* escenario){
 
 	switch (entidad->getTipo()){
 			case CUARTEL:
-			case CENTRO_CIVICO :
 							posicion.x -= DISTANCIA_ENTRE_X * (this->mapInfoEntidades[entidad->getTipo()].ancho - 1);
 							posicion.y = posicion.y - ALTO_PIXEL_PASTO +  DISTANCIA_ENTRE_Y / 4;
 							posicion.w = ANCHO_PIXEL_PASTO * this->mapInfoEntidades[entidad->getTipo()].ancho;
 							posicion.h = ALTO_PIXEL_PASTO * this->mapInfoEntidades[entidad->getTipo()].alto + (ALTO_PIXEL_PASTO -  DISTANCIA_ENTRE_Y / 2);
-							if (lugarHabilitado && entidad->getTipo() == CUARTEL)
+							if (lugarHabilitado)
 								imagenTraslucida = contenedor->getImagenUtilTipo(CUARTEL_TRANS);
 							else imagenTraslucida = contenedor->getImagenUtilTipo(CUARTEL_ROJIZO);
 							break;
 
-			case BARRACK_1 :
-			case BARRACK_3 :
+			case BARRACK :
 							posicion.x -= (DISTANCIA_ENTRE_X * (this->mapInfoEntidades[entidad->getTipo()].ancho - 1)) - DISTANCIA_ENTRE_X * 0.25;
 							posicion.y -= 2*ALTO_PIXEL_PASTO;
 							posicion.w = ANCHO_PIXEL_PASTO * this->mapInfoEntidades[entidad->getTipo()].ancho;
 							posicion.h = 30 + ALTO_PIXEL_PASTO * this->mapInfoEntidades[entidad->getTipo()].alto + (ALTO_PIXEL_PASTO -  DISTANCIA_ENTRE_Y / 2);
-							if (lugarHabilitado){
-								if (entidad->getTipo() == BARRACK_1)
-									imagenTraslucida = contenedor->getImagenUtilTipo(BARRACK_1_TRANS);
-								else imagenTraslucida = contenedor->getImagenUtilTipo(BARRACK_3_TRANS);
-							}else{
-								if (entidad->getTipo() == BARRACK_1)
-									imagenTraslucida = contenedor->getImagenUtilTipo(BARRACK_1_ROJIZO);
-								else imagenTraslucida = contenedor->getImagenUtilTipo(BARRACK_3_ROJIZO);
-							}
-							break;
-			case BARRACK_2 :
-							posicion.x -= (DISTANCIA_ENTRE_X * (this->mapInfoEntidades[entidad->getTipo()].ancho - 1));// + DISTANCIA_ENTRE_X * 0.25);
-							posicion.y -= 2*ALTO_PIXEL_PASTO;
-							posicion.w = ANCHO_PIXEL_PASTO * this->mapInfoEntidades[entidad->getTipo()].ancho + 20;
-							posicion.h = 40 + ALTO_PIXEL_PASTO * this->mapInfoEntidades[entidad->getTipo()].alto + (ALTO_PIXEL_PASTO -  DISTANCIA_ENTRE_Y / 2);
 							if (lugarHabilitado)
-								imagenTraslucida = contenedor->getImagenUtilTipo(BARRACK_2_TRANS);
-							else imagenTraslucida = contenedor->getImagenUtilTipo(BARRACK_2_ROJIZO);
+								imagenTraslucida = contenedor->getImagenUtilTipo(BARRACK_TRANS);
+							else imagenTraslucida = contenedor->getImagenUtilTipo(BARRACK_ROJIZO);
 							break;
 			default : break;
 	}
@@ -344,6 +327,7 @@ void Dibujador::dibujarBarraEstado(Escenario* esc, BarraEstado* barraEstado, TTF
 			case ALDEANO:
 						 image = contenedor->getImagenUtilTipo(HERRAMIENTAS_ALDEANO);
 						 rect.w = image->getPixelsX();
+						 rect.h = 40;
 						 break;
 			case SOLDADO:
 						 image = contenedor->getImagenUtilTipo(ESPADA_SOLDADO);
@@ -352,24 +336,13 @@ void Dibujador::dibujarBarraEstado(Escenario* esc, BarraEstado* barraEstado, TTF
 						 image = contenedor->getImagenUtilTipo(ARCO_ARQUERO);
 						 break;
 			case CUARTEL:
-						 image = contenedor->getImagenTipo(CUARTEL);
-						 rect.w = 40;
-						 rect.h = 50;
+						 image = contenedor->getImagenUtilTipo(ESPADA_SOLDADO);
 						 break;
-			case BARRACK_1:
-						 image = contenedor->getImagenTipo(BARRACK_1);
-						 rect.w = 40;
-						 rect.h = 50;
+			case BARRACK:
+						 image = contenedor->getImagenUtilTipo(ARCO_ARQUERO);
 						 break;
-			case BARRACK_2:
-						 image = contenedor->getImagenTipo(BARRACK_2);
-						 rect.w = 40;
-						 rect.h = 50;
-						 break;
-			case BARRACK_3:
-						 image = contenedor->getImagenTipo(BARRACK_3);
-						 rect.w = 40;
-						 rect.h = 50;
+			case CENTRO_CIVICO:
+						 image = contenedor->getImagenUtilTipo(ARMA_ALDEANO);
 						 break;
 			default : break;
 		}// Fin switch
