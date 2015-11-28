@@ -15,7 +15,7 @@ private:
 	TipoEntidad tipoEdif;
 	int progresoPorc;
 public:
-	Construccion(TipoEntidad tipo, int id_jug);
+	Construccion(TipoEntidad tipo, int id_jug, int identificador = 0);
 	bool esConstruccion();
 	void continuarConstruyendo();
 	std::string getInfo();

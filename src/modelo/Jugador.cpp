@@ -23,6 +23,8 @@ Jugador::Jugador(std::string nombre, int id) {
 		mapRecursosEconomicos[(TipoEntidad)i] = 0;
 }
 
+/********************************************************************************/
+
 int Jugador::getID(){
 	return id_jug;
 }
@@ -30,8 +32,25 @@ int Jugador::getID(){
 void Jugador::agregarEntidadSeleccionada(Entidad* entidad){
 	if (entidad->esUnidad())
 		unidadesSeleccionadas.push_back((Unidad*)entidad);
-	else edificioSeleccionado = (Edificio*)entidad;
+	else if (entidad->esEdificio())
+		edificioSeleccionado = (Edificio*)entidad;
+	//else el resto se ignoran majestuosamente
 }
+
+// Devuelve entidad propia de dni identificador, o NULL en caso de no encontrarla.
+Entidad* Jugador::getEntidad(TipoEntidad tipo, int identificador) {
+	if (EsUnidad(tipo)) {
+		std::map<int,Unidad* >::iterator it = unidades.find(identificador);
+		if (it != unidades.end())
+			return (*it).second;
+	} else if (EsEdificio(tipo)) {
+		std::map<int,Edificio*>::iterator it = edificios.find(identificador);
+		if (it != edificios.end())
+			return (*it).second;
+	}
+	return NULL;
+}
+
 /*
 void Jugador::agregarUnidadSeleccionada(Unidad* unidad){
 	unidadesSeleccionadas.push_back(unidad);
@@ -57,19 +76,8 @@ void Jugador::agregarCentroCivico(CentroCivico* centro){
 	centroCivico = centro;
 }
 
-void Jugador::agregarNuevaUnidad(Unidad* nuevaUnidad){
-	contador_dni_unidades++;
-	unidades[contador_dni_unidades] = nuevaUnidad;
-	nuevaUnidad->set_id_jugador(id_jug);
-	nuevaUnidad->set_identificador(contador_dni_unidades);
-	if (unidadActiva == NULL){
-		unidadActiva = nuevaUnidad;
-	}
-	vec_unidades.push_back(nuevaUnidad);
-}
-
-void Jugador::agregarRecursoEconomico(TipoEntidad tipo, int cant) {
-	mapRecursosEconomicos[tipo] += cant;
+vector<Unidad*> Jugador::getUnidades(){
+	return vec_unidades;
 }
 
 std::map<TipoEntidad,int> Jugador::getMapRecursosEconomicos() {
@@ -84,64 +92,49 @@ CentroCivico* Jugador::getCentroCivico(){
 	return centroCivico;
 }
 
-void Jugador::agregarNuevoEdificio(Edificio* edificio, int idJug = -1){
-	if (idJug == -1)
-		idJug = this->id_jug;
-	contador_dni_edificios++;
+/********************************************************************************/
+/***				Jugador solo concierne al jugador local					  ***/
+
+void Jugador::agregarNuevaUnidad(Unidad* nuevaUnidad){
+	// El caso más común es que todavía esté en 0, pero esto abarca muchos casos.
+	if (nuevaUnidad->get_identificador() <= contador_dni_unidades)
+		contador_dni_unidades++;
+	else
+		contador_dni_unidades = nuevaUnidad->get_identificador();
+	int id = contador_dni_unidades;
+
+	unidades[id] = nuevaUnidad;
+	nuevaUnidad->set_id_jugador(id_jug);
+	nuevaUnidad->set_identificador(id);
+//	if (unidadActiva == NULL){
+//		unidadActiva = nuevaUnidad;
+//	}
+	vec_unidades.push_back(nuevaUnidad);
+}
+
+void Jugador::agregarNuevoEdificio(Edificio* edificio) {
+	// El caso más común es que todavía esté en 0, pero esto abarca muchos casos.
+	if (edificio->get_identificador() <= contador_dni_edificios)
+		contador_dni_edificios++;
+	else contador_dni_edificios = edificio->get_identificador();
 	int id = contador_dni_edificios;
+
 	edificios[id] = edificio;
-	edificio->set_id_jugador(idJug);
+	edificio->set_id_jugador(this->id_jug);
 	edificio->set_identificador(id);
 }
 
-Edificio* Jugador::terminarConstruccion(ConstruccionTermino c) {	/// SOLO LOCALES !!!
-	Edificio *construc = edificios[c.dni];
-	construc->morir();
-	delete construc;
-	edificios.erase(c.dni);
-
-	Edificio *nuevoEdificio = new Edificio(c.tipoEdif, c.idJug, c.dni);
-	nuevoEdificio->set_identificador(c.dni);
-	nuevoEdificio->set_id_jugador(c.idJug);
-	nuevoEdificio->setPosicion(Coordenada(c.x,c.y));
-	nuevoEdificio->sufrirGolpe(100 - c.vidaRestante); // hardcodeo de vida inicial de construcción
-	edificios[c.dni] = nuevoEdificio;
-	return nuevoEdificio;
+void Jugador::guardarConstruccionTerminada(Edificio* edifRecienRecienInaugurado) {
+	int dni = edifRecienRecienInaugurado->get_identificador();
+	this->edificios.erase(dni);
+	this->edificios[dni] = edifRecienRecienInaugurado;
 }
 
-vector<Unidad*> Jugador::getUnidades(){
-	return vec_unidades;
+void Jugador::agregarRecursoEconomico(TipoEntidad tipo, int cant) {
+	mapRecursosEconomicos[tipo] += cant;
 }
 
-void Jugador::interaccionesDeUnidades(Escenario* escenario, ContenedorDeRecursos* contenedor, Coordenada coord_ceros) {
-	for (std::vector<Unidad*>::iterator uniIt = this->vec_unidades.begin(); uniIt < this->vec_unidades.end(); ++uniIt) {
-		try {
-			(*uniIt)->interactuar();
-
-		} catch ( Recoleccion &r ) {
-			agregarRecursoEconomico(r.tipo, r.cant);
-
-		} catch ( UnidadDebeAcercarse &u ) {
-			Sprite *sprite = contenedor->getSpriteDeEntidad(*uniIt);
-			if (!sprite->estaEnMovimiento()) {
-				Coordenada pos_tile_sprite = Calculador::tileParaPixel(sprite->getPosPies(), coord_ceros);
-				Camino cam = Calculador::obtenerCaminoMinParaAcercarse(escenario, pos_tile_sprite, Coordenada(u.x,u.y), coord_ceros, (*uniIt)->getRangoAccion());
-				sprite->setearNuevoCamino(cam, coord_ceros);
-			}
-
-		} catch ( ConstruccionTermino &c ) {
-			Entidad *muerto = edificios[c.dni];
-			std::cout << muerto->enc()<<" construccion terminada"<<std::endl;//
-			escenario->quitarEntidad(muerto->getPosicion(), muerto);
-			contenedor->borrarSpriteDeEntidad(muerto);
-			//Falta algo todo?
-
-			Edificio* edif = terminarConstruccion(c);					/// SOLO LOCALES !!!
-			contenedor->generarYGuardarSpriteEntidad(edif, coord_ceros, escenario);
-			escenario->agregarEntidad(edif->getPosicion(), edif);
-		}
-	}
-}
+/********************************************************************************/
 
 void Jugador::limpiarSeleccionDeUnidadMuerta(Unidad* moribundo) {
 	for (vector<Unidad*>::iterator itAux = unidadesSeleccionadas.begin(); itAux < unidadesSeleccionadas.end(); ++itAux)
@@ -180,9 +173,7 @@ vector<Entidad*> Jugador::revisarMuertosPropios() {
 }
 
 Jugador::~Jugador() {
-	//for (unsigned i = 0; i < vec_unidades.size(); i++){
-	//	delete vec_unidades[i];
-	//}
+	this->vec_unidades.clear();
 	mapRecursosEconomicos.clear();
 	delete centroCivico;
 }

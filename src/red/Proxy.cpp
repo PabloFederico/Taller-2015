@@ -34,26 +34,26 @@ TipoMensajeRed Proxy::actualizarMultiplayer(Juego* juego) {
 			switch (tipo) {
 			case MENSAJE: procesarMensaje(unContenido);
 				break;
-			case PING: //juego->getConnection()->revisarPing();
-				break;
 			case COMIENZO: procesarNombre(juego, unContenido);
 				break;
 			case ESCENARIO: procesarEscenario(juego, unContenido);
+				break;
+			case NUEVA_ENTIDAD: procesarNuevaEntidad(juego, unContenido);
+				break;
+			case INTERACCION:
 				break;
 			case MOVIMIENTO: procesarCamino(juego, unContenido);
 				break;
 			case PASO_COMPLETO:
 				break;
-			case NUEVA_ENTIDAD: procesarNuevaEntidad(juego, unContenido);
-				break;
-			case RECURSO: procesarRecurso(juego, unContenido);
-				break;
-			case TOGGLE: procesarToggle(juego, unContenido);
-				break;
-			case ATAQUE:
-				break;
-			case GLOTON: procesarRecursoComido(juego, unContenido);
-				break;
+			//case RECURSO: procesarRecurso(juego, unContenido);
+			//	break;
+			//case TOGGLE: procesarToggle(juego, unContenido);
+			//	break;
+			//case GLOTON: procesarRecursoComido(juego, unContenido);
+			//	break;
+			//case PING: //juego->getConnection()->revisarPing();
+			//	break;
 			case FIN:
 				break;
 			}
@@ -96,28 +96,28 @@ void Proxy::procesarNuevaEntidad(Juego* juego, string encodeado) {
 	} catch ( FueraDeEscenario &e ) { Log::imprimirALog(WAR, "Enemigo fuera del escenario"); }
 }
 
-void Proxy::procesarRecurso(Juego* juego, string encodeado) {
-	string posEnc;
-	int nTipo = Red::extraerNumeroYResto(encodeado, &posEnc);
-	juego->agregarRecurso(TipoEntidad(nTipo), Coordenada::dec(posEnc));
-}
+//void Proxy::procesarRecurso(Juego* juego, string encodeado) {
+	//string posEnc;
+	//int nTipo = Red::extraerNumeroYResto(encodeado, &posEnc);
+	//juego->agregarRecurso(TipoEntidad(nTipo), Coordenada::dec(posEnc));
+//}
 
-void Proxy::procesarRecursoComido(Juego* juego, string posEnc) {
-	Coordenada c = Coordenada::dec(posEnc);
-	try {
-		Entidad* recurso = juego->getEscenario()->getTile(c)->devolverRecurso();
+//void Proxy::procesarRecursoComido(Juego* juego, string posEnc) {
+//	Coordenada c = Coordenada::dec(posEnc);
+//	try {
+//		Entidad* recurso = juego->getEscenario()->getTile(c)->devolverRecurso();
 
 		// Elimina el sprite del recurso
-		Map<Entidad*,Sprite*>* mapaSprites = juego->getSpritesEntidades();
-		map<Entidad*,Sprite*>::iterator p = mapaSprites->find(recurso);
-		if (p != mapaSprites->end()){
-			delete p->second;
-			mapaSprites->erase(recurso);
-		}
+//		Map<Entidad*,Sprite*>* mapaSprites = juego->getSpritesEntidades();
+		//map<Entidad*,Sprite*>::iterator p = mapaSprites->find(recurso);
+		//if (p != mapaSprites->end()){
+		//	delete p->second;
+		//	mapaSprites->erase(recurso);
+		//}
 
-		juego->getEscenario()->quitarRecurso(c, recurso);
-	} catch ( NoTieneRecurso &e ) {}
-}
+		//juego->getEscenario()->quitarRecurso(c, recurso);
+//	} catch ( NoTieneRecurso &e ) {}
+//}
 
 void Proxy::procesarToggle(Juego* juego, string encodeado) {
 	string aux;

@@ -16,12 +16,12 @@ using namespace std;
 
 Unidad::Unidad(TipoEntidad tipo, int id_jug, int dni): Entidad(tipo,id_jug) {
 	this->dni = dni;
-	this->rangoAccion = 1; // tiles de alcance, hardcodeado
-	petrificado = false;
+	//petrificado = false;
 	ostringstream ssInfo;
 	ssInfo << info<<" (Jugador "<<id_jug<<")";
 	info = ssInfo.str();
 
+	this->rangoAccion = 1; // tiles de alcance, hardcodeado
 	if (tipo == ARQUERO)
 		this->rangoAccion = 3; // hardcodeado
 }
@@ -126,7 +126,7 @@ int Unidad::recolectar(Entidad* recurso) {
 
 
 void Unidad::set_id_jugador(int nuevoDuenio){
-	idJug = nuevoDuenio;
+	this->idJug = nuevoDuenio;
 }
 
 int Unidad::get_identificador(){
@@ -153,17 +153,17 @@ bool Unidad::esConstructor() {
 	return (tipo == ALDEANO);
 }
 
-bool Unidad::estaPetrificado(){
-	return petrificado;
-}
+//bool Unidad::estaPetrificado(){
+//	return petrificado;
+//}
 
-void Unidad::petrificar(){
-	petrificado = true;
-}
+//void Unidad::petrificar(){
+//	petrificado = true;
+//}
 
-void Unidad::despetrificar(){
-	petrificado = false;
-}
+//void Unidad::despetrificar(){
+//	petrificado = false;
+//}
 
 void Unidad::cambioEstado(EstadoEntidad est) {
 	this->estado = est;

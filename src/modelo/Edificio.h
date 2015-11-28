@@ -10,8 +10,6 @@
 #include "../modelo/Entidad.h"
 
 class Edificio: public Entidad {
-protected:
-	int dni;
 
 public:
 	Edificio(TipoEntidad tipo, int id_jug, int dni = 0);

@@ -13,10 +13,9 @@
 #include "../utils/Constantes.h"
 
 class Unidad: public Entidad {
-private:
-	int dni;
+protected:
 	int rangoAccion;
-	bool petrificado;
+	//bool petrificado;
 
 public:
 	Unidad(TipoEntidad tipo, int id_jug, int dni = 0);
@@ -39,9 +38,9 @@ public:
 	int get_identificador();
 	int getRangoAccion();
 
-	bool estaPetrificado();
-	void petrificar();
-	void despetrificar();
+	//bool estaPetrificado();
+	//void petrificar();
+	//void despetrificar();
 
 	//void olvidarInteraccion();
 

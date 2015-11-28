@@ -22,6 +22,7 @@ class Entidad {
 protected:
 	TipoEntidad tipo;
 	int idJug;
+	int dni;
 
 	int armadura;
 	int ataque;
@@ -37,13 +38,14 @@ protected:
 	clock_t reloj;
 
 public:
-	Entidad(TipoEntidad tipo, int num_jug = 0);
+	Entidad(TipoEntidad tipo, int num_jug = 0, int identificador = 0);
 
 	TipoEntidad getTipo();
 	EstadoEntidad getEstado();
 	int getVidaRestante();
 	void setVidaRestante(int valor);
 	int getIDJug();
+	int get_identificador();
 	bool perteneceAJugador(int id_jug);
 
 	virtual void cambioEstado(EstadoEntidad est);

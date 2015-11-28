@@ -7,7 +7,7 @@
 
 #include "Edificio.h"
 
-Edificio::Edificio(TipoEntidad tipo, int id_jug, int dni):Entidad(tipo,id_jug) {
+Edificio::Edificio(TipoEntidad tipo, int id_jug, int dni): Entidad(tipo,id_jug) {
 	this->dni = dni;
 }
 

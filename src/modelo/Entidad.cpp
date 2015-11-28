@@ -7,10 +7,11 @@
 
 #include "../modelo/Entidad.h"
 
-Entidad::Entidad(TipoEntidad tipo, int num_jug): idJug(num_jug) {
+Entidad::Entidad(TipoEntidad tipo, int num_jug, int identificador): idJug(num_jug), dni(identificador) {
 	this->reloj = clock();
 	this->receptor = NULL;
 	this->coordMasProximaDelReceptor = NULL;
+
 	this->estado = QUIETO;
 	this->vidaRestante = 1;
 	this->armadura = 0;
@@ -159,7 +160,11 @@ Entidad::Entidad(TipoEntidad tipo, int num_jug): idJug(num_jug) {
 }
 
 int Entidad::getIDJug(){
-	return idJug;
+	return this->idJug;
+}
+
+int Entidad::get_identificador() {
+	return this->dni;
 }
 
 bool Entidad::perteneceAJugador(int id_jug) {

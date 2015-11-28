@@ -40,7 +40,7 @@ private:
 	
 	Escenario *escenario;
 
-	vector<Unidad*  >* unidadesEnemigos;
+	vector<Unidad*>*   unidadesEnemigos;
 	vector<Edificio*>* edificiosEnemigos;
 
 	ContenedorDeSonidos *contenedorSonidos;
@@ -79,17 +79,13 @@ public:
 	void cargarNumJugador();
 	void cargarEnemigo(Entidad* enemigo);
 
+	vector<Sprite*> getSpritesUnidades();
 	Map<Entidad*, Sprite*>* getSpritesEntidades();
 	vector<InfoEntidad> getInfoTiposEntidades();
 
-	//Sprite* getSpritePlayer();
-	Sprite* getSpritePlayer(int idJug, int identificador);
-
+	Entidad* getEntidad(TipoEntidad tipo, int id_jug, int identificador);
 	Sprite* getSpriteDeEntidad(Entidad* entidad);
-
 	Entidad* getEntidadDeSprite(Sprite* spr);
-
-	vector<Sprite*> getSpritesUnidades();
 
 	//PosEntidad getPosEntDeProtagonista();
 
@@ -111,18 +107,24 @@ public:
 
 	ContenedorDeRecursos* getContenedorRecursos();
 
-	void comenzarNuevaConstruccion(TipoEntidad tipoEdif, Coordenada coord, int id_jug);
-	void crearNuevaUnidad(TipoEntidad tipoUnid, Coordenada coord, int id_jug);
-	void agregarRecurso(TipoEntidad recurso, Coordenada coord);
+	Unidad* crearNuevaUnidad(TipoEntidad tipoUnid, Coordenada coord, int id_jug, int id_unidad = 0);
+	Construccion* comenzarNuevaConstruccion(TipoEntidad tipoEdif, Coordenada coord, int id_jug, int id_edificio = 0);
+	Edificio* crearNuevoEdificio(TipoEntidad tipoEdif, Coordenada coord, int id_jug, int id_edificio = 0);
+	Entidad* agregarRecurso(TipoEntidad recurso, Coordenada coord, int id_recurso = 0);
 
-	void reemplazarEntidadPorRecurso(Entidad* entidad, Coordenada coord);
+	void iniciarInteraccionEntre(Entidad* ejecutor, Entidad* receptor);
+	void iniciarInteraccionEntre(TipoEntidad tipo_ejecutor, int idJug_ejecutor, int dni_ejecutor,
+								 TipoEntidad tipo_receptor, int idJug_receptor, int dni_receptor);
 
-	void toggleEnemigo(int id_jug, int idUnidad);
+	void reemplazarEntidadPorRecurso(Entidad* entidad);
 
+	Edificio* terminarConstruccion(ConstruccionTermino c);
+	void interaccionesDeUnidades();
 	void continuar();
 
 	void emitirSonido(Entidad* entidad);
 
+	//void toggleEnemigo(int id_jug, int idUnidad);
 	void reiniciar();
 	virtual ~Juego();
 };

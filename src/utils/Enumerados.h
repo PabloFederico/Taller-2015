@@ -28,7 +28,7 @@ enum TipoImagenUnidadEstado { ALDEANO_ATACANDO, ALDEANO_QUIETO, ALDEANO_MURIENDO
 						SOLDADO_ATACANDO, SOLDADO_QUIETO, SOLDADO_MURIENDO,
 						ARQUERO_ATACANDO, ARQUERO_QUIETO, ARQUERO_MURIENDO};
 
-enum TipoMensajeRed { MENSAJE, PING, COMIENZO, ESCENARIO, MOVIMIENTO, PASO_COMPLETO, NUEVA_ENTIDAD, RECURSO, TOGGLE, ATAQUE, GLOTON, FIN /*...*/};
+enum TipoMensajeRed { MENSAJE, COMIENZO, ESCENARIO, MOVIMIENTO, PASO_COMPLETO, NUEVA_ENTIDAD, INTERACCION,/*PING, RECURSO, TOGGLE,  GLOTON,*/ FIN /*...*/};
 
 enum TipoBoton { BOTON_NADA, BOTON_NAME, BOTON_NUEVA_PARTIDA, BOTON_SELECTOR_ESCENARIO, BOTON_CARGAR_PARTIDA, BOTON_EXIT };
 
@@ -55,16 +55,16 @@ inline const char* LogToString(TipoLog v){
 
 inline const TipoMensajeRed StringToTipoMensajeRed(std::string s) {
 	if (s == "MSJ")	return MENSAJE;
-	if (s == "PNG") return PING;
+	//if (s == "PNG") return PING;
 	if (s == "COM")	return COMIENZO;
 	if (s == "ESC")	return ESCENARIO;
 	if (s == "MOV")	return MOVIMIENTO;
 	if (s == "PAS") return PASO_COMPLETO;
 	if (s == "ENT")	return NUEVA_ENTIDAD;
-	if (s == "REC") return RECURSO;
-	if (s == "TOG") return TOGGLE;
-	if (s == "GLO") return GLOTON;
-	if (s == "ATQ")	return ATAQUE;
+	//if (s == "REC") return RECURSO;
+	//if (s == "TOG") return TOGGLE;
+	//if (s == "GLO") return GLOTON;
+	if (s == "INT")	return INTERACCION;
 	if (s == "FIN") return FIN;
 	else return MENSAJE;
 }

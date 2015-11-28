@@ -9,7 +9,7 @@
 
 
 Escenario::Escenario(InfoEscenario infoEsc, EntidadFactory *fabrica, vector<Unidad*>* unidadesMalvadas, vector<Edificio*>* edificiosMalvados):
-		fabricaDeEntidades(fabrica), unidadesEnemigos(unidadesMalvadas), edificiosEnemigos(edificiosMalvados) {
+		fabricaDeEntidades(fabrica)/*, unidadesEnemigos(unidadesMalvadas), edificiosEnemigos(edificiosMalvados)*/ {
 	this->size_x = infoEsc.size_x;
 	this->size_y = infoEsc.size_y;
 
@@ -74,6 +74,15 @@ vector<Entidad*>* Escenario::getVectorEntidades(){
 }
 
 /********************************************************************************/
+Entidad* Escenario::getRecurso(/*TipoEntidad tipo, */int identificador) {
+	for (vector<Entidad*>::iterator it = this->posicionesEntidades->begin(); it < this->posicionesEntidades->end(); ++it) {
+		if ((*it)->get_identificador() == identificador)
+			return (*it);
+	}
+	return NULL;
+}
+
+/********************************************************************************/
 void Escenario::actualizarPosicionParaEntidad(Coordenada c, Entidad* entidad){
 	/* Si las coordenadas no son iguales, actualizar la coordenada de cualquier entidad */
 	if (entidad->getPosicion() != c) {
@@ -81,7 +90,7 @@ void Escenario::actualizarPosicionParaEntidad(Coordenada c, Entidad* entidad){
 		try {
 			if (tile != NULL)
 				tile->eliminarEntidad(entidad);
-		} catch ( NoSeRecibio &e ) {}
+		} catch ( NoSeRecibio &e ) { Log::imprimirALog(ERR, "No se encontró entidad en posición buscada, se creó una repetida?"); }
 
 		/* agregamos la entidad a su nuevo tile */
 		tile = getTile(c.x, c.y);
@@ -95,29 +104,6 @@ void Escenario::actualizarPosicionParaEntidad(Coordenada c, Entidad* entidad){
 void Escenario::actualizarPosicionEnemigo(Entidad* ent, Coordenada c) {
 	/* Si las coordenadas no son iguales, actualizar la coordenada del enemigo */
 	actualizarPosicionParaEntidad(c,ent);
-	/*
-	if (!coordEnEscenario(c))
-		throw FueraDeEscenario();
-	vector<PosEntidad>::iterator it;
-	for (it = enemigos->begin(); it < enemigos->end(); ++it)
-		if (it->entidad == ent)
-			break;
-	if (it != enemigos->end() && it->coord() != c) {
-		try {
-			Tile* tile = getTile(it->coord());
-			if (!tile) return;
-			try {
-				tile->eliminarEntidad(ent);
-			} catch ( NoSeRecibio &e ) {}
-			tile = getTile(c.x, c.y);
-			tile->agregarEntidad(ent);
-			it->x = c.x;
-			it->y = c.y;
-		} catch ( NoSeRecibio &e ) {
-			std::cerr << "No estaba ahí, campeón."<<std::endl;
-		}
-	}
-	*/
 }
 
 /********************************************************************************/
@@ -160,11 +146,8 @@ bool Escenario::agregarEntidad(Coordenada pos, Entidad* entidad){
 				else tile->agregarEntidad(entidad);
 			}
 		}
-		// NOT TRUE ANYMORE: Los recursos se manejan por separado, no se agregan y se borran desde el tile.
-		//if (!EsRecurso(entidad->getTipo())) {
-			//PosEntidad posEntidad(pos, entidad);
-			//this->posicionesEntidades->push_back(posEntidad);
-			posicionesEntidades->push_back(entidad);
+		// Se guardan en posicionesEntidades todas las entidades agregadas al mapa. No se lo limpia TODO
+		posicionesEntidades->push_back(entidad);
 		//}
 	} catch ( TileEstaOcupado &e ) {
 		Log::imprimirALog(ERR,"Se intentó agregar una entidad en un tile ocupado");
@@ -174,28 +157,29 @@ bool Escenario::agregarEntidad(Coordenada pos, Entidad* entidad){
 }
 
 /********************************************************************************/
-// Hace DELETE de la posición de memoria, por lo que el puntero pasado no se debe seguir usando!!!
-void Escenario::quitarEntidad(Coordenada pos, Entidad* entidad) {
+void Escenario::quitarEntidad(Entidad* entidad) {
 	// La quita del vector posicionesEntidades.
 	std::vector<Entidad*>::iterator it = std::find(this->posicionesEntidades->begin(), this->posicionesEntidades->end(), entidad);
 	if (it != this->posicionesEntidades->end()) {
 		this->posicionesEntidades->erase(it);
 	}
 	// La quita de los Tile que ocupaba.
+	Coordenada pos = entidad->getPosicion();
 	pair<int,int> dim = entidad->getTam();
-	for (int j = 0; j < dim.second; j++)
+	for (int j = 0; j < dim.second; j++) {
 		for (int i = 0; i < dim.first; i++) {
 			Tile* tile = getTile(pos.x+i, pos.y+j);
-			try {
-				if (tile) tile->eliminarEntidad(entidad);
+			if (tile) try {
+				tile->eliminarEntidad(entidad);
 			} catch ( NoSeRecibio &e ) {}
 		}
+	}
 }
 
 /********************************************************************************/
 bool Escenario::coordEnEscenario(Coordenada c) {
 	if (c.x < 0 || c.y < 0 || c.x >= this->size_x || c.y >= this->size_y)
-			return false;
+		return false;
 	return true;
 }
 
@@ -213,8 +197,8 @@ Entidad* Escenario::obtenerEntidadOcupadoraEnTile(Tile* tile) {
 	vector<Entidad*> entidades = tile->getEntidades();
 	for (unsigned i = 0; i < entidades.size(); i++) {
 		if (entidades[i]->ocupaSuTile()) {
-			 ent = entidades[i];	// Si hay varias (que no debería), queda la última (lo cual es preferible)
-		}
+			 ent = entidades[i];
+		} // Si hay varias (que no debería), queda la última (lo cual es preferible)
 	}
 	return ent;
 }
@@ -258,23 +242,26 @@ Coordenada Escenario::generarCoordenadaRandom(int size_x_final, int size_x_inici
 	x_rand = (rand() % (size_x_final - size_x_inicial)) + size_x_inicial;
 	y_rand = (rand() % (size_y_final - size_y_inicial)) + size_y_inicial;
 
-	return Coordenada(x_rand,y_rand);}
-
-
-void Escenario::quitarRecurso(Coordenada c,Entidad* entidad){
-	Entidad* aux = entidad;
-	quitarEntidad(c,entidad);
-	aux->~Entidad();
+	return Coordenada(x_rand,y_rand);
 }
+
+//void Escenario::quitarRecurso(Coordenada c,Entidad* entidad){
+//	Entidad* aux = entidad;
+//	quitarEntidad(c,entidad);
+//	aux->~Entidad();
+//}
 /********************************************************************************/
 bool Escenario::tieneRecuadroSeleccion(){
 	return (c_tile_ini_recuadro != c_tile_fin_recuadro);
 }
 
-/********************************************************************************/
 void Escenario::agregarCoordenadasRecuadroSeleccion(Coordenada c_inicial, Coordenada c_final){
 	c_tile_ini_recuadro = c_inicial;
 	c_tile_fin_recuadro = c_final;
+}
+
+void Escenario::quitarRecuadroSeleccion(){
+	c_tile_ini_recuadro = c_tile_fin_recuadro;
 }
 
 /********************************************************************************/
@@ -292,12 +279,13 @@ bool Escenario::lugarHabilitadoParaConstruir(Coordenada c, Entidad* entidad){
 	for (int i = c.x; i < c.x + entidad->getTam().first; i++){
 		for (int j = c.y; j < c.y + entidad->getTam().second; j++){
 			Tile* tile = this->matriz_tiles[i][j];
-			if (!tile->estaLibre()) return false;
+			if (!tile || !tile->estaLibre()) return false;
 		}
 	}
 	return true;
 }
 
+/********************************************************************************/
 void Escenario::iniciarEntidadTemporal(Entidad* entidad){
 	entidadTemporal = entidad;
 }
@@ -311,19 +299,13 @@ Entidad* Escenario::getEntidadTemporal(){
 }
 
 /********************************************************************************/
-void Escenario::quitarRecuadroSeleccion(){
-	c_tile_ini_recuadro = c_tile_fin_recuadro;
-}
-
-/********************************************************************************/
 vector<Entidad*> Escenario::revisarMuertosDeNadie() {
 	vector<Entidad*> cuerpos;
 	for (std::vector<Entidad*>::iterator entIt = this->posicionesEntidades->begin(); entIt < this->posicionesEntidades->end(); ++entIt) {
 		if (!(*entIt)->sigueViva() && (*entIt)->getIDJug() == 0) {
-			if (entidadSeleccionada == (*entIt)) entidadSeleccionada = NULL;
+			if (entidadSeleccionada == (*entIt))
+				entidadSeleccionada = NULL;
 			cuerpos.push_back(*entIt);
-			//this->posicionesEntidades->erase(entIt);		//Innecesarias porque se borra en quitarEntidad
-			//entIt = this->posicionesEntidades->begin(); //por las dudas
 		}
 	}
 	return cuerpos;
@@ -333,7 +315,7 @@ vector<Entidad*> Escenario::revisarMuertosDeNadie() {
 Escenario::~Escenario() {
 	for (unsigned i = 0; i < posicionesEntidades->size(); i++){
 		Entidad* entidad = (*posicionesEntidades)[i];
-		delete entidad; // meter en quitarEntidad y reemplazar acá?
+		delete entidad;
 	}
 
 	this->posicionesEntidades->clear();

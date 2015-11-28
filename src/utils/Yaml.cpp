@@ -189,7 +189,7 @@ ConfiguracionJuego Yaml::OdioYAML() {
 		tipos["mina_oro"] = MINA_ORO;
 		tipos["mina_piedra"] = MINA_PIEDRA;
 
-	configDefault.nombreJugador = "JugadorXXX";
+	configDefault.nombreJugador = "Village Slayer";
 	configDefault.direccion_ip = "10.0.0.1";
 	configDefault.ancho_pantalla = 1080;
 	configDefault.alto_pantalla = 640;

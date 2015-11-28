@@ -326,7 +326,7 @@ struct ConfiguracionJuego{
 	vector<InfoEscenario> escenarios;
 
 	ConfiguracionJuego(){
-		nombreJugador = "JugadorXXX";
+		nombreJugador = "Village Slayer";
 		direccion_ip = "127.0.0.1";
 		ancho_pantalla = 640;
 		alto_pantalla = 480;

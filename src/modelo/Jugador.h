@@ -18,19 +18,19 @@ private:
 	std::string nombre;
 	int id_jug;
 
-	int contador_dni_unidades;
-	int contador_dni_edificios;
+	std::map<TipoEntidad,int> mapRecursosEconomicos;
 
-	CentroCivico* centroCivico;
-	std::map<int,Unidad* > unidades;
-	std::vector<Unidad*> vec_unidades;
 	vector<Unidad*> unidadesSeleccionadas;
 	Edificio* edificioSeleccionado;
-	std::map<int,Edificio*> edificios;
-
 	Unidad* unidadActiva;
 
-	std::map<TipoEntidad,int> mapRecursosEconomicos;
+	int contador_dni_unidades;
+	int contador_dni_edificios;
+	std::vector<Unidad*> vec_unidades;
+	std::map<int,Unidad* > unidades;
+	std::map<int,Edificio*> edificios;
+
+	CentroCivico* centroCivico;
 
 public:
 	Jugador(std::string nombre, int id_jug);
@@ -42,6 +42,8 @@ public:
 	int getID();
 
 	void agregarEntidadSeleccionada(Entidad* entidad);
+
+	Entidad* getEntidad(TipoEntidad tipo, int identificador);
 /*
 	void agregarUnidadSeleccionada(Unidad* unidad);
 
@@ -59,8 +61,9 @@ public:
 
 	void agregarNuevaUnidad(Unidad* unidad);
 
-	void agregarNuevoEdificio(Edificio* edificio, int idJug);
-	Edificio* terminarConstruccion(ConstruccionTermino c);
+	void agregarNuevoEdificio(Edificio* edificio);
+	//Edificio* terminarConstruccion(ConstruccionTermino c);
+	void guardarConstruccionTerminada(Edificio* edifRecienRecienInaugurado);
 
 	void agregarRecursoEconomico(TipoEntidad tipo, int cant);
 
@@ -68,7 +71,8 @@ public:
 
 	CentroCivico* getCentroCivico();
 
-	void interaccionesDeUnidades(Escenario* escenario, ContenedorDeRecursos* contenedor, Coordenada coord_ceros);
+	//void interaccionesDeUnidades(Escenario* escenario, ContenedorDeRecursos* contenedor, Coordenada coord_ceros);
+
 	void limpiarSeleccionDeUnidadMuerta(Unidad* moribundo);
 	vector<Entidad*> revisarMuertosPropios();
 

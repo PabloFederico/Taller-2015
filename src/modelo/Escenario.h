@@ -35,8 +35,8 @@ private:
 
 	EntidadFactory* fabricaDeEntidades;
 
-	vector<Unidad*>* unidadesEnemigos;
-	vector<Edificio*>* edificiosEnemigos;
+	//vector<Unidad*>* unidadesEnemigos;
+	//vector<Edificio*>* edificiosEnemigos;
 
 	Entidad* entidadSeleccionada;
 
@@ -64,7 +64,7 @@ public:
 
 	/* Agrega una entidad en una posición indicada como parámetro */
 	bool agregarEntidad(Coordenada pos, Entidad* entidad);
-	void quitarEntidad(Coordenada pos, Entidad* entidad);
+	void quitarEntidad(Entidad* entidad);
 
 	Entidad* getEntidadSeleccionada();
 
@@ -85,9 +85,11 @@ public:
 	Tile* getTile(int x, int y);
 	Tile* getTile(Coordenada c);
 
+	Entidad* getRecurso(/*TipoEntidad tipo, */int identificador);
+
 	static Coordenada generarCoordenadaRandom(int size_x_final, int size_x_inicial, int size_y_final, int size_y_inicial, int seed);
 	void agregarRecurso(TipoEntidad recurso,Coordenada coord_random);
-	void quitarRecurso(Coordenada c,Entidad* entidad);
+	//void quitarRecurso(Coordenada c,Entidad* entidad); Se usa la genérica quitarEntidad();
 
 	void actualizarPosicionEnemigo(Entidad* ent, Coordenada c);
 
