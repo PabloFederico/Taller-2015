@@ -1,15 +1,16 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_mixer.h>
-//#include "../red/Server.h"
+#include "../red/Server.h"
+#include "../red/Client.h"
+#include "../red/Connection.h"
 #include "../controlador/Controller.h"
 #include "../vista/VentanaJuego.h"
 #include "../vista/VentanaConexion.h"
 #include "../vista/VentanaEspera.h"
-//#include "../red/Connection.h"
 
 int main(int argc, char** argv) {
-/*
+
 	Server* server = NULL;
 	Client* lan = NULL;
 	if (argc > 1) {
@@ -22,10 +23,10 @@ int main(int argc, char** argv) {
 				lan = new Client();
 		} catch ( ConnectionProblem &e ) { return -1; }
 	}
-*/
+
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
 		return -1;
-	} else {//if (server == NULL) {
+	} else if (server == NULL) {
 		TTF_Init();
 
 		//Inicializo el Mixer:
@@ -37,7 +38,7 @@ int main(int argc, char** argv) {
 			return -1;
 		}
 
-		Controller *controller = new Controller();//lan);
+		Controller *controller = new Controller(lan);
 
 		VentanaConexion *ventanaConexion = new VentanaConexion(controller);
 		EstadoFinVentana estado = ventanaConexion->run();
@@ -62,8 +63,9 @@ int main(int argc, char** argv) {
 		TTF_Quit();
 		IMG_Quit();
 		SDL_Quit();
-		//delete lan;
 	}
+	delete server;
+	delete lan;
 
 	return 0;
 }

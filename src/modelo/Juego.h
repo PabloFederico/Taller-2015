@@ -19,8 +19,9 @@
 #include "../modelo/Entidad.h"
 #include "../modelo/BarraEstado.h"
 #include "../modelo/Escenario.h"
-//#include "../red/Connection.h"
+#include "../red/Connection.h"
 //#include "../red/Client.h"
+#include "../red/Proxy.h"
 #include "../vista/Sprite.h"
 #include "../modelo/Jugador.h"
 
@@ -45,12 +46,13 @@ private:
 
 	ContenedorDeSonidos *contenedorSonidos;
 
-	//Connection* connection;
+	Connection* connection;
 
 	/* Carga la configuración inicial del juego a traves
 	 * de un archivo de configuración */
-	void cargarJuego();//InfoEscenario* infoEscRed, Coordenada *posInicial);
-
+	void cargarJuego(ConfiguracionJuego* infoJuegoRed);
+	void generarNuevasUnidadesYEdificiosIniciales();
+	void cargarNumJugador();
 	void cargarImagenes();
 
 	ContenedorDeRecursos *contenedor;
@@ -60,13 +62,15 @@ private:
 	vector<Entidad*> revisarMuertos();
 
 public:
-	Juego();//Connection* lan, Coordenada* posInicial, InfoEscenario* infoEscRed);
+	Juego(Connection* lan, ConfiguracionJuego* infoJuegoRed);
 	void cargaInicialDeRecursos();
+	void envioInicialDeEntidadesPropias();
 
-	//Connection* const getConnection();
-	//void setConnection(Connection* conn);
-	//void olvidarConnection();
-	//bool esCliente();
+	Connection* const getConnection();
+	void setConnection(Connection* conn);
+	void olvidarConnection();
+	bool esCliente();
+	void chat(std::string mensaje);
 
 	Jugador* getJugador();
 
@@ -76,7 +80,6 @@ public:
 
 	string getNombreJugador();
 	int getIDJugador();
-	void cargarNumJugador();
 	void cargarEnemigo(Entidad* enemigo);
 
 	vector<Sprite*> getSpritesUnidades();
@@ -128,6 +131,7 @@ public:
 	void crearNuevaUnidadApartirDeEdificioSeleccionado(TipoEntidad tipoEntidadACrear);
 
 	//void toggleEnemigo(int id_jug, int idUnidad);
+	void apagarEnemigo(int id_jug);
 	void reiniciar();
 	virtual ~Juego();
 };

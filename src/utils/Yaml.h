@@ -13,7 +13,7 @@ class Yaml {
 
 public:
 
-	static ConfiguracionJuego cargarConfiguracionJuego(std::string archivoConfiguracion);
+	static ConfiguracionJuego cargarConfiguracionJuego(std::string archivoConfig = "config.yaml");
 
 	static ConfiguracionJuego OdioYAML();
 

@@ -12,7 +12,7 @@
 #include "../utils/ConfigDefault.h"
 #include "../utils/Log.h"
 
-ConfiguracionJuego Yaml::cargarConfiguracionJuego(std::string archivoConfig){
+ConfiguracionJuego Yaml::cargarConfiguracionJuego(std::string archivoConfig) {
 	ConfiguracionJuego conf_game;
 
 	map<string,TipoEntidad> tipos;
@@ -32,12 +32,12 @@ ConfiguracionJuego Yaml::cargarConfiguracionJuego(std::string archivoConfig){
 
 	YAML::Node config;
 	try {
-		config = YAML::LoadFile("config.yaml");
+		config = YAML::LoadFile(archivoConfig);
 	}
 	catch (YAML::BadFile &e) {
 		crearConfigDefault();
 		Log::imprimirALog(ERR_FAT,"Archivo de configuración no encontrado. Se ha creado uno nuevo por defecto.");
-		config = YAML::LoadFile("config.yaml");
+		config = YAML::LoadFile(archivoConfig);
 	}
 	catch (YAML::ParserException &e) {
 		Log::imprimirALog(WAR,"Error en el archivo de configuración: se tomarán los valores por defecto.");
@@ -124,17 +124,6 @@ ConfiguracionJuego Yaml::cargarConfiguracionJuego(std::string archivoConfig){
 
 					} else Log::imprimirALog(ERR,"Error: Tipo '" + ent["tipo"].as<string>() + "' desconocido");
 				}
-				/*
-				YAML::Node protag = unEscenario["protagonista"][0];
-				infoEsc.protagonista = SOLDADO;	//hardcodeo
-				if (tipos[protag["tipo"].as<string>()] == 0)
-					Log::imprimirALog(ERR,"Error: Tipo '" + protag["tipo"].as<string>() + "' desconocido");
-				else infoEsc.protagonista = tipos[protag["tipo"].as<string>()];
-
-				infoEsc.posX_protagonista = Calculador::ChequeoDeBorde(infoEsc.size_x-1, protag["x"].as<int>());
-				infoEsc.posY_protagonista = Calculador::ChequeoDeBorde(infoEsc.size_y-1, protag["y"].as<int>());
-				*/
-				// Asume que protagnista ocupa un único tile
 			//}
 		} else {
 			infoEsc = infoEscenarioDefault();
@@ -344,7 +333,7 @@ InfoEscenario Yaml::infoEscenarioDefault() {
 	infoEscenario.agregarEntidad(std::make_pair(8,10), MINA_ORO);
 
 	//código de prueba
-	std::cout<<infoEscenario.getPosicionesEntidades().size()<<std::endl;
+	std::cout<<infoEscenario.getPosicionesEntidades().size()<<std::endl;//
 
 	return infoEscenario;
 }

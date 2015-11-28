@@ -27,9 +27,6 @@ public:
 
 	bool esEdificio();
 
-	std::string enc();
-	Edificio* dec(std::string s);
-
 	void morir();
 	virtual ~Edificio();
 };

@@ -10,10 +10,9 @@
 #include "../utils/Yaml.h"
 
 
-//Juego::Juego(Connection* lan = NULL, Coordenada* posInicial = NULL, InfoEscenario* infoEscRed = NULL):
-//			connection(lan) {
-Juego::Juego(){
-	this->idJug = 1; /* esta hardcodeado para probar (sin cliente-servidor) */
+Juego::Juego(Connection* lan = NULL, ConfiguracionJuego* infoJuegoRed = NULL):
+			connection(lan) {
+	this->idJug = 1;
 	this->nombreJug = "Pepito";
 	this->cero_x = NULL;
 	this->cero_y = NULL;
@@ -25,9 +24,8 @@ Juego::Juego(){
 	this->edificiosEnemigos = new vector<Edificio*>();
 	this->jugador = NULL;
 	this->contenedorSonidos = NULL;
-	this->cargarNumJugador();
-	this->cargarJuego();//infoEscRed, posInicial);
-
+	cargarNumJugador();
+	cargarJuego(infoJuegoRed);
 }
 
 /********************************************************************************/
@@ -39,6 +37,7 @@ vector<InfoEntidad> Juego::getInfoTiposEntidades(){
 Jugador* Juego::getJugador(){
 	return jugador;
 }
+
 /********************************************************************************/
 void Juego::setNombreJugador(string nom) {
 	this->nombreJug = nom;
@@ -62,30 +61,20 @@ int Juego::getIDJugador() {
 
 /********************************************************************************/
 void Juego::cargarNumJugador() {
-	/*
-	if (connection != NULL)
+	if (esCliente())
 		 this->idJug = connection->getIDJugador();
-	else this->idJug = 0;
-	*/
 }
 
 /********************************************************************************/
-void Juego::cargarJuego(){//InfoEscenario* infoEscRed = NULL, Coordenada *posInicial = NULL) {
-	//----------------------------------------------------------------------------------------!!
-	configGame = Yaml::cargarConfiguracionJuego("config.yaml");
-	// !!! Para Guido, comentar la línea de arriba y descomentar la de abajo.
-	//configGame = Yaml::OdioYAML();
-	//----------------------------------------------------------------------------------------!!
+void Juego::cargarJuego(ConfiguracionJuego* infoJuegoRed = NULL) {
+	if (infoJuegoRed == NULL)
+		configGame = Yaml::cargarConfiguracionJuego(/*"config.yaml"*/);
+	else configGame = *infoJuegoRed;
 
-	//if esCliente(), receive Escenario; ¡chequear disponibilidad de las entidades! rellenar con missing las faltantes.
+	if (esCliente()) {
+		generarNuevasUnidadesYEdificiosIniciales();
+	}
 
-	// Acá me imagino la posibilidad de un selector de escenarios.
-	/*if (esCliente()) {
-		configGame.vel_personaje = 50; // Misma velocidad para todos.
-		// Habría que saber en que escenario estamos
-		if (posInicial != NULL)
-			configGame.escenarios[0].setPosProtag(*posInicial);
-	}*/
 	this->jugador = new Jugador(configGame.nombreJugador,idJug);
 	this->fabricaDeEntidades = new EntidadFactory(this->idJug, configGame.entidades);
 	this->escenario = new Escenario(configGame.escenarios[0], this->fabricaDeEntidades, this->unidadesEnemigos, this->edificiosEnemigos);
@@ -97,12 +86,48 @@ void Juego::cargarJuego(){//InfoEscenario* infoEscRed = NULL, Coordenada *posIni
 }
 
 /********************************************************************************/
+// DESCARTA todas las unidades y edificios del configGame y crea propias, con posiciones rándom.
+// todo: REVISAR que se envíen al servidor más tarde
+void Juego::generarNuevasUnidadesYEdificiosIniciales() {
+	vector<PosTipoEntidad>* vecIni = &configGame.escenarios[0].posTipoEntidades;
+	// primero, borrar las unidades y edificios que vienen
+	for (vector<PosTipoEntidad>::iterator it = vecIni->begin(); it < vecIni->end(); ++it) {
+		if (EsUnidad(it->tipo) || EsEdificio(it->tipo)) {
+			vecIni->erase(it);
+			it = vecIni->begin(); //por las
+		}
+	}
+
+	int size_x = configGame.escenarios[0].size_x;
+	int size_y = configGame.escenarios[0].size_y;
+	// segundo, creo: centro cívico, 1 aldeano, 1 soldado; con posiciones rándom
+	Coordenada c_uni, c_cc = Calculador::generarPosRandom(size_x-4, 0, size_y-4, 0, 12);
+	configGame.escenarios[0].agregarEntidad(c_cc, CENTRO_CIVICO);
+	c_uni = Calculador::generarPosRandomDentroDeEscenarioConLimites(size_x, c_cc.x+5, c_cc.x-5, size_y, c_cc.y+5, c_cc.y-5, 31);
+	configGame.escenarios[0].agregarEntidad(c_uni, ALDEANO);
+	c_uni = Calculador::generarPosRandomDentroDeEscenarioConLimites(size_x, c_cc.x+5, c_cc.x-5, size_y, c_cc.y+5, c_cc.y-5, 72);
+	configGame.escenarios[0].agregarEntidad(c_uni, SOLDADO);
+}
+
+/********************************************************************************/
 void Juego::cargaInicialDeRecursos() {
 	// bieeen hardcodeado, de prueba
 	// Actualizacion: esto ya no va. Borrar una vez terminado el tp. Lo dejo para pruebas. todo
 	agregarRecurso(ORO, Coordenada(22,22));//
 	agregarRecurso(COMIDA, Coordenada(20,22));//
 }
+
+/********************************************************************************/
+void Juego::envioInicialDeEntidadesPropias() {
+	if (!esCliente()) return;
+	vector<Edificio*> v_edif = this->jugador->getEdificios();
+	for (vector<Edificio*>::iterator it1 = v_edif.begin(); it1 < v_edif.end(); ++it1)
+		Proxy::enviar(this->connection, **it1);
+	vector<Unidad*> v_unid = this->jugador->getUnidades();
+	for (vector<Unidad*>::iterator it2 = v_unid.begin(); it2 < v_unid.end(); ++it2)
+		Proxy::enviar(this->connection, **it2);
+}
+
 
 /********************************************************************************/
 int Juego::getRangoDeVision(){
@@ -219,29 +244,30 @@ Mix_Chunk* Juego::getSonidoTipo(TipoSonido tipo){
 
 
 /***************************************************/
-//bool Juego::esCliente() {
-//	return (this->connection != NULL);
-//}
+bool Juego::esCliente() {
+	return (this->connection != NULL);
+}
 
 /***************************************************/
-//Connection* const Juego::getConnection() {
-//	return this->connection;
-//}
+Connection* const Juego::getConnection() {
+	return this->connection;
+}
 
 /***************************************************/
-//void Juego::setConnection(Connection* conn) {
-//	this->connection = conn;
-//}
+void Juego::setConnection(Connection* conn) {
+	this->connection = conn;
+}
 
 /***************************************************/
-//void Juego::olvidarConnection() {
-//	this->connection->finalizar();	imprimir que se perdió la conexión y cerrar?
-//}
+void Juego::olvidarConnection() {
+	this->connection->finalizar();	// todo: imprimir que se perdió la conexión y cerrar
+}
 
 /***************************************************/
-//PosEntidad Juego::getPosEntDeProtagonista() {
-//	return PosEntidad(this->escenario->getPosProtagonista(), this->protagonista);
-//}
+void Juego::chat(std::string mensaje) {
+	Proxy::enviar(this->connection, mensaje);
+}
+
 
 /***************************************************/
 void Juego::cargarEnemigo(Entidad* enemigo) {
@@ -254,7 +280,7 @@ void Juego::cargarEnemigo(Entidad* enemigo) {
 }
 
 /***************************************************/
-// FUNCIONES DE CREACIÓN. Para hacer una entidad local nueva, ignorar los últimos 2 argumentos.
+/* FUNCIONES DE CREACIÓN. Para hacer una entidad local nueva, ignorar los últimos 2 argumentos. */
 
 Unidad* Juego::crearNuevaUnidad(TipoEntidad tipoUnid, Coordenada coord, int id_jug, int id_unidad) {
 	if (id_jug == -1)
@@ -271,8 +297,12 @@ Unidad* Juego::crearNuevaUnidad(TipoEntidad tipoUnid, Coordenada coord, int id_j
 		this->jugador->agregarNuevaUnidad(unidad);
 	else
 		cargarEnemigo(unidad);
-	this->contenedor->generarYGuardarSpriteEntidad(unidad, Coordenada(*cero_x, *cero_y), this->escenario); // COMENTADA SI SE CORRE ANTES QUE VENTANAJUEGO TODO
+	if (contenedor)
+		this->contenedor->generarYGuardarSpriteEntidad(unidad, Coordenada(*cero_x, *cero_y), this->escenario);
 	this->escenario->agregarEntidad(coord, unidad);
+
+	if (esCliente())
+		Proxy::enviar(this->connection, *unidad);
 	return unidad;
 }
 
@@ -292,8 +322,12 @@ Construccion* Juego::comenzarNuevaConstruccion(TipoEntidad tipoEdif, Coordenada 
 		this->jugador->agregarNuevoEdificio(construccion);
 	else
 		cargarEnemigo(construccion);
-	this->contenedor->generarYGuardarSpriteEntidad(construccion, Coordenada(*cero_x, *cero_y), this->escenario);	// COMENTADA SI SE CORRE ANTES QUE VENTANAJUEGO TODO
+	if (contenedor)
+		this->contenedor->generarYGuardarSpriteEntidad(construccion, Coordenada(*cero_x, *cero_y), this->escenario);
 	this->escenario->agregarEntidad(coord, construccion);
+
+	if (esCliente())
+		Proxy::enviar(this->connection, *construccion);
 	return construccion;
 }
 
@@ -314,29 +348,14 @@ Edificio* Juego::crearNuevoEdificio(TipoEntidad tipoEdif, Coordenada coord, int 
 		this->jugador->agregarNuevoEdificio(edificio);
 	else
 		cargarEnemigo(edificio);
-	this->contenedor->generarYGuardarSpriteEntidad(edificio, Coordenada(*cero_x, *cero_y), this->escenario); // COMENTADA SI SE CORRE ANTES QUE VENTANAJUEGO TODO
+	if (contenedor)
+		this->contenedor->generarYGuardarSpriteEntidad(edificio, Coordenada(*cero_x, *cero_y), this->escenario);
 	this->escenario->agregarEntidad(coord, edificio);
-	return edificio;
-}
 
-/***************************************************/
-void Juego::crearNuevaUnidadApartirDeEdificioSeleccionado(TipoEntidad tipoEntidadACrear){
-	Edificio* edificio = jugador->getEdificioSeleccionado();
-	if (edificio == NULL) return;
-	if (jugador->getRecursosDisponibles() >= edificio->getCostoPorUnidad()){
-		Coordenada c = Calculador::obtenerCoordenadaLibreCercaDeEdificio(edificio,escenario);
-		if (!escenario->coordEnEscenario(c)) return;
-		//TODO mandarle una señal al Servidor por creación de nueva unidad
-//		Unidad* nuevaUnidad = new Unidad(tipoEntidadACrear,this->idJug);
-		/*Unidad* nuevaUnidad = */crearNuevaUnidad(tipoEntidadACrear, c, this->getIDJugador());
-//		nuevaUnidad->setPosicion(c);
-//		escenario->agregarEntidad(c,nuevaUnidad);
-		//contenedor->generarYGuardarSpriteEntidad(nuevaUnidad,Coordenada(*cero_x,*cero_y),escenario);	// LO DEJO ACÁ PQ EN crearNuevaUnidad SIGUE COMENTADO TODO
-		jugador->descontarRecursos(edificio->getCostoPorUnidad());
-//		jugador->agregarNuevaUnidad(nuevaUnidad);
-		std::cout <<"creando nueva unidad tipo "<<tipoEntidadACrear<<" en : "<<c.x<<","<<c.y<<"\n";
-	}
-}
+	if (esCliente())
+		Proxy::enviar(this->connection, *edificio);
+	return edificio;
+}	// todo falta algo q acomode por posiciones ocupadas; lo mismo para unidades y recursos
 
 /***************************************************/
 // Pasar el id_recurso que dicte el Server. En caso de jugar offline, ignorarlo.
@@ -346,6 +365,9 @@ Entidad* Juego::agregarRecurso(TipoEntidad recurso, Coordenada coord, int id_rec
 	try {
 		this->contenedor->generarYGuardarSpriteEntidad(recurso_a_agregar, Coordenada(*cero_x, *cero_y), escenario);
 		escenario->agregarEntidad(coord, recurso_a_agregar);
+
+		if (esCliente())
+			Proxy::enviar(this->connection, *recurso_a_agregar);
 	} catch ( FueraDeEscenario &e ) {
 		delete recurso_a_agregar;
 		return NULL;
@@ -353,27 +375,23 @@ Entidad* Juego::agregarRecurso(TipoEntidad recurso, Coordenada coord, int id_rec
 	return recurso_a_agregar;
 }
 
-/***************************************************
-void Juego::toggleEnemigo(int id_jug, int idUnidad) {
-	Unidad* entidadEnemigo = NULL;
-	for (vector<Unidad*>::iterator it = unidadesEnemigos->begin(); it < unidadesEnemigos->end(); ++it)
-		if ((*it)->getIDJug() == id_jug && (*it)->get_identificador() == idUnidad) {
-			entidadEnemigo = *it;
-			if (entidadEnemigo->estaPetrificado()) {
-				// Si está congelado, lo pasamos a color
-				entidadEnemigo->despetrificar();
-				std::cout << id_jug<<" despetrificado"<<std::endl;//
-			} else {
-				// Si no, lo pasamos a gris
-				entidadEnemigo->petrificar();
-				std::cout << id_jug<<" petrificado"<<std::endl;//
-			}
-			contenedor->getSpriteDeEntidad(entidadEnemigo)->cambiarTexture();
-			break;
-		}
+
+/********************************************************************************/
+void Juego::crearNuevaUnidadApartirDeEdificioSeleccionado(TipoEntidad tipoEntidadACrear){
+	Edificio* edificio = jugador->getEdificioSeleccionado();
+	if (edificio == NULL) return;
+	if (jugador->getRecursosDisponibles() >= edificio->getCostoPorUnidad()){
+		Coordenada c = Calculador::obtenerCoordenadaLibreCercaDeEdificio(edificio,escenario);
+		if (!escenario->coordEnEscenario(c)) return;
+
+		jugador->descontarRecursos(edificio->getCostoPorUnidad());
+		crearNuevaUnidad(tipoEntidadACrear, c, this->getIDJugador());
+
+		std::cout <<"creando nueva unidad tipo "<<tipoEntidadACrear<<" en : "<<c.x<<","<<c.y<<"\n";//
+	}
 }
 
-********************************************************************************/
+/********************************************************************************/
 Edificio* Juego::terminarConstruccion(ConstruccionTermino c) {
 	Entidad *construc = this->getEntidad(c.tipoEdif, c.idJug, c.dni);
 	if (!construc) return NULL;
@@ -393,12 +411,11 @@ Edificio* Juego::terminarConstruccion(ConstruccionTermino c) {
 	if (c.idJug == this->getIDJugador())
 		this->jugador->guardarConstruccionTerminada(nuevoEdificio);
 	else {
-		vector<Edificio*>::iterator it;
-		for (it = this->edificiosEnemigos->begin(); it < this->edificiosEnemigos->end(); ++it)
-			if ((*it)->get_identificador() == c.dni && (*it)->perteneceAJugador(c.idJug))
+		for (vector<Edificio*>::iterator it = this->edificiosEnemigos->begin(); it < this->edificiosEnemigos->end(); ++it)
+			if ((*it)->get_identificador() == c.dni && (*it)->perteneceAJugador(c.idJug)) {
+				this->edificiosEnemigos->erase(it);
 				break;
-		if (it != this->edificiosEnemigos->end())
-			this->edificiosEnemigos->erase(it);
+			}
 		this->edificiosEnemigos->push_back(nuevoEdificio);
 	}
 	return nuevoEdificio;
@@ -505,7 +522,7 @@ void Juego::continuar() {
 		this->contenedor->borrarSpriteDeEntidad(muerto);
 
 		ejecutoresOlvidarInteraccionCon(muerto);
-		//Si la entidad muerta se convierte en recurso, lo colocamos:
+		//Si la entidad muerta se convierte en un recurso, lo colocamos:
 		reemplazarEntidadPorRecurso(muerto);
 
 		delete muerto;
@@ -572,6 +589,13 @@ void Juego::reemplazarEntidadPorRecurso(Entidad* entidad){
 		default :
 			break;
 	}
+}
+
+/***************************************************/
+void Juego::apagarEnemigo(int id_jugador) {
+	for (vector<Unidad*>::iterator it = this->unidadesEnemigos->begin(); it < this->unidadesEnemigos->end(); ++it)
+		if ((*it)->perteneceAJugador(id_jugador))
+			(*it)->sufrirGolpe( (*it)->getVidaRestante() );
 }
 
 /***************************************************/

@@ -48,9 +48,6 @@ public:
 
 	void cambioEstado(EstadoEntidad est);
 
-	std::string enc();
-	static Unidad* dec(std::string);
-
 	void morir();
 	virtual ~Unidad();
 };

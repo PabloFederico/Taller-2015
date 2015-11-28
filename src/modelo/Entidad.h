@@ -59,7 +59,6 @@ public:
 	//void interactuar();
 
 	Coordenada getPosicion();
-
 	void setPosicion(Coordenada c);
 
 	bool esRecurso();
@@ -83,7 +82,7 @@ public:
 	int obtenerAtk();
 
 	std::string enc();
-	static Entidad* dec(std::string);
+	static Entidad dec(std::string);
 
 	bool sigueViva();
 	void morir();

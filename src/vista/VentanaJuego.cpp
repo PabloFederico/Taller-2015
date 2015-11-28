@@ -113,6 +113,8 @@ EstadoFinVentana VentanaJuego::run(){
 		if (cursor == NULL) printf("Falló la creación del cursor %s",SDL_GetError());
 		SDL_SetCursor(cursor);
 
+		this->controlador->getJuego()->envioInicialDeEntidadesPropias();
+
 		///cdp
 		//this->controlador->getJuego()->comenzarNuevaConstruccion(CENTRO_CIVICO, Coordenada(4,15), 1);//
 		//this->controlador->getJuego()->comenzarNuevaConstruccion(CUARTEL, Coordenada(10,22), 1);//

@@ -299,21 +299,24 @@ std::string Entidad::getVidaString() {
 }
 
 // Para comunicación de redes
-std::string Entidad::enc() {
+// Encodeado: "idJug,tipo,coord.enc(),dni"
+std::string Entidad::enc(){
 	ostringstream enc;
-	enc << idJug<<","<<tipo<<","<<ancho<<","<<alto;
+	enc << idJug<<","<<tipo<<","<<c.enc()<<","<<dni;
 	return enc.str();
 }
-Entidad* Entidad::dec(std::string s) {
-	int id,ti,an,al;
+
+Entidad Entidad::dec(std::string s){
+	char cs[12];
+	int id,ti,dni;
 	stringstream ss(s);
 	ss >> id; ss.ignore();
 	ss >> ti; ss.ignore();
-	ss >> an; ss.ignore();
-	ss >> al;
-	Entidad *e = new Entidad(TipoEntidad(ti), id);
-	e->setTam(an, al);
-	return e;
+	ss.get(cs, 11, ','); ss.ignore();
+	ss >> dni;
+	Entidad *u = new Entidad(TipoEntidad(ti), id, dni);
+	u->setPosicion(Coordenada::dec(cs));
+	return *u;
 }
 //
 
