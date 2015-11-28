@@ -107,9 +107,9 @@ public:
 
 	ContenedorDeRecursos* getContenedorRecursos();
 
-	Unidad* crearNuevaUnidad(TipoEntidad tipoUnid, Coordenada coord, int id_jug, int id_unidad = 0);
-	Construccion* comenzarNuevaConstruccion(TipoEntidad tipoEdif, Coordenada coord, int id_jug, int id_edificio = 0);
-	Edificio* crearNuevoEdificio(TipoEntidad tipoEdif, Coordenada coord, int id_jug, int id_edificio = 0);
+	Unidad* crearNuevaUnidad(TipoEntidad tipoUnid, Coordenada coord, int id_jug = -1, int id_unidad = 0);
+	Construccion* comenzarNuevaConstruccion(TipoEntidad tipoEdif, Coordenada coord, int id_jug = -1, int id_edificio = 0);
+	Edificio* crearNuevoEdificio(TipoEntidad tipoEdif, Coordenada coord, int id_jug = -1, int id_edificio = 0);
 	Entidad* agregarRecurso(TipoEntidad recurso, Coordenada coord, int id_recurso = 0);
 
 	void iniciarInteraccionEntre(Entidad* ejecutor, Entidad* receptor);

@@ -254,7 +254,9 @@ void Juego::cargarEnemigo(Entidad* enemigo) {
 }
 
 /***************************************************/
-Unidad* Juego::crearNuevaUnidad(TipoEntidad tipoUnid, Coordenada coord, int id_jug = -1, int id_unidad) {
+// FUNCIONES DE CREACIÓN. Para hacer una entidad local nueva, ignorar los últimos 2 argumentos.
+
+Unidad* Juego::crearNuevaUnidad(TipoEntidad tipoUnid, Coordenada coord, int id_jug, int id_unidad) {
 	if (id_jug == -1)
 		id_jug = this->idJug;
 	if (!this->escenario->coordEnEscenario(coord)) {
@@ -275,7 +277,7 @@ Unidad* Juego::crearNuevaUnidad(TipoEntidad tipoUnid, Coordenada coord, int id_j
 }
 
 /***************************************************/
-Construccion* Juego::comenzarNuevaConstruccion(TipoEntidad tipoEdif, Coordenada coord, int id_jug = -1, int id_edificio) {
+Construccion* Juego::comenzarNuevaConstruccion(TipoEntidad tipoEdif, Coordenada coord, int id_jug, int id_edificio) {
 	if (id_jug == -1)
 		id_jug = this->idJug;
 	if (!this->escenario->coordEnEscenario(coord)) {
@@ -297,7 +299,7 @@ Construccion* Juego::comenzarNuevaConstruccion(TipoEntidad tipoEdif, Coordenada 
 
 /***************************************************/
 // Únicamente para el estado inicial y pruebas.
-Edificio* Juego::crearNuevoEdificio(TipoEntidad tipoEdif, Coordenada coord, int id_jug = -1, int id_edificio) {
+Edificio* Juego::crearNuevoEdificio(TipoEntidad tipoEdif, Coordenada coord, int id_jug, int id_edificio) {
 	if (id_jug == -1)
 		id_jug = this->idJug;
 	if (!this->escenario->coordEnEscenario(coord)) {

@@ -6,6 +6,7 @@
  */
 
 #include "Jugador.h"
+#include "../vista/SpriteUnidad.h"
 
 Jugador::Jugador(std::string nombre, int id) {
 	this->nombre = nombre;

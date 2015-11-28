@@ -16,6 +16,10 @@ bool Construccion::esConstruccion() {
 	return true;
 }
 
+TipoEntidad Construccion::getTipoEdificio(){
+	return tipoEdif;
+}
+
 void Construccion::continuarConstruyendo() {
 	this->progresoPorc += 20; //hardcodeo
 	if (this->progresoPorc == 100) {

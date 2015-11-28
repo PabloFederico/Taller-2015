@@ -256,36 +256,38 @@ void Dibujador::dibujarEscenario(Escenario* esc, TTF_Font* fuenteTexto, pair<int
 /********************************************************************************/
 void Dibujador::dibujarEfectosTraslucidos(Coordenada c, Escenario* escenario){
 	Entidad* entidad = escenario->getEntidadTemporal();
-	bool lugarHabilitado = escenario->lugarHabilitadoParaConstruir(entidad->getPosicion(),entidad);
-	Imagen* imagenTraslucida = NULL;
-	SDL_Rect posicion;
-	posicion.x = c.x - DISTANCIA_ENTRE_X;
-	posicion.y = c.y - DISTANCIA_ENTRE_Y;
+	if (entidad->esConstruccion()){
+		bool lugarHabilitado = escenario->lugarHabilitadoParaConstruir(entidad->getPosicion(),entidad);
+		Imagen* imagenTraslucida = NULL;
+		SDL_Rect posicion;
+		posicion.x = c.x - DISTANCIA_ENTRE_X;
+		posicion.y = c.y - DISTANCIA_ENTRE_Y;
 
-	switch (entidad->getTipo()){
-			case CUARTEL:
-							posicion.x -= DISTANCIA_ENTRE_X * (this->mapInfoEntidades[entidad->getTipo()].ancho - 1);
-							posicion.y = posicion.y - ALTO_PIXEL_PASTO +  DISTANCIA_ENTRE_Y / 4;
-							posicion.w = ANCHO_PIXEL_PASTO * this->mapInfoEntidades[entidad->getTipo()].ancho;
-							posicion.h = ALTO_PIXEL_PASTO * this->mapInfoEntidades[entidad->getTipo()].alto + (ALTO_PIXEL_PASTO -  DISTANCIA_ENTRE_Y / 2);
-							if (lugarHabilitado)
-								imagenTraslucida = contenedor->getImagenUtilTipo(CUARTEL_TRANS);
-							else imagenTraslucida = contenedor->getImagenUtilTipo(CUARTEL_ROJIZO);
-							break;
+		switch (((Construccion*)entidad)->getTipoEdificio()){
+				case CUARTEL:
+								posicion.x -= DISTANCIA_ENTRE_X * (this->mapInfoEntidades[entidad->getTipo()].ancho - 1);
+								posicion.y = posicion.y - ALTO_PIXEL_PASTO +  DISTANCIA_ENTRE_Y / 4;
+								posicion.w = ANCHO_PIXEL_PASTO * this->mapInfoEntidades[entidad->getTipo()].ancho;
+								posicion.h = ALTO_PIXEL_PASTO * this->mapInfoEntidades[entidad->getTipo()].alto + (ALTO_PIXEL_PASTO -  DISTANCIA_ENTRE_Y / 2);
+								if (lugarHabilitado)
+									imagenTraslucida = contenedor->getImagenUtilTipo(CUARTEL_TRANS);
+								else imagenTraslucida = contenedor->getImagenUtilTipo(CUARTEL_ROJIZO);
+								break;
 
-			case BARRACK :
-							posicion.x -= (DISTANCIA_ENTRE_X * (this->mapInfoEntidades[entidad->getTipo()].ancho - 1)) - DISTANCIA_ENTRE_X * 0.25;
-							posicion.y -= 2*ALTO_PIXEL_PASTO;
-							posicion.w = ANCHO_PIXEL_PASTO * this->mapInfoEntidades[entidad->getTipo()].ancho;
-							posicion.h = 30 + ALTO_PIXEL_PASTO * this->mapInfoEntidades[entidad->getTipo()].alto + (ALTO_PIXEL_PASTO -  DISTANCIA_ENTRE_Y / 2);
-							if (lugarHabilitado)
-								imagenTraslucida = contenedor->getImagenUtilTipo(BARRACK_TRANS);
-							else imagenTraslucida = contenedor->getImagenUtilTipo(BARRACK_ROJIZO);
-							break;
-			default : break;
+				case BARRACK :
+								posicion.x -= (DISTANCIA_ENTRE_X * (this->mapInfoEntidades[entidad->getTipo()].ancho - 1)) - DISTANCIA_ENTRE_X * 0.25;
+								posicion.y -= 2*ALTO_PIXEL_PASTO;
+								posicion.w = ANCHO_PIXEL_PASTO * this->mapInfoEntidades[entidad->getTipo()].ancho;
+								posicion.h = 30 + ALTO_PIXEL_PASTO * this->mapInfoEntidades[entidad->getTipo()].alto + (ALTO_PIXEL_PASTO -  DISTANCIA_ENTRE_Y / 2);
+								if (lugarHabilitado)
+									imagenTraslucida = contenedor->getImagenUtilTipo(BARRACK_TRANS);
+								else imagenTraslucida = contenedor->getImagenUtilTipo(BARRACK_ROJIZO);
+								break;
+				default : break;
+		}
+		if (imagenTraslucida != NULL)
+			SDL_RenderCopy(renderer,imagenTraslucida->getTexture(),NULL,&posicion);
 	}
-	if (imagenTraslucida != NULL)
-		SDL_RenderCopy(renderer,imagenTraslucida->getTexture(),NULL,&posicion);
 }
 
 /********************************************************************************/

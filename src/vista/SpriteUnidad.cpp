@@ -37,14 +37,17 @@ SpriteUnidad::SpriteUnidad(int cant_dir, int frames_dif, Imagen* image, SDL_Rect
 					 rectAtaque.h *= 1.3;
 
 					 rectMuere.x -= 40;
-					 //rectMuere.y -= 10;
+					 rectMuere.y += 5;
 					 rectMuere.w *= 2;
 					 rectMuere.h *= 1;
 
 					 rectQuieto.h *= 1;
 					 rectQuieto.w *= 0.9;
-					 //rectQuieto.x -= 5;
+					 rectQuieto.x -= 10;
 					 //rectQuieto.y -= 10;
+
+					 rectConstruccion.w *= 1.3;
+					 rectConstruccion.h *= 1;
 
 					 FRAMES_ATAQUE = 15;
 					 FRAMES_MUERTE = 15;
@@ -56,7 +59,7 @@ SpriteUnidad::SpriteUnidad(int cant_dir, int frames_dif, Imagen* image, SDL_Rect
 					 rectAtaque.y -= 2;
 					 rectAtaque.w *= 1.30;
 
-					 rectMuere.x -= 30;
+					 rectMuere.x -= 35;
 					 rectMuere.w *= 2;
 
 					 rectQuieto.x -= 5;
@@ -73,16 +76,18 @@ SpriteUnidad::SpriteUnidad(int cant_dir, int frames_dif, Imagen* image, SDL_Rect
 					 rectAtaque.h *= 1.3;
 
 					 // rectMuere NO PROBADO (porque no tenemos sprite de esto)
-					 //rectMuere.x = ?;
-					 //rectMuere.w = ?;
-					 //rectMuere.h = ?;
+					 rectMuere.x -= 35;
+					 rectMuere.y -= 14;
+					 rectMuere.w *= 2.4;
+					 rectMuere.h *= 2;
 
-					 rectQuieto.w *= 1.2;
+					 rectQuieto.w *= 1.3;
+					 rectQuieto.h *= 1;
 
-					 rectMuere = rectQuieto; // TODO solo para pasar pruebas
+					 //rectMuere = rectQuieto; // TODO solo para pasar pruebas
 
 					 FRAMES_ATAQUE = 15;
-					 FRAMES_MUERTE = 1; // TODO no hay imagen de muerte de soldado
+					 FRAMES_MUERTE = 15;
 					 break;
 		default : break;
 	}
@@ -192,8 +197,8 @@ void SpriteUnidad::mover(int cant_x, int cant_y){
 Coordenada SpriteUnidad::getPosPies(){
 	switch (estadoSprite){
 	case CAMINANDO : return Coordenada( posicion.x + (posicion.w / 2), posicion.y + posicion.h );
-	case ATACANDO : return Coordenada( posicion.x + (posicion.w / 2), posicion.y + posicion.h / 2 );
-
+	case ATACANDO : return Coordenada( posicion.x + (posicion.w / 2), posicion.y + posicion.h * 0.75 );
+	case QUIETO : return Coordenada(posicion.x + (posicion.w / 3), posicion.y + posicion.h);
 	default : return Coordenada( posicion.x + (posicion.w / 2), posicion.y + posicion.h );
 	}
 }
@@ -218,6 +223,7 @@ void SpriteUnidad::verificarEstadoEntidadConImagen(){
 					   imagen = imagenMuerte;
 					   posicion = mapRectEstado[MURIENDO];
 					   frames = framesMuerte;
+					   fps = 10;
 					   cant_Img_Distintas = FRAMES_MUERTE;
 					   indexSpriteActual = 0;
 				       break;
