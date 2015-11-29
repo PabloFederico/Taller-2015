@@ -15,7 +15,7 @@ tipos:
   - nombre: arbol
     imagen: images/utils/arbol.png
     descripcion: Arbol
-
+sdasad
   - nombre: tierra
     imagen: images/relieve/tierra.png
 
@@ -79,7 +79,7 @@ tipos:
 
   - nombre: construccion
     imagen: images/utils/Barracks3.png #!!!
-    descripcion: Aldeano
+    descripcion: Construcción
 
 escenario:
   - nombre: orleans

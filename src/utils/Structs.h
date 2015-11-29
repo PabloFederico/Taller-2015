@@ -191,8 +191,10 @@ struct Camino {
 		stringstream ss(s);
 		char cs[13];
 		Camino cam;
-		while (!ss.eof()) {
+		while (!ss.eof() && ss.peek() != '\0') {
 			ss.get(cs, 11, '|');
+			if (cs[0] == 0)
+				break;
 			cam.agregar(Coordenada::dec(cs));
 			ss.ignore(); // '|'
 		}
@@ -286,6 +288,13 @@ struct InfoEscenario {
 
 	vector<PosTipoEntidad> getPosicionesEntidades(){
 		return this->posTipoEntidades;
+	}
+
+	bool posicionYaOcupada(Coordenada c) {	// Hardcodeado para edificios de 4x4.
+		for (vector<PosTipoEntidad>::iterator it = posTipoEntidades.begin(); it < posTipoEntidades.end(); ++it)
+			if ((it->x == c.x && it->y == c.y) || (EsEdificio(it->tipo) && (c.x - it->x < 4) && (c.y - it->y < 4)))
+				return true;
+		return false;
 	}
 
 	bool operator!() {

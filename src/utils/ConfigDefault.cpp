@@ -8,6 +8,7 @@
 #include "../utils/ConfigDefault.h"
 
 
+//////////////////////////////////////// DESACTUALIZADO
 void crearConfigDefault () {
 	std::vector< std::map<std::string,std::string> > vec;
 

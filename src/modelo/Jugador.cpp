@@ -20,7 +20,7 @@ Jugador::Jugador(std::string nombre, int id) {
 	edificioSeleccionado = NULL;
 
 	for (int i = (int)MADERA; i <= (int)ORO; i++)
-		mapRecursosEconomicos[(TipoEntidad)i] = 0;
+		mapRecursosEconomicos[(TipoEntidad)i] = 50;	// Monto inicial.
 }
 
 /********************************************************************************/
@@ -95,7 +95,7 @@ Unidad* Jugador::getUnidadActiva(){
 /***				Jugador solo concierne al jugador local					  ***/
 
 void Jugador::agregarNuevaUnidad(Unidad* nuevaUnidad){
-	// El caso más común es que todavía esté en 0, pero esto abarca muchos casos.
+	// El caso más común es que todavía esté en 0, pero esto abarca más casos.
 	if (nuevaUnidad->get_identificador() <= contador_dni_unidades)
 		contador_dni_unidades++;
 	else
@@ -112,7 +112,7 @@ void Jugador::agregarNuevaUnidad(Unidad* nuevaUnidad){
 }
 
 void Jugador::agregarNuevoEdificio(Edificio* edificio) {
-	// El caso más común es que todavía esté en 0, pero esto abarca muchos casos.
+	// El caso más común es que todavía esté en 0, pero esto abarca más casos.
 	if (edificio->get_identificador() <= contador_dni_edificios)
 		contador_dni_edificios++;
 	else contador_dni_edificios = edificio->get_identificador();

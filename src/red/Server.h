@@ -22,22 +22,21 @@ struct DataCliente {
 	bool conectado;
 	string nombre;
 	Entidad entidad;
-	Coordenada posProtag;
 	Camino camino;
 	int completaronPaso;
 
 	DataCliente(): id(0), conectado(true), nombre("default"),
-			entidad(Entidad(SOLDADO,0)), posProtag(Coordenada(0,0)), completaronPaso(MAX_CONEXIONES) {};
+			entidad(Entidad(SOLDADO,0)), completaronPaso(MAX_CONEXIONES) {};
 
 	DataCliente(int idJug, string nom, Coordenada posicionInicial, Entidad ent):
-		id(idJug), nombre(nom), entidad(ent), posProtag(posicionInicial) {
+		id(idJug), nombre(nom), entidad(ent) {
 		conectado = true;
 		completaronPaso = MAX_CONEXIONES;
 	}
 
 	void setCamino(Camino cam) {
 		quieto();
-		posProtag = cam.ultimo();
+		//posProtag = cam.ultimo();
 		while (!cam.empty())
 			camino.agregar(cam.sacarProximaCoordenada());
 	}
@@ -70,11 +69,11 @@ struct Clientes {
 
 		// Genera una coordenada aleatoria no repetida.
 		Coordenada coordRandom = Calculador::generarPosRandom(50,0, 50,0, 9); //hardcodeo
-		for (map<int,DataCliente>::iterator it = m.begin(); it != m.end(); ++it)
-			if (it->second.posProtag == coordRandom) {
-				coordRandom = Calculador::generarPosRandom(50,0, 50,0, 2); //hardcodeo
-				it = m.begin();
-			}
+//		for (map<int,DataCliente>::iterator it = m.begin(); it != m.end(); ++it)
+//			if (it->second.posProtag == coordRandom) {
+//				coordRandom = Calculador::generarPosRandom(50,0, 50,0, 2); //hardcodeo
+//				it = m.begin();
+//			}
 		m.insert(pair<int,DataCliente>(socket, DataCliente(idJug, nombre, coordRandom, entidad)));
 
 		cantConectados++;

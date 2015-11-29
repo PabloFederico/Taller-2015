@@ -29,7 +29,6 @@ Entidad* EntidadFactory::nuevaEntidad(TipoEntidad tipo) {
 	}
 
 	std::vector<InfoEntidad>::iterator it = std::find(this->vInfoEntidades.begin(), this->vInfoEntidades.end(), tipo);
-
 	if (it != this->vInfoEntidades.end()) {
 		e->setTam(it->ancho, it->alto);
 	}

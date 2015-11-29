@@ -9,13 +9,12 @@
 
 
 TipoMensajeRed Proxy::actualizarMultiplayer(Juego* juego) {
-	string unContenido, recibido;// = juego->getConnection()->recibir();
-	// Si no se recibe nada, recibir() lanza NoSeRecibio y se saltea el resto.
+	string unContenido, recibido = juego->getConnection()->recibir();
+	// Si no se recibe nada, lanza NoSeRecibio y se saltea el resto.
 	TipoMensajeRed tipo;
 
 	while (Red::parsearSiguienteMensaje(&recibido, &tipo, &unContenido)) {
 		//if (unContenido.length() > 0) {
-
 			switch (tipo) {
 			case MENSAJE: procesarMensaje(unContenido);
 				break;
@@ -41,7 +40,7 @@ TipoMensajeRed Proxy::actualizarMultiplayer(Juego* juego) {
 			//	break;
 			//case FIN:
 			//	break;
-			default : break;
+			default : continue;
 			}
 		//}
 	}
@@ -63,19 +62,19 @@ void Proxy::clienteEsperarComienzo(Connection* lan) {
 }
 
 // Esperar indefinidamente hasta que llegue un mensaje de escenario.
-ConfiguracionJuego Proxy::clienteEsperarConfigGame(Connection* lan) {
-	TipoMensajeRed tipo = MENSAJE;
-	string unContenido, recibido;
-	do {
-		try {
-			recibido = lan->recibir();
-			while (Red::parsearSiguienteMensaje(&recibido, &tipo, &unContenido))
-				if (tipo == ESCENARIO)
-					break;
-		} catch ( NoSeRecibio &e ) {}
-	} while (tipo != ESCENARIO);
-	return ConfiguracionJuego::dec(unContenido);
-}
+//ConfiguracionJuego Proxy::clienteEsperarConfigGame(Connection* lan) {
+//	TipoMensajeRed tipo = MENSAJE;
+//	string unContenido, recibido;
+//	do {
+//		try {
+//			recibido = lan->recibir();
+//			while (Red::parsearSiguienteMensaje(&recibido, &tipo, &unContenido))
+//				if (tipo == ESCENARIO)
+//					break;
+//		} catch ( NoSeRecibio &e ) {}
+//	} while (tipo != ESCENARIO);
+//	return ConfiguracionJuego::dec(unContenido);
+//}
 
 /***************************************************************
 ***************************************************************/
@@ -83,19 +82,21 @@ ConfiguracionJuego Proxy::clienteEsperarConfigGame(Connection* lan) {
 void Proxy::procesarMensaje(string encodeado) {
 	string resto; ostringstream imprimir;
 	int jug = Red::extraerNumeroYResto(encodeado, &resto);
-	imprimir << "("<<jug<<") "<<NombreDeJug(jug)<<"> "<<resto;
+	imprimir << "[ @"<<NombreDeJug(jug)<<" ("<<jug<<") > "<<resto<<" ]";
 	Log::imprimirALog(INFO, imprimir.str());
 }
 
 void Proxy::procesarToggle(Juego* juego, string encodeado) {
-	string aux;
+	string aux; ostringstream parroquial;
 	int id_jug = Red::extraerNumeroYResto(encodeado, &aux);
 	juego->apagarEnemigo(id_jug);
-	procesarMensaje(id_jug+":SE HA DESCONECTADO");
+	parroquial << id_jug<<":"<<"GRACIAS PA. CHAU CHAU ADIOS // SE HA DESCONECTADO"<<'\0';
+	procesarMensaje(parroquial.str());
 }
 
 void Proxy::procesarNuevaEntidad(Juego* juego, string encodeado) {
 	Entidad ent = Entidad::dec(encodeado);
+	if (ent.getIDJug() == juego->getIDJugador()) return;
 	try {
 		Entidad *aux = NULL;
 		if (ent.esRecurso())
@@ -108,7 +109,7 @@ void Proxy::procesarNuevaEntidad(Juego* juego, string encodeado) {
 			aux = juego->crearNuevoEdificio(ent.getTipo(), ent.getPosicion(), ent.getIDJug(), ent.get_identificador());
 		// else imprimir error?
 		if (!aux) throw FueraDeEscenario();	// y otros errores...
-	} catch ( FueraDeEscenario &e ) { Log::imprimirALog(WAR, "Enemigo fuera del escenario"); }
+	} catch ( FueraDeEscenario &e ) { Log::imprimirALog(WAR, "No se pudo agregar enemigo."); }
 }
 
 void Proxy::procesarInteraccion(Juego* juego, string encodeado) {
@@ -121,6 +122,7 @@ void Proxy::procesarInteraccion(Juego* juego, string encodeado) {
 	ss >> jug2; ss.ignore(); // ','
 	ss >> dni2;
 
+	if (jug1 == juego->getIDJugador()) return;
 	try {
 		juego->iniciarInteraccionEntre(TipoEntidad(tip1), jug1, dni1, TipoEntidad(tip2), jug2, dni2);
 	} catch ( NoExiste &e ) { Log::imprimirALog(ERR, "Interacción incluye entidad inexistente."); }
@@ -128,16 +130,25 @@ void Proxy::procesarInteraccion(Juego* juego, string encodeado) {
 
 void Proxy::procesarCamino(Juego* juego, string encodeado) {
 	int tipo, id_jug, dni;
-	char camEnc[MAX_BYTES_LECTURA];
+	char camEnc[MAX_BYTES_LECTURA+1];
 	stringstream ss(encodeado);
 	ss >> tipo; ss.ignore();	// ','
 	ss >> id_jug; ss.ignore();	// ','
 	ss >> dni; ss.ignore();		// ';'
-	ss.get(camEnc, MAX_BYTES_LECTURA, '~');
+	ss.get(camEnc, MAX_BYTES_LECTURA, '\0');//'~');
+	if (id_jug == juego->getIDJugador()) return;
+
 	Entidad *walker = juego->getEntidad(TipoEntidad(tipo), id_jug, dni);
-	if (!walker) return; // o agregarlo?
+	if (!walker) {
+		std::cout << "No se encontró la entidad para el camino."<<std::endl;//
+		return; // o agregarlo?
+	}
+	walker->olvidarInteraccion();
 	Sprite* sprite = juego->getSpriteDeEntidad(walker);
-	if (!sprite) return; // o agregarlo?
+	if (!sprite) {
+		std::cout << "No se encontró el sprite para la entidad para el camino."<<std::endl;//
+		return; // o agregarlo?
+	}
 	sprite->setearNuevoCamino(Camino::dec(camEnc), juego->getCoordCeros());
 }
 

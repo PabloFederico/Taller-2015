@@ -46,7 +46,7 @@ void Controller::posicionarCamaraEnProtagonista(){
 	if (!entidad) return;
 	Sprite *spriteUnidad = juego->getSpriteDeEntidad(entidad);
 
-	while (!playerEstaEnElCentro){
+	while (spriteUnidad && !playerEstaEnElCentro){	//el juego sobrevive si nunca entra a este ciclo?
 		SDL_Rect posicion = spriteUnidad->getPosicion();
 		if (posicion.x < (width_camera/2 - 30)){
 			controladorCamara->moverCamara(cant_mover,0);
@@ -151,7 +151,8 @@ void Controller::actualizarEstadoDelJuego(){
 			Proxy::actualizarMultiplayer(this->juego);
 		} catch ( NoSeRecibio &e ) {
 		} catch ( Disconnected &e ) {
-			this->juego->olvidarConnection();	// todo: terminar juego
+			this->juego->olvidarConnection();
+			// todo: terminar juego
 		}
 	}
 }

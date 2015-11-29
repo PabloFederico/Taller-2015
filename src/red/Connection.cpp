@@ -47,7 +47,7 @@ string Connection::recibir() {
 	if (Red::recibirInformacion(this->lastDescriptor, buffer) < 0)
 		throw NoSeRecibio();
 	std::cout << "Recibido: "<<buffer<<std::endl;//
-	return buffer;
+	return string(buffer);
 }
 
 

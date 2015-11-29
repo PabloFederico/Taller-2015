@@ -29,8 +29,6 @@ public:
 	int generarGolpe();
 	void lastimar(Entidad* victima);
 	int recolectar(Entidad* recurso);
-	bool esRecolector();
-	bool esConstructor();
 	void interactuar();
 	void olvidarInteraccion();
 

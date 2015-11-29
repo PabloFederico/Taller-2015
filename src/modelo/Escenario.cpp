@@ -8,8 +8,9 @@
 
 
 
-Escenario::Escenario(InfoEscenario infoEsc, EntidadFactory *fabrica, vector<Unidad*>* unidadesMalvadas, vector<Edificio*>* edificiosMalvados):
-		fabricaDeEntidades(fabrica)/*, unidadesEnemigos(unidadesMalvadas), edificiosEnemigos(edificiosMalvados)*/ {
+Escenario::Escenario(InfoEscenario infoEsc, int id_jug/*EntidadFactory *fabrica, vector<Unidad*>* unidadesMalvadas, vector<Edificio*>* edificiosMalvados*/)
+		/*: fabricaDeEntidades(fabrica), unidadesEnemigos(unidadesMalvadas), edificiosEnemigos(edificiosMalvados)*/ {
+	this->idJug = id_jug;
 	this->size_x = infoEsc.size_x;
 	this->size_y = infoEsc.size_y;
 
@@ -19,19 +20,6 @@ Escenario::Escenario(InfoEscenario infoEsc, EntidadFactory *fabrica, vector<Unid
 	this->capa = new CapaFog(size_x,size_y);
 
 	this->posicionesEntidades = new vector<Entidad*>();
-
-	vector<PosTipoEntidad> vecPosTipoEntidades = infoEsc.getPosicionesEntidades();
-	for (unsigned i = 0; i < vecPosTipoEntidades.size(); i++){
-		int x = vecPosTipoEntidades[i].x;
-		int y = vecPosTipoEntidades[i].y;
-		TipoEntidad tipo = vecPosTipoEntidades[i].tipo;
-		Entidad *entidad = this->fabricaDeEntidades->nuevaEntidad(tipo);
-		Coordenada pos(x,y);
-		entidad->setPosicion(pos);
-		this->agregarEntidad(pos,entidad);	// Si no pudo, no reintento.
-	}
-	infoEsc.getPosicionesEntidades().clear();
-	std::cout<<"se agregaron todas las entidades"<<std::endl;
 
 	this->tile_clic = NULL;
 	this->entidadSeleccionada = NULL;
@@ -109,7 +97,8 @@ Tile* Escenario::getTile(Coordenada c) {
 
 /********************************************************************************/
 int Escenario::getIDJug(){
-	return fabricaDeEntidades->getId_Jug();
+	//return fabricaDeEntidades->getId_Jug();
+	return this->idJug;
 }
 
 /********************************************************************************/
@@ -135,7 +124,6 @@ bool Escenario::agregarEntidad(Coordenada pos, Entidad* entidad){
 		}
 		// Se guardan en posicionesEntidades todas las entidades agregadas al mapa. No se lo limpia TODO
 		posicionesEntidades->push_back(entidad);
-		//}
 	} catch ( TileEstaOcupado &e ) {
 		Log::imprimirALog(ERR,"Se intentó agregar una entidad en un tile ocupado");
 		return false;
@@ -302,8 +290,6 @@ Escenario::~Escenario() {
 
 	this->posicionesEntidades->clear();
 	delete this->posicionesEntidades;
-
-	delete fabricaDeEntidades;
 
 	delete this->capa;
 

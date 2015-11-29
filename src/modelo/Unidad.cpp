@@ -51,7 +51,7 @@ void Unidad::setCoordMasProximaDelReceptor() {
 }
 
 bool Unidad::estaEnRangoDelReceptor() {
-	return (distanciaEuclidiana(this->getPosicion(), *coordMasProximaDelReceptor) < (this->rangoAccion + 1));
+	return (distanciaEuclidiana(this->getPosicion(), *coordMasProximaDelReceptor) <= this->rangoAccion);
 }
 
 // throws Recoleccion, ConstruccionTermino, UnidadDebeAcercarse
@@ -160,14 +160,6 @@ int Unidad::getRangoAccion() {
 
 bool Unidad::esUnidad() {
 	return true;
-}
-
-bool Unidad::esRecolector() {
-	return (tipo == ALDEANO);
-}
-
-bool Unidad::esConstructor() {
-	return (tipo == ALDEANO);
 }
 
 //bool Unidad::estaPetrificado(){

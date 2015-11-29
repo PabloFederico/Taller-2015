@@ -51,6 +51,7 @@ private:
 	/* Carga la configuración inicial del juego a traves
 	 * de un archivo de configuración */
 	void cargarJuego(ConfiguracionJuego* infoJuegoRed);
+	void cargaInicialDeEntidades();
 	void generarNuevasUnidadesYEdificiosIniciales();
 	void cargarNumJugador();
 	void cargarImagenes();
