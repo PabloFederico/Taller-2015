@@ -144,6 +144,11 @@ void Sprite::setDireccion(int direccion){
 }
 
 /********************************************************************************/
+Direccion Sprite::getDireccion(){
+	return (Direccion)direccion;
+}
+
+/********************************************************************************/
 bool Sprite::estaEnMovimiento(){
 	return (this->enMovimiento || entidad->getEstado() != QUIETO);
 }

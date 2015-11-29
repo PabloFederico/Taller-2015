@@ -133,36 +133,44 @@ void Jugador::agregarRecursoEconomico(TipoEntidad tipo, int cant) {
 	mapRecursosEconomicos[tipo] += cant;
 }
 
-int Jugador::getRecursosDisponibles(){
-	int total = 0;
-	map<TipoEntidad,int>::iterator it = mapRecursosEconomicos.begin();
-	while (it != mapRecursosEconomicos.end()){
-		total += it->second;
-		it++;
+bool Jugador::tieneRecursosParaCrearUnidad(TipoEntidad tipoUnidad){
+	bool hayRecursos = false;
+	switch (tipoUnidad){
+	case ALDEANO :
+				  if (mapRecursosEconomicos[MADERA] >= COSTO_CREAR_ALDEANO_MADERA &&
+					  mapRecursosEconomicos[PIEDRA] >= COSTO_CREAR_ALDEANO_PIEDRA)
+					  hayRecursos = true;
+				  break;
+	case ARQUERO:
+				  if (mapRecursosEconomicos[MADERA] >= COSTO_CREAR_ARQUERO_MADERA &&
+					  mapRecursosEconomicos[COMIDA] >= COSTO_CREAR_ARQUERO_COMIDA)
+					  hayRecursos = true;
+				  break;
+	case SOLDADO:
+				  if (mapRecursosEconomicos[MADERA] >= COSTO_CREAR_SOLDADO_MADERA &&
+					  mapRecursosEconomicos[ORO] >= COSTO_CREAR_SOLDADO_ORO)
+					  hayRecursos = true;
+				  break;
+	default : break;
 	}
-	return total;
+	return hayRecursos;
 }
 
-void Jugador::descontarRecursos(int cant){
-	if (mapRecursosEconomicos[MADERA] >= cant){
-		mapRecursosEconomicos[MADERA] -= cant;
-	}else{
-		int resto = cant - mapRecursosEconomicos[MADERA];
-		mapRecursosEconomicos[MADERA] = 0;
-		if (mapRecursosEconomicos[PIEDRA] >= resto){
-			mapRecursosEconomicos[PIEDRA] -= resto;
-		}else{
-			int resto2 = resto - mapRecursosEconomicos[PIEDRA];
-			mapRecursosEconomicos[PIEDRA] = 0;
-			if (mapRecursosEconomicos[ORO] >= resto2){
-				mapRecursosEconomicos[ORO] -= resto2;
-			}else{
-				int resto3 = resto2 - mapRecursosEconomicos[ORO];
-				mapRecursosEconomicos[ORO] = 0;
-
-				mapRecursosEconomicos[COMIDA] -= resto3;
-			}
-		}
+void Jugador::descontarRecursosPorCrearUnidad(TipoEntidad tipo){
+	switch (tipo){
+		case ALDEANO :
+					  mapRecursosEconomicos[MADERA] -= COSTO_CREAR_ALDEANO_MADERA;
+					  mapRecursosEconomicos[PIEDRA] -= COSTO_CREAR_ALDEANO_PIEDRA;
+					  break;
+		case ARQUERO:
+					  mapRecursosEconomicos[MADERA] -= COSTO_CREAR_ARQUERO_MADERA;
+					  mapRecursosEconomicos[COMIDA] -= COSTO_CREAR_ARQUERO_COMIDA;
+					  break;
+		case SOLDADO:
+					  mapRecursosEconomicos[MADERA] -= COSTO_CREAR_SOLDADO_MADERA;
+					  mapRecursosEconomicos[ORO] -= COSTO_CREAR_SOLDADO_ORO;
+					  break;
+		default : break;
 	}
 }
 

@@ -55,6 +55,8 @@ public:
 
 	void borrarSpriteDeEntidad(Entidad* entidad);
 
+	Sprite* generarSpriteDeAtaque(Entidad* objetoAtaque, Direccion direccion, Coordenada coord_ceros, Escenario* escenario);
+
 	virtual ~ContenedorDeRecursos();
 };
 

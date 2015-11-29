@@ -24,6 +24,11 @@ SpriteUnidad::SpriteUnidad(int cant_dir, int frames_dif, Imagen* image, SDL_Rect
 	FRAMES_QUIETO = 1;
 	FRAMES_CONSTRUYENDO = 15; // // Para el ALDEANO
 
+	FPS_CAMINATA = 30;
+	FPS_ATAQUE = 20;
+	FPS_CONSTRUYENDO = 20;
+	FPS_MUERTE = 10;
+
 	SDL_Rect rectAtaque = pos;
 	SDL_Rect rectQuieto = pos;
 	SDL_Rect rectMuere = pos;
@@ -61,6 +66,9 @@ SpriteUnidad::SpriteUnidad(int cant_dir, int frames_dif, Imagen* image, SDL_Rect
 
 					 rectMuere.x -= 35;
 					 rectMuere.w *= 2;
+
+					 FPS_CAMINATA = 20;
+					 FPS_ATAQUE = 8;
 
 					 rectQuieto.x -= 5;
 					 rectQuieto.y += 3;
@@ -210,18 +218,21 @@ void SpriteUnidad::verificarEstadoEntidadConImagen(){
 		case CAMINANDO:
 					   imagen = imagenCaminando;
 					   posicion = mapRectEstado[CAMINANDO];
+					   fps = FPS_CAMINATA;
 					   frames = framesCaminata;
 					   cant_Img_Distintas = FRAMES_CAMINATA;
 				       break;
 		case ATACANDO:
 					   imagen = imagenAtaque;
 					   posicion = mapRectEstado[ATACANDO];
+					   fps = FPS_ATAQUE;
 					   frames = framesAtaque;
 					   cant_Img_Distintas = FRAMES_ATAQUE;
 				       break;
 		case MURIENDO:
 					   imagen = imagenMuerte;
 					   posicion = mapRectEstado[MURIENDO];
+					   fps = FPS_MUERTE;
 					   frames = framesMuerte;
 					   fps = 10;
 					   cant_Img_Distintas = FRAMES_MUERTE;
@@ -231,6 +242,7 @@ void SpriteUnidad::verificarEstadoEntidadConImagen(){
 					   imagen = imagenConstruyendo;
 					   posicion = mapRectEstado[CONSTRUYENDO];
 					   frames = framesConstruccion;
+					   fps = FPS_CONSTRUYENDO;
 					   cant_Img_Distintas = FRAMES_CONSTRUYENDO;
 			           break;
 		default :

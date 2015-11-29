@@ -62,11 +62,18 @@ private:
 
 	vector<Entidad*> revisarMuertos();
 
+	void verificacionDeEstadoYColisionesDeAtaques();
+
+	void actualizarPosicionesAtaquesPorMoverCamara(int cant_x, int cant_y);
+
+	Map<Entidad*,Sprite*> *mapAtaquesLargaDistancia; // Para flechas y ataques de larga distancia
+
 public:
 	Juego(Connection* lan, ConfiguracionJuego* infoJuegoRed);
 	void cargaInicialDeRecursos();
 	void envioInicialDeEntidadesPropias();
 
+	Map<Entidad*,Sprite*> *getMapObjetosAtacantes();
 	Connection* const getConnection();
 	void setConnection(Connection* conn);
 	void olvidarConnection();
@@ -83,15 +90,13 @@ public:
 	int getIDJugador();
 	void cargarEnemigo(Entidad* enemigo);
 
-	vector<Sprite*> getSpritesUnidades();
+	vector<Sprite*> getSpritesEntidadesJugadores();
 	Map<Entidad*, Sprite*>* getSpritesEntidades();
 	vector<InfoEntidad> getInfoTiposEntidades();
 
 	Entidad* getEntidad(TipoEntidad tipo, int id_jug, int identificador);
 	Sprite* getSpriteDeEntidad(Entidad* entidad);
 	Entidad* getEntidadDeSprite(Sprite* spr);
-
-	//PosEntidad getPosEntDeProtagonista();
 
 	Mix_Chunk* getSonidoTipo(TipoSonido tipo);
 
@@ -131,7 +136,6 @@ public:
 
 	void crearNuevaUnidadApartirDeEdificioSeleccionado(TipoEntidad tipoEntidadACrear);
 
-	//void toggleEnemigo(int id_jug, int idUnidad);
 	void apagarEnemigo(int id_jug);
 	void reiniciar();
 	virtual ~Juego();

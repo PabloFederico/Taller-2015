@@ -59,6 +59,8 @@ public:
 
 	void setDireccion(int direccion);
 
+	Direccion getDireccion();
+
 	void efectuarMovimiento();
 
 	void agregarImagenPetrificada(Imagen* image);

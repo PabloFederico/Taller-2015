@@ -8,6 +8,7 @@
 #include "../modelo/Juego.h"
 
 #include "../utils/Yaml.h"
+#include "Flecha.h"
 
 
 Juego::Juego(Connection* lan = NULL, ConfiguracionJuego* infoJuegoRed = NULL):
@@ -24,6 +25,7 @@ Juego::Juego(Connection* lan = NULL, ConfiguracionJuego* infoJuegoRed = NULL):
 	this->edificiosEnemigos = new vector<Edificio*>();
 	this->jugador = NULL;
 	this->contenedorSonidos = NULL;
+	mapAtaquesLargaDistancia = new Map<Entidad*,Sprite*>();
 	cargarNumJugador();
 	cargarJuego(infoJuegoRed);
 }
@@ -248,7 +250,7 @@ Entidad* Juego::getEntidad(TipoEntidad tipo, int id_jug, int identificador) {
 }
 
 /********************************************************************************/
-vector<Sprite*> Juego::getSpritesUnidades() {
+vector<Sprite*> Juego::getSpritesEntidadesJugadores() {
 	vector<Sprite*> v;
 	for (vector<Unidad*>::iterator it = unidadesEnemigos->begin(); it < unidadesEnemigos->end(); ++it)
 		v.push_back(this->contenedor->getSpriteDeEntidad(*it)); // ajenas
@@ -256,6 +258,12 @@ vector<Sprite*> Juego::getSpritesUnidades() {
 	vector<Unidad*> unidadesPropias = jugador->getUnidades();
 	for (unsigned i = 0; i < unidadesPropias.size(); i++)
 		v.push_back(contenedor->getSpriteDeEntidad(unidadesPropias[i])); // propias
+
+	// Se cargar los edificios propios
+	vector<Edificio*> edificiosPropios = jugador->getEdificios();
+	for (unsigned i = 0; i < edificiosPropios.size(); i++)
+		v.push_back(contenedor->getSpriteDeEntidad(edificiosPropios[i]));
+
 	return v;
 }
 
@@ -281,6 +289,17 @@ void Juego::reiniciar(){	// TODO revisar? O desactivar la posibilidad cuando esC
 /***************************************************/
 void Juego::actualizarPosicionesEntidades(int cant_x, int cant_y){
 	this->contenedor->actualizarPosicionesEntidades(cant_x,cant_y);
+	actualizarPosicionesAtaquesPorMoverCamara(cant_x,cant_y);
+}
+
+/***************************************************/
+void Juego::actualizarPosicionesAtaquesPorMoverCamara(int cant_x, int cant_y){
+	map<Entidad*,Sprite*>::iterator p = mapAtaquesLargaDistancia->begin();
+	while (p != mapAtaquesLargaDistancia->end()){
+		Sprite* spriteObjetoAtaque = p->second;
+		spriteObjetoAtaque->mover(cant_x,cant_y);
+		p++;
+	}
 }
 
 /***************************************************/
@@ -429,6 +448,7 @@ Edificio* Juego::crearNuevoEdificio(TipoEntidad tipoEdif, Coordenada coord, int 
 	return edificio;
 }	// todo falta algo q acomode por posiciones ocupadas; lo mismo para unidades y recursos
 
+
 /***************************************************/
 // Pasar el id_recurso que dicte el Server. En caso de jugar offline, ignorarlo.
 Entidad* Juego::agregarRecurso(TipoEntidad recurso, Coordenada coord, int id_recurso) {
@@ -453,12 +473,12 @@ Entidad* Juego::agregarRecurso(TipoEntidad recurso, Coordenada coord, int id_rec
 void Juego::crearNuevaUnidadApartirDeEdificioSeleccionado(TipoEntidad tipoEntidadACrear){
 	Edificio* edificio = jugador->getEdificioSeleccionado();
 	if (edificio == NULL) return;
-	if (jugador->getRecursosDisponibles() >= edificio->getCostoPorUnidad()){
+	if (jugador->tieneRecursosParaCrearUnidad(tipoEntidadACrear)){
 		Coordenada c = Calculador::obtenerCoordenadaLibreCercaDeEdificio(edificio,escenario);
 		if (!escenario->coordEnEscenario(c)) return;
 
 		if (crearNuevaUnidad(tipoEntidadACrear, c, this->getIDJugador()))
-			jugador->descontarRecursos(edificio->getCostoPorUnidad());
+			jugador->descontarRecursosPorCrearUnidad(tipoEntidadACrear);
 
 		std::cout <<"creando nueva unidad tipo "<<tipoEntidadACrear<<" en : "<<c.x<<","<<c.y<<"\n";//
 	}
@@ -554,6 +574,18 @@ void Juego::interaccionesDeUnidades() {
 	for (std::vector<Unidad*>::iterator uniIt = all_unidades.begin(); uniIt < all_unidades.end(); ++uniIt) {
 		try {
 			(*uniIt)->interactuar();
+			// Analizamos si se realizo un ataque de largo alcance (ARQUERO) [HORRIBLE, pero bue...]
+			if ((*uniIt)->getTipo() == ARQUERO && (*uniIt)->emitioAtaque()){
+				std::cout <<"Arquero emitiendo flecha\n";
+				Sprite* spriteArquero = contenedor->getSpriteDeEntidad((*uniIt));
+				Flecha* flecha = new Flecha((*uniIt),spriteArquero->getDireccion());
+				Coordenada coord_ceros(*cero_x,*cero_y);
+				// El sprite de ataque no se guarda en Contenedor De Recursos
+				// sino temporalmente en Juego
+				Sprite* spriteFlecha = contenedor->generarSpriteDeAtaque(flecha,spriteArquero->getDireccion(),coord_ceros,escenario);
+				spriteFlecha->activarMovimiento(true);
+				mapAtaquesLargaDistancia->insert(flecha,spriteFlecha);
+			}
 
 		} catch ( UnidadDebeAcercarse &u ) {
 			Sprite *sprite = this->contenedor->getSpriteDeEntidad(*uniIt);
@@ -581,7 +613,50 @@ void Juego::interaccionesDeUnidades() {
 }
 
 /********************************************************************************/
+void Juego::verificacionDeEstadoYColisionesDeAtaques(){
+	map<Entidad*,Sprite*>::iterator itAtaque = mapAtaquesLargaDistancia->begin();
+	while (itAtaque != mapAtaquesLargaDistancia->end()){
+		Entidad* objetoAtaque = itAtaque->first;
+		Sprite* spriteObjetoAtaque = itAtaque->second;
+		Coordenada c_ataque = itAtaque->first->getPosicion();
+		// Analizar si tile_actual es NULL
+		Tile* tile_actual = escenario->getTile(c_ataque);
+		if (tile_actual == NULL){
+			mapAtaquesLargaDistancia->erase(objetoAtaque);
+			delete spriteObjetoAtaque;
+			delete objetoAtaque;
+			itAtaque++;
+			continue;
+		}
+		Entidad* receptor = escenario->obtenerEntidadOcupadoraEnTile(tile_actual);
+		if (receptor != NULL){
+			Sprite* spriteReceptor = contenedor->getSpriteDeEntidad(receptor);
+			bool hayColision = spriteObjetoAtaque->checkColision(spriteReceptor);
+			// El casteo a tipo flecha es temporal, podemos mejorarlo con una clase ObjetoAtaque (que herede de Entidad)
+			if (hayColision || ((Flecha*)objetoAtaque)->llegoASuLimite()){
+
+				if (hayColision && receptor->getIDJug() != idJug){
+					((Flecha*)objetoAtaque)->lastimar(receptor);
+					std::cout <<" colisión detectada en x : "<<c_ataque.x<<"  y : "<<c_ataque.y<<"\n";
+				}
+				mapAtaquesLargaDistancia->erase(objetoAtaque);
+				delete spriteObjetoAtaque;
+				delete objetoAtaque;
+			}
+		}
+		itAtaque++;
+
+	}
+}
+
+Map<Entidad*,Sprite*>* Juego::getMapObjetosAtacantes(){
+	return mapAtaquesLargaDistancia;
+}
+
+/********************************************************************************/
 void Juego::continuar() {
+	verificacionDeEstadoYColisionesDeAtaques();
+
 	interaccionesDeUnidades();
 
 	// Limpiar muertes
@@ -689,5 +764,16 @@ Juego::~Juego() {
 	delete this->contenedor;
 	delete this->barraEstado;
 	delete this->contenedorSonidos;
+
+	map<Entidad*,Sprite*>::iterator p = mapAtaquesLargaDistancia->begin();
+	while (p != mapAtaquesLargaDistancia->end()){
+		Entidad* objetoAtaque = p->first;
+		Sprite* spriteObjetoAtaque = p->second;
+		p++;
+		delete objetoAtaque;
+		delete spriteObjetoAtaque;
+	}
+	delete mapAtaquesLargaDistancia;
+
 	delete jugador;
 }

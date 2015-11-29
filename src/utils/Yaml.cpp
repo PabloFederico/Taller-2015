@@ -21,6 +21,7 @@ ConfiguracionJuego Yaml::cargarConfiguracionJuego(std::string archivoConfig) {
 		tipos["agua"] = AGUA;
 		tipos["castillo"] = CASTILLO;
 		tipos["cuartel"] = CUARTEL;
+		tipos["barraca"] = BARRACK;
 		tipos["centro_civico"] = CENTRO_CIVICO;
 		tipos["construccion"] = CONSTRUCCION;
 		tipos["soldado"] = SOLDADO;

@@ -93,7 +93,7 @@ void VentanaJuego::dibujar(){
 	Mouse* mouse = controlador->getMouse();
 	if (mouse->estaMoviendoImagen())
 		dibujador->dibujarEfectosTraslucidos(mouse->getXY(),escenario);
-
+	dibujador->dibujarAtaquesDeLargaDistancia(controlador->getJuego());
 	dibujador->dibujarBarraEstado(escenario, barraEstado, fuenteTexto);
 
 	SDL_RenderPresent(this->renderer);
@@ -128,8 +128,12 @@ EstadoFinVentana VentanaJuego::run(){
 		/* Las siguientes entidades son de prueba */
 		//this->controlador->getJuego()->crearNuevaUnidad(SOLDADO, Coordenada( 0, 5), 1);//
 		//this->controlador->getJuego()->crearNuevaUnidad(ALDEANO, Coordenada(20,16), 1);//
+		//this->controlador->getJuego()->crearNuevaUnidad(ARQUERO, Coordenada(12,14), 1);//
 		//this->controlador->getJuego()->crearNuevaUnidad(ARQUERO, Coordenada( 1, 8), 1);//
 		//this->controlador->getJuego()->crearNuevaUnidad(ALDEANO, Coordenada(14,14), 2);//
+		//this->controlador->getJuego()->crearNuevaUnidad(ARQUERO, Coordenada(10,16), 2);//
+		//this->controlador->getJuego()->crearNuevaUnidad(ARQUERO, Coordenada(12,16), 2);//
+		//this->controlador->getJuego()->crearNuevaUnidad(SOLDADO, Coordenada(14,16), 2);//
 		//this->controlador->getJuego()->crearNuevaUnidad(ARQUERO, Coordenada(10,16), 2);//
 		//this->controlador->getJuego()->crearNuevaUnidad(ARQUERO, Coordenada(12,16), 2);//
 		///
