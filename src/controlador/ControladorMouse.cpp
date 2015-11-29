@@ -92,24 +92,26 @@ bool ControladorMouse::procesarClickEnVentana(Mouse* mouse, Tile** tile_clic, Co
 				for (unsigned i = 0; i < unidades.size() && unidades[i]->esConstructor(); i++){
 					Sprite* spriteUnidad = juego->getSpritesEntidades()->find(unidades[i])->second;
 					Coordenada coord_pixel_sprite = spriteUnidad->getPosPies();
+					// Por qué todo esto está copipeistiado del clic derecho, no deberían funcionar distinto?
 					try {
 						Camino camino = Calculador::obtenerCaminoMin(escenario, coord_pixel_sprite, mouse->getXY(), coord_pixel_ceros);
 						if (camino.size() > 0) {
-							/* Si se está jugando en red, enviar el movimiento a los demás jugadores. */
-							//if (juego->esCliente())
-								//Proxy::enviar(juego->getConnection(), camino);
-							//else
-								unidades[i]->olvidarInteraccion();
-								/* Activamos localmente el movimiento del sprite y seteamos el nuevo camino que debe recorrer. */
-								if (entidadReceptora == NULL)	// Caso contrario, la interacción se debe ocupar de acercarlo hasta donde deba
-									spriteUnidad->setearNuevoCamino(camino, coord_pixel_ceros);
-								// Si yo muevo la(s) unidad(es), espero que deje de interactuar con su último receptor.
-								//unidades[i]->olvidarInteraccion();
+							// Si yo muevo la(s) unidad(es), espero que deje de interactuar con su último receptor.
+							unidades[i]->olvidarInteraccion();
+							/* Activamos localmente el movimiento del sprite y seteamos el nuevo camino que debe recorrer. */
+							if (entidadReceptora == NULL) {
+								spriteUnidad->setearNuevoCamino(camino, coord_pixel_ceros);
+								/* Si se está jugando en red, enviar el movimiento a los demás jugadores. */
+								if (juego->esCliente())
+									Proxy::enviar(juego->getConnection(), *unidades[i], camino);
+							}
 						}
 
 						// Si la hay, settear interacción con nueva entidad cliqueada.
 						if (entidadReceptora != NULL) {
 							unidades[i]->interactuarCon(entidadReceptora);
+							if (juego->esCliente())
+								Proxy::enviar(juego->getConnection(), *unidades[i], *entidadReceptora);
 						}
 					} catch ( FueraDeEscenario &e ) {}
 				}
@@ -277,21 +279,22 @@ void ControladorMouse::procesarClickDerecho(Mouse* mouse){
 			try {
 				Camino camino = Calculador::obtenerCaminoMin(escenario, coord_pixel_sprite, mouse->getXY(), coord_pixel_ceros);
 				if (camino.size() > 0) {
-					/* Si se está jugando en red, enviar el movimiento a los demás jugadores. */
-					//if (juego->esCliente())
-						//Proxy::enviar(juego->getConnection(), camino);
-					//else
-						unidades[i]->olvidarInteraccion();
-						/* Activamos localmente el movimiento del sprite y seteamos el nuevo camino que debe recorrer. */
-						if (entidadReceptora == NULL)	// Caso contrario, la interacción se debe ocupar de acercarlo hasta donde deba
-							spriteUnidad->setearNuevoCamino(camino, coord_pixel_ceros);
-						// Si yo muevo la(s) unidad(es), espero que deje de interactuar con su último receptor.
-						//unidades[i]->olvidarInteraccion();
+					// Si yo muevo la(s) unidad(es), espero que deje de interactuar con su último receptor.
+					unidades[i]->olvidarInteraccion();
+					/* Activamos localmente el movimiento del sprite y seteamos el nuevo camino que debe recorrer. */
+					if (entidadReceptora == NULL) {
+						spriteUnidad->setearNuevoCamino(camino, coord_pixel_ceros);
+						/* Si se está jugando en red, enviar el movimiento a los demás jugadores. */
+						if (juego->esCliente())
+							Proxy::enviar(juego->getConnection(), *unidades[i], camino);
+					}
 				}
 
 				// Si la hay, settear interacción con nueva entidad cliqueada.
 				if (entidadReceptora != NULL) {
 					unidades[i]->interactuarCon(entidadReceptora);
+					if (juego->esCliente())
+						Proxy::enviar(juego->getConnection(), *unidades[i], *entidadReceptora);
 				}
 			} catch ( FueraDeEscenario &e ) {}
 

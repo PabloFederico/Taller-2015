@@ -14,19 +14,19 @@
 //	lastPing = clock();
 //}
 
-void Connection::chequearPing() {
-	if ((lastPing + 3.0*CLOCKS_PER_SEC) > clock())	// Si pasaron más de 3,0 segundos desde el último ping... salta.
-		throw Disconnected();
-}
+//void Connection::chequearPing() {
+//	if ((lastPing + 3.0*CLOCKS_PER_SEC) > clock())	// Si pasaron más de 3,0 segundos desde el último ping... salta.
+//		throw Disconnected();
+//}
 
-void Connection::reestablecerPing() {
-	lastPing = clock();
-}
+//void Connection::reestablecerPing() {
+//	lastPing = clock();
+//}
 
-void Connection::revisarPing() {
-	chequearPing();
-	reestablecerPing();
-}
+//void Connection::revisarPing() {
+//	chequearPing();
+//	reestablecerPing();
+//}
 
 
 int Connection::getIDJugador() {
@@ -39,7 +39,7 @@ void Connection::enviar(std::string s) {
 		//Log::imprimirALog(ERR, "ERROR: send failed.");
 		std::cout << "ERROR: send failed." << std::endl;
 	} else
-		std::cout << "Enviando: "<<s<<std::endl;//
+		std::cout << "Enviando: "<< s <<std::endl;//
 }
 
 string Connection::recibir() {

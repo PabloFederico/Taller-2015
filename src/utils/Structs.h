@@ -60,7 +60,7 @@ struct DataPos{
 
 
 /* Estructura para guardar información sobre una Entidad*/
-struct InfoEntidad{
+struct InfoEntidad {
 	TipoEntidad tipo;
 	string path;
 	string descripcion;
@@ -83,6 +83,28 @@ struct InfoEntidad{
 	};
 	bool operator==(TipoEntidad tipo) const {
 		return (this->tipo == tipo);
+	}
+
+	std::string enc() {
+		ostringstream Encode;
+		Encode << tipo<<",'"<<path<<"','"<<descripcion<<"',"<<ancho<<","<<alto<<","<<pixel_ref_x<<","<<pixel_ref_y<<","<<fps<<","<<delay;
+		return Encode.str();
+	}
+
+	static InfoEntidad dec(std::string s) {
+		InfoEntidad ie;
+		int tipo; char cs[101];
+		stringstream ss(s);
+		ss >> tipo; ie.tipo = TipoEntidad(tipo); ss.ignore(2);
+		ss.get(cs, 100, '\''); ie.path = cs; ss.ignore(3);
+		ss.get(cs, 100, '\''); ie.descripcion = cs; ss.ignore(2);
+		ss >> ie.ancho; ss.ignore();
+		ss >> ie.alto; ss.ignore();
+		ss >> ie.pixel_ref_x; ss.ignore();
+		ss >> ie.pixel_ref_y; ss.ignore();
+		ss >> ie.fps; ss.ignore();
+		ss >> ie.delay;
+		return ie;
 	}
 };
 
@@ -157,13 +179,11 @@ struct Camino {
 		return v.back();
 	}
 
-	// Encodeado: "c1|c2|c3|...|cn"
+	// Encodeado: "c1|c2|c3|...|cn|"
 	std::string enc() {
 		ostringstream Encode;
 		for (std::vector<Coordenada>::iterator it = v.begin(); it < v.end(); ++it) {
-			if (it != v.begin())
-				Encode << "|";
-			Encode << it->enc().c_str();
+			Encode << it->enc().c_str() << "|";
 		}
 		return Encode.str();
 	}
@@ -174,7 +194,7 @@ struct Camino {
 		while (!ss.eof()) {
 			ss.get(cs, 11, '|');
 			cam.agregar(Coordenada::dec(cs));
-			ss.ignore();
+			ss.ignore(); // '|'
 		}
 		return cam;
 	}
@@ -199,74 +219,68 @@ struct Camino {
 
 /* Estructura para guardar una instancia Entidad que se encuentra en las
  *  coordenadas x,y */
-struct PosEntidad{
-	int x,y;
-	Entidad* entidad;
-
-	PosEntidad(int x, int y, Entidad* ente){
-		this->x = x;
-		this->y = y;
-		this->entidad = ente;
-	};
-	PosEntidad(Coordenada c, Entidad* ente) {
-		this->x = c.x;
-		this->y = c.y;
-		this->entidad = ente;
-	};
-
-	Coordenada coord() {
-		return Coordenada(this->x,this->y);
-	}
-
-	bool operator==(const PosEntidad &r) const {
-		return (this->x == r.x && this->y == r.y
-				  && this->entidad == r.entidad);
-	};
-
-	// Encodeado: "x;y[entidad]"
-	std::string enc() {
-		ostringstream Encode;
-		Encode << x<<";"<<y<<"["<<entidad->enc()<<"]";
-		return Encode.str();
-	};
-	static PosEntidad dec(std::string s) {
-		std::stringstream ss(s);
-		int x,y; char aux[21];
-		ss >> x; ss.ignore(); // ','
-		ss >> y; ss.ignore(); // '['
-		ss.get(aux, 20, ']');
-		Entidad *e = Entidad::dec(aux);
-		return PosEntidad(x,y,e);
-	};
-};
+//struct PosEntidad{
+//	int x,y;
+//	Entidad* entidad;
+//
+//	PosEntidad(int x, int y, Entidad* ente){
+//		this->x = x;
+//		this->y = y;
+//		this->entidad = ente;
+//	};
+//	PosEntidad(Coordenada c, Entidad* ente) {
+//		this->x = c.x;
+//		this->y = c.y;
+//		this->entidad = ente;
+//	};
+//
+//	Coordenada coord() {
+//		return Coordenada(this->x,this->y);
+//	}
+//
+//	bool operator==(const PosEntidad &r) const {
+//		return (this->x == r.x && this->y == r.y
+//				  && this->entidad == r.entidad);
+//	};
+//
+//	// Encodeado: "x;y[entidad]"
+//	std::string enc() {
+//		ostringstream Encode;
+//		Encode << x<<";"<<y<<"["<<entidad->enc()<<"]";
+//		return Encode.str();
+//	};
+//	static PosEntidad dec(std::string s) {
+//		std::stringstream ss(s);
+//		int x,y; char aux[21];
+//		ss >> x; ss.ignore(); // ';'
+//		ss >> y; ss.ignore(); // '['
+//		ss.get(aux, 20, ']');
+//		Entidad *e = Entidad::dec(aux);
+//		return PosEntidad(x,y,e);
+//	};
+//};
 
 
 /* Estructura para guardar información para Escenario */
-struct InfoEscenario{
+struct InfoEscenario {
 	string nombre;
 	int size_x;
 	int size_y;
 	vector<PosTipoEntidad> posTipoEntidades;
-	//TipoEntidad protagonista;
-	//int posX_protagonista;
-	//int posY_protagonista;
 
 	InfoEscenario(){
 		nombre = "";
 		size_x = 1;
 		size_y = 1;
-		//protagonista = SOLDADO;
-		//posX_protagonista = 0;
-		//posY_protagonista = 0;
 	};
-/*
-	void setPosProtag(Coordenada c) {
-		posX_protagonista = c.x;
-		posY_protagonista = c.y;
-	}
-*/
+
 	void agregarEntidad(pair<int,int> pos, TipoEntidad tipo){
 		PosTipoEntidad posTipoEnte(pos.first,pos.second,tipo);
+		this->posTipoEntidades.push_back(posTipoEnte);
+	};
+
+	void agregarEntidad(Coordenada pos, TipoEntidad tipo){
+		PosTipoEntidad posTipoEnte(pos.x,pos.y,tipo);
 		this->posTipoEntidades.push_back(posTipoEnte);
 	};
 
@@ -278,38 +292,33 @@ struct InfoEscenario{
 		return !((size_x > 0) && (size_y > 0));// && (posX_protagonista >= 0) && (posY_protagonista >= 0));
 	}
 
-	// Encodeado: "x;y|[...,PTE,...,]|protTE"
-/*
+	// Encodeado: "nombre,size_x;size_y|[...,PTE,...,]"
 	std::string enc() {
 		ostringstream Encode;
-		Encode << size_x << ";" << size_y << "|[";
+		Encode << nombre << "," << size_x << ";" << size_y << "|[";
 		for (vector<PosTipoEntidad>::iterator it = posTipoEntidades.begin(); it < posTipoEntidades.end(); ++it) {
 			Encode << it->enc()<<",";
 		}
-		Encode << "]|"<<(PosTipoEntidad(posX_protagonista, posY_protagonista, protagonista).enc());
+		Encode << "]";
 		return Encode.str();
 	}
-*/
+
 	static InfoEscenario dec(std::string s) {
-		std::stringstream ss(s);
+		char cs[21];
 		InfoEscenario ie;
+		stringstream ss(s);
+		ss.get(cs, 20, ',');
+		ie.nombre = cs;
+		ss.ignore();
 		ss >> ie.size_x;
 		ss.ignore();
 		ss >> ie.size_y;
-		char cs[16];
 		ss.ignore(2);
 		while (ss.peek() != ']') {
 			ss.get(cs, 14, ',');
 			ie.posTipoEntidades.push_back(PosTipoEntidad::dec(cs));
 			ss.ignore();
 		}
-		ss.ignore(2);
-		ss.get(cs, 14);
-		//PosTipoEntidad prot = PosTipoEntidad::dec(cs);
-		//ie.protagonista = prot.tipo;
-		//ie.posX_protagonista = prot.x;
-		//ie.posY_protagonista = prot.y;
-
 		return ie;
 	}
 };
@@ -341,6 +350,45 @@ struct ConfiguracionJuego{
 
 	void agregarInfoEscenarios(InfoEscenario infoEscenario){
 		escenarios.push_back(infoEscenario);
+	}
+
+	// Encodeado: "nombreJugador,direccion_ip,ancho_pantalla,alto_pantalla,vel_personaje,margen_scroll,rango_vision,[...;entidades.enc();],[...;escenarios.enc();]"
+	std::string enc() {
+		ostringstream Encode;
+		Encode << nombreJugador<<","<<direccion_ip<<","<<ancho_pantalla<<","<<alto_pantalla<<","<<vel_personaje<<","<<margen_scroll<<","<<rango_vision<<",[";
+		for (vector<InfoEntidad>::iterator it = entidades.begin(); it < entidades.end(); ++it) {
+			Encode << it->enc()<<";";
+		}
+		Encode << "],[";
+		for (vector<InfoEscenario>::iterator it2 = escenarios.begin(); it2 < escenarios.end(); ++it2) {
+			Encode << it2->enc()<<";";
+		}
+		Encode << "]";
+		return Encode.str();
+	}
+
+	static ConfiguracionJuego dec(std::string s) {
+		ConfiguracionJuego cj;
+		char cs[502];
+		stringstream ss(s);
+		ss.get(cs, 21, ','); cj.nombreJugador = cs; ss.ignore();
+		ss.get(cs, 21, ','); cj.direccion_ip = cs; ss.ignore();
+		ss >> cj.ancho_pantalla; ss.ignore();
+		ss >> cj.alto_pantalla; ss.ignore();
+		ss >> cj.vel_personaje; ss.ignore();
+		ss >> cj.margen_scroll; ss.ignore();
+		ss >> cj.rango_vision; ss.ignore(2);
+		while (ss.peek() != ']') {
+			ss.get(cs, 100, ';');
+			cj.entidades.push_back(InfoEntidad::dec(string(cs)));
+			ss.ignore(); // ';'
+		}
+		while (ss.peek() != ']') {
+			ss.get(cs, 500, ';');
+			cj.escenarios.push_back(InfoEscenario::dec(string(cs)));
+			ss.ignore(); // ';'
+		}
+		return cj;
 	}
 };
 

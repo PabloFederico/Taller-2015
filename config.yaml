@@ -3,72 +3,82 @@ nombre_jugador: pepe
 direccion_ip: 127.0.0.1
 
 pantalla:
-  ancho: 1080
+  ancho: 800
   alto: 640
 
 configuracion:
   vel_personaje: 50
   margen_scroll: 8
-  rango_de_vision: 10
+  rango_de_vision: 6
 
 tipos:
   - nombre: arbol
-    imagen: images/arbol.png
+    imagen: images/utils/arbol.png
     descripcion: Arbol
 
-#  - nombre: castillo
-#    alto_base: 4
-#    ancho_base: 4
-#    imagen: images/casss.png
-#    pixel_ref_x: 30
-#    pixel_ref_y: 40
-#    descripcion: Castillo
-
-  - nombre: soldado
-    fps: 40
-    imagen: images/soldado2.png
-    descripcion: Soldado
-
-  - nombre: animal
-    fps: 10
-    delay: 3000
-    imagen: images/animal1.png
-    descripcion: Animal
-
   - nombre: tierra
-    imagen: images/tierra.png
+    imagen: images/relieve/tierra.png
 
   - nombre: agua
-    imagen: images/agua.png
+    imagen: images/relieve/agua.png
 
   - nombre: centro_civico
     alto_base: 4
- 	ancho_base: 4
-    imagen: images/centro_civico.png
+    ancho_base: 4
+    imagen: images/utils/Barracks3.png
     descripcion: Centro_Civico
 
   - nombre: cuartel
     alto_base: 4
- 	ancho_base: 4
-    imagen: images/cuartel.png
+    ancho_base: 4
+    imagen: images/utils/Barracks7.png
     descripcion: Cuartel
+
+  - nombre: barraca
+    alto_base: 4
+    ancho_base: 4
+    imagen: images/utils/Barracks5.png
+    descripcion: Barraca_Arquero
+
+  - nombre: soldado
+    fps: 15
+    imagen: images/sprites/soldado_camina.png
+    descripcion: Soldado
+
+  - nombre: arquero
+    fps: 20
+    imagen: images/sprites/arquero_camina.png
+    descripcion: Arquero
+
+  - nombre: animal
+    delay: 5000
+    fps: 10
+    imagen: images/sprites/vaca_come.png
+    descripcion: Animal
+
+  - nombre: barraca
+    alto_base: 4
+    ancho_base: 4
+    imagen: images/utils/Barracks5.png
+    descripcion: Barraca Arquero
 
 #  - nombre: comida
 #    imagen: images/comida.png
 
-#  - nombre: madera
-#    imagen: images/madera.png
+  - nombre: mina_piedra
+    imagen: images/utils/mina_piedra2.png
+    descripcion: Mina de piedra
 
-#  - nombre: oro
-#    imagen: images/moneda.png
+  - nombre: mina_oro
+    imagen: images/utils/mina_oro.png
 
   - nombre: aldeano
     fps: 40
-    imagen: images/aldeano.png
+    imagen: images/sprites/aldeano_camina.png
     descripcion: Aldeano
 
   - nombre: construccion
-    imagen: images/utils/cuartel.png #!!!
+    imagen: images/utils/Barracks3.png #!!!
     descripcion: Aldeano
 
 escenario:
@@ -76,6 +86,7 @@ escenario:
     size_x: 50
     size_y: 50
     entidades:
+      - {x: 15, y: 15, tipo: aldeano}
       - {x: 10, y: 10, tipo: agua}
       - {x: 10, y: 11, tipo: agua}
       - {x: 10, y: 12, tipo: agua}

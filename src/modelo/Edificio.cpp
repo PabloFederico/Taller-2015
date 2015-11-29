@@ -36,26 +36,6 @@ int Edificio::getCostoPorUnidad(){
 	}
 }
 
-// Para red
-std::string Edificio::enc(){
-	ostringstream enc;
-	enc << idJug<<","<<dni<<","<<tipo<<","<<ancho<<","<<alto;
-	return enc.str();
-}
-Edificio* Edificio::dec(std::string s){
-	int id,dni,ti,an,al;
-	stringstream ss(s);
-	ss >> id; ss.ignore();
-	ss >> dni;ss.ignore();
-	ss >> ti; ss.ignore();
-	ss >> an; ss.ignore();
-	ss >> al;
-	Edificio *e = new Edificio(TipoEntidad(ti),id,dni);
-	e->setTam(an, al);
-	return e;
-}
-//
-
 void Edificio::morir() {
 	Entidad::morir();
 }

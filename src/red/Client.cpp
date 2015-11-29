@@ -46,10 +46,12 @@ bool Client::iniciar() {
 	}
 	std::cout << "Intentado conectarse ("<<MAX_CONEXIONES<<" intentos)"<<std::endl;
 	bool res = -1;
+
+	// MAX_CONEXIONES intentos de conectarse, separados por 5 segundos.
 	for (int i = 0; i < MAX_CONEXIONES; i++) {
 		res = Red::crearConexion(this->socket);
 		std::cout << ".";
-		if (res >= 0)
+		if (res > 0)
 			break;
 		sleep(5);
 	}
@@ -60,10 +62,6 @@ bool Client::iniciar() {
 
 	this->lastDescriptor = this->socket->getDescriptor();
 
-	// Envía el nombre de jugador.
-	string mensaje = Red::agregarPrefijoYFinal("COM", nombreJug);
-	send(this->lastDescriptor, mensaje.c_str(), MAX_BYTES_LECTURA, 0);
-
 	// Recibe su número de jugador.
 	this->idJug = 0;
 	do {
@@ -74,37 +72,38 @@ bool Client::iniciar() {
 	} while (this->idJug == 0);
 
 	fcntl(this->socket->getDescriptor(), F_SETFL, O_NONBLOCK); // non-blocking mode
+
 	std::cout << std::endl << "Success! Conectado como jugador #"<<this->idJug<<"."<<std::endl;
 	return true;
 }
 
 
-bool Client::reintentarConexion(string nombreActual) {
-	string ip, nombreJug;
-	parsearIPyNombreJugador(&ip, &nombreJug);
-
-	this->socket = new SocketCliente(ip);
-	if (this->socket->creadoCorrectamente() < 0)
-		return false;
-	if (Red::crearConexion(this->socket) < 0)
-		return false;
-
-	this->lastDescriptor = this->socket->getDescriptor();
-	string mensaje = Red::agregarPrefijoYFinal("COM", nombreActual);
-	send(this->lastDescriptor, mensaje.c_str(), MAX_BYTES_LECTURA, 0);
-	// Recibe su número de jugador.
-	this->idJug = 0;
-	do {
-		try {
-			std::stringstream ss(recibir());
-			ss >> this->idJug;
-		} catch ( NoSeRecibio &e ) {}
-	} while (this->idJug == 0);
-
-	fcntl(this->socket->getDescriptor(), F_SETFL, O_NONBLOCK); // non-blocking mode
-	std::cout << std::endl << "Success! Reconectado como jugador #"<<this->idJug<<"."<<std::endl;
-	return true;
-}
+//bool Client::reintentarConexion(string nombreActual) {
+//	string ip, nombreJug;
+//	parsearIPyNombreJugador(&ip, &nombreJug);
+//
+//	this->socket = new SocketCliente(ip);
+//	if (this->socket->creadoCorrectamente() < 0)
+//		return false;
+//	if (Red::crearConexion(this->socket) < 0)
+//		return false;
+//
+//	this->lastDescriptor = this->socket->getDescriptor();
+//	string mensaje = Red::agregarPrefijoYFinal("COM", nombreActual);
+//	send(this->lastDescriptor, mensaje.c_str(), MAX_BYTES_LECTURA, 0);
+//	// Recibe su número de jugador.
+//	this->idJug = 0;
+//	do {
+//		try {
+//			std::stringstream ss(recibir());
+//			ss >> this->idJug;
+//		} catch ( NoSeRecibio &e ) {}
+//	} while (this->idJug == 0);
+//
+//	fcntl(this->socket->getDescriptor(), F_SETFL, O_NONBLOCK); // non-blocking mode
+//	std::cout << std::endl << "Success! Reconectado como jugador #"<<this->idJug<<"."<<std::endl;
+//	return true;
+//}
 
 
 Client::~Client() {

@@ -12,7 +12,7 @@
 #include "../utils/ConfigDefault.h"
 #include "../utils/Log.h"
 
-ConfiguracionJuego Yaml::cargarConfiguracionJuego(std::string archivoConfig){
+ConfiguracionJuego Yaml::cargarConfiguracionJuego(std::string archivoConfig) {
 	ConfiguracionJuego conf_game;
 
 	map<string,TipoEntidad> tipos;
@@ -21,6 +21,7 @@ ConfiguracionJuego Yaml::cargarConfiguracionJuego(std::string archivoConfig){
 		tipos["agua"] = AGUA;
 		tipos["castillo"] = CASTILLO;
 		tipos["cuartel"] = CUARTEL;
+		tipos["barraca"] = BARRACK;
 		tipos["centro_civico"] = CENTRO_CIVICO;
 		tipos["construccion"] = CONSTRUCCION;
 		tipos["soldado"] = SOLDADO;
@@ -32,12 +33,12 @@ ConfiguracionJuego Yaml::cargarConfiguracionJuego(std::string archivoConfig){
 
 	YAML::Node config;
 	try {
-		config = YAML::LoadFile("config.yaml");
+		config = YAML::LoadFile(archivoConfig);
 	}
 	catch (YAML::BadFile &e) {
 		crearConfigDefault();
 		Log::imprimirALog(ERR_FAT,"Archivo de configuración no encontrado. Se ha creado uno nuevo por defecto.");
-		config = YAML::LoadFile("config.yaml");
+		config = YAML::LoadFile(archivoConfig);
 	}
 	catch (YAML::ParserException &e) {
 		Log::imprimirALog(WAR,"Error en el archivo de configuración: se tomarán los valores por defecto.");
@@ -124,17 +125,6 @@ ConfiguracionJuego Yaml::cargarConfiguracionJuego(std::string archivoConfig){
 
 					} else Log::imprimirALog(ERR,"Error: Tipo '" + ent["tipo"].as<string>() + "' desconocido");
 				}
-				/*
-				YAML::Node protag = unEscenario["protagonista"][0];
-				infoEsc.protagonista = SOLDADO;	//hardcodeo
-				if (tipos[protag["tipo"].as<string>()] == 0)
-					Log::imprimirALog(ERR,"Error: Tipo '" + protag["tipo"].as<string>() + "' desconocido");
-				else infoEsc.protagonista = tipos[protag["tipo"].as<string>()];
-
-				infoEsc.posX_protagonista = Calculador::ChequeoDeBorde(infoEsc.size_x-1, protag["x"].as<int>());
-				infoEsc.posY_protagonista = Calculador::ChequeoDeBorde(infoEsc.size_y-1, protag["y"].as<int>());
-				*/
-				// Asume que protagnista ocupa un único tile
 			//}
 		} else {
 			infoEsc = infoEscenarioDefault();
@@ -191,7 +181,7 @@ ConfiguracionJuego Yaml::OdioYAML() {
 
 	configDefault.nombreJugador = "Village Slayer";
 	configDefault.direccion_ip = "10.0.0.1";
-	configDefault.ancho_pantalla = 1080;
+	configDefault.ancho_pantalla = 800;
 	configDefault.alto_pantalla = 640;
 	configDefault.margen_scroll = 20;
 	configDefault.vel_personaje = 50;
@@ -344,7 +334,7 @@ InfoEscenario Yaml::infoEscenarioDefault() {
 	infoEscenario.agregarEntidad(std::make_pair(8,10), MINA_ORO);
 
 	//código de prueba
-	std::cout<<infoEscenario.getPosicionesEntidades().size()<<std::endl;
+	std::cout<<infoEscenario.getPosicionesEntidades().size()<<std::endl;//
 
 	return infoEscenario;
 }

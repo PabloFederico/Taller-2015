@@ -49,7 +49,7 @@ void VentanaJuego::cargarJuego(Juego *juego){
 		 * se cargan en el contenedor */
 
 		this->cargarImagenesYSprites(juego);
-		juego->cargaInicialDeRecursos();
+		//juego->cargaInicialDeRecursos();//
 
 		controlador->posicionarCamaraEnProtagonista();
 
@@ -113,19 +113,24 @@ EstadoFinVentana VentanaJuego::run(){
 		if (cursor == NULL) printf("Falló la creación del cursor %s",SDL_GetError());
 		SDL_SetCursor(cursor);
 
+		this->controlador->getJuego()->envioInicialDeEntidadesPropias();
+
 		///cdp
 		//this->controlador->getJuego()->comenzarNuevaConstruccion(CENTRO_CIVICO, Coordenada(4,15), 1);//
 		//this->controlador->getJuego()->comenzarNuevaConstruccion(CUARTEL, Coordenada(10,22), 1);//
 		//this->controlador->getJuego()->comenzarNuevaConstruccion(CENTRO_CIVICO, Coordenada(15,22), 1);//
 
 		/* Las siguientes entidades son de prueba */
-		this->controlador->getJuego()->crearNuevaUnidad(SOLDADO, Coordenada( 0, 5), 1);//
+		//this->controlador->getJuego()->crearNuevaUnidad(SOLDADO, Coordenada( 0, 5), 1);//
 		this->controlador->getJuego()->crearNuevaUnidad(ALDEANO, Coordenada(20,16), 1);//
-		this->controlador->getJuego()->crearNuevaUnidad(ARQUERO, Coordenada(12,14), 1);//
+		//this->controlador->getJuego()->crearNuevaUnidad(ARQUERO, Coordenada(12,14), 1);//
+		//this->controlador->getJuego()->crearNuevaUnidad(ARQUERO, Coordenada( 1, 8), 1);//
 		this->controlador->getJuego()->crearNuevaUnidad(ALDEANO, Coordenada(14,14), 2);//
-		this->controlador->getJuego()->crearNuevaUnidad(ARQUERO, Coordenada(10,16), 2);//
-		this->controlador->getJuego()->crearNuevaUnidad(ARQUERO, Coordenada(12,16), 2);//
-		this->controlador->getJuego()->crearNuevaUnidad(SOLDADO, Coordenada(14,16), 2);//
+		//this->controlador->getJuego()->crearNuevaUnidad(ARQUERO, Coordenada(10,16), 2);//
+		//this->controlador->getJuego()->crearNuevaUnidad(ARQUERO, Coordenada(12,16), 2);//
+		//this->controlador->getJuego()->crearNuevaUnidad(SOLDADO, Coordenada(14,16), 2);//
+		//this->controlador->getJuego()->crearNuevaUnidad(ARQUERO, Coordenada(10,16), 2);//
+		//this->controlador->getJuego()->crearNuevaUnidad(ARQUERO, Coordenada(12,16), 2);//
 		///
 
 		while ( run ) {

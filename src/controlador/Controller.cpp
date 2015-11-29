@@ -8,25 +8,23 @@
 #include "../controlador/Controller.h"
 
 
-Controller::Controller(){//Connection* lan = NULL) {
+Controller::Controller(Connection* lan = NULL) {
 	mouse = new Mouse();	
-	/*this->lan = lan;
-	Coordenada* posInicial = NULL;
+	this->lan = lan;
+	ConfiguracionJuego infoJuego;
 	try {
-		if (lan != NULL)
-			posInicial = Proxy::clienteEsperarComienzo(lan);
+		if (lan != NULL) {
+			//infoJuego = Proxy::clienteEsperarConfigGame(lan);
+			Proxy::clienteEsperarComienzo(lan);
+			this->juego = new Juego(lan, NULL);//, &infoJuego);
+		}
 	} catch ( Disconnected &e ) {
 		std::cout << "Desconectado."<<std::endl;
 		lan = NULL;
 	}
-*/
-	this->juego = new Juego();//lan, posInicial, NULL);
-/*
-	if (lan != NULL) {
-		Proxy::enviarNombre(lan, juego->getNombreJugador());
-		Proxy::enviar(lan, juego->getPosEntDeProtagonista());
-	}
-*/
+	if (lan == NULL)
+		this->juego = new Juego(NULL, NULL);
+
 	this->controladorMouse = new ControladorMouse(juego);
 	this->controladorCamara = new ControladorCamara(juego);
 	this->controladorJuego = new ControladorJuego(juego);
@@ -137,28 +135,7 @@ void Controller::capturarEvento(SDL_Event &event){
 
 	} // End while
 
-
 	juego->continuar();
-/*
-	if (this->juego->esCliente()) {
-		try {
-			Proxy::actualizarMultiplayer(this->juego);
-		} catch ( NoSeRecibio &e ) {
-			//try {
-				//juego->getConnection()->chequearPing();
-			//} catch ( Disconnected &e ) {
-				//juego->olvidarConnection();
-			//}
-		} catch ( Disconnected &e ) {
-			//juego->olvidarConnection();
-		}
-	}// else {
-		//if (((Client*)this->lan)->reintentarConexion(juego->getNombreJugador()))
-		//	juego->setConnection(this->lan);
-		//else
-		//	this->lan->finalizar();
-	//}
-	*/
 }
 
 void Controller::procesarEvento(){
@@ -168,17 +145,15 @@ void Controller::procesarEvento(){
 void Controller::actualizarEstadoDelJuego(){
 	controladorJuego->actualizarJuego(mouse);
 	controladorCamara->actualizarScroll(mouse);
-/*
+
 	if (this->juego->esCliente()) {
 		try {
 			Proxy::actualizarMultiplayer(this->juego);
 		} catch ( NoSeRecibio &e ) {
-
 		} catch ( Disconnected &e ) {
-
+			this->juego->olvidarConnection();	// todo: terminar juego
 		}
 	}
-*/
 }
 
 void Controller::agregarCamara(Camara *cam){
@@ -191,10 +166,6 @@ void Controller::reiniciarJuego(){
 	delete this->controladorMouse;
 	this->controladorMouse = new ControladorMouse(juego);
 	this->controladorCamara = new ControladorCamara(juego);
-}
-
-int Controller::verificarConexion(std::string string_IP){
-	return -1;	// !!! todo
 }
 
 

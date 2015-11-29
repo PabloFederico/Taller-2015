@@ -76,14 +76,10 @@ vector<Unidad*> Jugador::getUnidades(){
 	return vec_unidades;
 }
 
-vector<Edificio*> Jugador::getEdificios(){
+vector<Edificio*> Jugador::getEdificios() {
 	vector<Edificio*> vec_edificios;
-	vec_edificios.clear();
-	map<int,Edificio*>::iterator itEdificio = edificios.begin();
-	while (itEdificio != edificios.end()){
-		vec_edificios.push_back(itEdificio->second);
-		itEdificio++;
-	}
+	for (map<int,Edificio*>::iterator it = this->edificios.begin(); it != this->edificios.end(); ++it)
+		vec_edificios.push_back(it->second);
 	return vec_edificios;
 }
 

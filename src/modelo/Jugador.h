@@ -40,7 +40,6 @@ public:
 	Jugador(std::string nombre, int id_jug);
 
 	std::vector<Unidad*> getUnidades();
-
 	std::vector<Edificio*> getEdificios();
 
 	Unidad* getUnidadActiva();
@@ -62,22 +61,15 @@ public:
 	vector<Unidad*> getUnidadesSeleccionadas();
 
 	Edificio* getEdificioSeleccionado();
-
 	void liberarUnidadesSeleccionadas();
-
 	void liberarEdificioSeleccionado();
 
 	void agregarNuevaUnidad(Unidad* unidad);
-
 	void agregarNuevoEdificio(Edificio* edificio);
-	//Edificio* terminarConstruccion(ConstruccionTermino c);
 	void guardarConstruccionTerminada(Edificio* edifRecienRecienInaugurado);
-
 	void agregarRecursoEconomico(TipoEntidad tipo, int cant);
 
 	std::map<TipoEntidad,int> getMapRecursosEconomicos();
-
-	//void interaccionesDeUnidades(Escenario* escenario, ContenedorDeRecursos* contenedor, Coordenada coord_ceros);
 
 	void ejecutoresOlvidarInteraccionCon(Entidad* muerto);
 	void limpiarSeleccionDeUnidadMuerta(Unidad* moribundo);

@@ -323,6 +323,11 @@ Coordenada Calculador::generarPosRandom(int size_x_final, int size_x_inicial, in
 	return Coordenada(x_rand,y_rand);
 }
 
+Coordenada Calculador::generarPosRandomDentroDeEscenarioConLimites(int size_x, int x_max, int x_min, int size_y, int y_max, int y_min, int seed = 3) {
+	Coordenada c = generarPosRandom(x_max, x_min, y_max, y_min, seed);
+	return Coordenada(ChequeoDeBorde(size_x, c.x), ChequeoDeBorde(size_y, c.y));
+}
+
 int Calculador::ChequeoDeBorde(int max, int input) {
 	if (input >= 0) {
 		if (input <= max)

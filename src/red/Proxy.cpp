@@ -8,93 +8,148 @@
 #include "Proxy.h"
 
 
-Coordenada* Proxy::clienteEsperarComienzo(Connection* lan) {
-	TipoMensajeRed tipo = MENSAJE;
-	string unContenido, recibido;
-	do {
-		try {
-			recibido = lan->recibir();
-			while (Red::parsearSiguienteMensaje(&recibido, &tipo, &unContenido))
-				if (tipo == COMIENZO)
-					break;
-		} catch ( NoSeRecibio &e ) {}
-	} while (tipo != COMIENZO);
-	return new Coordenada(Coordenada::dec(unContenido));
-}
-
-
 TipoMensajeRed Proxy::actualizarMultiplayer(Juego* juego) {
 	string unContenido, recibido;// = juego->getConnection()->recibir();
 	// Si no se recibe nada, recibir() lanza NoSeRecibio y se saltea el resto.
 	TipoMensajeRed tipo;
 
 	while (Red::parsearSiguienteMensaje(&recibido, &tipo, &unContenido)) {
-		if (unContenido.length() > 0) {
+		//if (unContenido.length() > 0) {
 
 			switch (tipo) {
 			case MENSAJE: procesarMensaje(unContenido);
 				break;
-			case COMIENZO: procesarNombre(juego, unContenido);
-				break;
-			case ESCENARIO: procesarEscenario(juego, unContenido);
+			case TOGGLE: procesarToggle(juego, unContenido);
 				break;
 			case NUEVA_ENTIDAD: procesarNuevaEntidad(juego, unContenido);
 				break;
-			case INTERACCION:
+			case INTERACCION: procesarInteraccion(juego, unContenido);
 				break;
 			case MOVIMIENTO: procesarCamino(juego, unContenido);
 				break;
-			case PASO_COMPLETO:
-				break;
-			//case RECURSO: procesarRecurso(juego, unContenido);
+			//case PASO_COMPLETO:
 			//	break;
-			//case TOGGLE: procesarToggle(juego, unContenido);
+			//case ESCENARIO: procesarEscenario(juego, unContenido);
+			//	break;
+			//case COMIENZO: //procesarNombre(juego, unContenido);
+			//	break;
+			//case RECURSO: procesarRecurso(juego, unContenido);
 			//	break;
 			//case GLOTON: procesarRecursoComido(juego, unContenido);
 			//	break;
 			//case PING: //juego->getConnection()->revisarPing();
 			//	break;
-			case FIN:
-				break;
+			//case FIN:
+			//	break;
+			default : break;
 			}
-		}
+		//}
 	}
 	return tipo;	// devuelve sólo el último; pero ni se le da uso
 }
 
 
+// Esperar indefinidamente hasta que llegue un mensaje de comienzo.
+void Proxy::clienteEsperarComienzo(Connection* lan) {
+	TipoMensajeRed tipo = MENSAJE;
+	do {
+		try {
+			string unContenido, recibido = lan->recibir();
+			while (Red::parsearSiguienteMensaje(&recibido, &tipo, &unContenido))
+				if (tipo == COMIENZO)
+					break;
+		} catch ( NoSeRecibio &e ) {}
+	} while (tipo != COMIENZO);
+}
+
+// Esperar indefinidamente hasta que llegue un mensaje de escenario.
+ConfiguracionJuego Proxy::clienteEsperarConfigGame(Connection* lan) {
+	TipoMensajeRed tipo = MENSAJE;
+	string unContenido, recibido;
+	do {
+		try {
+			recibido = lan->recibir();
+			while (Red::parsearSiguienteMensaje(&recibido, &tipo, &unContenido))
+				if (tipo == ESCENARIO)
+					break;
+		} catch ( NoSeRecibio &e ) {}
+	} while (tipo != ESCENARIO);
+	return ConfiguracionJuego::dec(unContenido);
+}
+
+/***************************************************************
+***************************************************************/
 
 void Proxy::procesarMensaje(string encodeado) {
-	string resto;
+	string resto; ostringstream imprimir;
 	int jug = Red::extraerNumeroYResto(encodeado, &resto);
-	Log::imprimirALog(INFO, jug+"> "+resto);
+	imprimir << "("<<jug<<") "<<NombreDeJug(jug)<<"> "<<resto;
+	Log::imprimirALog(INFO, imprimir.str());
 }
 
-void Proxy::procesarNombre(Juego* juego, string encodeado) {
-	string nombre;
-	if (Red::extraerNumeroYResto(encodeado, &nombre) == juego->getIDJugador())
-		juego->setNombreJugador(nombre);
-}
-
-void Proxy::procesarEscenario(Juego* juego, string encodeado) {
-	// todo
-}
-
-void Proxy::procesarCamino(Juego* juego, string encodeado) {
-	string camEnc;
-	//int jug = Red::extraerNumeroYResto(encodeado, &camEnc);
-	try {
-		//juego->getSpritePlayer(jug)->setearNuevoCamino(Camino::dec(camEnc), juego->getCoordCeros());
-	} catch ( NoSeRecibio &e ) {
-		//juego->getSpritePlayer()->setearNuevoCamino(Camino::dec(camEnc), juego->getCoordCeros());
-	}
+void Proxy::procesarToggle(Juego* juego, string encodeado) {
+	string aux;
+	int id_jug = Red::extraerNumeroYResto(encodeado, &aux);
+	juego->apagarEnemigo(id_jug);
+	procesarMensaje(id_jug+":SE HA DESCONECTADO");
 }
 
 void Proxy::procesarNuevaEntidad(Juego* juego, string encodeado) {
+	Entidad ent = Entidad::dec(encodeado);
 	try {
-		//juego->cargarEnemigo(PosEntidad::dec(encodeado));
+		Entidad *aux = NULL;
+		if (ent.esRecurso())
+			aux = juego->agregarRecurso(ent.getTipo(), ent.getPosicion(), ent.get_identificador());
+		else if (ent.esUnidad())
+			aux = juego->crearNuevaUnidad(ent.getTipo(), ent.getPosicion(), ent.getIDJug(), ent.get_identificador());
+		else if (ent.esConstruccion())
+			aux = juego->comenzarNuevaConstruccion(ent.getTipo(), ent.getPosicion(), ent.getIDJug(), ent.get_identificador());
+		else if (ent.esEdificio())
+			aux = juego->crearNuevoEdificio(ent.getTipo(), ent.getPosicion(), ent.getIDJug(), ent.get_identificador());
+		// else imprimir error?
+		if (!aux) throw FueraDeEscenario();	// y otros errores...
 	} catch ( FueraDeEscenario &e ) { Log::imprimirALog(WAR, "Enemigo fuera del escenario"); }
 }
+
+void Proxy::procesarInteraccion(Juego* juego, string encodeado) {
+	int tip1, jug1, dni1, tip2, jug2, dni2;
+	stringstream ss(encodeado);
+	ss >> tip1; ss.ignore(); // ','
+	ss >> jug1; ss.ignore(); // ','
+	ss >> dni1; ss.ignore(); // ';'
+	ss >> tip2; ss.ignore(); // ','
+	ss >> jug2; ss.ignore(); // ','
+	ss >> dni2;
+
+	try {
+		juego->iniciarInteraccionEntre(TipoEntidad(tip1), jug1, dni1, TipoEntidad(tip2), jug2, dni2);
+	} catch ( NoExiste &e ) { Log::imprimirALog(ERR, "Interacción incluye entidad inexistente."); }
+}
+
+void Proxy::procesarCamino(Juego* juego, string encodeado) {
+	int tipo, id_jug, dni;
+	char camEnc[MAX_BYTES_LECTURA];
+	stringstream ss(encodeado);
+	ss >> tipo; ss.ignore();	// ','
+	ss >> id_jug; ss.ignore();	// ','
+	ss >> dni; ss.ignore();		// ';'
+	ss.get(camEnc, MAX_BYTES_LECTURA, '~');
+	Entidad *walker = juego->getEntidad(TipoEntidad(tipo), id_jug, dni);
+	if (!walker) return; // o agregarlo?
+	Sprite* sprite = juego->getSpriteDeEntidad(walker);
+	if (!sprite) return; // o agregarlo?
+	sprite->setearNuevoCamino(Camino::dec(camEnc), juego->getCoordCeros());
+}
+
+//void Proxy::procesarEscenario(Juego* juego, string encodeado) {
+//	// todo
+//}
+
+//void Proxy::procesarNombre(Juego* juego, string encodeado) {
+//	string nombre;
+//	if (Red::extraerNumeroYResto(encodeado, &nombre) == juego->getIDJugador())
+//		juego->setNombreJugador(nombre);
+//}
 
 //void Proxy::procesarRecurso(Juego* juego, string encodeado) {
 	//string posEnc;
@@ -119,49 +174,54 @@ void Proxy::procesarNuevaEntidad(Juego* juego, string encodeado) {
 //	} catch ( NoTieneRecurso &e ) {}
 //}
 
-void Proxy::procesarToggle(Juego* juego, string encodeado) {
-	string aux;
-	//juego->toggleEnemigo(Red::extraerNumeroYResto(encodeado, &aux));
-}
 
-//void procesarAtaque(Juego* juego, string encodeado)
+/***************************************************************
+***************************************************************/
 
-/***************************************************
-***************************************************/
-
-void Proxy::enviarNombre(Connection* lan, string s) {
-	string t = Red::agregarPrefijoYFinal("COM", s);
-	lan->enviar(t);
-}
 
 void Proxy::enviar(Connection* lan, string s) {
 	string t = Red::agregarPrefijoYJugYFinal("MSJ", lan->getIDJugador(), s);
 	lan->enviar(t);
 }
 
-void Proxy::enviar(Connection* lan, InfoEscenario ie) {
-	//string t = Red::agregarPrefijoYFinal("ESC", ie.enc());
-	//lan->enviar(t);
-}
-
-void Proxy::enviar(Connection* lan, Camino cam) {
-	string t = Red::agregarPrefijoYJugYFinal("MOV", lan->getIDJugador(), cam.enc());
+void Proxy::enviar(Connection* lan, ConfiguracionJuego cj) {
+	string t = Red::agregarPrefijoYFinal("ESC", cj.enc());
 	lan->enviar(t);
 }
 
-void Proxy::enviar(Connection* lan, PosEntidad ent) {
+void Proxy::enviar(Connection* lan, Entidad ent) {
 	string t = Red::agregarPrefijoYFinal("ENT", ent.enc());
 	lan->enviar(t);
 }
 
-void Proxy::comiRecurso(Connection* lan, Coordenada c) {
-	string t = Red::agregarPrefijoYFinal("GLO", c.enc());
+void Proxy::enviar(Connection* lan, Entidad ejecutor, Entidad receptor) {
+	ostringstream interaccion_enc;
+	interaccion_enc << ejecutor.getTipo()<<","<<ejecutor.getIDJug()<<","<<ejecutor.get_identificador()<<";";
+	interaccion_enc << receptor.getTipo()<<","<<receptor.getIDJug()<<","<<receptor.get_identificador();
+	string t = Red::agregarPrefijoYFinal("INT", interaccion_enc.str());
 	lan->enviar(t);
 }
 
-void Proxy::completePaso(Connection* lan, int id_jug) {
-	string t = Red::agregarPrefijoYFinal("PAS", id_jug);
+void Proxy::enviar(Connection* lan, Entidad ent, Camino cam) {
+	ostringstream camino_enc;
+	camino_enc << ent.getTipo()<<","<<ent.getIDJug()<<","<<ent.get_identificador()<<";"<<cam.enc();
+	string t = Red::agregarPrefijoYFinal("MOV", camino_enc.str());
 	lan->enviar(t);
 }
 
-//void Proxy::enviar(Ataque)
+
+//void Proxy::completePaso(Connection* lan, int id_jug) {
+//	string t = Red::agregarPrefijoYFinal("PAS", id_jug);
+//	lan->enviar(t);
+//}
+
+//void Proxy::enviarNombre(Connection* lan, string s) {
+//	string t = Red::agregarPrefijoYFinal("COM", s);
+//	lan->enviar(t);
+//}
+
+//void Proxy::comiRecurso(Connection* lan, Coordenada c) {
+//	string t = Red::agregarPrefijoYFinal("GLO", c.enc());
+//	lan->enviar(t);
+//}
+

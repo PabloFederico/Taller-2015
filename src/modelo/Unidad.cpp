@@ -186,27 +186,6 @@ void Unidad::cambioEstado(EstadoEntidad est) {
 	this->estado = est;
 }
 
-
-// Para red
-std::string Unidad::enc(){
-	ostringstream enc;
-	enc << idJug<<","<<dni<<","<<tipo<<","<<ancho<<","<<alto;
-	return enc.str();
-}
-Unidad* Unidad::dec(std::string s){
-	int id,dni,ti,an,al;
-	stringstream ss(s);
-	ss >> id; ss.ignore();
-	ss >> dni;ss.ignore();
-	ss >> ti; ss.ignore();
-	ss >> an; ss.ignore();
-	ss >> al;
-	Unidad *u = new Unidad(TipoEntidad(ti),id,dni);
-	u->setTam(an, al);
-	return u;
-}
-//
-
 void Unidad::morir() {
 	Entidad::morir();
 }

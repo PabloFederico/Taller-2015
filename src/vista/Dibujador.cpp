@@ -190,7 +190,7 @@ void Dibujador::dibujarEscenario(Escenario* esc, TTF_Font* fuenteTexto, pair<int
 							Imagen* image_id;
 							if (entidad->getIDJug() != 0 && entidad->getIDJug() != esc->getIDJug())
 								// Mostrar información completa de entidades ajenas.
-								image_id = Loader::cargarTexto(renderer,fuenteTexto,entidad->getInfo());
+								image_id = Loader::cargarTexto(renderer,fuenteTexto,entidad->getIDJugYVidaString());
 							else if (entidad->esConstruccion())
 								// Mostrar vida restante y progreso de construcciones.
 								image_id = Loader::cargarTexto(renderer,fuenteTexto,((Construccion*)entidad)->getVidaString());

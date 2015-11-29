@@ -47,29 +47,30 @@ void Server::enviarATodosMenos(int socketNoRecibe, string mensaje) {
 
 // Intercambia mensajes iniciales; manda señales de comienzo si el juego ya empezó.
 void Server::inicializarCliente(int peersock, int segundosDeEspera) {
-	ostringstream ss; string nombreJug, mensaje;
-	char buffer[MAX_BYTES_LECTURA];
+	ostringstream ss; string nombreJug;//, mensaje;
+	//char buffer[MAX_BYTES_LECTURA];
 
-	// Primer mensaje: Recibo nombre de jugador pedido.
-	recv(peersock, buffer, sizeof(buffer), 0);
-	Red::extraerPrefijoYMensaje(buffer, &nombreJug);
+	//// Primer mensaje: Recibo nombre de jugador pedido.
+	//recv(peersock, buffer, sizeof(buffer), 0);
+	//Red::extraerPrefijoYMensaje(buffer, &nombreJug);
+	nombreJug = NombreDeJug(clientes.cantConectados+1);
 
 	try {
 		DataCliente cli = clientes.getJugadorDesconectadoLlamado(nombreJug);
 
 		// Si no lanza exception, reconecto a un jugador previo.
-		clientes.jugadorConectado(peersock);
-		// Segundo mensaje: Envío al jugador su número de jugador.
-		ss << cli.id<<"~";
-		send(peersock, ss.str().c_str(), 10, MSG_NOSIGNAL);
-		// Envío a todos los demás jugadores que este volvió.
-		mensaje = Red::agregarPrefijoYFinal("TOG", cli.id);
-		enviarATodos(mensaje);	// (La nueva conexión todavía ni está en el fd_set)
-		sleep(1);
-		// Tercer mensaje: Envío al jugador señal de comienzo y su última posición.
-		mensaje = Red::agregarPrefijoYFinal("COM", cli.posProtag.enc());
-		send(peersock, mensaje.c_str(), MAX_BYTES_LECTURA, MSG_NOSIGNAL);
-		send(peersock, mensaje.c_str(), MAX_BYTES_LECTURA, MSG_NOSIGNAL);
+//		clientes.jugadorConectado(peersock);
+//		// Segundo mensaje: Envío al jugador su número de jugador.
+//		ss << cli.id<<"~";
+//		send(peersock, ss.str().c_str(), 10, MSG_NOSIGNAL);
+//		// Envío a todos los demás jugadores que este volvió.
+//		mensaje = Red::agregarPrefijoYFinal("TOG", cli.id);
+//		enviarATodos(mensaje);	// (La nueva conexión todavía ni está en el fd_set)
+//		sleep(1);
+//		// Tercer mensaje: Envío al jugador señal de comienzo y su última posición.
+//		mensaje = Red::agregarPrefijoYFinal("COM", "");//, cli.posProtag.enc());
+//		send(peersock, mensaje.c_str(), MAX_BYTES_LECTURA, MSG_NOSIGNAL);
+//		send(peersock, mensaje.c_str(), MAX_BYTES_LECTURA, MSG_NOSIGNAL);
 
 	} catch ( NoExiste &e ) {
 		// Es un jugador nuevo... lo registro e inicializo
@@ -79,22 +80,22 @@ void Server::inicializarCliente(int peersock, int segundosDeEspera) {
 		send(peersock, ss.str().c_str(), 5, MSG_NOSIGNAL);
 
 		// Tercer mensaje: Si el juego ya ha comenzado, enviar señal de comienzo y nueva posición inmediatamente.
-		if (segundosDeEspera < 3) {
-			sleep(1);
-			mensaje = Red::agregarPrefijoYFinal("COM", clientes[peersock].posProtag.enc());
-			send(peersock, mensaje.c_str(), 16, MSG_NOSIGNAL);
-			// Además, envío el nuevo enemigo a todos los demás jugadores.
-			mensaje = clientes.mensajeDeEntidadDeJugador(peersock);
-			enviarATodosMenos(peersock, mensaje);
-		}
+//		if (segundosDeEspera < 2) {
+//			sleep(1);
+//			mensaje = Red::agregarPrefijoYFinal("COM", clientes[peersock].posProtag.enc());
+//			send(peersock, mensaje.c_str(), 16, MSG_NOSIGNAL);
+//			// Además, envío el nuevo enemigo a todos los demás jugadores.
+//			mensaje = clientes.mensajeDeEntidadDeJugador(peersock);
+//			enviarATodosMenos(peersock, mensaje);
+//		}
 	}
 
 	// Si el juego ya ha comenzado, envío a la nueva conexión las posiciones de todos los demás.
-	if (segundosDeEspera < 3) {
-		mensaje = clientes.mensajeDeTodasLasEntidadesConectadas();
-		send(peersock, mensaje.c_str(), MAX_BYTES_LECTURA, MSG_NOSIGNAL);
-		send(peersock, mensaje.c_str(), MAX_BYTES_LECTURA, MSG_NOSIGNAL);
-	}
+//	if (segundosDeEspera < 2) {
+//		mensaje = clientes.mensajeDeTodasLasEntidadesConectadas();
+//		send(peersock, mensaje.c_str(), MAX_BYTES_LECTURA, MSG_NOSIGNAL);
+//		send(peersock, mensaje.c_str(), MAX_BYTES_LECTURA, MSG_NOSIGNAL);
+//	}
 }
 
 
@@ -144,8 +145,8 @@ void Server::chequearPorNuevosClientes() {
 
 void Server::conexionPerdida(int j) {
 	close(j);
-	FD_CLR(j, &readset);
 	enviarATodos(Red::agregarPrefijoYFinal("TOG", clientes[j].id));	//Avisarle a los demás.
+	FD_CLR(j, &readset);
 	clientes.jugadorDesconectado(j);
 	std::cout << "Socket "<<j<<": "<<clientes[j].nombre<<" (jugador "<<clientes[j].id<<") se ha desconectado."<<std::endl;
 }
@@ -153,47 +154,49 @@ void Server::conexionPerdida(int j) {
 
 // POST: true: el mensaje era SOLO para el servidor y no debe ser repetido a los otros clientes
 bool Server::procesarComoServidor(int sockfd, string recibido) {
-	bool rebotarlo = true;
+	//bool rebotarlo = true;
 	string unMensaje, unContenido;
 	TipoMensajeRed tipo;
 
 	while (Red::parsearSiguienteMensaje(&recibido, &tipo, &unContenido)) {
 		switch (tipo) {
-		case COMIENZO: {	// Cambio de nombre de jugador
-				string nuevoNombre = clientes.nuevoNombrePara(sockfd, string(unContenido));
-				if (nuevoNombre != unContenido) {	// Si se ajustó el nombre, avisarle al jugador.
-					string enviarNombre = Red::agregarPrefijoYJugYFinal("COM", clientes[sockfd].id, nuevoNombre);
-					send(sockfd, enviarNombre.c_str(), sizeof(enviarNombre), MSG_NOSIGNAL);
-				}
-				rebotarlo = false;
-			} break;
+//		case COMIENZO: {	// Cambio de nombre de jugador
+//				string nuevoNombre = clientes.nuevoNombrePara(sockfd, string(unContenido));
+//				if (nuevoNombre != unContenido) {	// Si se ajustó el nombre, avisarle al jugador.
+//					string enviarNombre = Red::agregarPrefijoYJugYFinal("COM", clientes[sockfd].id, nuevoNombre);
+//					send(sockfd, enviarNombre.c_str(), sizeof(enviarNombre), MSG_NOSIGNAL);
+//				}
+//				rebotarlo = false;
+//			} break;
 
-		case MOVIMIENTO: {
-				string camEnc;
-				Red::extraerNumeroYResto(unContenido, &camEnc);
-				clientes[sockfd].setCamino(Camino::dec(camEnc));	// Settear nuevo camino que hace dicho jugador
-				rebotarlo = false;
-			} break;
+//		case MOVIMIENTO: {
+//				string camEnc;
+//				Red::extraerNumeroYResto(unContenido, &camEnc);
+//				clientes[sockfd].setCamino(Camino::dec(camEnc));	// Settear nuevo camino que hace dicho jugador
+//				rebotarlo = false;
+//			} break;
 
-		case PASO_COMPLETO: {
-				stringstream ss(unContenido);
-				int jug; ss >> jug;
-				clientes.alguienCompletoPasoDe(jug);
-				rebotarlo = false;
-			} break;
+//		case PASO_COMPLETO: {
+//				stringstream ss(unContenido);
+//				int jug; ss >> jug;
+//				clientes.alguienCompletoPasoDe(jug);
+//				rebotarlo = false;
+//			} break;
 
-		case NUEVA_ENTIDAD: {
-				PosEntidad peAux = PosEntidad::dec(unContenido);
-				clientes[sockfd].entidad = *peAux.entidad;
-				clientes[sockfd].posProtag = peAux.coord();;
-				rebotarlo = false;
-			} break;
+//		case NUEVA_ENTIDAD: {
+//				Entidad eAux = Entidad::dec(unContenido);
+//				clientes[sockfd].entidad = eAux;
+//				clientes[sockfd].posProtag = eAux.getPosicion();
+//				rebotarlo = false;
+//			} break;
 
-		//MENSAJE, ESCENARIO, RECURSO, TOGGLE, ATAQUE, GLOTON, FIN
-		default: rebotarlo = true;
+		//MENSAJE, ESCENARIO, RECURSO, TOGGLE, INTERACCIÓN, GLOTON, FIN
+		default: //rebotarlo = true;
+			break;
 		}
 	}
-	return rebotarlo;
+//	return rebotarlo;
+	return true;
 }
 
 
@@ -239,26 +242,36 @@ void Server::correr() {
 	std::cout << std::endl << "Se recibieron "<<clientes.cantConectados<<" conexiones."<<std::endl;
 	/******************************************************************/
 
+	/************************* ENVIAR CONFIG **************************/
+	// Parsear yaml y enviar ConfiguracionJuego a todos los clientes.
+//	std::cout << "Parseando configuración y escenario..."<<std::endl;
+//	ConfiguracionJuego cj = Yaml::cargarConfiguracionJuego();
+//
+//	std::cout << "Enviando datos iniciales a clientes..."<<std::endl;
+//	mensaje = Red::agregarPrefijoYFinal("ESC", cj.enc());
+//	std::cout << "Enviando cj.enc(): "<<mensaje<<std::endl;//
+//	for (j = 0; j < maxfd+1; j++) {
+//		if (FD_ISSET(j, &readset)) {
+//			send(j, mensaje.c_str(), 8, MSG_NOSIGNAL);
+//		}
+//	}
+	/******************************************************************/
+
 
 	/************************ COMIENZA JUEGO **************************/
 	// Enviar señal de comienzo junto a posición inicial.
+	mensaje = Red::agregarPrefijoYFinal("COM", "");
 	for (j = 0; j < maxfd+1; j++) {
 		if (FD_ISSET(j, &readset)) {
-			mensaje = Red::agregarPrefijoYFinal("COM", clientes[j].posProtag.enc());
-			send(j, mensaje.c_str(), 16, MSG_NOSIGNAL);
+			send(j, mensaje.c_str(), 8, MSG_NOSIGNAL);
 		}	//NO FUNCIONANDO PARA EL MAX_CONEXIONES-ésimo!? Revisar
 	}
-
-	// Enviar posiciones de enemigos.
-	enviarATodos(clientes.mensajeDeTodasLasEntidadesConectadas());
-	enviarATodos(clientes.mensajeDeTodasLasEntidadesConectadas());
 
 	std::cout << "Comenzando juego..."<<std::endl << std::endl;
 	/******************************************************************/
 
 
-	clock_t t = clock();
-	//clock_t t2 = clock();
+	//clock_t t = clock();
 
 	/************************ LOOP PRINCIPAL **************************/
 	while (clientes.cantConectados > 0) {
@@ -282,39 +295,34 @@ void Server::correr() {
 				} else if (result == 0) {
 					conexionPerdida(j);
 				} else if (errno != EWOULDBLOCK)
-					std::cout << "Error in recv(): "<<strerror(errno)<<std::endl;
+					std::cout << "Error in recv(): "<<strerror(errno)<<std::endl;// todo comentar
 
 			} // fi (FD_ISSET(j, &readset))
 		} // rof cada cliente
 
+
 		// Generación de recursos random
-		if ((clock() - t) > CLOCKS_PER_SEC*DELAY_RECURSOS) {
-			Coordenada c;
-			TipoEntidad tipoRecurso = generarRecursoYCoordRandom(&c);
-			enviarATodos(Red::agregarPrefijoYJugYFinal("REC", int(tipoRecurso), c.enc()));
-			t = clock();
-		}
+		//if ((clock() - t) > CLOCKS_PER_SEC*DELAY_RECURSOS) {
+		//	Coordenada c;
+		//	TipoEntidad tipoRecurso = generarRecursoYCoordRandom(&c);
+		//	enviarATodos(Red::agregarPrefijoYJugYFinal("REC", int(tipoRecurso), c.enc()));
+		//	t = clock();
+		//}
 
 		// Continuar movimientos: si hubiera, enviar próximo paso de cada jugador a todos las conexiones.
-		for (j = 0; j < maxfd+1; j++)
-			if (FD_ISSET(j, &readset)) {
-				try {
-					mensaje = clientes.mensajeParaAvanzarJug(j);
-					std::cout << "Envío paso "<<mensaje<<std::endl;//
-					enviarATodos(mensaje);
-				} catch ( CaminoVacio &e ) {}
-			}
+		//for (j = 0; j < maxfd+1; j++) {
+		//	if (FD_ISSET(j, &readset)) {
+		//		try {
+		//			mensaje = clientes.mensajeParaAvanzarJug(j);
+		//			std::cout << "Envío paso "<<mensaje<<std::endl;//
+		//			enviarATodos(mensaje);
+		//		} catch ( CaminoVacio &e ) {}
+		//	}
+		//}
 
-		// Intenta (re)conectar [más] jugadores...
-		if (clientes.cantConectados < MAX_CONEXIONES) {
-			chequearPorNuevosClientes();
-		}
-
-		// chequear ping (y desconexión) con todos los clientes
-		//if ((clock() - t2) > 1.0*CLOCKS_PER_SEC) {
-		//	mensaje = Red::agregarPrefijoYFinal("PNG","");
-		//	enviarATodos(mensaje);
-		//	t2 = clock();
+		//// Intenta (re)conectar [más] jugadores...
+		//if (clientes.cantConectados < MAX_CONEXIONES) {
+		//	chequearPorNuevosClientes();
 		//}
 
 	} // end while

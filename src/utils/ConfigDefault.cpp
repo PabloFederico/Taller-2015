@@ -126,3 +126,4 @@ void crearConfigDefault () {
 	fout << out.c_str();
 	fout.close();
 }
+

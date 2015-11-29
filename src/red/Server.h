@@ -8,6 +8,7 @@
 #ifndef RED_SERVER_H_
 #define RED_SERVER_H_
 
+#include "../utils/Yaml.h"
 #include "Connection.h"
 #include "../utils/Calculador.h"
 #include "../utils/Constantes.h"
@@ -101,7 +102,8 @@ struct Clientes {
 	}
 
 	string mensajeDeEntidadDeJugador(int socket) {
-		return Red::agregarPrefijoYFinal("ENT", PosEntidad(m[socket].posProtag,&m[socket].entidad).enc());
+		//return Red::agregarPrefijoYFinal("ENT", PosEntidad(m[socket].posProtag,&m[socket].entidad).enc());
+		return "";//
 	}
 
 	string mensajeDeTodasLasEntidadesConectadas() {

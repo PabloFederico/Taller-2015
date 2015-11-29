@@ -41,6 +41,7 @@ public:
 	static Coordenada pixelCentralDeCualquierTile(Coordenada coord_tile, Coordenada coord_ceros);
 
 	static Coordenada generarCoordenadaRandom(int size_x_final, int size_x_inicial, int size_y_final, int size_y_inicial);
+	static Coordenada generarPosRandomDentroDeEscenarioConLimites(int size_x, int x_max, int x_min, int size_y, int y_max, int y_min, int seed);
 
 
 	//static float distEuclidiana(Coordenada a, Coordenada z);

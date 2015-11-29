@@ -20,13 +20,13 @@ class Controller {
 private:
 	Juego *juego;
 	Mouse* mouse;
-	//Connection *lan;
+	Connection *lan;
 	ControladorMouse *controladorMouse;
 	ControladorCamara *controladorCamara;
 	ControladorJuego *controladorJuego;
 
 public:
-	Controller();//Connection* lan);
+	Controller(Connection* lan);
 
 	Juego* getJuego();
 
@@ -43,8 +43,6 @@ public:
 	void agregarCamara(Camara *cam);
 
 	void reiniciarJuego();
-
-	int verificarConexion(std::string string_IP);
 
 	void posicionarCamaraEnProtagonista();
 

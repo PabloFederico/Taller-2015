@@ -32,20 +32,7 @@ Escenario::Escenario(InfoEscenario infoEsc, EntidadFactory *fabrica, vector<Unid
 	}
 	infoEsc.getPosicionesEntidades().clear();
 	std::cout<<"se agregaron todas las entidades"<<std::endl;
-/*
-	this->protagonista = this->fabricaDeEntidades->nuevaEntidad(infoEsc.protagonista);
-	Coordenada posProtag(infoEsc.posX_protagonista, infoEsc.posY_protagonista);
-	bool resPosicionar = false;
-	try {
-		resPosicionar = this->agregarEntidad(posProtag, this->protagonista);
-	} catch ( FueraDeEscenario &e ) {}
-	while (resPosicionar == false) {	// Genera posiciones random hasta poder agregar al protagonista.
-		try {
-			Coordenada posProtag = generarCoordenadaRandom(size_x, 0, size_y, 0, 9);
-			resPosicionar = this->agregarEntidad(posProtag, this->protagonista);
-		} catch ( FueraDeEscenario &e ) {}
-	}
-*/
+
 	this->tile_clic = NULL;
 	this->entidadSeleccionada = NULL;
 	entidadTemporal = NULL;
@@ -245,11 +232,6 @@ Coordenada Escenario::generarCoordenadaRandom(int size_x_final, int size_x_inici
 	return Coordenada(x_rand,y_rand);
 }
 
-//void Escenario::quitarRecurso(Coordenada c,Entidad* entidad){
-//	Entidad* aux = entidad;
-//	quitarEntidad(c,entidad);
-//	aux->~Entidad();
-//}
 /********************************************************************************/
 bool Escenario::tieneRecuadroSeleccion(){
 	return (c_tile_ini_recuadro != c_tile_fin_recuadro);
