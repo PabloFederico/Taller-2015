@@ -14,9 +14,9 @@ Controller::Controller(Connection* lan = NULL) {
 	ConfiguracionJuego infoJuego;
 	try {
 		if (lan != NULL) {
-			infoJuego = Proxy::clienteEsperarConfigGame(lan);
+			//infoJuego = Proxy::clienteEsperarConfigGame(lan);
 			Proxy::clienteEsperarComienzo(lan);
-			this->juego = new Juego(lan, &infoJuego);
+			this->juego = new Juego(lan, NULL);//, &infoJuego);
 		}
 	} catch ( Disconnected &e ) {
 		std::cout << "Desconectado."<<std::endl;

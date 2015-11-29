@@ -180,7 +180,7 @@ ConfiguracionJuego Yaml::OdioYAML() {
 
 	configDefault.nombreJugador = "Village Slayer";
 	configDefault.direccion_ip = "10.0.0.1";
-	configDefault.ancho_pantalla = 1080;
+	configDefault.ancho_pantalla = 800;
 	configDefault.alto_pantalla = 640;
 	configDefault.margen_scroll = 20;
 	configDefault.vel_personaje = 50;

@@ -190,13 +190,13 @@ bool Server::procesarComoServidor(int sockfd, string recibido) {
 //				rebotarlo = false;
 //			} break;
 
-		//MENSAJE, ESCENARIO, RECURSO, TOGGLE, ATAQUE, GLOTON, FIN
+		//MENSAJE, ESCENARIO, RECURSO, TOGGLE, INTERACCIÓN, GLOTON, FIN
 		default: //rebotarlo = true;
 			break;
 		}
 	}
 //	return rebotarlo;
-	return false;
+	return true;
 }
 
 
@@ -244,16 +244,17 @@ void Server::correr() {
 
 	/************************* ENVIAR CONFIG **************************/
 	// Parsear yaml y enviar ConfiguracionJuego a todos los clientes.
-	std::cout << "Parseando configuración y escenario..."<<std::endl;
-	ConfiguracionJuego cj = Yaml::cargarConfiguracionJuego();
-
-	std::cout << "Enviando datos iniciales a clientes..."<<std::endl;
-	mensaje = Red::agregarPrefijoYFinal("ESC", cj.enc());
-	for (j = 0; j < maxfd+1; j++) {
-		if (FD_ISSET(j, &readset)) {
-			send(j, mensaje.c_str(), 8, MSG_NOSIGNAL);
-		}
-	}
+//	std::cout << "Parseando configuración y escenario..."<<std::endl;
+//	ConfiguracionJuego cj = Yaml::cargarConfiguracionJuego();
+//
+//	std::cout << "Enviando datos iniciales a clientes..."<<std::endl;
+//	mensaje = Red::agregarPrefijoYFinal("ESC", cj.enc());
+//	std::cout << "Enviando cj.enc(): "<<mensaje<<std::endl;//
+//	for (j = 0; j < maxfd+1; j++) {
+//		if (FD_ISSET(j, &readset)) {
+//			send(j, mensaje.c_str(), 8, MSG_NOSIGNAL);
+//		}
+//	}
 	/******************************************************************/
 
 
@@ -294,7 +295,7 @@ void Server::correr() {
 				} else if (result == 0) {
 					conexionPerdida(j);
 				} else if (errno != EWOULDBLOCK)
-					std::cout << "Error in recv(): "<<strerror(errno)<<std::endl;
+					std::cout << "Error in recv(): "<<strerror(errno)<<std::endl;// todo comentar
 
 			} // fi (FD_ISSET(j, &readset))
 		} // rof cada cliente

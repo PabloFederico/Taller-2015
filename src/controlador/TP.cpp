@@ -18,7 +18,6 @@ int main(int argc, char** argv) {
 			if (argv[1][0] == 's') {
 				server = new Server();
 				server->correr();
-				delete server;
 			} else if (argv[1][0] == 'c')
 				lan = new Client();
 		} catch ( ConnectionProblem &e ) { return -1; }

@@ -72,6 +72,8 @@ void Juego::cargarJuego(ConfiguracionJuego* infoJuegoRed = NULL) {
 	else configGame = *infoJuegoRed;
 
 	if (esCliente()) {
+		std::cout << "es client y lo acepta, lo cual es el primer paso..." << std::endl;//
+		configGame.nombreJugador = NombreDeJug(this->idJug);
 		generarNuevasUnidadesYEdificiosIniciales();
 	}
 
@@ -102,10 +104,13 @@ void Juego::generarNuevasUnidadesYEdificiosIniciales() {
 	int size_y = configGame.escenarios[0].size_y;
 	// segundo, creo: centro cívico, 1 aldeano, 1 soldado; con posiciones rándom
 	Coordenada c_uni, c_cc = Calculador::generarPosRandom(size_x-4, 0, size_y-4, 0, 12);
+	std::cout << "entidad : centro civico "<<c_cc.enc() << std::endl;//
 	configGame.escenarios[0].agregarEntidad(c_cc, CENTRO_CIVICO);
 	c_uni = Calculador::generarPosRandomDentroDeEscenarioConLimites(size_x, c_cc.x+5, c_cc.x-5, size_y, c_cc.y+5, c_cc.y-5, 31);
+	std::cout << "entidad : aldeano "<<c_uni.enc() << std::endl;//
 	configGame.escenarios[0].agregarEntidad(c_uni, ALDEANO);
 	c_uni = Calculador::generarPosRandomDentroDeEscenarioConLimites(size_x, c_cc.x+5, c_cc.x-5, size_y, c_cc.y+5, c_cc.y-5, 72);
+	std::cout << "entidad : soldado "<<c_uni.enc() << std::endl;//
 	configGame.escenarios[0].agregarEntidad(c_uni, SOLDADO);
 }
 

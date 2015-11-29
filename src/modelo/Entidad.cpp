@@ -298,6 +298,12 @@ std::string Entidad::getVidaString() {
 	return enc.str();
 }
 
+std::string Entidad::getIDJugYVidaString() {
+	ostringstream enc;
+	enc << "(Jug. "<<idJug<<") "<<vidaRestante;
+	return enc.str();
+}
+
 // Para comunicación de redes
 // Encodeado: "idJug,tipo,coord.enc(),dni"
 std::string Entidad::enc(){

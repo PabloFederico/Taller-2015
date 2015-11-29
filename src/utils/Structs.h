@@ -380,12 +380,12 @@ struct ConfiguracionJuego{
 		ss >> cj.rango_vision; ss.ignore(2);
 		while (ss.peek() != ']') {
 			ss.get(cs, 100, ';');
-			cj.entidades.push_back(InfoEntidad::dec(cs));
+			cj.entidades.push_back(InfoEntidad::dec(string(cs)));
 			ss.ignore(); // ';'
 		}
 		while (ss.peek() != ']') {
 			ss.get(cs, 500, ';');
-			cj.escenarios.push_back(InfoEscenario::dec(cs));
+			cj.escenarios.push_back(InfoEscenario::dec(string(cs)));
 			ss.ignore(); // ';'
 		}
 		return cj;

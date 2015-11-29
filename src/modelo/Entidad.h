@@ -71,6 +71,7 @@ public:
 
 	std::string getInfo();
 	std::string getVidaString();
+	std::string getIDJugYVidaString();
 
 	bool esAtacable();
 	bool esMovible();
