@@ -40,7 +40,7 @@ void Server::enviarATodos(string mensaje) {
 void Server::enviarATodosMenos(int socketNoRecibe, string mensaje) {
 	for (int j = 0; j < maxfd+1; j++)
 		if (FD_ISSET(j, &readset) && j != socketNoRecibe)
-			send(j, mensaje.c_str(), mensaje.size()+1, MSG_NOSIGNAL);
+			send(j, mensaje.c_str(), MAX_BYTES_LECTURA/*mensaje.size()+1*/, MSG_NOSIGNAL);
 }
 
 
@@ -110,16 +110,6 @@ int Server::intentarNuevaConexion(fd_set* p_tempset, int segundosDeEspera) {
 	return -1;
 }
 
-void Server::chequearPorNuevosClientes() {
-	fd_set tempset;
-	int srvsock = this->socket->getDescriptor();
-	FD_SET(srvsock, &readset);
-	memcpy(&tempset, &readset, sizeof(tempset));
-	intentarNuevaConexion(&tempset, 0);
-	memcpy(&tempset, &readset, sizeof(tempset));
-	FD_CLR(srvsock, &readset);
-}
-
 void Server::conexionPerdida(int j) {
 	close(j);
 	enviarATodos(Red::agregarPrefijoYFinal("TOG", clientes[j].id));	//Avisarle a los demás.
@@ -179,9 +169,14 @@ bool Server::procesarComoServidor(int sockfd, string recibido) {
 
 
 TipoEntidad generarRecursoYCoordRandom(Coordenada* c) {
-	*c = Calculador::generarPosRandom(50,0,50,0,7);
-	Coordenada aux = Calculador::generarPosRandom(ORO+1,MADERA,1,0,42);
-	return TipoEntidad(aux.x);	   //último recurso^	  ^primer recurso
+	random_device rd_gen;
+	mt19937 gen(rd_gen());				 		// hardcodeo de tamaño
+	uniform_int_distribution<int> distribucionX(0, 49), distribucionY(0, 49), distribucionTipo(MADERA, ORO);
+	*c = Coordenada( distribucionX(gen), distribucionY(gen) );
+	return TipoEntidad( distribucionTipo(gen) );
+	//*c = Calculador::generarPosRandom(50,0,50,0,7); // hardcodeo de tamaño
+	//Coordenada au = Calculador::generarPosRandom(ORO+1,MADERA,1,0,87);
+	//return TipoEntidad(au.x);	   //último recurso^	  ^primer recurso
 }
 
 
@@ -199,8 +194,8 @@ void Server::correr() {
 	/********************** CONEXIONES INICIALES **********************/
 	std::cout << "Aceptando hasta "<<MAX_CONEXIONES<<" jugadores ("<<MAX_ESPERA_CONEXION<<" s para conectarse)."<<std::endl;
 
-	for (int i = 0; i < MAX_CONEXIONES; i++) {
-		std::cout << "#"<<i+1<<" ... ";
+	for (int i = 1; i <= MAX_CONEXIONES; i++) {
+		std::cout << "#"<<i<<" ... ";
 		memcpy(&tempset, &readset, sizeof(tempset));
 		// Espera MAX_ESPERA_CONEXION segundos o hasta que aparezca una conexión.
 		intentarNuevaConexion(&tempset, MAX_ESPERA_CONEXION);
@@ -244,9 +239,9 @@ void Server::correr() {
 	for (j = 0; j < maxfd+1; j++) {
 		if (FD_ISSET(j, &readset)) {
 			send(j, mensaje.c_str(), 8, MSG_NOSIGNAL);
-		}	//NO FUNCIONANDO PARA EL MAX_CONEXIONES-ésimo? Revisar
+		}
 	}
-	sleep(2);
+	//sleep(3);
 	/******************************************************************/
 
 	// Generación de cant recursos random iniciales
@@ -258,12 +253,13 @@ void Server::correr() {
 		Coordenada c; ostringstream msj_recurso;
 		TipoEntidad tipoRecurso = generarRecursoYCoordRandom(&c);
 		msj_recurso << tipoRecurso<<","<<i<<","<<c.enc();
+		std::cout << "Enviando recurso: "<<msj_recurso.str()<<std::endl;//
 		enviarATodos(Red::agregarPrefijoYFinal("REC", msj_recurso.str()));
 	}
 
 
 	/************************ LOOP PRINCIPAL **************************/
-	while (clientes.cantConectados > 0) {
+	while (clientes.cantConectados > 1) {
 
 		// Por cada cliente conectado...
 		for (j = 0; j < maxfd+1; j++) {
@@ -289,7 +285,6 @@ void Server::correr() {
 			} // fi (FD_ISSET(j, &readset))
 		} // rof cada cliente
 
-
 		// Continuar movimientos: si hubiera, enviar próximo paso de cada jugador a todos las conexiones.
 		//for (j = 0; j < maxfd+1; j++) {
 		//	if (FD_ISSET(j, &readset)) {
@@ -305,6 +300,17 @@ void Server::correr() {
 	/******************************************************************/
 
 	std::cout << std::endl << "Se han desconectado todos los jugadores."<<std::endl<<"Fin de la partida."<<std::endl;
+
+	if (clientes.cantConectados == 1) {
+		for (j = 0; j < maxfd+1; j++) {
+			if (FD_ISSET(j, &readset)) {
+				mensaje = Red::agregarPrefijoYFinal("FIN", clientes[j].id);
+				std::cout << "Envío aviso a los ganadores."<<std::endl;//
+				send(j, mensaje.c_str(), 10, MSG_NOSIGNAL);
+			}
+		}
+	}
+
 	sleep(4);
 }
 

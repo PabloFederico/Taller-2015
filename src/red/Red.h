@@ -32,7 +32,7 @@ public:
 
 	/* listen() */
 	static int escucharConexiones(int descriptor, int cantidadConexiones){
-		return listen(descriptor, cantidadConexiones);
+		return listen(descriptor, cantidadConexiones+1);
 	};
 
 
@@ -61,7 +61,7 @@ public:
 	};
 
 	/* recv() */
-	static int recibirInformacion(int descriptor, char *info){
+	static int recibirInformacion(int descriptor, char *info) {
 		int success = recv(descriptor, info, MAX_BYTES_LECTURA, 0);
 		if (success == 0/* && errno == ENOTCONN*/)
 			throw Disconnected();

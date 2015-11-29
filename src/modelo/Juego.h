@@ -138,6 +138,7 @@ public:
 
 	void apagarEnemigo(int id_jug);
 	void reiniciar();
+	void anunciarGanador(int id_ganador);
 	virtual ~Juego();
 };
 

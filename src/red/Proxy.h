@@ -25,6 +25,7 @@ private:
 	static void procesarInteraccion(Juego* juego, string encodeado);
 	static void procesarCamino(Juego* juego, string encodeado);
 	static void procesarRecurso(Juego* juego, string encodeado);
+	static void procesarFin(Juego* juego, string sGanador);
 	//static void procesarEscenario(Juego* juego, string encodeado);
 	//static void procesarNombre(Juego* juego, string encodeado);
 	//static void procesarRecursoComido(Juego* juego, string posEnc);

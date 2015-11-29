@@ -178,11 +178,15 @@ void Juego::envioInicialDeEntidadesPropias() {
 	if (!esCliente()) return;
 
 	vector<Edificio*> v_edif = this->jugador->getEdificios();
-	for (vector<Edificio*>::iterator it1 = v_edif.begin(); it1 < v_edif.end(); ++it1)
+	for (vector<Edificio*>::iterator it1 = v_edif.begin(); it1 < v_edif.end(); ++it1) {
 		Proxy::enviar(this->connection, **it1);
+		std::cout << "Enviando entidad: "<<(*it1)->getInfo()<<std::endl;//
+	}
 	vector<Unidad*> v_unid = this->jugador->getUnidades();
-	for (vector<Unidad*>::iterator it2 = v_unid.begin(); it2 < v_unid.end(); ++it2)
+	for (vector<Unidad*>::iterator it2 = v_unid.begin(); it2 < v_unid.end(); ++it2) {
 		Proxy::enviar(this->connection, **it2);
+		std::cout << "Enviando entidad: "<<(*it2)->getInfo()<<std::endl;//
+	}
 }
 
 
@@ -490,10 +494,9 @@ Edificio* Juego::terminarConstruccion(ConstruccionTermino c) {
 	if (!construc) return NULL;
 
 	construc->morir();
-	std::cout << construc->enc()<<" construccion terminada"<<std::endl;//
+	std::cout << construc->enc()<<" construcción terminada"<<std::endl;//
 	this->escenario->quitarEntidad(construc);
 	this->contenedor->borrarSpriteDeEntidad(construc);
-	delete construc;
 
 	Edificio *nuevoEdificio = new Edificio(c.tipoEdif, c.idJug, c.dni);
 	nuevoEdificio->set_identificador(c.dni);
@@ -507,10 +510,12 @@ Edificio* Juego::terminarConstruccion(ConstruccionTermino c) {
 		for (vector<Edificio*>::iterator it = this->edificiosEnemigos->begin(); it < this->edificiosEnemigos->end(); ++it)
 			if ((*it)->get_identificador() == c.dni && (*it)->perteneceAJugador(c.idJug)) {
 				this->edificiosEnemigos->erase(it);
+				std::cout << "construcción a eliminar encontrada!"<<std::endl;//
 				break;
 			}
 		this->edificiosEnemigos->push_back(nuevoEdificio);
 	}
+	delete construc;
 	return nuevoEdificio;
 }
 
@@ -747,17 +752,36 @@ void Juego::reemplazarEntidadPorRecurso(Entidad* entidad){
 /***************************************************/
 void Juego::apagarEnemigo(int id_jugador) {
 	for (vector<Unidad*>::iterator it = this->unidadesEnemigos->begin(); it < this->unidadesEnemigos->end(); ++it)
-		if ((*it)->perteneceAJugador(id_jugador))
-			(*it)->sufrirGolpe( (*it)->getVidaRestante() );
-	// DE PRUEBA, LO SIGUIENTE NO CONDICE CON EL ENUNCIADO
-	for (vector<Edificio*>::iterator it2 = this->edificiosEnemigos->begin(); it2 < this->edificiosEnemigos->end(); ++it2)//
-		if ((*it2)->perteneceAJugador(id_jugador))//
-			(*it2)->sufrirGolpe( (*it2)->getVidaRestante() );//
+		if ((*it)->perteneceAJugador(id_jugador)) {
+			try {
+				(*it)->sufrirGolpe( (*it)->getVidaRestante() );
+			} catch ( EntidadMurio &e ) {
+				ejecutoresOlvidarInteraccionCon(*it);
+			}
+		}
 }
 
 /***************************************************/
+
+void Juego::anunciarGanador(int id_ganador) {
+	if (id_ganador == this->idJug) {
+		std::cout << "HAS GANADO, SOS UN CAMPEÓN"<<std::endl;
+		// ?
+	} else if (id_ganador == 0) {
+		std::cout << "Sos tan malo que perdiste contra vos misma."<<std::endl;//
+		// ??
+	} else {
+		std::cout << "LOSER"<<std::endl;
+		// ???
+	}
+	sleep(5);//
+	olvidarConnection();//Esto en sí debería terminar el Juego.
+	// terminar juego
+}
+
+/***************************************************/
+
 Juego::~Juego() {
-	olvidarConnection();
 	this->unidadesEnemigos->clear(); // se deberían borrar! no?
 	this->edificiosEnemigos->clear();
 	delete this->escenario;

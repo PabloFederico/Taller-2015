@@ -38,8 +38,8 @@ TipoMensajeRed Proxy::actualizarMultiplayer(Juego* juego) {
 			//	break;
 			//case PING: //juego->getConnection()->revisarPing();
 			//	break;
-			//case FIN:
-			//	break;
+			case FIN: procesarFin(juego, unContenido);
+				break;
 			default : continue;
 			}
 		//}
@@ -90,8 +90,8 @@ void Proxy::procesarToggle(Juego* juego, string encodeado) {
 	string aux; ostringstream parroquial;
 	int id_jug = Red::extraerNumeroYResto(encodeado, &aux);
 	juego->apagarEnemigo(id_jug);
-	parroquial << id_jug<<":"<<"GRACIAS PA. CHAU CHAU ADIOS // SE HA DESCONECTADO"<<'\0';
-	procesarMensaje(parroquial.str());
+	parroquial << id_jug<<":"<<"se ha desconectado.";
+	Proxy::procesarMensaje(parroquial.str());
 }
 
 void Proxy::procesarNuevaEntidad(Juego* juego, string encodeado) {
@@ -158,6 +158,13 @@ void Proxy::procesarRecurso(Juego* juego, string encodeado) {
 	int idRec = Red::extraerNumeroYResto(idYpos, &posEnc);
 	juego->agregarRecurso(TipoEntidad(nTipo), Coordenada::dec(posEnc), idRec);
 }
+
+void Proxy::procesarFin(Juego* juego, string sGanador) {
+	string aux;
+	int id_ganador = Red::extraerNumeroYResto(sGanador, &aux);
+	juego->anunciarGanador(id_ganador);
+}
+
 
 //void Proxy::procesarEscenario(Juego* juego, string encodeado) {
 //	// todo

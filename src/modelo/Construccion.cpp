@@ -23,7 +23,7 @@ TipoEntidad Construccion::getTipoEdificio(){
 void Construccion::continuarConstruyendo() {
 	this->progresoPorc += 20; //hardcodeo
 	if (this->progresoPorc == 100) {
-		throw ConstruccionTermino(this->tipoEdif,this->dni,this->idJug,this->getPosicion().x,this->getPosicion().y,this->vidaRestante);
+		throw ConstruccionTermino(this->tipoEdif,this->dni,this->getIDJug(),this->getPosicion().x,this->getPosicion().y,this->vidaRestante);
 	}
 }
 

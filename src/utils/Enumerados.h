@@ -67,9 +67,9 @@ inline const TipoMensajeRed StringToTipoMensajeRed(std::string s) {
 	if (s == "ENT")	return NUEVA_ENTIDAD;
 	if (s == "INT")	return INTERACCION;
 	if (s == "REC") return RECURSO;
+	if (s == "TOG") return TOGGLE;
 	if (s == "FIN") return FIN;
 	//if (s == "PNG") return PING;
-	//if (s == "TOG") return TOGGLE;
 	//if (s == "GLO") return GLOTON;
 	else return MENSAJE;
 }

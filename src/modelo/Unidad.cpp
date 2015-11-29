@@ -67,7 +67,7 @@ void Unidad::interactuar() {
 
 		this->reloj = clock();
 		try {
-			if (receptor->esConstruccion() && this->esConstructor() && receptor->perteneceAJugador(this->idJug)) {
+			if (receptor->esConstruccion() && this->esConstructor() && receptor->perteneceAJugador(this->getIDJug())) {
 				cambioEstado(CONSTRUYENDO);
 				this->continuarConstruccion();	// throws ConstruccionTermino
 			} else if (receptor->esAtacable() && !receptor->perteneceAJugador(this->idJug)) {
