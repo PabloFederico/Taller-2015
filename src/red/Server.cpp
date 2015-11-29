@@ -260,14 +260,14 @@ void Server::correr() {
 
 	/************************ COMIENZA JUEGO **************************/
 	// Enviar señal de comienzo junto a posición inicial.
+	std::cout << "Comenzando juego..."<<std::endl << std::endl;
+
 	mensaje = Red::agregarPrefijoYFinal("COM", "");
 	for (j = 0; j < maxfd+1; j++) {
 		if (FD_ISSET(j, &readset)) {
 			send(j, mensaje.c_str(), 8, MSG_NOSIGNAL);
-		}	//NO FUNCIONANDO PARA EL MAX_CONEXIONES-ésimo!? Revisar
+		}	//NO FUNCIONANDO PARA EL MAX_CONEXIONES-ésimo? Revisar
 	}
-
-	std::cout << "Comenzando juego..."<<std::endl << std::endl;
 	/******************************************************************/
 
 
@@ -286,16 +286,16 @@ void Server::correr() {
 
 				if (result > 0) {
 					buffer[result] = 0;
-					// Lo recibido de un cliente, si no es únicamente para el servidor, mandarlo a todos los demás
-					if (procesarComoServidor(j, string(buffer))) {
+					//// Lo recibido de un cliente, si no es únicamente para el servidor, mandarlo a todos los demás
+					//if (procesarComoServidor(j, string(buffer))) {
 						std::cout << "Echoing: "<<buffer<<std::endl;//
 						enviarATodosMenos(j, buffer);
-					}
+					//}
 
 				} else if (result == 0) {
 					conexionPerdida(j);
 				} else if (errno != EWOULDBLOCK)
-					std::cout << "Error in recv(): "<<strerror(errno)<<std::endl;// todo comentar
+					std::cout << "Error in recv(): "<<strerror(errno)<<std::endl;//
 
 			} // fi (FD_ISSET(j, &readset))
 		} // rof cada cliente
@@ -318,11 +318,6 @@ void Server::correr() {
 		//			enviarATodos(mensaje);
 		//		} catch ( CaminoVacio &e ) {}
 		//	}
-		//}
-
-		//// Intenta (re)conectar [más] jugadores...
-		//if (clientes.cantConectados < MAX_CONEXIONES) {
-		//	chequearPorNuevosClientes();
 		//}
 
 	} // end while

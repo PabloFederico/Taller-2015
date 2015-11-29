@@ -232,7 +232,7 @@ void ContenedorDeRecursos::generarYGuardarSpriteEntidad(Entidad* entidad, Coorde
 	sprite->setDelay(this->mapInfoEntidades[entidad->getTipo()].delay);
 	sprite->setFps(this->mapInfoEntidades[entidad->getTipo()].fps);
 	this->mapSpritesEntidades->insert(entidad,sprite);
-	std::cout<<"entidad : "<<entidad->getInfo()<<"   Posición : "<< entidad->getPosicion().x<<" "<<entidad->getPosicion().y<<std::endl;//
+	//std::cout<<"entidad : "<<entidad->getInfo()<<"   Posición : "<< entidad->getPosicion().x<<" "<<entidad->getPosicion().y<<std::endl;//
 }
 
 /********************************************************************************/

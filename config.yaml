@@ -79,7 +79,7 @@ sdasd
 
   - nombre: construccion
     imagen: images/utils/Barracks3.png #!!!
-    descripcion: Aldeano
+    descripcion: Construcción
 
 escenario:
   - nombre: orleans

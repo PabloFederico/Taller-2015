@@ -72,52 +72,51 @@ bool ControladorMouse::procesarClickEnVentana(Mouse* mouse, Tile** tile_clic, Co
 	if (clicEnMapa){
 		// Si tiene un edificio para construír, lo agrega al escenario, generando su sprite correspondiente
 		if (mouse->getEstado() == CLICK_IZQUIERDO && mouse->estaMoviendoImagen()){
-			Entidad* entidad = escenario->getEntidadTemporal();
-			Coordenada c = entidad->getPosicion();
-			if (escenario->lugarHabilitadoParaConstruir(c,entidad)){
-				mouse->setearMoviendoImagen(false);
-				//Coordenada c_ceros(*juego->getCeros().first,*juego->getCeros().second);
-				//juego->getContenedorRecursos()->generarYGuardarSpriteEntidad(entidad,c_ceros,escenario);
-				//escenario->agregarEntidad(c,entidad);
-				escenario->resetEntidadTemporal();
-				TipoEntidad tipoEdif = ((Construccion*)entidad)->getTipoEdificio();
-				delete entidad;
-				//juego->getJugador()->agregarNuevoEdificio((Edificio*)entidad,juego->getIDJugador());
-				entidad = juego->comenzarNuevaConstruccion(tipoEdif, c);
+			try {
+				Entidad* entidad = escenario->getEntidadTemporal();
+				Coordenada c = entidad->getPosicion();
+				if (escenario->lugarHabilitadoParaConstruir(c,entidad)){
+					mouse->setearMoviendoImagen(false);
+					escenario->resetEntidadTemporal();
+					TipoEntidad tipoEdif = ((Construccion*)entidad)->getTipoEdificio();
+					delete entidad;
 
-				// TODO Las unidades seleccionadas anteriormente (aldeanos)
-				//      deberían comenzar a interactuar
-				Entidad* entidadReceptora = entidad;
-				vector<Unidad*> unidades = juego->getJugador()->getUnidadesSeleccionadas();
-				for (unsigned i = 0; i < unidades.size() && unidades[i]->esConstructor(); i++){
-					Sprite* spriteUnidad = juego->getSpritesEntidades()->find(unidades[i])->second;
-					Coordenada coord_pixel_sprite = spriteUnidad->getPosPies();
-					// Por qué todo esto está copipeistiado del clic derecho, no deberían funcionar distinto?
-					try {
-						Camino camino = Calculador::obtenerCaminoMin(escenario, coord_pixel_sprite, mouse->getXY(), coord_pixel_ceros);
-						if (camino.size() > 0) {
-							// Si yo muevo la(s) unidad(es), espero que deje de interactuar con su último receptor.
-							unidades[i]->olvidarInteraccion();
-							/* Activamos localmente el movimiento del sprite y seteamos el nuevo camino que debe recorrer. */
-							if (entidadReceptora == NULL) {
-								spriteUnidad->setearNuevoCamino(camino, coord_pixel_ceros);
-								/* Si se está jugando en red, enviar el movimiento a los demás jugadores. */
-								if (juego->esCliente())
-									Proxy::enviar(juego->getConnection(), *unidades[i], camino);
+					entidad = juego->comenzarNuevaConstruccion(tipoEdif, c);
+					if (!entidad) throw NoExiste();
+
+					// TODO Las unidades seleccionadas anteriormente (aldeanos)
+					//      deberían comenzar a interactuar
+					Entidad* entidadReceptora = entidad;
+					vector<Unidad*> unidades = juego->getJugador()->getUnidadesSeleccionadas();
+					for (unsigned i = 0; i < unidades.size() && unidades[i]->esConstructor(); i++){
+						Sprite* spriteUnidad = juego->getSpritesEntidades()->find(unidades[i])->second;
+						Coordenada coord_pixel_sprite = spriteUnidad->getPosPies();
+						// Por qué todo esto está copipeistiado del clic derecho, no deberían funcionar distinto?
+						try {
+							Camino camino = Calculador::obtenerCaminoMin(escenario, coord_pixel_sprite, mouse->getXY(), coord_pixel_ceros);
+							if (camino.size() > 0) {
+								// Si yo muevo la(s) unidad(es), espero que deje de interactuar con su último receptor.
+								unidades[i]->olvidarInteraccion();
+								/* Activamos localmente el movimiento del sprite y seteamos el nuevo camino que debe recorrer. */
+								if (entidadReceptora == NULL) {
+									spriteUnidad->setearNuevoCamino(camino, coord_pixel_ceros);
+									/* Si se está jugando en red, enviar el movimiento a los demás jugadores. */
+									if (juego->esCliente())
+										Proxy::enviar(juego->getConnection(), *unidades[i], camino);
+								}
 							}
-						}
 
-						// Si la hay, settear interacción con nueva entidad cliqueada.
-						if (entidadReceptora != NULL) {
-							unidades[i]->interactuarCon(entidadReceptora);
-							if (juego->esCliente())
-								Proxy::enviar(juego->getConnection(), *unidades[i], *entidadReceptora);
-						}
-					} catch ( FueraDeEscenario &e ) {}
+							// Si la hay, settear interacción con nueva entidad cliqueada.
+							if (entidadReceptora != NULL) {
+								unidades[i]->interactuarCon(entidadReceptora);
+								if (juego->esCliente())
+									Proxy::enviar(juego->getConnection(), *unidades[i], *entidadReceptora);
+							}
+						} catch ( FueraDeEscenario &e ) {}
+					}
 				}
-
-			}
-			return true;
+				return true;
+			} catch ( NoExiste &e ) { /* No se pudo crear la construcción por alguna razón */ }
 		}
 		if (mouse->getEstado() == CLICK_IZQUIERDO) {
 			juego->getJugador()->liberarUnidadesSeleccionadas();

@@ -9,13 +9,12 @@
 
 
 TipoMensajeRed Proxy::actualizarMultiplayer(Juego* juego) {
-	string unContenido, recibido;// = juego->getConnection()->recibir();
-	// Si no se recibe nada, recibir() lanza NoSeRecibio y se saltea el resto.
+	string unContenido, recibido = juego->getConnection()->recibir();
+	// Si no se recibe nada, lanza NoSeRecibio y se saltea el resto.
 	TipoMensajeRed tipo;
 
 	while (Red::parsearSiguienteMensaje(&recibido, &tipo, &unContenido)) {
 		//if (unContenido.length() > 0) {
-
 			switch (tipo) {
 			case MENSAJE: procesarMensaje(unContenido);
 				break;
@@ -83,15 +82,16 @@ ConfiguracionJuego Proxy::clienteEsperarConfigGame(Connection* lan) {
 void Proxy::procesarMensaje(string encodeado) {
 	string resto; ostringstream imprimir;
 	int jug = Red::extraerNumeroYResto(encodeado, &resto);
-	imprimir << "("<<jug<<") "<<NombreDeJug(jug)<<"> "<<resto;
+	imprimir << "[ @"<<NombreDeJug(jug)<<" ("<<jug<<") > "<<resto<<" ]";
 	Log::imprimirALog(INFO, imprimir.str());
 }
 
 void Proxy::procesarToggle(Juego* juego, string encodeado) {
-	string aux;
+	string aux; ostringstream parroquial;
 	int id_jug = Red::extraerNumeroYResto(encodeado, &aux);
 	juego->apagarEnemigo(id_jug);
-	procesarMensaje(id_jug+":SE HA DESCONECTADO");
+	parroquial << id_jug<<":"<<" GRACIAS PA. CHAU CHAU ADIOS // SE HA DESCONECTADO";
+	procesarMensaje(parroquial.str());
 }
 
 void Proxy::procesarNuevaEntidad(Juego* juego, string encodeado) {
@@ -108,7 +108,7 @@ void Proxy::procesarNuevaEntidad(Juego* juego, string encodeado) {
 			aux = juego->crearNuevoEdificio(ent.getTipo(), ent.getPosicion(), ent.getIDJug(), ent.get_identificador());
 		// else imprimir error?
 		if (!aux) throw FueraDeEscenario();	// y otros errores...
-	} catch ( FueraDeEscenario &e ) { Log::imprimirALog(WAR, "Enemigo fuera del escenario"); }
+	} catch ( FueraDeEscenario &e ) { Log::imprimirALog(WAR, "No se pudo agregar enemigo."); }
 }
 
 void Proxy::procesarInteraccion(Juego* juego, string encodeado) {
@@ -128,12 +128,12 @@ void Proxy::procesarInteraccion(Juego* juego, string encodeado) {
 
 void Proxy::procesarCamino(Juego* juego, string encodeado) {
 	int tipo, id_jug, dni;
-	char camEnc[MAX_BYTES_LECTURA];
+	char camEnc[MAX_BYTES_LECTURA+1];
 	stringstream ss(encodeado);
 	ss >> tipo; ss.ignore();	// ','
 	ss >> id_jug; ss.ignore();	// ','
 	ss >> dni; ss.ignore();		// ';'
-	ss.get(camEnc, MAX_BYTES_LECTURA, '~');
+	ss.get(camEnc, MAX_BYTES_LECTURA, '\0');//'~');
 	Entidad *walker = juego->getEntidad(TipoEntidad(tipo), id_jug, dni);
 	if (!walker) return; // o agregarlo?
 	Sprite* sprite = juego->getSpriteDeEntidad(walker);

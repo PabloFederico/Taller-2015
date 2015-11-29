@@ -79,12 +79,47 @@ void Juego::cargarJuego(ConfiguracionJuego* infoJuegoRed = NULL) {
 
 	this->jugador = new Jugador(configGame.nombreJugador,idJug);
 	this->fabricaDeEntidades = new EntidadFactory(this->idJug, configGame.entidades);
-	this->escenario = new Escenario(configGame.escenarios[0], this->fabricaDeEntidades, this->unidadesEnemigos, this->edificiosEnemigos);
+	this->escenario = new Escenario(configGame.escenarios[0], this->idJug);//, this->fabricaDeEntidades, this->unidadesEnemigos, this->edificiosEnemigos);
+	cargaInicialDeEntidades();
 
 	escenario->getCapa()->setRangoDeVision(configGame.rango_vision);
 	this->barraEstado = new BarraEstado(configGame.ancho_pantalla, 150, jugador); // Podría ser proporcional al tamaño de la ventana (MC)
 
 	this->contenedorSonidos = new ContenedorDeSonidos();
+}
+
+void Juego::cargaInicialDeEntidades() {
+	bool todas = true;//
+	InfoEscenario infoEsc = this->configGame.escenarios[0];
+	vector<PosTipoEntidad> vec = infoEsc.getPosicionesEntidades();
+	for (unsigned i = 0; i < vec.size(); i++){
+		TipoEntidad tipo = vec[i].tipo;
+		Coordenada pos(vec[i].x,vec[i].y);
+
+		Entidad *aux;
+		if (EsUnidad(tipo))
+			aux = crearNuevaUnidad(tipo, pos);
+		else if (EsEdificio(tipo))
+			aux = crearNuevoEdificio(tipo, pos);
+		else if (EsRecurso(tipo))
+			aux = agregarRecurso(tipo, pos);
+		else {
+			try {
+				aux = this->fabricaDeEntidades->nuevaEntidad(tipo);
+				if (aux) this->escenario->agregarEntidad(pos, aux);
+			} catch ( FueraDeEscenario &e ) {
+				delete aux;
+				aux = NULL;
+			}
+		}
+		if (!aux) {
+			std::cout << "No se pudo crear/agregar entidad de tipo "<<tipo<<std::endl;//
+			todas = false;//
+		} else std::cout << "Creada entidad de tipo "<<tipo<<" en "<<pos.enc()<<std::endl;//
+	}
+	infoEsc.getPosicionesEntidades().clear();
+	if (todas)
+		std::cout<<"se agregaron todas las entidades"<<std::endl;//
 }
 
 /********************************************************************************/
@@ -104,13 +139,13 @@ void Juego::generarNuevasUnidadesYEdificiosIniciales() {
 	int size_y = configGame.escenarios[0].size_y;
 	// segundo, creo: centro cívico, 1 aldeano, 1 soldado; con posiciones rándom
 	Coordenada c_uni, c_cc = Calculador::generarPosRandom(size_x-4, 0, size_y-4, 0, 12);
-	std::cout << "entidad : centro civico "<<c_cc.enc() << std::endl;//
+	std::cout << "entidad inicial: centro civico "<<c_cc.enc() << std::endl;//
 	configGame.escenarios[0].agregarEntidad(c_cc, CENTRO_CIVICO);
 	c_uni = Calculador::generarPosRandomDentroDeEscenarioConLimites(size_x, c_cc.x+5, c_cc.x-5, size_y, c_cc.y+5, c_cc.y-5, 31);
-	std::cout << "entidad : aldeano "<<c_uni.enc() << std::endl;//
+	std::cout << "entidad inicial: aldeano "<<c_uni.enc() << std::endl;//
 	configGame.escenarios[0].agregarEntidad(c_uni, ALDEANO);
 	c_uni = Calculador::generarPosRandomDentroDeEscenarioConLimites(size_x, c_cc.x+5, c_cc.x-5, size_y, c_cc.y+5, c_cc.y-5, 72);
-	std::cout << "entidad : soldado "<<c_uni.enc() << std::endl;//
+	std::cout << "entidad inicial: soldado "<<c_uni.enc() << std::endl;//
 	configGame.escenarios[0].agregarEntidad(c_uni, SOLDADO);
 }
 
@@ -265,6 +300,7 @@ void Juego::setConnection(Connection* conn) {
 
 /***************************************************/
 void Juego::olvidarConnection() {
+	std::cout << "DESCONECTADO"<<std::endl;//
 	this->connection->finalizar();	// todo: imprimir que se perdió la conexión y cerrar
 }
 
@@ -298,15 +334,19 @@ Unidad* Juego::crearNuevaUnidad(TipoEntidad tipoUnid, Coordenada coord, int id_j
 	Unidad *unidad = new Unidad(tipoUnid, id_jug, id_unidad);	// Factory todo?
 	unidad->setPosicion(coord);
 
+	if (!this->escenario->agregarEntidad(coord, unidad)) {
+		std::cout << "No se pudo agregar "<<unidad->enc()<<std::endl;//
+		delete unidad;
+		return NULL;
+	}
 	if (id_jug == this->idJug)
 		this->jugador->agregarNuevaUnidad(unidad);
 	else
 		cargarEnemigo(unidad);
 	if (contenedor)
 		this->contenedor->generarYGuardarSpriteEntidad(unidad, Coordenada(*cero_x, *cero_y), this->escenario);
-	this->escenario->agregarEntidad(coord, unidad);
 
-	if (esCliente())
+	if (esCliente() && unidad->perteneceAJugador(this->idJug))
 		Proxy::enviar(this->connection, *unidad);
 	return unidad;
 }
@@ -323,15 +363,19 @@ Construccion* Juego::comenzarNuevaConstruccion(TipoEntidad tipoEdif, Coordenada 
 	Construccion *construccion = new Construccion(tipoEdif, id_jug, id_edificio);	// Factory todo?
 	construccion->setPosicion(coord);
 
+	if (!this->escenario->agregarEntidad(coord, construccion)) {
+		std::cout << "No se pudo agregar "<<construccion->enc()<<std::endl;//
+		delete construccion;
+		return NULL;
+	}
 	if (id_jug == this->idJug)
 		this->jugador->agregarNuevoEdificio(construccion);
 	else
 		cargarEnemigo(construccion);
 	if (contenedor)
 		this->contenedor->generarYGuardarSpriteEntidad(construccion, Coordenada(*cero_x, *cero_y), this->escenario);
-	this->escenario->agregarEntidad(coord, construccion);
 
-	if (esCliente())
+	if (esCliente() && construccion->perteneceAJugador(this->idJug))
 		Proxy::enviar(this->connection, *construccion);
 	return construccion;
 }
@@ -349,15 +393,19 @@ Edificio* Juego::crearNuevoEdificio(TipoEntidad tipoEdif, Coordenada coord, int 
 	Edificio *edificio = new Edificio(tipoEdif, id_jug, id_edificio);	// Factory todo?
 	edificio->setPosicion(coord);
 
+	if (!this->escenario->agregarEntidad(coord, edificio)) {
+		std::cout << "No se pudo agregar "<<edificio->enc()<<std::endl;//
+		delete edificio;
+		return NULL;
+	}
 	if (id_jug == this->idJug)
 		this->jugador->agregarNuevoEdificio(edificio);
 	else
 		cargarEnemigo(edificio);
 	if (contenedor)
 		this->contenedor->generarYGuardarSpriteEntidad(edificio, Coordenada(*cero_x, *cero_y), this->escenario);
-	this->escenario->agregarEntidad(coord, edificio);
 
-	if (esCliente())
+	if (esCliente() && edificio->perteneceAJugador(this->idJug))
 		Proxy::enviar(this->connection, *edificio);
 	return edificio;
 }	// todo falta algo q acomode por posiciones ocupadas; lo mismo para unidades y recursos
@@ -368,11 +416,12 @@ Entidad* Juego::agregarRecurso(TipoEntidad recurso, Coordenada coord, int id_rec
 	Entidad* recurso_a_agregar = new Entidad(recurso, 0, id_recurso); // factory todo?
 	recurso_a_agregar->setPosicion(coord);
 	try {
+		if (!escenario->agregarEntidad(coord, recurso_a_agregar))
+			throw FueraDeEscenario();
 		this->contenedor->generarYGuardarSpriteEntidad(recurso_a_agregar, Coordenada(*cero_x, *cero_y), escenario);
-		escenario->agregarEntidad(coord, recurso_a_agregar);
 
-		if (esCliente())
-			Proxy::enviar(this->connection, *recurso_a_agregar);
+		//if (esCliente())	Tendría que agregar un bool que indique si el recurso fue ideado localmente, para saber si debo enviarlo.
+		//	Proxy::enviar(this->connection, *recurso_a_agregar);
 	} catch ( FueraDeEscenario &e ) {
 		delete recurso_a_agregar;
 		return NULL;
@@ -389,8 +438,8 @@ void Juego::crearNuevaUnidadApartirDeEdificioSeleccionado(TipoEntidad tipoEntida
 		Coordenada c = Calculador::obtenerCoordenadaLibreCercaDeEdificio(edificio,escenario);
 		if (!escenario->coordEnEscenario(c)) return;
 
-		jugador->descontarRecursos(edificio->getCostoPorUnidad());
-		crearNuevaUnidad(tipoEntidadACrear, c, this->getIDJugador());
+		if (crearNuevaUnidad(tipoEntidadACrear, c, this->getIDJugador()))
+			jugador->descontarRecursos(edificio->getCostoPorUnidad());
 
 		std::cout <<"creando nueva unidad tipo "<<tipoEntidadACrear<<" en : "<<c.x<<","<<c.y<<"\n";//
 	}
@@ -605,6 +654,7 @@ void Juego::apagarEnemigo(int id_jugador) {
 
 /***************************************************/
 Juego::~Juego() {
+	olvidarConnection();
 	this->unidadesEnemigos->clear(); // se deberían borrar! no?
 	this->edificiosEnemigos->clear();
 	delete this->escenario;

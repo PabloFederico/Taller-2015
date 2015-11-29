@@ -151,7 +151,8 @@ void Controller::actualizarEstadoDelJuego(){
 			Proxy::actualizarMultiplayer(this->juego);
 		} catch ( NoSeRecibio &e ) {
 		} catch ( Disconnected &e ) {
-			this->juego->olvidarConnection();	// todo: terminar juego
+			this->juego->olvidarConnection();
+			// todo: terminar juego
 		}
 	}
 }
