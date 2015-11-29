@@ -44,6 +44,20 @@ void Server::enviarATodosMenos(int socketNoRecibe, string mensaje) {
 }
 
 
+// Agregar lo que haga falta. AHORA parsea el número de recursos a crear al inicio del juego
+int parsearCantRecursosDelYaml() {
+	int n = -1;
+	try {
+		YAML::Node config;
+		config = YAML::LoadFile("config.yaml");
+		if (config["cantidad_inicial_de_recursos"])
+			n = config["cantidad_inicial_de_recursos"].as<int>();
+	} catch (YAML::BadFile &e) {
+	} catch (YAML::ParserException &e) {
+	}
+	return n;
+}
+
 
 // Intercambia mensajes iniciales.
 void Server::inicializarCliente(int peersock, int segundosDeEspera) {
@@ -235,10 +249,17 @@ void Server::correr() {
 	sleep(2);
 	/******************************************************************/
 
-	// Generación de recursos random
-	//	Coordenada c;
-	//	TipoEntidad tipoRecurso = generarRecursoYCoordRandom(&c);
-	//	enviarATodos(Red::agregarPrefijoYJugYFinal("REC", int(tipoRecurso), c.enc()));
+	// Generación de cant recursos random iniciales
+	int cant = parsearCantRecursosDelYaml();
+	if (cant < 0)
+		cant = 10;	// default
+	std::cout << "Generando "<<cant<<" recursos iniciales."<<std::endl;
+	for (int i = 1; i <= cant; i++) {
+		Coordenada c; ostringstream msj_recurso;
+		TipoEntidad tipoRecurso = generarRecursoYCoordRandom(&c);
+		msj_recurso << tipoRecurso<<","<<i<<","<<c.enc();
+		enviarATodos(Red::agregarPrefijoYFinal("REC", msj_recurso.str()));
+	}
 
 
 	/************************ LOOP PRINCIPAL **************************/

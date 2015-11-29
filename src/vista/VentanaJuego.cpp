@@ -118,7 +118,7 @@ EstadoFinVentana VentanaJuego::run(){
 
 		this->controlador->getJuego()->envioInicialDeEntidadesPropias();
 
-		this->controlador->getJuego()->cargaInicialDeRecursos();//
+		//this->controlador->getJuego()->cargaInicialDeRecursos();//
 
 		///cdp
 		//this->controlador->getJuego()->comenzarNuevaConstruccion(CENTRO_CIVICO, Coordenada(4,15), 1);//

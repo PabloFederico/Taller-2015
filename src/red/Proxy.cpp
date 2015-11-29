@@ -26,13 +26,13 @@ TipoMensajeRed Proxy::actualizarMultiplayer(Juego* juego) {
 				break;
 			case MOVIMIENTO: procesarCamino(juego, unContenido);
 				break;
+			case RECURSO: procesarRecurso(juego, unContenido);
+				break;
 			//case PASO_COMPLETO:
 			//	break;
 			//case ESCENARIO: procesarEscenario(juego, unContenido);
 			//	break;
 			//case COMIENZO: //procesarNombre(juego, unContenido);
-			//	break;
-			//case RECURSO: procesarRecurso(juego, unContenido);
 			//	break;
 			//case GLOTON: procesarRecursoComido(juego, unContenido);
 			//	break;
@@ -152,6 +152,13 @@ void Proxy::procesarCamino(Juego* juego, string encodeado) {
 	sprite->setearNuevoCamino(Camino::dec(camEnc), juego->getCoordCeros());
 }
 
+void Proxy::procesarRecurso(Juego* juego, string encodeado) {
+	string idYpos, posEnc;
+	int nTipo = Red::extraerNumeroYResto(encodeado, &idYpos);
+	int idRec = Red::extraerNumeroYResto(idYpos, &posEnc);
+	juego->agregarRecurso(TipoEntidad(nTipo), Coordenada::dec(posEnc), idRec);
+}
+
 //void Proxy::procesarEscenario(Juego* juego, string encodeado) {
 //	// todo
 //}
@@ -160,12 +167,6 @@ void Proxy::procesarCamino(Juego* juego, string encodeado) {
 //	string nombre;
 //	if (Red::extraerNumeroYResto(encodeado, &nombre) == juego->getIDJugador())
 //		juego->setNombreJugador(nombre);
-//}
-
-//void Proxy::procesarRecurso(Juego* juego, string encodeado) {
-	//string posEnc;
-	//int nTipo = Red::extraerNumeroYResto(encodeado, &posEnc);
-	//juego->agregarRecurso(TipoEntidad(nTipo), Coordenada::dec(posEnc));
 //}
 
 //void Proxy::procesarRecursoComido(Juego* juego, string posEnc) {

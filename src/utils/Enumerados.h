@@ -27,7 +27,7 @@ enum TipoImagenUnidadEstado { ALDEANO_ATACANDO, ALDEANO_QUIETO, ALDEANO_MURIENDO
 						SOLDADO_ATACANDO, SOLDADO_QUIETO, SOLDADO_MURIENDO,
 						ARQUERO_ATACANDO, ARQUERO_QUIETO, ARQUERO_MURIENDO};
 
-enum TipoMensajeRed { MENSAJE, COMIENZO, ESCENARIO, TOGGLE, NUEVA_ENTIDAD, INTERACCION, MOVIMIENTO, PASO_COMPLETO, /*PING, RECURSO, GLOTON,*/ FIN };
+enum TipoMensajeRed { MENSAJE, COMIENZO, ESCENARIO, TOGGLE, NUEVA_ENTIDAD, INTERACCION, MOVIMIENTO, RECURSO, PASO_COMPLETO, /*PING, GLOTON,*/ FIN };
 
 enum TipoBoton { BOTON_NADA, BOTON_NAME, BOTON_NUEVA_PARTIDA, BOTON_SELECTOR_ESCENARIO, BOTON_CARGAR_PARTIDA, BOTON_EXIT };
 
@@ -60,9 +60,9 @@ inline const TipoMensajeRed StringToTipoMensajeRed(std::string s) {
 	if (s == "PAS") return PASO_COMPLETO;
 	if (s == "ENT")	return NUEVA_ENTIDAD;
 	if (s == "INT")	return INTERACCION;
+	if (s == "REC") return RECURSO;
 	if (s == "FIN") return FIN;
 	//if (s == "PNG") return PING;
-	//if (s == "REC") return RECURSO;
 	//if (s == "TOG") return TOGGLE;
 	//if (s == "GLO") return GLOTON;
 	else return MENSAJE;

@@ -1,3 +1,5 @@
+cantidad_inicial_de_recursos: 10
+
 nombre_jugador: pepe
 
 direccion_ip: 127.0.0.1
