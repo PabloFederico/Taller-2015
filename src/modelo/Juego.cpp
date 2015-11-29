@@ -501,7 +501,7 @@ void Juego::interaccionesDeUnidades() {
 
 		} catch ( ConstruccionTermino &c ) {
 			Edificio *edif = terminarConstruccion(c);
-			this->contenedor->generarYGuardarSpriteEntidad(edif, getCoordCeros(), escenario);
+			this->contenedor->generarYGuardarSpriteEntidad(edif, Coordenada(*cero_x,*cero_y), escenario);
 			this->escenario->agregarEntidad(Coordenada(c.x,c.y), edif);
 		}
 	}

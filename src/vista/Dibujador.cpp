@@ -266,9 +266,10 @@ void Dibujador::dibujarEfectosTraslucidos(Coordenada c, Escenario* escenario){
 		switch (((Construccion*)entidad)->getTipoEdificio()){
 				case CUARTEL:
 								posicion.x -= DISTANCIA_ENTRE_X * (this->mapInfoEntidades[entidad->getTipo()].ancho - 1);
-								posicion.y = posicion.y - ALTO_PIXEL_PASTO +  DISTANCIA_ENTRE_Y / 4;
+								//posicion.y = posicion.y - ALTO_PIXEL_PASTO +  DISTANCIA_ENTRE_Y / 4;
+								posicion.y -= 2*ALTO_PIXEL_PASTO;
 								posicion.w = ANCHO_PIXEL_PASTO * this->mapInfoEntidades[entidad->getTipo()].ancho;
-								posicion.h = ALTO_PIXEL_PASTO * this->mapInfoEntidades[entidad->getTipo()].alto + (ALTO_PIXEL_PASTO -  DISTANCIA_ENTRE_Y / 2);
+								posicion.h = 30 + ALTO_PIXEL_PASTO * this->mapInfoEntidades[entidad->getTipo()].alto + (ALTO_PIXEL_PASTO -  DISTANCIA_ENTRE_Y / 2);
 								if (lugarHabilitado)
 									imagenTraslucida = contenedor->getImagenUtilTipo(CUARTEL_TRANS);
 								else imagenTraslucida = contenedor->getImagenUtilTipo(CUARTEL_ROJIZO);
