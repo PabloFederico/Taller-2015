@@ -198,6 +198,7 @@ void ContenedorDeRecursos::generarYGuardarSpriteEntidad(Entidad* entidad, Coorde
 						sprite->agregarRectangulo(rect1);
 						}
 						break;
+
 		case ANIMAL :	{
 						/* FRAMES:
 						 * COMER : 10 frames
@@ -233,6 +234,73 @@ void ContenedorDeRecursos::generarYGuardarSpriteEntidad(Entidad* entidad, Coorde
 	sprite->setFps(this->mapInfoEntidades[entidad->getTipo()].fps);
 	this->mapSpritesEntidades->insert(entidad,sprite);
 	std::cout<<"entidad : "<<entidad->getInfo()<<"   Posición : "<< entidad->getPosicion().x<<" "<<entidad->getPosicion().y<<std::endl;//
+}
+
+Sprite* ContenedorDeRecursos::generarSpriteDeAtaque(Entidad* objetoAtaque, Direccion direccion, Coordenada coord_ceros, Escenario* escenario){
+	Sprite* spriteAtaque = NULL;
+	Coordenada coordenada = Calculador::calcularPosicionRelativa(objetoAtaque->getPosicion(), coord_ceros);
+
+	SDL_Rect posicion;
+	/* Cargamos por default los siguientes valores para TIERRA ó AGUA */
+	posicion.x = coordenada.x;
+	posicion.y = coordenada.y;
+	posicion.w = ANCHO_PIXEL_PASTO;
+	posicion.h = ALTO_PIXEL_PASTO;
+
+	float factor_x, factor_y;
+	TipoImagenUtil tipoUtil;
+	switch (direccion){
+	case NORTE: tipoUtil = FLECHA_NORTE;
+				factor_x = 0.5;
+				factor_y = 0.2;
+				break;
+	case SUR: tipoUtil = FLECHA_SUR;
+			    factor_x = 0.5;
+			    factor_y = 0.8;
+				break;
+	case ESTE: tipoUtil = FLECHA_ESTE;
+			    factor_x = 0.8;
+			    factor_y = 0.5;
+				break;
+	case OESTE: tipoUtil = FLECHA_OESTE;
+			    factor_x = 0.2;
+			    factor_y = 0.5;
+				break;
+	case NORESTE: tipoUtil = FLECHA_NORESTE;
+			    factor_x = 0.8;
+			    factor_y = 0.2;
+				break;
+	case NOROESTE: tipoUtil = FLECHA_NOROESTE;
+			    factor_x = 0.2;
+			    factor_y = 0.2;
+				break;
+	case SUROESTE: tipoUtil = FLECHA_SUROESTE;
+			    factor_x = 0.2;
+			    factor_y = 0.8;
+				break;
+	default : tipoUtil = FLECHA_SURESTE;
+			  factor_x = 0.8;
+			  factor_y = 0.8;
+			  break;
+
+	}
+
+	switch (objetoAtaque->getTipo()){
+		case FLECHA:{
+				  posicion.x += posicion.w / 3;
+				  posicion.y += posicion.h / 3;
+				  posicion.w = 20;
+				  posicion.h = 20;
+				  spriteAtaque = new Sprite(1,1,getImagenUtilTipo(tipoUtil),posicion,escenario,coord_ceros,objetoAtaque);
+			      int x_ini = posicion.x + factor_x * posicion.w;
+				  int y_ini = posicion.y + factor_y * posicion.h;
+				  Rectangulo rect1(x_ini, 5, y_ini, 5);
+				  spriteAtaque->agregarRectangulo(rect1);
+				  break;
+				  }
+		default : break;
+	}
+	return spriteAtaque;
 }
 
 /********************************************************************************/
@@ -419,6 +487,32 @@ void ContenedorDeRecursos::cargarImagenesUtil(){
 	imagen = Loader::cargarImagen(this->renderer,"images/utils/Barracks7_rojizo.png");
 	this->mapImagenesUtil->insert(CUARTEL_ROJIZO,imagen);
 	SDL_SetTextureAlphaMod(imagen->getTexture(),150);
+
+	//Flechas - Direcciones
+	imagen = Loader::cargarImagen(this->renderer,"images/utils/flecha_norte.png");
+	this->mapImagenesUtil->insert(FLECHA_NORTE,imagen);
+
+	imagen = Loader::cargarImagen(this->renderer,"images/utils/flecha_sur.png");
+	this->mapImagenesUtil->insert(FLECHA_SUR,imagen);
+
+	imagen = Loader::cargarImagen(this->renderer,"images/utils/flecha_este.png");
+	this->mapImagenesUtil->insert(FLECHA_ESTE,imagen);
+
+	imagen = Loader::cargarImagen(this->renderer,"images/utils/flecha_oeste.png");
+	this->mapImagenesUtil->insert(FLECHA_OESTE,imagen);
+
+	imagen = Loader::cargarImagen(this->renderer,"images/utils/flecha_noreste.png");
+	this->mapImagenesUtil->insert(FLECHA_NORESTE,imagen);
+
+	imagen = Loader::cargarImagen(this->renderer,"images/utils/flecha_noroeste.png");
+	this->mapImagenesUtil->insert(FLECHA_NOROESTE,imagen);
+
+	imagen = Loader::cargarImagen(this->renderer,"images/utils/flecha_sureste.png");
+	this->mapImagenesUtil->insert(FLECHA_SURESTE,imagen);
+
+	imagen = Loader::cargarImagen(this->renderer,"images/utils/flecha_suroeste.png");
+	this->mapImagenesUtil->insert(FLECHA_SUROESTE,imagen);
+
 }
 
 

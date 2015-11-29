@@ -24,6 +24,8 @@ Unidad::Unidad(TipoEntidad tipo, int id_jug, int dni): Entidad(tipo,id_jug) {
 	this->rangoAccion = 1; // tiles de alcance, hardcodeado
 	if (tipo == ARQUERO)
 		this->rangoAccion = 3; // hardcodeado
+
+	infoAtaque = ATAQUE_NO_EMITIDO;
 }
 
 
@@ -54,6 +56,7 @@ bool Unidad::estaEnRangoDelReceptor() {
 
 // throws Recoleccion, ConstruccionTermino, UnidadDebeAcercarse
 void Unidad::interactuar() {
+	infoAtaque = ATAQUE_NO_EMITIDO;
 	if (receptor == NULL)
 		return;
 	if (coordMasProximaDelReceptor == NULL) {
@@ -69,6 +72,7 @@ void Unidad::interactuar() {
 				this->continuarConstruccion();	// throws ConstruccionTermino
 			} else if (receptor->esAtacable() && !receptor->perteneceAJugador(this->idJug)) {
 				cambioEstado(ATACANDO);
+				infoAtaque = ATAQUE_EMITIDO;
 				this->lastimar(this->receptor);
 			} else if (receptor->esRecurso() && this->esRecolector()) {
 				cambioEstado(RECOLECTANDO);
@@ -92,6 +96,10 @@ void Unidad::interactuar() {
 	}
 }
 
+bool Unidad::emitioAtaque(){
+	return (infoAtaque == ATAQUE_EMITIDO);
+}
+
 void Unidad::olvidarInteraccion() {
 	finalizaAccion();
 	this->receptor = NULL;
@@ -113,7 +121,9 @@ void Unidad::continuarConstruccion() {
 }
 
 void Unidad::lastimar(Entidad* victima) {
-	victima->sufrirGolpe(this->generarGolpe());
+	// El ARQUERO lastima cuando hay colisión con el ataque emitido
+	if (tipo != ARQUERO)
+		victima->sufrirGolpe(this->generarGolpe());
 }
 
 int Unidad::recolectar(Entidad* recurso) {

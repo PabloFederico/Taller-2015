@@ -27,6 +27,10 @@ protected:
 	int FRAMES_ATAQUE;
 	int FRAMES_CONSTRUYENDO;
 	int FRAMES_MUERTE;
+	int FPS_CAMINATA;
+	int FPS_ATAQUE;
+	int FPS_CONSTRUYENDO;
+	int FPS_MUERTE;
 	std::map<EstadoEntidad,SDL_Rect> mapRectEstado;
 
 

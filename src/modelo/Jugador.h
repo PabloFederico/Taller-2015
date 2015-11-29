@@ -12,6 +12,13 @@
 #include <map>
 #include <vector>
 
+const int COSTO_CREAR_ALDEANO_MADERA = 10;
+const int COSTO_CREAR_ALDEANO_PIEDRA = 10;
+const int COSTO_CREAR_ARQUERO_MADERA = 10;
+const int COSTO_CREAR_ARQUERO_COMIDA = 30;
+const int COSTO_CREAR_SOLDADO_MADERA = 30;
+const int COSTO_CREAR_SOLDADO_ORO = 15;
+
 class Jugador {
 private:
 	std::string nombre;
@@ -34,13 +41,15 @@ public:
 
 	std::vector<Unidad*> getUnidades();
 
+	std::vector<Edificio*> getEdificios();
+
 	Unidad* getUnidadActiva();
 
 	int getID();
 
-	int getRecursosDisponibles();
+	bool tieneRecursosParaCrearUnidad(TipoEntidad tipoUnidad);
 
-	void descontarRecursos(int cant);
+	void descontarRecursosPorCrearUnidad(TipoEntidad tipoUnidad);
 
 	void agregarEntidadSeleccionada(Entidad* entidad);
 

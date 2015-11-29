@@ -254,6 +254,18 @@ void Dibujador::dibujarEscenario(Escenario* esc, TTF_Font* fuenteTexto, pair<int
 }
 
 /********************************************************************************/
+void Dibujador::dibujarAtaquesDeLargaDistancia(Juego* juego){
+	map<Entidad*,Sprite*>::iterator itAtaque = juego->getMapObjetosAtacantes()->begin();
+	while (itAtaque != juego->getMapObjetosAtacantes()->end()){
+		Sprite* sprite = itAtaque->second;
+		Imagen* image = sprite->getImagen();
+		SDL_Rect posicion = sprite->getPosicion();
+		SDL_RenderCopy(renderer,image->getTexture(),NULL,&posicion);
+		itAtaque++;
+	}
+}
+
+/********************************************************************************/
 void Dibujador::dibujarEfectosTraslucidos(Coordenada c, Escenario* escenario){
 	Entidad* entidad = escenario->getEntidadTemporal();
 	if (entidad->esConstruccion()){
@@ -427,6 +439,9 @@ void Dibujador::dibujarBarraEstado(Escenario* esc, BarraEstado* barraEstado, TTF
 		colorBlanco.b = 255;
 		Imagen* image_num = Loader::cargarTextoConFondo(renderer,fuenteTexto,cant_string,colorBlanco);
 		imagenesBasura.push_back(image_num);
+		//TODO modifica parametros para ver los número más grandes
+		//if (image_num->getPixelsX() > rect_num.w)
+		//	rect_num.w = image_num->getPixelsX();
 		SDL_RenderCopy(renderer, imagen_barra_negra->getTexture(), NULL, &rect_barra_negra);
 		SDL_RenderCopy(renderer, image_recurso->getTexture(), NULL, &rect_recurso);
 		SDL_RenderCopy(renderer, image_num->getTexture(), NULL, &rect_num);

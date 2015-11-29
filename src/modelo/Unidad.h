@@ -15,6 +15,7 @@
 class Unidad: public Entidad {
 protected:
 	int rangoAccion;
+	InfoAtaque infoAtaque;
 	//bool petrificado;
 
 public:
@@ -39,6 +40,8 @@ public:
 	void set_identificador(int nuevoDNI);
 	int get_identificador();
 	int getRangoAccion();
+
+	bool emitioAtaque();
 
 	//bool estaPetrificado();
 	//void petrificar();

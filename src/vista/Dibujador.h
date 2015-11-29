@@ -7,6 +7,7 @@
 
 #ifndef VISTA_DIBUJADOR_H_
 #define VISTA_DIBUJADOR_H_
+#include "../modelo/Juego.h"
 #include "../modelo/BarraEstado.h"
 #include "../utils/ContenedorDeRecursos.h"
 #include "../modelo/Escenario.h"
@@ -40,6 +41,8 @@ public:
 	void dibujarBarraEstado(Escenario* esc, BarraEstado* barraEstado, TTF_Font *fuenteTexto);
 
 	void dibujarEfectosTraslucidos(Coordenada c, Escenario* escenario);
+
+	void dibujarAtaquesDeLargaDistancia(Juego* juego);
 
 	///
 	void repintarOcupado(Escenario* esc);

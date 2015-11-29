@@ -59,6 +59,12 @@ private:
 
 	vector<Entidad*> revisarMuertos();
 
+	void verificacionDeEstadoYColisionesDeAtaques();
+
+	void actualizarPosicionesAtaquesPorMoverCamara(int cant_x, int cant_y);
+
+	Map<Entidad*,Sprite*> *mapAtaquesLargaDistancia; // Para flechas y ataques de larga distancia
+
 public:
 	Juego();//Connection* lan, Coordenada* posInicial, InfoEscenario* infoEscRed);
 	void cargaInicialDeRecursos();
@@ -67,6 +73,8 @@ public:
 	//void setConnection(Connection* conn);
 	//void olvidarConnection();
 	//bool esCliente();
+
+	Map<Entidad*,Sprite*> *getMapObjetosAtacantes();
 
 	Jugador* getJugador();
 
@@ -79,7 +87,7 @@ public:
 	void cargarNumJugador();
 	void cargarEnemigo(Entidad* enemigo);
 
-	vector<Sprite*> getSpritesUnidades();
+	vector<Sprite*> getSpritesEntidadesJugadores();
 	Map<Entidad*, Sprite*>* getSpritesEntidades();
 	vector<InfoEntidad> getInfoTiposEntidades();
 
