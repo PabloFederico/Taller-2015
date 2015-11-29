@@ -114,7 +114,7 @@ EstadoFinVentana VentanaJuego::run(){
 		SDL_SetCursor(cursor);
 
 
-		//sleep(1);//
+		sleep(1);//
 
 		this->controlador->getJuego()->envioInicialDeEntidadesPropias();
 

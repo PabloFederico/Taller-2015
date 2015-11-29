@@ -19,9 +19,11 @@ void parsearIPyNombreJugador(string* ip, string *nombre) {
 			*nombre = config["nombre_jugador"].as<string>();
 		if (config["direccion_ip"])
 			*ip = config["direccion_ip"].as<string>();
+		return;
 	} catch (YAML::BadFile &e) {
 	} catch (YAML::ParserException &e) {
 	}
+	*ip = "127.0.0.1"; // default
 }
 
 
