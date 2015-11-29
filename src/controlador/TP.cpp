@@ -37,6 +37,16 @@ int main(int argc, char** argv) {
 			return -1;
 		}
 
+//		try {
+//			if (lan != NULL) {
+//				//infoJuego = Proxy::clienteEsperarConfigGame(lan);
+//				//Proxy::clienteEsperarComienzo(lan);
+//				this->juego = new Juego(lan, NULL);//, &infoJuego);
+//			}
+//		} catch ( Disconnected &e ) {
+//			std::cout << "Desconectado."<<std::endl;
+//			lan = NULL;
+//		}
 		Controller *controller = new Controller(lan);
 
 		VentanaConexion *ventanaConexion = new VentanaConexion(controller);

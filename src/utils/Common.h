@@ -17,8 +17,8 @@ struct Coordenada{
 	}
 
 	Coordenada(){
-		this->x = 0;
-		this->y = 0;
+		this->x = 5;//-1;
+		this->y = 5;//-1;
 	}
 
 	bool operator==(const Coordenada & c) const {

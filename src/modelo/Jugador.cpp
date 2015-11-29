@@ -20,7 +20,7 @@ Jugador::Jugador(std::string nombre, int id) {
 	edificioSeleccionado = NULL;
 
 	for (int i = (int)MADERA; i <= (int)ORO; i++)
-		mapRecursosEconomicos[(TipoEntidad)i] = 0;
+		mapRecursosEconomicos[(TipoEntidad)i] = 50;	// Monto inicial.
 }
 
 /********************************************************************************/

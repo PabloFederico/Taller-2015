@@ -92,6 +92,7 @@ bool ControladorMouse::procesarClickEnVentana(Mouse* mouse, Tile** tile_clic, Co
 						Sprite* spriteUnidad = juego->getSpritesEntidades()->find(unidades[i])->second;
 						Coordenada coord_pixel_sprite = spriteUnidad->getPosPies();
 						// Por qué todo esto está copipeistiado del clic derecho, no deberían funcionar distinto?
+						// En cualquier caso, por qué no llamar a la función del clic derecho, o modularizar la funcionalidad coincidente? (MC)
 						try {
 							Camino camino = Calculador::obtenerCaminoMin(escenario, coord_pixel_sprite, mouse->getXY(), coord_pixel_ceros);
 							if (camino.size() > 0) {
@@ -132,7 +133,7 @@ bool ControladorMouse::procesarClickEnVentana(Mouse* mouse, Tile** tile_clic, Co
 				return true;
 			}
 		}catch(FueraDeEscenario &e) {
-			escenario->setearTileClic(NULL, Coordenada(0,0));
+			escenario->setearTileClic(NULL, Coordenada(0,0));	// No hay peligro en pasar esta coordenada?
 			*tile_clic = NULL;
 			return false;
 		}
@@ -241,6 +242,7 @@ void ControladorMouse::procesarClickIzquierdo(Mouse* mouse){
 					// TODO debería crearse una entidad tipo CONSTRUCCIÓN y cuando finalice convertirlo a edificio
 					if (escenario->getEntidadTemporal() != NULL) delete escenario->getEntidadTemporal();
 					Entidad* entidadConstruccion = new Construccion(edificioAConstruir,juego->getIDJugador());
+					entidadConstruccion->setPosicion(Coordenada(0,0));
 					entidadConstruccion->setTam(4,4); //hardcodeo prueba
 					juego->getEscenario()->iniciarEntidadTemporal(entidadConstruccion);
 					mouse->setearMoviendoImagen(true);

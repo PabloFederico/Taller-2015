@@ -7,6 +7,8 @@
 
 #include "../modelo/Entidad.h"
 
+#include <math.h>
+
 Entidad::Entidad(TipoEntidad tipo, int num_jug, int identificador): idJug(num_jug), dni(identificador) {
 	this->reloj = clock();
 	this->receptor = NULL;
@@ -191,6 +193,13 @@ bool Entidad::esConstruccion() {
 	return (tipo == CONSTRUCCION);
 }
 
+bool Entidad::esRecolector() {
+	return (tipo == ALDEANO);
+}
+bool Entidad::esConstructor() {
+	return (tipo == ALDEANO);
+}
+
 int Entidad::obtenerArmor(){
 	return this->armadura;
 }
@@ -233,6 +242,10 @@ void Entidad::setPosicion(Coordenada nuevaCoord){
 	c = nuevaCoord;
 }
 
+float distEuclid(Coordenada a, Coordenada z) {
+	return sqrt( pow(z.x-a.x,2) + pow(z.y-a.y,2) );
+}
+
 void Entidad::interactuarCon(Entidad* receptor) {
 	if (this->getIDJug() == receptor->getIDJug() && !receptor->esConstruccion())
 		return;	// No existe acción contra otra entidad propia salvo construcciones.
@@ -240,6 +253,17 @@ void Entidad::interactuarCon(Entidad* receptor) {
 		olvidarInteraccion(); //verificar que se llame a la de Unidad
 		this->receptor = receptor;
 		this->reloj = clock();
+
+		// Cambios de estado		//No muy lindo pero tampoco tan feo
+		if (this->esUnidad() && distEuclid(this->getPosicion(),receptor->getPosicion()) <= 1) {
+			if (receptor->esConstruccion() && this->esConstructor() && receptor->perteneceAJugador(this->idJug)) {
+				cambioEstado(CONSTRUYENDO);
+			} else if (receptor->esAtacable() && !receptor->perteneceAJugador(this->idJug)) {
+				cambioEstado(ATACANDO);
+			} else if (receptor->esRecurso() && this->esRecolector()) {
+				cambioEstado(RECOLECTANDO);
+			}
+		}
 	}
 	// ARBOL, DEFAULT
 }

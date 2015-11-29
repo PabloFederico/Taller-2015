@@ -61,6 +61,9 @@ public:
 	Coordenada getPosicion();
 	void setPosicion(Coordenada c);
 
+	bool esRecolector();
+	bool esConstructor();
+
 	bool esRecurso();
 	bool esConstruccion();
 	bool esEdificio();

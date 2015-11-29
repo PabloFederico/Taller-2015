@@ -79,6 +79,8 @@ void ContenedorDeRecursos::generarYGuardarSpriteEntidad(Entidad* entidad, Coorde
 			 * los tiles que le corresponden */
 		case CONSTRUCCION:
 						{
+						entidad->setTam(4,4); // hardcodero
+
 						Imagen* imageConstruccion = NULL;
 						if (((Construccion*)entidad)->getTipoEdificio() == CUARTEL)
 						   imageConstruccion = getImagenUtilTipo(CUARTEL_TRANS);
@@ -232,7 +234,7 @@ void ContenedorDeRecursos::generarYGuardarSpriteEntidad(Entidad* entidad, Coorde
 	sprite->setDelay(this->mapInfoEntidades[entidad->getTipo()].delay);
 	sprite->setFps(this->mapInfoEntidades[entidad->getTipo()].fps);
 	this->mapSpritesEntidades->insert(entidad,sprite);
-	//std::cout<<"entidad : "<<entidad->getInfo()<<"   Posición : "<< entidad->getPosicion().x<<" "<<entidad->getPosicion().y<<std::endl;//
+	std::cout<<"entidad : "<<entidad->getInfo()<<"   Posición : "<< entidad->getPosicion().x<<" "<<entidad->getPosicion().y<<std::endl;//
 }
 
 /********************************************************************************/
@@ -288,7 +290,10 @@ Map<Entidad*, Sprite*>* ContenedorDeRecursos::getMapaSpritesEntidades(){
 /********************************************************************************/
 Sprite* ContenedorDeRecursos::getSpriteDeEntidad(Entidad *entidad){
 	map<Entidad*, Sprite* >::iterator it = this->mapSpritesEntidades->find(entidad);
-	return it->second;
+	if (it != this->mapSpritesEntidades->end())
+		return it->second;
+	Log::imprimirALog(ERR, "NO SE ENCONTRÓ SPRITE DE "+entidad->getTipo());
+	return NULL;
 }
 
 /********************************************************************************/
@@ -484,6 +489,7 @@ ContenedorDeRecursos::~ContenedorDeRecursos() {
 	while (itttt != this->mapSpritesEntidades->end()){
 		Sprite *sprite = itttt->second;
 		itttt++;
+		//HAY SPRITES QUE SON DELETEADOS EN OTRO LADO PERO NO QUITADOS DE ESTE MAP
 		delete sprite;
 	}
 	delete this->mapSpritesEntidades;
