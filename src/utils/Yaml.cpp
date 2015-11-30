@@ -333,7 +333,7 @@ InfoEscenario Yaml::infoEscenarioDefault() {
 	infoEscenario.agregarEntidad(std::make_pair(8,10), MINA_ORO);
 
 	//código de prueba
-	std::cout<<infoEscenario.getPosicionesEntidades().size()<<std::endl;//
+//	std::cout<<infoEscenario.getPosicionesEntidades().size()<<std::endl;//
 
 	return infoEscenario;
 }

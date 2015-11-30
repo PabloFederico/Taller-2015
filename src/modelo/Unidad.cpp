@@ -55,10 +55,9 @@ void Unidad::interactuar() {
 	infoAtaque = ATAQUE_NO_EMITIDO;
 	if (receptor == NULL)
 		return;
-	if (coordMasProximaDelReceptor == NULL) {
-		setCoordMasProximaDelReceptor();
+	setCoordMasProximaDelReceptor();
 
-	} else if (estaEnRangoDelReceptor()) {
+	if (estaEnRangoDelReceptor()) {
 		if ((clock() - this->reloj) < CLOCKS_PER_SEC*DELAY_INTERACCION) return;	//No está respetando el tiempo pedido. TODO
 
 		this->reloj = clock();
@@ -157,18 +156,6 @@ int Unidad::getRangoAccion() {
 bool Unidad::esUnidad() {
 	return true;
 }
-
-//bool Unidad::estaPetrificado(){
-//	return petrificado;
-//}
-
-//void Unidad::petrificar(){
-//	petrificado = true;
-//}
-
-//void Unidad::despetrificar(){
-//	petrificado = false;
-//}
 
 void Unidad::cambioEstado(EstadoEntidad est) {
 	this->estado = est;

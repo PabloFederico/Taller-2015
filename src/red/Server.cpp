@@ -241,7 +241,6 @@ void Server::correr() {
 			send(j, mensaje.c_str(), 8, MSG_NOSIGNAL);
 		}
 	}
-	//sleep(3);
 	/******************************************************************/
 
 	// Generación de cant recursos random iniciales
@@ -257,6 +256,7 @@ void Server::correr() {
 		enviarATodos(Red::agregarPrefijoYFinal("REC", msj_recurso.str()));
 	}
 
+	enviarATodos(Red::agregarPrefijoYJugYFinal("MSJ", 0, "COMIENZA EL JUEGO"));
 
 	/************************ LOOP PRINCIPAL **************************/
 	while (clientes.cantConectados > 1) {
@@ -270,7 +270,6 @@ void Server::correr() {
 				} while (errno == EINTR && result == -1);
 
 				if (result > 0) {
-					std::cout << " ";//
 					buffer[result] = 0;
 					//// Lo recibido de un cliente, si no es únicamente para el servidor, mandarlo a todos los demás
 					//if (procesarComoServidor(j, string(buffer))) {
@@ -299,18 +298,17 @@ void Server::correr() {
 	} // end while
 	/******************************************************************/
 
-	std::cout << std::endl << "Se han desconectado todos los jugadores."<<std::endl<<"Fin de la partida."<<std::endl;
-
 	if (clientes.cantConectados == 1) {
 		for (j = 0; j < maxfd+1; j++) {
 			if (FD_ISSET(j, &readset)) {
 				mensaje = Red::agregarPrefijoYFinal("FIN", clientes[j].id);
-				std::cout << "Envío aviso a los ganadores."<<std::endl;//
+				std::cout << "Envío aviso a los ganadores."<<std::endl;
 				send(j, mensaje.c_str(), 10, MSG_NOSIGNAL);
 			}
 		}
-	}
-
+	} else
+		std::cout << std::endl << "Se han desconectado todos los jugadores."<<std::endl;
+	std::cout << "Fin de la partida."<<std::endl;
 	sleep(4);
 }
 

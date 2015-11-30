@@ -70,7 +70,7 @@ private:
 
 public:
 	Juego(Connection* lan, ConfiguracionJuego* infoJuegoRed);
-	void cargaInicialDeRecursos();
+//	void cargaInicialDeRecursos();
 	void envioInicialDeEntidadesPropias();
 
 	Map<Entidad*,Sprite*> *getMapObjetosAtacantes();
