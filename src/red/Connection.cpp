@@ -38,7 +38,7 @@ void Connection::enviar(std::string s) {
 	if (Red::enviarInformacion(this->lastDescriptor, s) < 0) {
 		//Log::imprimirALog(ERR, "ERROR: send failed.");
 		std::cout << "ERROR: send failed." << std::endl;
-	} else
+	}// else
 //		std::cout << "Enviando: "<< s <<std::endl;//
 }
 
