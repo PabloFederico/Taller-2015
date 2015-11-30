@@ -29,6 +29,10 @@ int Jugador::getID(){
 	return id_jug;
 }
 
+int Jugador::getUltimoDNIdeUnidadAsignado() {
+	return this->contador_dni_unidades;
+}
+
 void Jugador::agregarEntidadSeleccionada(Entidad* entidad){
 	if (entidad->esUnidad())
 		unidadesSeleccionadas.push_back((Unidad*)entidad);

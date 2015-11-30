@@ -312,7 +312,12 @@ int Entidad::sufrirRecoleccion(int cant = 5) {
 
 std::string Entidad::getInfo(){
 	ostringstream enc;
-	enc << info<<"; vida: "<<vidaRestante;	//Elegir un formato TODO
+	if (idJug != 0)
+		enc << info<<" (Jugador "<<idJug<<")"<<"; vida: "<<vidaRestante;
+	else if (vidaRestante > 1)
+		enc << info<<"; vida: "<<vidaRestante;
+	else
+		enc << info;
 	return enc.str();
 }
 

@@ -16,10 +16,6 @@ using namespace std;
 
 Unidad::Unidad(TipoEntidad tipo, int id_jug, int dni): Entidad(tipo,id_jug) {
 	this->dni = dni;
-	//petrificado = false;
-	ostringstream ssInfo;
-	ssInfo << info<<" (Jugador "<<id_jug<<")";
-	info = ssInfo.str();
 
 	this->rangoAccion = 1; // tiles de alcance, hardcodeado
 	if (tipo == ARQUERO)

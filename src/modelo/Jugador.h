@@ -45,6 +45,7 @@ public:
 	Unidad* getUnidadActiva();
 
 	int getID();
+	int getUltimoDNIdeUnidadAsignado();
 
 	bool tieneRecursosParaCrearUnidad(TipoEntidad tipoUnidad);
 

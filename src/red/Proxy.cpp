@@ -159,6 +159,19 @@ void Proxy::procesarRecurso(Juego* juego, string encodeado) {
 	juego->agregarRecurso(TipoEntidad(nTipo), Coordenada::dec(posEnc), idRec);
 }
 
+void Proxy::procesarConversion(Juego* juego, string encodeado) {
+	int id_conversor, id_convertido;
+	stringstream ss(encodeado);
+	ss >> id_conversor; ss.ignore(); // ','
+	ss >> id_convertido;
+	if (id_conversor == id_convertido || id_conversor < 0 || id_convertido < 0)
+		return;
+	if (id_convertido == juego->getIDJugador()) {
+		juego->olvidarConnection();//qué hacer?
+	} else
+		juego->conversionDeEnemigo(id_conversor, id_convertido);
+}
+
 void Proxy::procesarFin(Juego* juego, string sGanador) {
 	string aux;
 	int id_ganador = Red::extraerNumeroYResto(sGanador, &aux);
@@ -225,6 +238,13 @@ void Proxy::enviar(Connection* lan, Entidad ent, Camino cam) {
 	ostringstream camino_enc;
 	camino_enc << ent.getTipo()<<","<<ent.getIDJug()<<","<<ent.get_identificador()<<";"<<cam.enc();
 	string t = Red::agregarPrefijoYFinal("MOV", camino_enc.str());
+	lan->enviar(t);
+}
+
+void Proxy::enviarConversion(Connection* lan, int id_jug_conversor, int id_jug_convertido) {
+	ostringstream conversion_enc;
+	conversion_enc << id_jug_conversor<<","<<id_jug_convertido;
+	string t = Red::agregarPrefijoYFinal("CON", conversion_enc.str());
 	lan->enviar(t);
 }
 

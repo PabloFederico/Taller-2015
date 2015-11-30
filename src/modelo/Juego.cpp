@@ -139,8 +139,8 @@ void Juego::generarNuevasUnidadesYEdificiosIniciales() {
 
 	Coordenada c_uni, c_cc;
 	int m = 10; // margen de distancia al CC
-	int size_x = configGame.escenarios[0].size_x;
-	int size_y = configGame.escenarios[0].size_y;
+	int size_x = configGame.escenarios[0].size_x - 1;
+	int size_y = configGame.escenarios[0].size_y - 1;
 
 	///
 //	do { c_uni = Calculador::generarPosRandom(size_x, 0, size_y, 0, 99);//
@@ -329,6 +329,8 @@ bool Juego::esCliente() {
 
 /***************************************************/
 Connection* const Juego::getConnection() {
+	if (!this->connection)
+		throw Disconnected();
 	return this->connection;
 }
 
@@ -341,6 +343,7 @@ void Juego::setConnection(Connection* conn) {
 void Juego::olvidarConnection() {
 	std::cout << "~~~DESCONECTADO~~~"<<std::endl;//
 	this->connection->finalizar();	// todo: imprimir que se perdió la conexión y cerrar
+	this->connection = NULL;
 }
 
 /***************************************************/
@@ -357,8 +360,7 @@ void Juego::cargarEnemigo(Entidad* enemigo) {
 		unidadesEnemigos->push_back((Unidad*)enemigo);
 	else if (enemigo->esEdificio())
 		edificiosEnemigos->push_back((Edificio*)enemigo);
-	else std::cout << "no ";//
-	std::cout << "agregado enemigo a un vector"<<std::endl;//
+	else std::cout << "entidad enemiga ni edificio ni unidad no agregada";//
 }
 
 /***************************************************/
@@ -377,7 +379,6 @@ Unidad* Juego::crearNuevaUnidad(TipoEntidad tipoUnid, Coordenada coord, int id_j
 	unidad->setPosicion(coord);
 
 	if (!this->escenario->agregarEntidad(coord, unidad)) {
-		std::cout << "No se pudo agregar "<<unidad->enc()<<std::endl;//
 		delete unidad;
 		return NULL;
 	}
@@ -406,7 +407,6 @@ Construccion* Juego::comenzarNuevaConstruccion(TipoEntidad tipoEdif, Coordenada 
 	construccion->setPosicion(coord);
 
 	if (!this->escenario->agregarEntidad(coord, construccion)) {
-		std::cout << "No se pudo agregar "<<construccion->enc()<<std::endl;//
 		delete construccion;
 		return NULL;
 	}
@@ -436,7 +436,6 @@ Edificio* Juego::crearNuevoEdificio(TipoEntidad tipoEdif, Coordenada coord, int 
 	edificio->setPosicion(coord);
 
 	if (!this->escenario->agregarEntidad(coord, edificio)) {
-		std::cout << "No se pudo agregar "<<edificio->enc()<<std::endl;//
 		delete edificio;
 		return NULL;
 	}
@@ -760,6 +759,49 @@ void Juego::apagarEnemigo(int id_jugador) {
 			}
 		}
 }
+
+/***************************************************/
+// Solo unidades, parece ser lo que dice el enunciado.
+// TODO: probar para dos id != al propio
+void Juego::conversionDeEnemigo(int id_conversor, int id_convertido) {
+	if (id_convertido == this->getIDJugador()) {
+		//olvidarConnection();//qué hacer?
+		return;
+	}
+	vector<Unidad*> unidadesConvertidas;
+	int max_dni = 0;
+	if (id_conversor == this->getIDJugador())
+		max_dni = floor(jugador->getUltimoDNIdeUnidadAsignado() / 300.0) + 300;
+	// Recolecta las unidades a convertir. En caso de conversión propia, la carga inmediatamente.
+	for (vector<Unidad*>::iterator it = this->unidadesEnemigos->begin(); it < this->unidadesEnemigos->end(); ++it) {	//TODO: no agarra todas!!
+		Unidad* uni = *it;
+		if (uni->perteneceAJugador(id_conversor)) {
+			max_dni = (max_dni > uni->get_identificador()) ? max_dni : uni->get_identificador();
+		}
+		else if (uni->perteneceAJugador(id_convertido)) {
+			if (id_conversor == this->getIDJugador()) {
+				uni->set_identificador(++max_dni);
+				this->jugador->agregarNuevaUnidad(*it);
+			} else {
+				unidadesConvertidas.push_back(uni);
+			}
+			this->unidadesEnemigos->erase(it);
+			it = this->unidadesEnemigos->begin(); //por las
+		}
+	}
+	// Caso contrario, se consiguió el mayor dni de las unidades del jugador convertido y se obtiene un dni seguro desde el cual subir.
+	max_dni = floor(max_dni / 300.0) + 300;
+	for (vector<Unidad*>::iterator it = unidadesConvertidas.begin(); it < unidadesConvertidas.end(); ++it) {
+		Unidad* uni = *it;
+		uni->olvidarInteraccion();
+		uni->set_id_jugador(id_conversor);
+		uni->set_identificador(++max_dni);
+		cargarEnemigo(uni);
+	}
+	unidadesConvertidas.clear();
+}
+// Explicación de DNI: en caso de que la última unidad haya sido asesinada, distintos jugadores asignarían
+// distintos dni a las nuevas unidades convertidas. Ergo, se saltea a un número mayor para casi garantizar compatibilidad.
 
 /***************************************************/
 

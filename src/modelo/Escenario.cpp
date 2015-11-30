@@ -125,7 +125,7 @@ bool Escenario::agregarEntidad(Coordenada pos, Entidad* entidad){
 		// Se guardan en posicionesEntidades todas las entidades agregadas al mapa. No se lo limpia TODO
 		posicionesEntidades->push_back(entidad);
 	} catch ( TileEstaOcupado &e ) {
-		Log::imprimirALog(ERR,"Se intentó agregar una entidad en un tile ocupado");
+		Log::imprimirALog(ERR,"Se intentó agregar una entidad en un tile ocupado "+entidad->enc());
 		return false;
 	}
 	return true;

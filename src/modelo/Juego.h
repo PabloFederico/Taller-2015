@@ -137,6 +137,7 @@ public:
 	void crearNuevaUnidadApartirDeEdificioSeleccionado(TipoEntidad tipoEntidadACrear);
 
 	void apagarEnemigo(int id_jug);
+	void conversionDeEnemigo(int id_conversor, int id_convertido);
 	void reiniciar();
 	void anunciarGanador(int id_ganador);
 	virtual ~Juego();
