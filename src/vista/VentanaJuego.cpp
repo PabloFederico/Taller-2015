@@ -136,7 +136,7 @@ EstadoFinVentana VentanaJuego::run(){
 		///
 		clock_t t = clock();
 		bool enviado = false;
-		bool bulean2 = false;//
+		//bool bulean2 = false;//
 
 		while ( run ) {
 
@@ -167,10 +167,10 @@ EstadoFinVentana VentanaJuego::run(){
 					this->controlador->getJuego()->envioInicialDeEntidadesPropias();
 					enviado = true;
 				}
-				if (clock()-t > CLOCKS_PER_SEC*10 && !bulean2) {//
-					this->controlador->getJuego()->conversionDeEnemigo(1, 2);//
-					bulean2 = true;//
-				}//
+//				if (clock()-t > CLOCKS_PER_SEC*10 && !bulean2) {//
+//					this->controlador->getJuego()->conversionDeEnemigo(1, 2);//
+//					bulean2 = true;//
+//				}//
 
 		} /* Fin del while*/
 

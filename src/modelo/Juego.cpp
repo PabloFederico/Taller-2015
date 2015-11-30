@@ -773,7 +773,7 @@ void Juego::conversionDeEnemigo(int id_conversor, int id_convertido) {
 	if (id_conversor == this->getIDJugador())
 		max_dni = floor(jugador->getUltimoDNIdeUnidadAsignado() / 300.0) + 300;
 	// Recolecta las unidades a convertir. En caso de conversión propia, la carga inmediatamente.
-	for (vector<Unidad*>::iterator it = this->unidadesEnemigos->begin(); it < this->unidadesEnemigos->end(); ++it) {	//TODO: no agarra todas!!
+	for (vector<Unidad*>::iterator it = this->unidadesEnemigos->begin(); it < this->unidadesEnemigos->end(); ) {
 		Unidad* uni = *it;
 		if (uni->perteneceAJugador(id_conversor)) {
 			max_dni = (max_dni > uni->get_identificador()) ? max_dni : uni->get_identificador();
@@ -786,8 +786,9 @@ void Juego::conversionDeEnemigo(int id_conversor, int id_convertido) {
 				unidadesConvertidas.push_back(uni);
 			}
 			this->unidadesEnemigos->erase(it);
-			it = this->unidadesEnemigos->begin(); //por las
+			continue;
 		}
+		++it;
 	}
 	// Caso contrario, se consiguió el mayor dni de las unidades del jugador convertido y se obtiene un dni seguro desde el cual subir.
 	max_dni = floor(max_dni / 300.0) + 300;
