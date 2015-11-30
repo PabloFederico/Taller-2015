@@ -1,3 +1,5 @@
+cantidad_inicial_de_recursos: 10
+
 nombre_jugador: pepe
 
 direccion_ip: 127.0.0.1
@@ -15,7 +17,7 @@ tipos:
   - nombre: arbol
     imagen: images/utils/arbol.png
     descripcion: Arbol
-sdasad
+dsas
   - nombre: tierra
     imagen: images/relieve/tierra.png
 
@@ -34,6 +36,10 @@ sdasad
     imagen: images/utils/Barracks7.png
     descripcion: Cuartel
 
+  - nombre: construccion
+    imagen: images/utils/cuartel_rojizo.png #!!!
+    descripcion: Construccion
+
   - nombre: barraca
     alto_base: 4
     ancho_base: 4
@@ -49,6 +55,11 @@ sdasad
     fps: 20
     imagen: images/sprites/arquero_camina.png
     descripcion: Arquero
+
+  - nombre: aldeano
+    fps: 40
+    imagen: images/sprites/aldeano_camina.png
+    descripcion: Aldeano
 
   - nombre: animal
     delay: 5000
@@ -72,40 +83,37 @@ sdasad
   - nombre: mina_oro
     imagen: images/utils/mina_oro.png
 
-  - nombre: aldeano
-    fps: 40
-    imagen: images/sprites/aldeano_camina.png
-    descripcion: Aldeano
-
-  - nombre: construccion
-    imagen: images/utils/Barracks3.png #!!!
-    descripcion: Construcción
-
 escenario:
   - nombre: orleans
     size_x: 50
     size_y: 50
     entidades:
-      - {x: 15, y: 15, tipo: aldeano}
       - {x: 10, y: 10, tipo: agua}
-      - {x: 10, y: 11, tipo: agua}
-      - {x: 10, y: 12, tipo: agua}
       - {x: 11, y: 10, tipo: agua}
+      - {x: 12, y: 10, tipo: agua}
+      - {x: 13, y: 10, tipo: agua}
+      - {x: 10, y: 11, tipo: agua}
       - {x: 11, y: 11, tipo: agua}
       - {x: 11, y: 12, tipo: agua}
-      - {x: 12, y: 10, tipo: agua}
       - {x: 12, y: 11, tipo: agua}
-      - {x: 12, y: 12, tipo: agua}
-      - {x: 22, y: 0, tipo: tierra}
-      - {x: 30, y: 12, tipo: tierra}
+      - {x: 13, y: 11, tipo: agua}
+
+      - {x: 4, y: 10, tipo: tierra}
+      - {x: 4, y: 11, tipo: tierra}
+      - {x: 4, y: 12, tipo: agua}
+
+      - {x: 4, y: 5, tipo: arbol}
+      - {x: 4, y: 6, tipo: arbol}
       - {x: 5, y: 5, tipo: arbol}
-      - {x: 6, y: 5, tipo: arbol}
-      - {x: 7, y: 5, tipo: arbol}
-      - {x: 5, y: 6, tipo: arbol}
-      - {x: 6, y: 6, tipo: arbol}
-      - {x: 7, y: 6, tipo: arbol}
-      - {x: 1, y: 0, tipo: arbol}
-      - {x: 1, y: 1, tipo: arbol}
+      - {x: 4, y: 12, tipo: arbol}
+
+      - {x: 3, y: 0, tipo: barraca}
+      - {x: 9, y: 0, tipo: centro_civico}
+#      - {x: 15, y: 0, tipo: arbol}
+      - {x: 6, y: 7, tipo: cuartel}
+
       - {x: 10, y: 14, tipo: animal}
-      - {x: 11, y: 14, tipo: animal}
-      - {x: 12, y: 14, tipo: animal}
+
+      - {x: 10, y: 12, tipo: mina_piedra}
+      - {x: 8, y: 10, tipo: mina_oro}
+

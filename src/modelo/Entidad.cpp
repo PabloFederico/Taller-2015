@@ -256,9 +256,9 @@ void Entidad::interactuarCon(Entidad* receptor) {
 
 		// Cambios de estado		//No muy lindo pero tampoco tan feo
 		if (this->esUnidad() && distEuclid(this->getPosicion(),receptor->getPosicion()) <= 1) {
-			if (receptor->esConstruccion() && this->esConstructor() && receptor->perteneceAJugador(this->idJug)) {
+			if (receptor->esConstruccion() && this->esConstructor() && receptor->perteneceAJugador(this->getIDJug())) {
 				cambioEstado(CONSTRUYENDO);
-			} else if (receptor->esAtacable() && !receptor->perteneceAJugador(this->idJug)) {
+			} else if (receptor->esAtacable() && !receptor->perteneceAJugador(this->getIDJug())) {
 				cambioEstado(ATACANDO);
 			} else if (receptor->esRecurso() && this->esRecolector()) {
 				cambioEstado(RECOLECTANDO);
@@ -288,7 +288,7 @@ void Entidad::sufrirGolpe(int fuerzaGolpe) {
 			estado = MURIENDO;
 			throw EntidadMurio();
 		}
-		else std::cout << "Esto sí es posible, de alguna forma"<<std::endl;//
+		else std::cout << "Es posible atacar un recurso, corregime"<<std::endl;//
 	}
 }
 
@@ -312,7 +312,12 @@ int Entidad::sufrirRecoleccion(int cant = 5) {
 
 std::string Entidad::getInfo(){
 	ostringstream enc;
-	enc << info<<"; vida: "<<vidaRestante;	//Elegir un formato TODO
+	if (idJug != 0)
+		enc << info<<" (Jugador "<<idJug<<")"<<"; vida: "<<vidaRestante;
+	else if (vidaRestante > 1)
+		enc << info<<"; vida: "<<vidaRestante;
+	else
+		enc << info;
 	return enc.str();
 }
 
@@ -330,13 +335,13 @@ std::string Entidad::getIDJugYVidaString() {
 
 // Para comunicación de redes
 // Encodeado: "idJug,tipo,coord.enc(),dni"
-std::string Entidad::enc(){
+std::string Entidad::enc() {
 	ostringstream enc;
 	enc << idJug<<","<<tipo<<","<<c.enc()<<","<<dni;
 	return enc.str();
 }
 
-Entidad Entidad::dec(std::string s){
+Entidad Entidad::dec(std::string s) {
 	char cs[12];
 	int id,ti,dni;
 	stringstream ss(s);

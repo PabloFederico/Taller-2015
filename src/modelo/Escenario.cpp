@@ -125,7 +125,7 @@ bool Escenario::agregarEntidad(Coordenada pos, Entidad* entidad){
 		// Se guardan en posicionesEntidades todas las entidades agregadas al mapa. No se lo limpia TODO
 		posicionesEntidades->push_back(entidad);
 	} catch ( TileEstaOcupado &e ) {
-		Log::imprimirALog(ERR,"Se intentó agregar una entidad en un tile ocupado");
+		Log::imprimirALog(ERR,"Se intentó agregar una entidad en un tile ocupado "+entidad->enc());
 		return false;
 	}
 	return true;
@@ -133,11 +133,6 @@ bool Escenario::agregarEntidad(Coordenada pos, Entidad* entidad){
 
 /********************************************************************************/
 void Escenario::quitarEntidad(Entidad* entidad) {
-	// La quita del vector posicionesEntidades.
-	std::vector<Entidad*>::iterator it = std::find(this->posicionesEntidades->begin(), this->posicionesEntidades->end(), entidad);
-	if (it != this->posicionesEntidades->end()) {
-		this->posicionesEntidades->erase(it);
-	}
 	// La quita de los Tile que ocupaba.
 	Coordenada pos = entidad->getPosicion();
 	pair<int,int> dim = entidad->getTam();
@@ -148,6 +143,11 @@ void Escenario::quitarEntidad(Entidad* entidad) {
 				tile->eliminarEntidad(entidad);
 			} catch ( NoSeRecibio &e ) {}
 		}
+	}
+	// La quita del vector posicionesEntidades.
+	std::vector<Entidad*>::iterator it = std::find(this->posicionesEntidades->begin(), this->posicionesEntidades->end(), entidad);
+	if (it != this->posicionesEntidades->end()) {
+		this->posicionesEntidades->erase(it);
 	}
 }
 
@@ -246,6 +246,7 @@ pair<Coordenada,Coordenada> Escenario::getCoordenadasRecuadro(){
 
 /********************************************************************************/
 bool Escenario::lugarHabilitadoParaConstruir(Coordenada c, Entidad* entidad){
+	if (!coordEnEscenario(c)) return false;
 	for (int i = c.x; i < c.x + entidad->getTam().first; i++){
 		for (int j = c.y; j < c.y + entidad->getTam().second; j++){
 			Tile* tile = this->matriz_tiles[i][j];

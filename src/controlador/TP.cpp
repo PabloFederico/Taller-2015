@@ -10,6 +10,7 @@
 #include "../vista/VentanaEspera.h"
 
 int main(int argc, char** argv) {
+	srand((time(0)) * (clock()+321) + 123);
 
 	Server* server = NULL;
 	Client* lan = NULL;
@@ -49,9 +50,10 @@ int main(int argc, char** argv) {
 //		}
 		Controller *controller = new Controller(lan);
 
-		VentanaConexion *ventanaConexion = new VentanaConexion(controller);
-		EstadoFinVentana estado = ventanaConexion->run();
-		delete ventanaConexion;
+		//VentanaConexion *ventanaConexion = new VentanaConexion(controller);
+		//EstadoFinVentana estado = ventanaConexion->run();
+		//delete ventanaConexion;
+		EstadoFinVentana estado = OK;//
 
 		if (estado == OK){
 			//VentanaEspera *ventanaEspera = new VentanaEspera(controller);

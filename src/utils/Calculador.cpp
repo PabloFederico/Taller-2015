@@ -331,7 +331,6 @@ Camino Calculador::obtenerCaminoMin(Escenario *esc, Coordenada coord_orig, Coord
 
 Coordenada Calculador::generarPosRandom(int size_x_final, int size_x_inicial, int size_y_final, int size_y_inicial, int seed = 0){
 	int x_rand, y_rand;
-	srand((time(0)) * SDL_GetTicks() + seed);	// Esto FRUSTRA el randomness, siempre va a dar lo mismo, porque vuelve al número múltiplo de 50...
 	x_rand = (rand() % (size_x_final - size_x_inicial)) + size_x_inicial;
 	y_rand = (rand() % (size_y_final - size_y_inicial)) + size_y_inicial;
 

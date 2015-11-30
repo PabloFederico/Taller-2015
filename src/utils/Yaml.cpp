@@ -134,17 +134,17 @@ ConfiguracionJuego Yaml::cargarConfiguracionJuego(std::string archivoConfig) {
 	} catch( YAML::BadConversion &e )			//Hay forma de hacer un catch múltiple?
 	{
 		//infoEsc = infoEscenarioDefault();
-		Log::imprimirALog(ERR,"Error en el archivo de configuración: se tomarán los valores por defecto.");
+		Log::imprimirALog(ERR,"Error BadConversion en el archivo de configuración: se tomarán los valores por defecto.");
 		return OdioYAML();
 	} catch( YAML::BadSubscript &e )
 	{
 		//infoEsc = infoEscenarioDefault();
-		Log::imprimirALog(ERR,"Error en el archivo de configuración: se tomarán los valores por defecto.");
+		Log::imprimirALog(ERR,"Error BadSubscript en el archivo de configuración: se tomarán los valores por defecto.");
 		return OdioYAML();
 	} catch( YAML::ParserException &e )
 	{
 		//infoEsc = infoEscenarioDefault();
-		Log::imprimirALog(ERR,"Error en el archivo de configuración: se tomarán los valores por defecto.");
+		Log::imprimirALog(ERR,"Error ParserException en el archivo de configuración: se tomarán los valores por defecto.");
 		return OdioYAML();
 	}
 	if (!infoEsc) {		// Si no se cargó un escenario válido, se revierte al default.
@@ -180,10 +180,10 @@ ConfiguracionJuego Yaml::OdioYAML() {
 		tipos["mina_piedra"] = MINA_PIEDRA;
 
 	configDefault.nombreJugador = "Village Slayer";
-	configDefault.direccion_ip = "10.0.0.1";
+	configDefault.direccion_ip = "127.0.0.1";
 	configDefault.ancho_pantalla = 800;
 	configDefault.alto_pantalla = 640;
-	configDefault.margen_scroll = 20;
+	configDefault.margen_scroll = 15;
 	configDefault.vel_personaje = 50;
 	configDefault.rango_vision = 5;
 
@@ -253,7 +253,6 @@ ConfiguracionJuego Yaml::OdioYAML() {
 	infoCuartel.descripcion = "Cuartel";
 	infoCuartel.ancho = 4;
 	infoCuartel.alto = 4;
-
 
 	InfoEntidad infoCentroCivico;
 	infoCentroCivico.tipo = tipos["centro_civico"];

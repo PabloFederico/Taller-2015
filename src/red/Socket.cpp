@@ -11,7 +11,7 @@ Socket::Socket() {
 	descriptor = socket(AF_INET,SOCK_STREAM,0);
 }
 
-Socket::Socket(std::string string_IP){	// MC: Adivino que acá se olvidaron de reemplazar AF_INET?
+Socket::Socket(std::string string_IP){
 	descriptor = socket(AF_INET,SOCK_STREAM,0);
 }
 

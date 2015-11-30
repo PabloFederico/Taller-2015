@@ -16,10 +16,6 @@ using namespace std;
 
 Unidad::Unidad(TipoEntidad tipo, int id_jug, int dni): Entidad(tipo,id_jug) {
 	this->dni = dni;
-	//petrificado = false;
-	ostringstream ssInfo;
-	ssInfo << info<<" (Jugador "<<id_jug<<")";
-	info = ssInfo.str();
 
 	this->rangoAccion = 1; // tiles de alcance, hardcodeado
 	if (tipo == ARQUERO)
@@ -67,7 +63,7 @@ void Unidad::interactuar() {
 
 		this->reloj = clock();
 		try {
-			if (receptor->esConstruccion() && this->esConstructor() && receptor->perteneceAJugador(this->idJug)) {
+			if (receptor->esConstruccion() && this->esConstructor() && receptor->perteneceAJugador(this->getIDJug())) {
 				cambioEstado(CONSTRUYENDO);
 				this->continuarConstruccion();	// throws ConstruccionTermino
 			} else if (receptor->esAtacable() && !receptor->perteneceAJugador(this->idJug)) {

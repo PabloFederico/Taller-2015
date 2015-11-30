@@ -139,8 +139,8 @@ void Juego::generarNuevasUnidadesYEdificiosIniciales() {
 
 	Coordenada c_uni, c_cc;
 	int m = 10; // margen de distancia al CC
-	int size_x = configGame.escenarios[0].size_x;
-	int size_y = configGame.escenarios[0].size_y;
+	int size_x = configGame.escenarios[0].size_x - 1;
+	int size_y = configGame.escenarios[0].size_y - 1;
 
 	///
 //	do { c_uni = Calculador::generarPosRandom(size_x, 0, size_y, 0, 99);//
@@ -178,11 +178,15 @@ void Juego::envioInicialDeEntidadesPropias() {
 	if (!esCliente()) return;
 
 	vector<Edificio*> v_edif = this->jugador->getEdificios();
-	for (vector<Edificio*>::iterator it1 = v_edif.begin(); it1 < v_edif.end(); ++it1)
+	for (vector<Edificio*>::iterator it1 = v_edif.begin(); it1 < v_edif.end(); ++it1) {
 		Proxy::enviar(this->connection, **it1);
+		std::cout << "Enviando entidad: "<<(*it1)->getInfo()<<std::endl;//
+	}
 	vector<Unidad*> v_unid = this->jugador->getUnidades();
-	for (vector<Unidad*>::iterator it2 = v_unid.begin(); it2 < v_unid.end(); ++it2)
+	for (vector<Unidad*>::iterator it2 = v_unid.begin(); it2 < v_unid.end(); ++it2) {
 		Proxy::enviar(this->connection, **it2);
+		std::cout << "Enviando entidad: "<<(*it2)->getInfo()<<std::endl;//
+	}
 }
 
 
@@ -325,6 +329,8 @@ bool Juego::esCliente() {
 
 /***************************************************/
 Connection* const Juego::getConnection() {
+	if (!this->connection)
+		throw Disconnected();
 	return this->connection;
 }
 
@@ -337,6 +343,7 @@ void Juego::setConnection(Connection* conn) {
 void Juego::olvidarConnection() {
 	std::cout << "~~~DESCONECTADO~~~"<<std::endl;//
 	this->connection->finalizar();	// todo: imprimir que se perdió la conexión y cerrar
+	this->connection = NULL;
 }
 
 /***************************************************/
@@ -353,8 +360,7 @@ void Juego::cargarEnemigo(Entidad* enemigo) {
 		unidadesEnemigos->push_back((Unidad*)enemigo);
 	else if (enemigo->esEdificio())
 		edificiosEnemigos->push_back((Edificio*)enemigo);
-	else std::cout << "no ";//
-	std::cout << "agregado enemigo a un vector"<<std::endl;//
+	else std::cout << "entidad enemiga ni edificio ni unidad no agregada";//
 }
 
 /***************************************************/
@@ -373,7 +379,6 @@ Unidad* Juego::crearNuevaUnidad(TipoEntidad tipoUnid, Coordenada coord, int id_j
 	unidad->setPosicion(coord);
 
 	if (!this->escenario->agregarEntidad(coord, unidad)) {
-		std::cout << "No se pudo agregar "<<unidad->enc()<<std::endl;//
 		delete unidad;
 		return NULL;
 	}
@@ -402,7 +407,6 @@ Construccion* Juego::comenzarNuevaConstruccion(TipoEntidad tipoEdif, Coordenada 
 	construccion->setPosicion(coord);
 
 	if (!this->escenario->agregarEntidad(coord, construccion)) {
-		std::cout << "No se pudo agregar "<<construccion->enc()<<std::endl;//
 		delete construccion;
 		return NULL;
 	}
@@ -432,7 +436,6 @@ Edificio* Juego::crearNuevoEdificio(TipoEntidad tipoEdif, Coordenada coord, int 
 	edificio->setPosicion(coord);
 
 	if (!this->escenario->agregarEntidad(coord, edificio)) {
-		std::cout << "No se pudo agregar "<<edificio->enc()<<std::endl;//
 		delete edificio;
 		return NULL;
 	}
@@ -490,10 +493,9 @@ Edificio* Juego::terminarConstruccion(ConstruccionTermino c) {
 	if (!construc) return NULL;
 
 	construc->morir();
-	std::cout << construc->enc()<<" construccion terminada"<<std::endl;//
+	std::cout << construc->enc()<<" construcción terminada"<<std::endl;//
 	this->escenario->quitarEntidad(construc);
 	this->contenedor->borrarSpriteDeEntidad(construc);
-	delete construc;
 
 	Edificio *nuevoEdificio = new Edificio(c.tipoEdif, c.idJug, c.dni);
 	nuevoEdificio->set_identificador(c.dni);
@@ -507,10 +509,12 @@ Edificio* Juego::terminarConstruccion(ConstruccionTermino c) {
 		for (vector<Edificio*>::iterator it = this->edificiosEnemigos->begin(); it < this->edificiosEnemigos->end(); ++it)
 			if ((*it)->get_identificador() == c.dni && (*it)->perteneceAJugador(c.idJug)) {
 				this->edificiosEnemigos->erase(it);
+				std::cout << "construcción a eliminar encontrada!"<<std::endl;//
 				break;
 			}
 		this->edificiosEnemigos->push_back(nuevoEdificio);
 	}
+	delete construc;
 	return nuevoEdificio;
 }
 
@@ -747,17 +751,80 @@ void Juego::reemplazarEntidadPorRecurso(Entidad* entidad){
 /***************************************************/
 void Juego::apagarEnemigo(int id_jugador) {
 	for (vector<Unidad*>::iterator it = this->unidadesEnemigos->begin(); it < this->unidadesEnemigos->end(); ++it)
-		if ((*it)->perteneceAJugador(id_jugador))
-			(*it)->sufrirGolpe( (*it)->getVidaRestante() );
-	// DE PRUEBA, LO SIGUIENTE NO CONDICE CON EL ENUNCIADO
-	for (vector<Edificio*>::iterator it2 = this->edificiosEnemigos->begin(); it2 < this->edificiosEnemigos->end(); ++it2)//
-		if ((*it2)->perteneceAJugador(id_jugador))//
-			(*it2)->sufrirGolpe( (*it2)->getVidaRestante() );//
+		if ((*it)->perteneceAJugador(id_jugador)) {
+			try {
+				(*it)->sufrirGolpe( (*it)->getVidaRestante() );
+			} catch ( EntidadMurio &e ) {
+				ejecutoresOlvidarInteraccionCon(*it);
+			}
+		}
 }
 
 /***************************************************/
+// Solo unidades, parece ser lo que dice el enunciado.
+// TODO: probar para dos id != al propio
+void Juego::conversionDeEnemigo(int id_conversor, int id_convertido) {
+	if (id_convertido == this->getIDJugador()) {
+		//olvidarConnection();//qué hacer?
+		return;
+	}
+	vector<Unidad*> unidadesConvertidas;
+	int max_dni = 0;
+	if (id_conversor == this->getIDJugador())
+		max_dni = floor(jugador->getUltimoDNIdeUnidadAsignado() / 300.0) + 300;
+	// Recolecta las unidades a convertir. En caso de conversión propia, la carga inmediatamente.
+	for (vector<Unidad*>::iterator it = this->unidadesEnemigos->begin(); it < this->unidadesEnemigos->end(); ) {
+		Unidad* uni = *it;
+		if (uni->perteneceAJugador(id_conversor)) {
+			max_dni = (max_dni > uni->get_identificador()) ? max_dni : uni->get_identificador();
+		}
+		else if (uni->perteneceAJugador(id_convertido)) {
+			if (id_conversor == this->getIDJugador()) {
+				uni->set_identificador(++max_dni);
+				this->jugador->agregarNuevaUnidad(*it);
+			} else {
+				unidadesConvertidas.push_back(uni);
+			}
+			this->unidadesEnemigos->erase(it);
+			continue;
+		}
+		++it;
+	}
+	// Caso contrario, se consiguió el mayor dni de las unidades del jugador convertido y se obtiene un dni seguro desde el cual subir.
+	max_dni = floor(max_dni / 300.0) + 300;
+	for (vector<Unidad*>::iterator it = unidadesConvertidas.begin(); it < unidadesConvertidas.end(); ++it) {
+		Unidad* uni = *it;
+		uni->olvidarInteraccion();
+		uni->set_id_jugador(id_conversor);
+		uni->set_identificador(++max_dni);
+		cargarEnemigo(uni);
+	}
+	unidadesConvertidas.clear();
+}
+// Explicación de DNI: en caso de que la última unidad haya sido asesinada, distintos jugadores asignarían
+// distintos dni a las nuevas unidades convertidas. Ergo, se saltea a un número mayor para casi garantizar compatibilidad.
+
+/***************************************************/
+
+void Juego::anunciarGanador(int id_ganador) {
+	if (id_ganador == this->idJug) {
+		std::cout << "HAS GANADO, SOS UN CAMPEÓN"<<std::endl;
+		// ?
+	} else if (id_ganador == 0) {
+		std::cout << "Sos tan malo que perdiste contra vos misma."<<std::endl;//
+		// ??
+	} else {
+		std::cout << "LOSER"<<std::endl;
+		// ???
+	}
+	sleep(5);//
+	olvidarConnection();//Esto en sí debería terminar el Juego.
+	// terminar juego
+}
+
+/***************************************************/
+
 Juego::~Juego() {
-	olvidarConnection();
 	this->unidadesEnemigos->clear(); // se deberían borrar! no?
 	this->edificiosEnemigos->clear();
 	delete this->escenario;

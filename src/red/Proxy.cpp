@@ -26,20 +26,20 @@ TipoMensajeRed Proxy::actualizarMultiplayer(Juego* juego) {
 				break;
 			case MOVIMIENTO: procesarCamino(juego, unContenido);
 				break;
+			case RECURSO: procesarRecurso(juego, unContenido);
+				break;
 			//case PASO_COMPLETO:
 			//	break;
 			//case ESCENARIO: procesarEscenario(juego, unContenido);
 			//	break;
 			//case COMIENZO: //procesarNombre(juego, unContenido);
 			//	break;
-			//case RECURSO: procesarRecurso(juego, unContenido);
-			//	break;
 			//case GLOTON: procesarRecursoComido(juego, unContenido);
 			//	break;
 			//case PING: //juego->getConnection()->revisarPing();
 			//	break;
-			//case FIN:
-			//	break;
+			case FIN: procesarFin(juego, unContenido);
+				break;
 			default : continue;
 			}
 		//}
@@ -90,8 +90,8 @@ void Proxy::procesarToggle(Juego* juego, string encodeado) {
 	string aux; ostringstream parroquial;
 	int id_jug = Red::extraerNumeroYResto(encodeado, &aux);
 	juego->apagarEnemigo(id_jug);
-	parroquial << id_jug<<":"<<"GRACIAS PA. CHAU CHAU ADIOS // SE HA DESCONECTADO"<<'\0';
-	procesarMensaje(parroquial.str());
+	parroquial << id_jug<<":"<<"se ha desconectado.";
+	Proxy::procesarMensaje(parroquial.str());
 }
 
 void Proxy::procesarNuevaEntidad(Juego* juego, string encodeado) {
@@ -152,6 +152,33 @@ void Proxy::procesarCamino(Juego* juego, string encodeado) {
 	sprite->setearNuevoCamino(Camino::dec(camEnc), juego->getCoordCeros());
 }
 
+void Proxy::procesarRecurso(Juego* juego, string encodeado) {
+	string idYpos, posEnc;
+	int nTipo = Red::extraerNumeroYResto(encodeado, &idYpos);
+	int idRec = Red::extraerNumeroYResto(idYpos, &posEnc);
+	juego->agregarRecurso(TipoEntidad(nTipo), Coordenada::dec(posEnc), idRec);
+}
+
+void Proxy::procesarConversion(Juego* juego, string encodeado) {
+	int id_conversor, id_convertido;
+	stringstream ss(encodeado);
+	ss >> id_conversor; ss.ignore(); // ','
+	ss >> id_convertido;
+	if (id_conversor == id_convertido || id_conversor < 0 || id_convertido < 0)
+		return;
+	if (id_convertido == juego->getIDJugador()) {
+		juego->olvidarConnection();//qué hacer?
+	} else
+		juego->conversionDeEnemigo(id_conversor, id_convertido);
+}
+
+void Proxy::procesarFin(Juego* juego, string sGanador) {
+	string aux;
+	int id_ganador = Red::extraerNumeroYResto(sGanador, &aux);
+	juego->anunciarGanador(id_ganador);
+}
+
+
 //void Proxy::procesarEscenario(Juego* juego, string encodeado) {
 //	// todo
 //}
@@ -160,12 +187,6 @@ void Proxy::procesarCamino(Juego* juego, string encodeado) {
 //	string nombre;
 //	if (Red::extraerNumeroYResto(encodeado, &nombre) == juego->getIDJugador())
 //		juego->setNombreJugador(nombre);
-//}
-
-//void Proxy::procesarRecurso(Juego* juego, string encodeado) {
-	//string posEnc;
-	//int nTipo = Red::extraerNumeroYResto(encodeado, &posEnc);
-	//juego->agregarRecurso(TipoEntidad(nTipo), Coordenada::dec(posEnc));
 //}
 
 //void Proxy::procesarRecursoComido(Juego* juego, string posEnc) {
@@ -217,6 +238,13 @@ void Proxy::enviar(Connection* lan, Entidad ent, Camino cam) {
 	ostringstream camino_enc;
 	camino_enc << ent.getTipo()<<","<<ent.getIDJug()<<","<<ent.get_identificador()<<";"<<cam.enc();
 	string t = Red::agregarPrefijoYFinal("MOV", camino_enc.str());
+	lan->enviar(t);
+}
+
+void Proxy::enviarConversion(Connection* lan, int id_jug_conversor, int id_jug_convertido) {
+	ostringstream conversion_enc;
+	conversion_enc << id_jug_conversor<<","<<id_jug_convertido;
+	string t = Red::agregarPrefijoYFinal("CON", conversion_enc.str());
 	lan->enviar(t);
 }
 
