@@ -254,8 +254,14 @@ void Sprite::setearNuevoCamino(Camino nuevoCamino, Coordenada coord_ceros){
 		c_prox_punto.x -= this->getPosicion().w / 2;
 		c_prox_punto.y -= this->getPosicion().h;
 
-		Direccion direccion = Calculador::calcularDireccion(c_prox_punto, coordPixelSprite());
-		this->setDireccion(direccion);
+		Coordenada c_tile_actual = Calculador::tileParaPixel(coordPixelSprite(),coord_ceros);
+		Coordenada c_tile_prox = Calculador::tileParaPixel(c_prox_punto,coord_ceros);
+		if (c_tile_actual != c_tile_prox){
+			Direccion direccion = Calculador::calcularDireccionEntrePuntosAdyascentes(c_tile_actual,c_tile_prox);
+			this->setDireccion(direccion);
+		}
+		//Direccion direccion = Calculador::calcularDireccion(c_prox_punto, coordPixelSprite());
+		//this->setDireccion(direccion);
 		this->activarMovimiento(true);
 
 		this->caminoARecorrer = nuevoCamino.v;
@@ -348,8 +354,14 @@ void Sprite::update(int vel_personaje, Mix_Chunk* sonido_caminar) {
 						Coordenada c_prox_punto = this->getCaminoARecorrer()[0];
 						c_prox_punto.x -= this->getPosicion().w / 2;
 						c_prox_punto.y -= this->getPosicion().h / 2;
-						Direccion direccion = Calculador::calcularDireccion(c_prox_punto, coordPixelSprite());
-						this->setDireccion(direccion);
+						Coordenada c_tile_actual = Calculador::tileParaPixel(coordPixelSprite(),coord_ceros);
+						Coordenada c_tile_prox = Calculador::tileParaPixel(c_prox_punto,coord_ceros);
+						if (c_tile_actual != c_tile_prox){
+							Direccion direccion = Calculador::calcularDireccionEntrePuntosAdyascentes(c_tile_actual,c_tile_prox);
+							this->setDireccion(direccion);
+						}
+						//Direccion direccion = Calculador::calcularDireccion(c_prox_punto, coordPixelSprite());
+						//this->setDireccion(direccion);
 					}
 				} catch ( FueraDeEscenario &e ) { setearNuevoCamino(Camino(), coord_ceros); }
 			} else // Se acaba de terminar el camino, que es de un solo paso.

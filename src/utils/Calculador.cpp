@@ -83,6 +83,21 @@ Direccion Calculador::calcularDireccion(Coordenada coord_pixel_dest, Coordenada 
 	return direccion;
 }
 
+Direccion Calculador::calcularDireccionEntrePuntosAdyascentes(Coordenada c_origen, Coordenada c_final){
+	Direccion direccion = ESTE;
+	int result_x = c_final.x - c_origen.x;
+	int result_y = c_final.y - c_origen.y;
+	if (result_x < 0 && result_y < 0) direccion = NORTE;
+	if (result_x < 0 && result_y == 0) direccion = NOROESTE;
+	if (result_x < 0 && result_y > 0) direccion = OESTE;
+	if (result_x == 0 && result_y > 0) direccion = SUROESTE;
+	if (result_x > 0 && result_y > 0) direccion = SUR;
+	if (result_x > 0 && result_y == 0) direccion = SURESTE;
+	if (result_x > 0 && result_y < 0) direccion = ESTE;
+	if (result_x == 0 && result_y < 0) direccion = NORESTE;
+	return direccion;
+}
+
 bool Calculador::puntoContenidoEnEscenario(Coordenada coord_tile, Escenario *escenario){
 	int size_x = escenario->getDimension().first;
 	int size_y = escenario->getDimension().second;
