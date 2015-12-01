@@ -69,7 +69,7 @@ bool ControladorMouse::procesarClickEnVentana(Mouse* mouse, Tile** tile_clic, Co
 		return false;
 	}
 
-	if (clicEnMapa){
+	if (clicEnMapa){	//chequeo completamente inútil
 		// Si tiene un edificio para construír, lo agrega al escenario, generando su sprite correspondiente
 		if (mouse->getEstado() == CLICK_IZQUIERDO && mouse->estaMoviendoImagen()){
 			try {
@@ -241,7 +241,7 @@ void ControladorMouse::procesarClickIzquierdo(Mouse* mouse){
 					std::cout << "se eligió un edificio para contruír : "<<edificioAConstruir<<"\n";
 					// TODO debería crearse una entidad tipo CONSTRUCCIÓN y cuando finalice convertirlo a edificio
 					if (escenario->getEntidadTemporal() != NULL) delete escenario->getEntidadTemporal();
-					Entidad* entidadConstruccion = new Construccion(edificioAConstruir,juego->getIDJugador());
+					Entidad* entidadConstruccion = new Construccion(edificioAConstruir,juego->getIDJugador());	// Llamar a juego->comenzarNuevaConstruccion() ???
 					entidadConstruccion->setPosicion(Coordenada(0,0));
 					entidadConstruccion->setTam(4,4); //hardcodeo prueba
 					juego->getEscenario()->iniciarEntidadTemporal(entidadConstruccion);
@@ -251,7 +251,8 @@ void ControladorMouse::procesarClickIzquierdo(Mouse* mouse){
 				// Es un edificio
 				TipoEntidad unidadACrear = iconoSeleccionado(mouse,juego);
 				if (unidadACrear != DEFAULT){
-					juego->crearNuevaUnidadApartirDeEdificioSeleccionado(unidadACrear);
+					if (!juego->crearNuevaUnidadApartirDeEdificioSeleccionado(unidadACrear))
+						std::cout << "No se poseen recursos suficientes para crear la unidad."<<std::endl;
 				}
 
 			}
@@ -275,7 +276,7 @@ void ControladorMouse::procesarClickDerecho(Mouse* mouse){
 		for (int i = 0; i < cant_unid_seleccionadas; i++){
 
 			// Moverse a una posición vacía
-			Sprite* spriteUnidad = juego->getSpritesEntidades()->find(unidades[i])->second;
+			Sprite* spriteUnidad = juego->getSpriteDeEntidad(unidades[i]); //juego->getSpritesEntidades()->find(unidades[i])->second;
 			Coordenada coord_pixel_sprite = spriteUnidad->getPosPies();
 			try {
 				Camino camino = Calculador::obtenerCaminoMin(escenario, coord_pixel_sprite, mouse->getXY(), coord_pixel_ceros);

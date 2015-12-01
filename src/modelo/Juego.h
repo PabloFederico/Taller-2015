@@ -69,8 +69,8 @@ private:
 	Map<Entidad*,Sprite*> *mapAtaquesLargaDistancia; // Para flechas y ataques de larga distancia
 
 public:
-	Juego(Connection* lan, ConfiguracionJuego* infoJuegoRed);
-	void cargaInicialDeRecursos();
+	Juego(Connection* lan, int modoDeJuego, ConfiguracionJuego* infoJuegoRed);
+//	void cargaInicialDeRecursos();
 	void envioInicialDeEntidadesPropias();
 
 	Map<Entidad*,Sprite*> *getMapObjetosAtacantes();
@@ -134,7 +134,7 @@ public:
 
 	void emitirSonido(Entidad* entidad);
 
-	void crearNuevaUnidadApartirDeEdificioSeleccionado(TipoEntidad tipoEntidadACrear);
+	bool crearNuevaUnidadApartirDeEdificioSeleccionado(TipoEntidad tipoEntidadACrear);
 
 	void apagarEnemigo(int id_jug);
 	void conversionDeEnemigo(int id_conversor, int id_convertido);

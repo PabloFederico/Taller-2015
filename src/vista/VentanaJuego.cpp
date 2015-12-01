@@ -49,7 +49,6 @@ void VentanaJuego::cargarJuego(Juego *juego){
 		 * se cargan en el contenedor */
 
 		this->cargarImagenesYSprites(juego);
-		//juego->cargaInicialDeRecursos();//
 
 		controlador->posicionarCamaraEnProtagonista();
 
@@ -115,28 +114,8 @@ EstadoFinVentana VentanaJuego::run(){
 
 		sleep(1);//
 
-		//this->controlador->getJuego()->cargaInicialDeRecursos();//
-
-		///cdp
-		//this->controlador->getJuego()->comenzarNuevaConstruccion(CENTRO_CIVICO, Coordenada(4,15), 1);//
-		//this->controlador->getJuego()->comenzarNuevaConstruccion(CUARTEL, Coordenada(10,22), 1);//
-		//this->controlador->getJuego()->comenzarNuevaConstruccion(CENTRO_CIVICO, Coordenada(15,22), 1);//
-
-		/* Las siguientes entidades son de prueba */
-		//this->controlador->getJuego()->crearNuevaUnidad(SOLDADO, Coordenada( 0, 5), 1);//
-		//this->controlador->getJuego()->crearNuevaUnidad(ALDEANO, Coordenada(20,16), 1);//
-		//this->controlador->getJuego()->crearNuevaUnidad(ARQUERO, Coordenada(12,14), 1);//
-		//this->controlador->getJuego()->crearNuevaUnidad(ARQUERO, Coordenada( 1, 8), 1);//
-		//this->controlador->getJuego()->crearNuevaUnidad(ALDEANO, Coordenada(14,14), 2);//
-		//this->controlador->getJuego()->crearNuevaUnidad(ARQUERO, Coordenada(10,16), 2);//
-		//this->controlador->getJuego()->crearNuevaUnidad(ARQUERO, Coordenada(12,16), 2);//
-		//this->controlador->getJuego()->crearNuevaUnidad(SOLDADO, Coordenada(14,16), 2);//
-		//this->controlador->getJuego()->crearNuevaUnidad(ARQUERO, Coordenada(10,16), 2);//
-		//this->controlador->getJuego()->crearNuevaUnidad(ARQUERO, Coordenada(12,16), 2);//
-		///
 		clock_t t = clock();
 		bool enviado = false;
-		//bool bulean2 = false;//
 
 		while ( run ) {
 
@@ -163,14 +142,10 @@ EstadoFinVentana VentanaJuego::run(){
 	            }
 
 	    		// horrible, pero parecerííía servir para que funcione?
-				if (clock()-t > CLOCKS_PER_SEC*2 && !enviado) {
+				if (clock()-t > CLOCKS_PER_SEC*0.2 && !enviado) {
 					this->controlador->getJuego()->envioInicialDeEntidadesPropias();
 					enviado = true;
 				}
-//				if (clock()-t > CLOCKS_PER_SEC*10 && !bulean2) {//
-//					this->controlador->getJuego()->conversionDeEnemigo(1, 2);//
-//					bulean2 = true;//
-//				}//
 
 		} /* Fin del while*/
 

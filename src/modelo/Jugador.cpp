@@ -223,7 +223,9 @@ vector<Entidad*> Jugador::revisarMuertosPropios() {
 }
 
 Jugador::~Jugador() {
+	this->unidades.clear();
+	this->edificios.clear();
 	this->vec_unidades.clear();
-	mapRecursosEconomicos.clear();
+	this->mapRecursosEconomicos.clear();
 }
 

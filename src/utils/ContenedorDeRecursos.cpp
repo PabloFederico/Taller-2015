@@ -43,7 +43,7 @@ void ContenedorDeRecursos::generarYGuardarSpritesEntidades(vector<Entidad*> *pos
 	for (unsigned i = 0; i < posEntidades->size(); i++) {
 		generarYGuardarSpriteEntidad((*posEntidades)[i], coord_ceros, escenario);
 	}
-	std::cout<<mapSpritesEntidades->size()<<" sprites creados"<<std::endl;//
+//	std::cout<<mapSpritesEntidades->size()<<" sprites creados"<<std::endl;//
 }
 
 void ContenedorDeRecursos::generarYGuardarSpriteEntidad(Entidad* entidad, Coordenada coord_ceros, Escenario* escenario) {
@@ -77,6 +77,8 @@ void ContenedorDeRecursos::generarYGuardarSpriteEntidad(Entidad* entidad, Coorde
 						break;
 			/* Modificamos los tamanios de la imagen castillo para que ocupe
 			 * los tiles que le corresponden */
+		case CONSTRUCCION_BARRACK:
+		case CONSTRUCCION_CUARTEL:
 		case CONSTRUCCION:
 						{
 						entidad->setTam(4,4); // hardcodero
@@ -235,7 +237,7 @@ void ContenedorDeRecursos::generarYGuardarSpriteEntidad(Entidad* entidad, Coorde
 	sprite->setDelay(this->mapInfoEntidades[entidad->getTipo()].delay);
 	sprite->setFps(this->mapInfoEntidades[entidad->getTipo()].fps);
 	this->mapSpritesEntidades->insert(entidad,sprite);
-	std::cout<<"entidad : "<<entidad->getInfo()<<"   Posición : "<< entidad->getPosicion().x<<" "<<entidad->getPosicion().y<<std::endl;//
+//	std::cout<<"entidad : "<<entidad->getInfo()<<"   Posición : "<< entidad->getPosicion().x<<" "<<entidad->getPosicion().y<<std::endl;//
 }
 
 Sprite* ContenedorDeRecursos::generarSpriteDeAtaque(Entidad* objetoAtaque, Direccion direccion, Coordenada coord_ceros, Escenario* escenario){

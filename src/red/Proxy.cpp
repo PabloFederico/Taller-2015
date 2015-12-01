@@ -49,16 +49,19 @@ TipoMensajeRed Proxy::actualizarMultiplayer(Juego* juego) {
 
 
 // Esperar indefinidamente hasta que llegue un mensaje de comienzo.
-void Proxy::clienteEsperarComienzo(Connection* lan) {
+int Proxy::clienteEsperarComienzoYModoDeJuego(Connection* lan) {
 	TipoMensajeRed tipo = MENSAJE;
+	string unContenido; int modo = 0;
 	do {
 		try {
-			string unContenido, recibido = lan->recibir();
+			string recibido = lan->recibir();
 			while (Red::parsearSiguienteMensaje(&recibido, &tipo, &unContenido))
 				if (tipo == COMIENZO)
 					break;
 		} catch ( NoSeRecibio &e ) {}
 	} while (tipo != COMIENZO);
+	stringstream ss(unContenido); ss >> modo;
+	return modo;//ModoDeJuego(modo);
 }
 
 // Esperar indefinidamente hasta que llegue un mensaje de escenario.
@@ -135,7 +138,7 @@ void Proxy::procesarCamino(Juego* juego, string encodeado) {
 	ss >> tipo; ss.ignore();	// ','
 	ss >> id_jug; ss.ignore();	// ','
 	ss >> dni; ss.ignore();		// ';'
-	ss.get(camEnc, MAX_BYTES_LECTURA, '\0');//'~');
+	ss.get(camEnc, MAX_BYTES_LECTURA, '\0');
 	if (id_jug == juego->getIDJugador()) return;
 
 	Entidad *walker = juego->getEntidad(TipoEntidad(tipo), id_jug, dni);

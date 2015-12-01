@@ -55,10 +55,9 @@ void Unidad::interactuar() {
 	infoAtaque = ATAQUE_NO_EMITIDO;
 	if (receptor == NULL)
 		return;
-	if (coordMasProximaDelReceptor == NULL) {
-		setCoordMasProximaDelReceptor();
+	setCoordMasProximaDelReceptor();
 
-	} else if (estaEnRangoDelReceptor()) {
+	if (estaEnRangoDelReceptor()) {
 		if ((clock() - this->reloj) < CLOCKS_PER_SEC*DELAY_INTERACCION) return;	//No está respetando el tiempo pedido. TODO
 
 		this->reloj = clock();
@@ -88,6 +87,7 @@ void Unidad::interactuar() {
 			throw e;
 		}
 	} else {
+		cambioEstado(QUIETO); //cambioEstado(CAMINANDO);
 		throw UnidadDebeAcercarse(coordMasProximaDelReceptor->x, coordMasProximaDelReceptor->y);
 	}
 }
@@ -103,12 +103,12 @@ void Unidad::olvidarInteraccion() {
 }
 
 int Unidad::generarGolpe() {
-	random_device rd_gen;
+	/*random_device rd_gen;
 	mt19937 gen(rd_gen());
-	uniform_int_distribution<int> distribucion(this->obtenerAtk()/2,this->obtenerAtk());
-	int num_rndm = distribucion(gen);
+	uniform_int_distribution<int> distribucion(this->obtenerAtk()/2,this->obtenerAtk());*/
+	int num_rndm = rand() % (this->obtenerAtk() - (this->obtenerAtk()/2) + 1) + (this->obtenerAtk()/2);
 	int dmg = num_rndm -(receptor->obtenerArmor()*0.25);
-	if (dmg < 0) return 0; //por ahi el ataque es muy poronga con respecto a la armor de un edificio, ponele
+	if (dmg < 0) return 2; //por ahi el ataque es muy poronga con respecto a la armor de un edificio, ponele
 	return dmg;
 }
 
@@ -157,18 +157,6 @@ int Unidad::getRangoAccion() {
 bool Unidad::esUnidad() {
 	return true;
 }
-
-//bool Unidad::estaPetrificado(){
-//	return petrificado;
-//}
-
-//void Unidad::petrificar(){
-//	petrificado = true;
-//}
-
-//void Unidad::despetrificar(){
-//	petrificado = false;
-//}
 
 void Unidad::cambioEstado(EstadoEntidad est) {
 	this->estado = est;

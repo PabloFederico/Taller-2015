@@ -52,7 +52,7 @@ private:
 	Entidad* entidadTemporal;
 
 public:
-	Escenario(InfoEscenario infoEsc, int id_jug);//, EntidadFactory *fabrica, vector<Unidad*>* unidadesMalvadas = NULL, vector<Edificio*>* edificiosMalvados = NULL);
+	Escenario(InfoEscenario infoEsc, int id_jug);
 
 	/* Devuelve las dimensiones del escenario en un par (x,y) */
 	pair<int,int> getDimension();

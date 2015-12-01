@@ -23,6 +23,7 @@ void crearConfigDefault ();
 //inline const std::string NombreDeJug(int id_jug);
 inline const std::string NombreDeJug(int id_jug) {
 	std::map<int,std::string> nombres;
+	nombres[0] = "GAMEMASTER";
 	nombres[1] = "Atila the Hun";
 	nombres[2] = "Ramses II";
 	nombres[3] = "Henry III";
