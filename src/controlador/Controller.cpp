@@ -49,7 +49,7 @@ Connection* Controller::getConnection(){
 }
 
 void Controller::crearJuego(){
-	juego = new Juego(lan,NULL);
+	juego = new Juego(lan,0,NULL);
 	this->controladorMouse = new ControladorMouse(juego);
 	this->controladorCamara = new ControladorCamara(juego);
 	this->controladorJuego = new ControladorJuego(juego);
