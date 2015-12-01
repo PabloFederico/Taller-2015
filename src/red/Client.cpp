@@ -39,6 +39,7 @@ Client::Client() {
 bool Client::iniciar() {
 	string ip, nombreJug;
 	parsearIPyNombreJugador(&ip, &nombreJug);
+	std::cout << ip<<std::endl;//
 
 	std::cout << "======= CLIENTE =======" << std::endl;
 	this->socket = new SocketCliente(ip);

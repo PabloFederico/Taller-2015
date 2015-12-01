@@ -312,6 +312,7 @@ void Server::correr() {
 	if (clientes.cantConectados == 1) {
 		for (j = 0; j < maxfd+1; j++) {
 			if (FD_ISSET(j, &readset)) {
+				sleep(3);	// pausa para disfrutar la victoria, y ver caer a los enemigos restantes.
 				mensaje = Red::agregarPrefijoYFinal("FIN", clientes[j].id);
 				std::cout << "Envío aviso a los ganadores."<<std::endl;
 				send(j, mensaje.c_str(), 10, MSG_NOSIGNAL);

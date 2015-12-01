@@ -92,9 +92,9 @@ void Proxy::procesarMensaje(string encodeado) {
 void Proxy::procesarToggle(Juego* juego, string encodeado) {
 	string aux; ostringstream parroquial;
 	int id_jug = Red::extraerNumeroYResto(encodeado, &aux);
-	juego->apagarEnemigo(id_jug);
 	parroquial << id_jug<<":"<<"se ha desconectado.";
 	Proxy::procesarMensaje(parroquial.str());
+	juego->apagarEnemigo(id_jug);
 }
 
 void Proxy::procesarNuevaEntidad(Juego* juego, string encodeado) {

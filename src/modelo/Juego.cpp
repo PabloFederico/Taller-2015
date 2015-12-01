@@ -774,7 +774,7 @@ void Juego::apagarEnemigo(int id_jugador) {
 // TODO: probar para dos id != al propio
 void Juego::conversionDeEnemigo(int id_conversor, int id_convertido) {
 	if (id_convertido == this->getIDJugador()) {
-		//olvidarConnection();//qué hacer?
+		olvidarConnection();//qué hacer?
 		return;
 	}
 	vector<Unidad*> unidadesConvertidas;
