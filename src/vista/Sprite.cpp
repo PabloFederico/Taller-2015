@@ -295,6 +295,8 @@ bool Sprite::revisarCamino(Coordenada c_punto_actual) {
 		if (!(this->escenario->tileEsOcupable(c_prox_tile))) {
 			Coordenada c_pix_destino = getCaminoARecorrer().back();
 			Coordenada c_tile_destino = Calculador::tileParaCualquierPixel(c_pix_destino, coord_ceros);
+			c_tile_destino.x = Calculador::ChequeoDeBorde(escenario->getDimension().first,  c_tile_destino.x);
+			c_tile_destino.y = Calculador::ChequeoDeBorde(escenario->getDimension().second, c_tile_destino.y);
 			// Si el tile que fue ocupado por otra entidad es el de destino, quedarse donde está.
 			if (c_prox_tile == c_tile_destino) throw TileEstaOcupado();
 			// Caso contrario, con el siguiente tile del camino ahora ocupado, crear nuevo camino para esquivarlo.
