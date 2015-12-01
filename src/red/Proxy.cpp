@@ -49,7 +49,7 @@ TipoMensajeRed Proxy::actualizarMultiplayer(Juego* juego) {
 
 
 // Esperar indefinidamente hasta que llegue un mensaje de comienzo.
-int Proxy::clienteEsperarComienzoYModoDeJuego(Connection* lan) {
+ObjetivoEscenario Proxy::clienteEsperarComienzoYModoDeJuego(Connection* lan) {
 	TipoMensajeRed tipo = MENSAJE;
 	string unContenido; int modo = 0;
 	do {
@@ -61,7 +61,7 @@ int Proxy::clienteEsperarComienzoYModoDeJuego(Connection* lan) {
 		} catch ( NoSeRecibio &e ) {}
 	} while (tipo != COMIENZO);
 	stringstream ss(unContenido); ss >> modo;
-	return modo;//ModoDeJuego(modo);
+	return ObjetivoEscenario(modo);
 }
 
 // Esperar indefinidamente hasta que llegue un mensaje de escenario.

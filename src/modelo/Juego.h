@@ -69,7 +69,7 @@ private:
 	Map<Entidad*,Sprite*> *mapAtaquesLargaDistancia; // Para flechas y ataques de larga distancia
 
 public:
-	Juego(Connection* lan, int modoDeJuego, ConfiguracionJuego* infoJuegoRed);
+	Juego(Connection* lan, ObjetivoEscenario modoDeJuego, ConfiguracionJuego* infoJuegoRed);
 //	void cargaInicialDeRecursos();
 	void envioInicialDeEntidadesPropias();
 

@@ -2,7 +2,7 @@
  * Escenario.cpp
  *
  *  Created on: 2 de sept. de 2015
- *      Author: pgfederi
+ *      Author: cosmefulanito
  */
 #include "../modelo/Escenario.h"
 
