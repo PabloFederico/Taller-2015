@@ -38,7 +38,7 @@ Entidad::Entidad(TipoEntidad tipo, int num_jug, int identificador): idJug(num_ju
 			info = "Agua";
 			break;
 		case SOLDADO:
-			vidaRestante = 10;//100;
+			vidaRestante = 30;
 			movible = true;
 			ocupador = true;
 			info = "Soldado";
@@ -46,7 +46,7 @@ Entidad::Entidad(TipoEntidad tipo, int num_jug, int identificador): idJug(num_ju
 			ataque = 10;
 			break;
 		case ALDEANO:
-			vidaRestante = 25;//50;
+			vidaRestante = 20;
 			movible = true;
 			ocupador = true;
 			info = "Aldeano";
@@ -54,7 +54,7 @@ Entidad::Entidad(TipoEntidad tipo, int num_jug, int identificador): idJug(num_ju
 			ataque = 3;
 			break;
 		case ARQUERO:
-			vidaRestante = 70;
+			vidaRestante = 40;
 			movible = true;
 			ocupador = true;
 			info = "Arquero";
@@ -62,13 +62,13 @@ Entidad::Entidad(TipoEntidad tipo, int num_jug, int identificador): idJug(num_ju
 			ataque = 6;
 			break;
 		case ANIMAL:
-			vidaRestante = 30;
+			vidaRestante = 5;
 			movible = true;
 			ocupador = true;
 			info = "Animal";
 			break;
 		case MINA_ORO:
-			vidaRestante = 20;
+			vidaRestante = 10;
 			movible = false;
 			ocupador = true;
 			info = "Mina de Oro";
@@ -80,31 +80,33 @@ Entidad::Entidad(TipoEntidad tipo, int num_jug, int identificador): idJug(num_ju
 			info = "Mina de Piedra";
 			break;
 		case CASTILLO:
-			vidaRestante = 300;
+			vidaRestante = 100;
 			movible = false;
 			ocupador = true;
 			info = "Castillo";
 			break;
 		case CUARTEL:
-			vidaRestante = 300;
+			vidaRestante = 80;
 			movible = false;
 			ocupador = true;
 			info = "Cuartel";
 			break;
 		case BARRACK:
-			vidaRestante = 300;
+			vidaRestante = 80;
 			movible = false;
 			ocupador = true;
 			info = "Barraca_Arquero";
 			break;
+		case CONSTRUCCION_BARRACK:
+		case CONSTRUCCION_CUARTEL:
 		case CONSTRUCCION:
-			vidaRestante = 100;
+			vidaRestante = 50;
 			movible = false;
 			ocupador = true;
 			info = "Construccion";
 			break;
 		case CENTRO_CIVICO:
-			vidaRestante = 300;
+			vidaRestante = 80;
 			movible = false;
 			ocupador = true;
 			info = "Centro civico";
@@ -112,31 +114,31 @@ Entidad::Entidad(TipoEntidad tipo, int num_jug, int identificador): idJug(num_ju
 			alto = 4;
 			break;
 		case ARBOL:
-			vidaRestante = 10;
+			vidaRestante = 5;
 			movible = false;
 			ocupador = true;
 			info = "Arbol";
 			break;
 		case MADERA:
-			vidaRestante = 150;
+			vidaRestante = 30;
 			movible = false;
 			ocupador = true;
 			info = "Madera";
 			break;
 		case COMIDA:
-			vidaRestante = 15;//150;
+			vidaRestante = 30;
 			movible = false;
 			ocupador = true;
 			info = "Comida";
 			break;
 		case PIEDRA:
-			vidaRestante = 150;
+			vidaRestante = 30;
 			movible = false;
 			ocupador = true;
 			info = "Piedra";
 			break;
 		case ORO:
-			vidaRestante = 150;
+			vidaRestante = 30;
 			movible = false;
 			ocupador = true;
 			info = "Oro";
@@ -190,7 +192,9 @@ bool Entidad::esRecurso(){
 	return EsRecurso(this->tipo);
 }
 bool Entidad::esConstruccion() {
-	return (tipo == CONSTRUCCION);
+	return (tipo == CONSTRUCCION
+		 || tipo == CONSTRUCCION_BARRACK
+		 || tipo == CONSTRUCCION_CUARTEL);
 }
 
 bool Entidad::esRecolector() {

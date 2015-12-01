@@ -77,6 +77,8 @@ void ContenedorDeRecursos::generarYGuardarSpriteEntidad(Entidad* entidad, Coorde
 						break;
 			/* Modificamos los tamanios de la imagen castillo para que ocupe
 			 * los tiles que le corresponden */
+		case CONSTRUCCION_BARRACK:
+		case CONSTRUCCION_CUARTEL:
 		case CONSTRUCCION:
 						{
 						entidad->setTam(4,4); // hardcodero

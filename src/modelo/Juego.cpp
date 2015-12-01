@@ -79,7 +79,7 @@ void Juego::cargarJuego(ConfiguracionJuego* infoJuegoRed = NULL) {
 	}
 
 	this->jugador = new Jugador(configGame.nombreJugador,idJug);
-	this->fabricaDeEntidades = new EntidadFactory(this->idJug, configGame.entidades);
+	this->fabricaDeEntidades = new EntidadFactory(configGame.entidades);
 	this->escenario = new Escenario(configGame.escenarios[0], this->idJug);
 	cargaInicialDeEntidades();
 
@@ -101,6 +101,8 @@ void Juego::cargaInicialDeEntidades() {
 		Entidad *aux;
 		if (EsUnidad(tipo))
 			aux = crearNuevaUnidad(tipo, pos);
+		else if (EsConstruccion(tipo))
+			aux = comenzarNuevaConstruccion(tipo, pos);
 		else if (EsEdificio(tipo))
 			aux = crearNuevoEdificio(tipo, pos);
 		else if (EsRecurso(tipo))
@@ -373,7 +375,8 @@ Unidad* Juego::crearNuevaUnidad(TipoEntidad tipoUnid, Coordenada coord, int id_j
 		return NULL;
 	}
 
-	Unidad *unidad = new Unidad(tipoUnid, id_jug, id_unidad);	// Factory todo?
+	Unidad *unidad = (Unidad*)this->fabricaDeEntidades->nuevaEntidad(tipoUnid, id_jug, id_unidad);
+	//Unidad *unidad = new Unidad(tipoUnid, id_jug, id_unidad);
 	unidad->setPosicion(coord);
 
 	if (!this->escenario->agregarEntidad(coord, unidad)) {
@@ -393,15 +396,18 @@ Unidad* Juego::crearNuevaUnidad(TipoEntidad tipoUnid, Coordenada coord, int id_j
 }
 
 /***************************************************/
-Construccion* Juego::comenzarNuevaConstruccion(TipoEntidad tipoEdif, Coordenada coord, int id_jug, int id_edificio) {
+Construccion* Juego::comenzarNuevaConstruccion(TipoEntidad tipoConstr, Coordenada coord, int id_jug, int id_edificio) {
 	if (id_jug == -1)
 		id_jug = this->idJug;
 	if (!this->escenario->coordEnEscenario(coord)) {
 		Log::imprimirALog(ERR, "Se intentó construir fuera del escenario ("+coord.enc()+")");
 		return NULL;
 	}
+	if (!EsConstruccion(tipoConstr))
+		tipoConstr = TipoConstruccion(tipoConstr);
 
-	Construccion *construccion = new Construccion(tipoEdif, id_jug, id_edificio);	// Factory todo?
+	Construccion *construccion = (Construccion*)fabricaDeEntidades->nuevaEntidad(tipoConstr, id_jug, id_edificio);
+	//Construccion *construccion = new Construccion(tipoEdif, id_jug, id_edificio);
 	construccion->setPosicion(coord);
 	construccion->setTam(4,4); // puro hardcodeo y rocknroll
 
@@ -431,7 +437,8 @@ Edificio* Juego::crearNuevoEdificio(TipoEntidad tipoEdif, Coordenada coord, int 
 		return NULL;
 	}
 
-	Edificio *edificio = new Edificio(tipoEdif, id_jug, id_edificio);	// Factory todo?
+	Edificio *edificio = (Edificio*)fabricaDeEntidades->nuevaEntidad(tipoEdif, id_jug, id_edificio);
+	//Edificio *edificio = new Edificio(tipoEdif, id_jug, id_edificio);
 	edificio->setPosicion(coord);
 
 	if (!this->escenario->agregarEntidad(coord, edificio)) {
@@ -453,8 +460,8 @@ Edificio* Juego::crearNuevoEdificio(TipoEntidad tipoEdif, Coordenada coord, int 
 
 /***************************************************/
 // Pasar el id_recurso que dicte el Server. En caso de jugar offline, ignorarlo.
-Entidad* Juego::agregarRecurso(TipoEntidad recurso, Coordenada coord, int id_recurso) {
-	Entidad* recurso_a_agregar = new Entidad(recurso, 0, id_recurso); // factory todo?
+Entidad* Juego::agregarRecurso(TipoEntidad tipoRecurso, Coordenada coord, int id_recurso) {
+	Entidad* recurso_a_agregar = fabricaDeEntidades->nuevaEntidad(tipoRecurso, 0, id_recurso); //new Entidad(recurso, 0, id_recurso);
 	recurso_a_agregar->setPosicion(coord);
 	try {
 		if (!escenario->agregarEntidad(coord, recurso_a_agregar))
@@ -496,11 +503,11 @@ Edificio* Juego::terminarConstruccion(ConstruccionTermino c) {
 	this->escenario->quitarEntidad(construc);
 	this->contenedor->borrarSpriteDeEntidad(construc);
 
-	Edificio *nuevoEdificio = new Edificio(c.tipoEdif, c.idJug, c.dni);
+	Edificio *nuevoEdificio = (Edificio*)fabricaDeEntidades->nuevaEntidad(c.tipoEdif, c.idJug, c.dni); //new Edificio(c.tipoEdif, c.idJug, c.dni);
 	nuevoEdificio->set_identificador(c.dni);
 	nuevoEdificio->set_id_jugador(c.idJug);
 	nuevoEdificio->setPosicion(Coordenada(c.x,c.y));
-	nuevoEdificio->sufrirGolpe(100 - c.vidaRestante); // hardcodeo de vida inicial de construcción
+	nuevoEdificio->sufrirGolpe(50 - c.vidaRestante); // hardcodeo de vida inicial de una construcción
 
 	if (c.idJug == this->getIDJugador())
 		this->jugador->guardarConstruccionTerminada(nuevoEdificio);
@@ -824,12 +831,14 @@ void Juego::anunciarGanador(int id_ganador) {
 /***************************************************/
 
 Juego::~Juego() {
-	this->unidadesEnemigos->clear(); // se deberían borrar! no?
-	this->edificiosEnemigos->clear();
+	this->unidadesEnemigos->clear();	// escenario->posicionesEntidades posee todas
+	this->edificiosEnemigos->clear();	//  las entidades y se ocupa de eliminarlas
+
 	delete this->escenario;
 	delete this->contenedor;
 	delete this->barraEstado;
 	delete this->contenedorSonidos;
+	delete this->fabricaDeEntidades;
 
 	map<Entidad*,Sprite*>::iterator p = mapAtaquesLargaDistancia->begin();
 	while (p != mapAtaquesLargaDistancia->end()){

@@ -16,7 +16,6 @@ class Unidad: public Entidad {
 protected:
 	int rangoAccion;
 	InfoAtaque infoAtaque;
-	//bool petrificado;
 
 public:
 	Unidad(TipoEntidad tipo, int id_jug, int dni = 0);

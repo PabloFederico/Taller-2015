@@ -83,7 +83,7 @@ Direccion Calculador::calcularDireccion(Coordenada coord_pixel_dest, Coordenada 
 	return direccion;
 }
 
-Direccion Calculador::calcularDireccionEntrePuntosAdyascentes(Coordenada c_origen, Coordenada c_final){
+Direccion Calculador::calcularDireccionEntrePuntosAdyacentes(Coordenada c_origen, Coordenada c_final){
 	Direccion direccion = ESTE;
 	int result_x = c_final.x - c_origen.x;
 	int result_y = c_final.y - c_origen.y;

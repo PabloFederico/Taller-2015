@@ -72,7 +72,7 @@ struct InfoEntidad {
 	int delay;
 	InfoEntidad(){
 		tipo = PASTO;
-		path = "images/missing1.png";
+		path = "images/utils/missing1.png";
 		descripcion = "";
 		ancho = 1;
 		alto = 1;

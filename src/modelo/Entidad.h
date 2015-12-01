@@ -24,15 +24,13 @@ protected:
 	int idJug;
 	int dni;
 
-	int armadura;
-	int ataque;
-	int vidaRestante;
+	int vidaRestante, armadura, ataque;
 	EstadoEntidad estado;
 	bool movible,ocupador;
 	int ancho,alto;
 	std::string info;
 	Entidad* receptor;
-	Coordenada c;
+	Coordenada c; // Pos de la entidad
 	Coordenada* coordMasProximaDelReceptor;
 
 	clock_t reloj;
@@ -50,9 +48,6 @@ public:
 
 	virtual void cambioEstado(EstadoEntidad est);
 	void finalizaAccion();
-	//bool estaPetrificado();
-	//void petrificar();
-	//void despetrificar();
 
 	void interactuarCon(Entidad* receptor);
 	void virtual olvidarInteraccion();

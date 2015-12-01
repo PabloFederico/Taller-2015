@@ -17,7 +17,7 @@ tipos:
   - nombre: arbol
     imagen: images/utils/arbol.png
     descripcion: Arbol
-dsas
+
   - nombre: tierra
     imagen: images/relieve/tierra.png
 
@@ -35,6 +35,12 @@ dsas
     ancho_base: 4
     imagen: images/utils/Barracks7.png
     descripcion: Cuartel
+
+  - nombre: construccion_cuartel
+    alto_base: 4
+    ancho_base: 4
+    imagen: images/utils/Barracks7.png
+    descripcion: Construcción de cuartel
 
   - nombre: construccion
     imagen: images/utils/cuartel_rojizo.png #!!!
@@ -73,6 +79,12 @@ dsas
     imagen: images/utils/Barracks5.png
     descripcion: Barraca Arquero
 
+  - nombre: construccion_barraca
+    alto_base: 4
+    ancho_base: 4
+    imagen: images/utils/Barracks5.png
+    descripcion: Construcción de barraca
+
 #  - nombre: comida
 #    imagen: images/comida.png
 
@@ -88,32 +100,32 @@ escenario:
     size_x: 50
     size_y: 50
     entidades:
-      - {x: 10, y: 10, tipo: agua}
-      - {x: 11, y: 10, tipo: agua}
-      - {x: 12, y: 10, tipo: agua}
-      - {x: 13, y: 10, tipo: agua}
-      - {x: 10, y: 11, tipo: agua}
-      - {x: 11, y: 11, tipo: agua}
-      - {x: 11, y: 12, tipo: agua}
-      - {x: 12, y: 11, tipo: agua}
-      - {x: 13, y: 11, tipo: agua}
+#      - {x: 10, y: 10, tipo: agua}
+#      - {x: 11, y: 10, tipo: agua}
+#      - {x: 12, y: 10, tipo: agua}
+#      - {x: 13, y: 10, tipo: agua}
+#      - {x: 10, y: 11, tipo: agua}
+#      - {x: 11, y: 11, tipo: agua}
+#      - {x: 11, y: 12, tipo: agua}
+#      - {x: 12, y: 11, tipo: agua}
+#      - {x: 13, y: 11, tipo: agua}
 
-      - {x: 4, y: 10, tipo: tierra}
-      - {x: 4, y: 11, tipo: tierra}
-      - {x: 4, y: 12, tipo: agua}
+#      - {x: 4, y: 10, tipo: tierra}
+#      - {x: 4, y: 11, tipo: tierra}
+#      - {x: 4, y: 12, tipo: agua}
 
-      - {x: 4, y: 5, tipo: arbol}
-      - {x: 4, y: 6, tipo: arbol}
-      - {x: 5, y: 5, tipo: arbol}
-      - {x: 4, y: 12, tipo: arbol}
+#      - {x: 4, y: 5, tipo: arbol}
+#      - {x: 4, y: 6, tipo: arbol}
+#      - {x: 5, y: 5, tipo: arbol}
+#      - {x: 4, y: 12, tipo: arbol}
 
       - {x: 3, y: 0, tipo: barraca}
       - {x: 9, y: 0, tipo: centro_civico}
 #      - {x: 15, y: 0, tipo: arbol}
       - {x: 6, y: 7, tipo: cuartel}
 
-      - {x: 10, y: 14, tipo: animal}
+#      - {x: 10, y: 14, tipo: animal}
 
-      - {x: 10, y: 12, tipo: mina_piedra}
-      - {x: 8, y: 10, tipo: mina_oro}
+#      - {x: 10, y: 12, tipo: mina_piedra}
+#      - {x: 8, y: 10, tipo: mina_oro}
 
