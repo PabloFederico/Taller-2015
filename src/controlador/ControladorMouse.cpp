@@ -69,7 +69,7 @@ bool ControladorMouse::procesarClickEnVentana(Mouse* mouse, Tile** tile_clic, Co
 		return false;
 	}
 
-	if (clicEnMapa){
+	if (clicEnMapa){	//chequeo completamente inútil
 		// Si tiene un edificio para construír, lo agrega al escenario, generando su sprite correspondiente
 		if (mouse->getEstado() == CLICK_IZQUIERDO && mouse->estaMoviendoImagen()){
 			try {
@@ -276,7 +276,7 @@ void ControladorMouse::procesarClickDerecho(Mouse* mouse){
 		for (int i = 0; i < cant_unid_seleccionadas; i++){
 
 			// Moverse a una posición vacía
-			Sprite* spriteUnidad = juego->getSpritesEntidades()->find(unidades[i])->second;
+			Sprite* spriteUnidad = juego->getSpriteDeEntidad(unidades[i]); //juego->getSpritesEntidades()->find(unidades[i])->second;
 			Coordenada coord_pixel_sprite = spriteUnidad->getPosPies();
 			try {
 				Camino camino = Calculador::obtenerCaminoMin(escenario, coord_pixel_sprite, mouse->getXY(), coord_pixel_ceros);

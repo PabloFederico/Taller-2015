@@ -300,8 +300,8 @@ void SpriteUnidad::update(int vel_personaje, Mix_Chunk* sonido_caminar){
 											Coordenada c_prox_punto = this->getCaminoARecorrer()[0];
 											c_prox_punto.x -= this->getPosicion().w / 2;
 											c_prox_punto.y -= this->getPosicion().h / 2;
-											Coordenada c_tile_actual = Calculador::tileParaPixel(coordPixelSprite(),coord_ceros);
-											Coordenada c_tile_prox = Calculador::tileParaPixel(c_prox_punto,coord_ceros);
+											Coordenada c_tile_actual = Calculador::tileParaCualquierPixel(coordPixelSprite(),coord_ceros);
+											Coordenada c_tile_prox = Calculador::tileParaCualquierPixel(c_prox_punto,coord_ceros);
 											if (c_tile_actual != c_tile_prox){
 												Direccion direccion = Calculador::calcularDireccionEntrePuntosAdyacentes(c_tile_actual,c_tile_prox);
 												this->setDireccion(direccion);
