@@ -15,11 +15,9 @@
 class Client: public Connection {
 private:
 	SocketCliente* socket;
-	string direccion_ip;
-	int PUERTO;
 
 public:
-	Client(string dir_ip, int puerto);
+	Client();
 	bool iniciar();
 //	bool reintentarConexion(string nombreActual);
 	void finalizar();

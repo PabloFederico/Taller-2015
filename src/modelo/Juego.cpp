@@ -11,8 +11,8 @@
 #include "Flecha.h"
 
 
-Juego::Juego(Connection* lan = NULL, ObjetivoEscenario modoDeJuego = MODO_DEFAULT, ConfiguracionJuego* infoJuegoRed = NULL):
-			connection(lan) { // TODO: guardar el modo!!!
+Juego::Juego(Connection* lan = NULL, int modoDeJuego = 0, ConfiguracionJuego* infoJuegoRed = NULL):
+			connection(lan) { // TODO: guardar el modo!!! Hacerlo del Enum que creó octa
 	this->idJug = 1;
 	this->nombreJug = "Pepito";
 	this->cero_x = NULL;
@@ -774,7 +774,7 @@ void Juego::apagarEnemigo(int id_jugador) {
 // TODO: probar para dos id != al propio
 void Juego::conversionDeEnemigo(int id_conversor, int id_convertido) {
 	if (id_convertido == this->getIDJugador()) {
-		olvidarConnection();
+		//olvidarConnection();//qué hacer?
 		return;
 	}
 	vector<Unidad*> unidadesConvertidas;

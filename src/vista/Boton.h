@@ -28,8 +28,6 @@ public:
 
 	bool fue_presionado();
 
-	void resetBoton();
-
 	void presionarBoton();
 
 	Imagen* getImagen();

@@ -7,11 +7,11 @@
 
 #include "../red/SocketServidor.h"
 
-SocketServidor::SocketServidor(int puerto):Socket() {
+SocketServidor::SocketServidor():Socket() {
 	if (descriptor > -1){
 		infoDir.sin_family = AF_INET;
 		infoDir.sin_addr.s_addr = INADDR_ANY;
-		infoDir.sin_port = htons(puerto);
+		infoDir.sin_port = htons(PUERTO_SERVIDOR);
 	}
 }
 

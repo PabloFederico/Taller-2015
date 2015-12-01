@@ -28,17 +28,11 @@ private:
 public:
 	Controller(Connection* lan);
 
-	pair<int,int> getDimensionVentana();
-
-	void crearJuego();
-
 	Juego* getJuego();
 
 	Mouse* getMouse();
 
-	Connection* getConnection();
-
-	bool realizarConexion(string ip, string nombre, int puerto);
+	void iniciarJuego();
 
 	void actualizarEstadoDelJuego();
 

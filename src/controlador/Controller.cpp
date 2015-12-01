@@ -6,18 +6,16 @@
  */
 
 #include "../controlador/Controller.h"
-#include "../red/Client.h"
 
 
 Controller::Controller(Connection* lan = NULL) {
 	mouse = new Mouse();	
-	//this->lan = lan;
-	//ConfiguracionJuego infoJuego;
-	/*
+	this->lan = lan;
+	ConfiguracionJuego infoJuego;
 	try {
 		if (lan != NULL) {
 			//infoJuego = Proxy::clienteEsperarConfigGame(lan);
-			ObjetivoEscenario modoDeJuego = Proxy::clienteEsperarComienzoYModoDeJuego(lan);
+			int modoDeJuego = Proxy::clienteEsperarComienzoYModoDeJuego(lan);
 			this->juego = new Juego(lan, modoDeJuego, NULL);//, &infoJuego);
 		}
 	} catch ( Disconnected &e ) {
@@ -25,31 +23,8 @@ Controller::Controller(Connection* lan = NULL) {
 		lan = NULL;
 	}
 	if (lan == NULL)
-		this->juego = new Juego(NULL, MODO_DEFAULT, NULL);
+		this->juego = new Juego(NULL, 0, NULL);
 
-	this->controladorMouse = new ControladorMouse(juego);
-	this->controladorCamara = new ControladorCamara(juego);
-	this->controladorJuego = new ControladorJuego(juego);
-	*/
-	this->lan = NULL;
-	this->juego = NULL;
-	this->controladorCamara = NULL;
-	this->controladorJuego = NULL;
-	this->controladorMouse = NULL;
-}
-
-pair<int,int> Controller::getDimensionVentana(){
-	if (juego != NULL)
-		return juego->getDimensionVentana();
-	else return make_pair(900,640);
-}
-
-Connection* Controller::getConnection(){
-	return this->lan;
-}
-
-void Controller::crearJuego(){
-	juego = new Juego(lan,0,NULL);
 	this->controladorMouse = new ControladorMouse(juego);
 	this->controladorCamara = new ControladorCamara(juego);
 	this->controladorJuego = new ControladorJuego(juego);
@@ -101,17 +76,6 @@ void Controller::posicionarCamaraEnProtagonista(){
 
 Mouse* Controller::getMouse(){
 	return mouse;
-}
-
-bool Controller::realizarConexion(string ip, string nombre, int puerto){
-	bool conexion_ok = true;
-	try {
-		lan = new Client(ip,puerto);
-	} catch (ConnectionProblem &e){
-		conexion_ok = false;
-	}
-	// TODO falta validar el nombre del jugador
-	return conexion_ok;
 }
 
 void Controller::capturarEvento(SDL_Event &event){
@@ -206,12 +170,10 @@ void Controller::reiniciarJuego(){
 
 
 Controller::~Controller() {
-	if (juego != NULL){
-		delete this->juego;
-		delete this->controladorCamara;
-		delete this->controladorMouse;
-		delete this->controladorJuego;
-	}
+	delete this->juego;
+	delete this->controladorCamara;
+	delete this->controladorMouse;
+	delete this->controladorJuego;
 	delete this->mouse;
 }
 

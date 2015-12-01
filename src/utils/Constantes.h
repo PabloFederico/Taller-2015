@@ -25,7 +25,7 @@
 #define IP_SERVIDOR			"127.0.0.1"
 #define NOMBRE_DEFAULT		"Dieguito"
 
-#define MAX_ESPERA_CONEXION 20 // segundos
+#define MAX_ESPERA_CONEXION 10 // segundos
 #define MAX_CONEXIONES		3 //5
 #define MAX_BYTES_LECTURA	2000
 
