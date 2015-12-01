@@ -38,7 +38,7 @@ public:
 	void dibujarRelieve(Escenario* esc, pair<int,int> tamVentana);
 
 	void dibujarEscenario(Escenario* esc, TTF_Font* fuenteTexto, pair<int,int> tamVentana);
-	void dibujarBarraEstado(Escenario* esc, BarraEstado* barraEstado, TTF_Font *fuenteTexto);
+	void dibujarBarraEstado(Escenario* esc, BarraEstado* barraEstado, TTF_Font *fuenteTexto, TTF_Font *fuenteTextoRecursos);
 
 	void dibujarEfectosTraslucidos(Coordenada c, Escenario* escenario);
 

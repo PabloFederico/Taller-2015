@@ -26,6 +26,7 @@ void VentanaJuego::cargarJuego(Juego *juego){
 
 	if (init()){
 		this->fuenteTexto = TTF_OpenFont("images/utils/censcbk.ttf",TAM_LETRA_JUEGO);
+		this->fuenteTextoRecursos = TTF_OpenFont("images/utils/censcbk.ttf",TAM_LETRA_JUEGO+5);
 		/* El (0,0) relativo del mapa respecto a la ventana principal */
 		//PosEntidad protag = juego->getPosEntDeProtagonista();
 		int centro_x = SCREEN_WIDTH / 2;  //protag.x;
@@ -93,7 +94,7 @@ void VentanaJuego::dibujar(){
 	if (mouse->estaMoviendoImagen())
 		dibujador->dibujarEfectosTraslucidos(mouse->getXY(),escenario);
 	dibujador->dibujarAtaquesDeLargaDistancia(controlador->getJuego());
-	dibujador->dibujarBarraEstado(escenario, barraEstado, fuenteTexto);
+	dibujador->dibujarBarraEstado(escenario, barraEstado, fuenteTexto, fuenteTextoRecursos);
 
 	SDL_RenderPresent(this->renderer);
 }

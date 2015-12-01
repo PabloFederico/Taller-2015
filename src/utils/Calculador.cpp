@@ -329,16 +329,18 @@ Camino Calculador::obtenerCaminoMin(Escenario *esc, Coordenada coord_orig, Coord
 }
 
 
-Coordenada Calculador::generarPosRandom(int size_x_final, int size_x_inicial, int size_y_final, int size_y_inicial, int seed = 0){
-	int x_rand, y_rand;
-	x_rand = (rand() % (size_x_final - size_x_inicial)) + size_x_inicial;
-	y_rand = (rand() % (size_y_final - size_y_inicial)) + size_y_inicial;
+Coordenada Calculador::generarPosRandom(int size_x_final, int size_x_inicial, int size_y_final, int size_y_inicial){
+	random_device rd_gen;
+	mt19937 gen(rd_gen());				 		// hardcodeo de tamaño
+	uniform_int_distribution<int> distribucionX(size_x_inicial, size_x_final-1), distribucionY(size_y_inicial, size_y_final-1);
+	int x_rand = (distribucionX(gen));// % (size_x_final - size_x_inicial)) + size_x_inicial;
+	int y_rand = (distribucionY(gen));// % (size_y_final - size_y_inicial)) + size_y_inicial;
 
 	return Coordenada(x_rand,y_rand);
 }
 
-Coordenada Calculador::generarPosRandomDentroDeEscenarioConLimites(int size_x, int x_max, int x_min, int size_y, int y_max, int y_min, int seed = 3) {
-	Coordenada c = generarPosRandom(x_max, x_min, y_max, y_min, seed);
+Coordenada Calculador::generarPosRandomDentroDeEscenarioConLimites(int size_x, int x_max, int x_min, int size_y, int y_max, int y_min) {
+	Coordenada c = generarPosRandom(x_max, x_min, y_max, y_min);
 	return Coordenada(ChequeoDeBorde(size_x, c.x), ChequeoDeBorde(size_y, c.y));
 }
 

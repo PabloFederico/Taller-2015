@@ -304,7 +304,7 @@ void Dibujador::dibujarEfectosTraslucidos(Coordenada c, Escenario* escenario){
 }
 
 /********************************************************************************/
-void Dibujador::dibujarBarraEstado(Escenario* esc, BarraEstado* barraEstado, TTF_Font* fuenteTexto){
+void Dibujador::dibujarBarraEstado(Escenario* esc, BarraEstado* barraEstado, TTF_Font* fuenteTexto, TTF_Font* fuenteTextoRecursos){
 	for (unsigned i = 0; i < imagenesBasura.size(); i++){
 		delete imagenesBasura[i];
 	}
@@ -437,7 +437,7 @@ void Dibujador::dibujarBarraEstado(Escenario* esc, BarraEstado* barraEstado, TTF
 		colorBlanco.r = 255;
 		colorBlanco.g = 255;
 		colorBlanco.b = 255;
-		Imagen* image_num = Loader::cargarTextoConFondo(renderer,fuenteTexto,cant_string,colorBlanco);
+		Imagen* image_num = Loader::cargarTextoConFondo(renderer,fuenteTextoRecursos,cant_string,colorBlanco);
 		imagenesBasura.push_back(image_num);
 		//TODO modifica parametros para ver los número más grandes
 		//if (image_num->getPixelsX() > rect_num.w)

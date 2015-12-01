@@ -68,7 +68,7 @@ struct Clientes {
 			 entidad = *pEntidad;
 
 		// Genera una coordenada aleatoria no repetida.
-		Coordenada coordRandom = Calculador::generarPosRandom(50,0, 50,0, 9); //hardcodeo
+		Coordenada coordRandom = Calculador::generarPosRandom(50,0, 50,0); //hardcodeo
 //		for (map<int,DataCliente>::iterator it = m.begin(); it != m.end(); ++it)
 //			if (it->second.posProtag == coordRandom) {
 //				coordRandom = Calculador::generarPosRandom(50,0, 50,0, 2); //hardcodeo

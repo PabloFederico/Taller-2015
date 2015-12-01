@@ -170,13 +170,10 @@ bool Server::procesarComoServidor(int sockfd, string recibido) {
 
 TipoEntidad generarRecursoYCoordRandom(Coordenada* c) {
 	random_device rd_gen;
-	mt19937 gen(rd_gen());				 		// hardcodeo de tamaño
-	uniform_int_distribution<int> distribucionX(0, 49), distribucionY(0, 49), distribucionTipo(MADERA, ORO);
-	*c = Coordenada( distribucionX(gen), distribucionY(gen) );
+	mt19937 gen(rd_gen());
+	uniform_int_distribution<int> distribucionTipo(ARBOL, MINA_ORO);//(MADERA, ORO);
+	*c = Calculador::generarPosRandom(50,0,50,0);	// hardcodeo de tamaño
 	return TipoEntidad( distribucionTipo(gen) );
-	//*c = Calculador::generarPosRandom(50,0,50,0,7); // hardcodeo de tamaño
-	//Coordenada au = Calculador::generarPosRandom(ORO+1,MADERA,1,0,87);
-	//return TipoEntidad(au.x);	   //último recurso^	  ^primer recurso
 }
 
 

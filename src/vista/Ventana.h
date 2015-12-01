@@ -18,6 +18,7 @@ protected:
 	SDL_Window *window;
 	SDL_Renderer *renderer;
 	TTF_Font *fuenteTexto;
+	TTF_Font *fuenteTextoRecursos;
 	Mix_Music *musica_fondo;
 	int SCREEN_WIDTH;
 	int SCREEN_HEIGHT;

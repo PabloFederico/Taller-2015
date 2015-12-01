@@ -33,10 +33,6 @@ public:
 	virtual bool iniciar() = 0;
 	int getIDJugador();
 
-	//void chequearPing();
-	//void reestablecerPing();	// Experimentales, no usar
-	//void revisarPing();
-
 	void enviar(std::string);
 	std::string recibir();
 
