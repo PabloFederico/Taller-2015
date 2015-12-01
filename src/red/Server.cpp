@@ -8,15 +8,16 @@
 #include "../red/Server.h"
 
 
-Server::Server() {
+Server::Server(int puerto) {
 	std::cout << "======= SERVIDOR =======" << std::endl;
+	PUERTO = puerto;
 	if (!iniciar()) {
 		throw ConnectionProblem();
 	}
 }
 
 bool Server::iniciar() {
-	this->socket = new SocketServidor();
+	this->socket = new SocketServidor(PUERTO);
 	if (this->socket->creadoCorrectamente() < 0) {
 		std::cout << "ERROR: No se pudo crear socket."<<std::endl;
 		return false;

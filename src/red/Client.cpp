@@ -27,7 +27,9 @@ void parsearIPyNombreJugador(string* ip, string *nombre) {
 }
 
 
-Client::Client() {
+Client::Client(string dir_ip, int puerto) {
+	direccion_ip = dir_ip;
+	PUERTO = puerto;
 	try {
 		if (!iniciar())
 			throw ConnectionProblem();
@@ -41,7 +43,7 @@ bool Client::iniciar() {
 	parsearIPyNombreJugador(&ip, &nombreJug);
 
 	std::cout << "======= CLIENTE =======" << std::endl;
-	this->socket = new SocketCliente(ip);
+	this->socket = new SocketCliente(direccion_ip,PUERTO);
 	if (this->socket->creadoCorrectamente() < 0) {
 		std::cout << "ERROR: No se puede crear socket."<<std::endl;
 		return false;
