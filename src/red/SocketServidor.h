@@ -11,7 +11,7 @@
 
 class SocketServidor: public Socket{
 public:
-	SocketServidor();
+	SocketServidor(int puerto);
 	virtual ~SocketServidor();
 };
 

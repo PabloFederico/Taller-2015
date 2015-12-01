@@ -18,6 +18,10 @@ std::string Boton::getInfoBoton(){
 	return this->info;
 }
 
+void Boton::resetBoton(){
+	presionado = false;
+}
+
 Imagen* Boton::getImagen(){
 	return this->imagenTexto;
 }

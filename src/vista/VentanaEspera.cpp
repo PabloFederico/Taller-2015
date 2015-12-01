@@ -18,6 +18,7 @@ VentanaEspera::VentanaEspera(Controller* controlador):Ventana(controlador) {
 
 EstadoFinVentana VentanaEspera::run(){
 	EstadoFinVentana estado = OK;
+	Connection* lan = controlador->getConnection();
 
 	SDL_Rect rect_wait;
 	rect_wait.x = 500;
@@ -32,11 +33,23 @@ EstadoFinVentana VentanaEspera::run(){
 	SDL_Event e;
 	while (esperando){
 		SDL_RenderClear(renderer);
-		SDL_PollEvent(&e);
-		if (e.type == SDL_QUIT){
-			esperando = false;
-			estado = EXIT;
+		while (SDL_PollEvent(&e)){
+			if (e.type == SDL_QUIT){
+				esperando = false;
+				estado = EXIT;
+			}
 		}
+
+		TipoMensajeRed tipoMsj = MENSAJE;
+		try {
+			string unContenido, recibido = lan->recibir();
+			while (Red::parsearSiguienteMensaje(&recibido, &tipoMsj, &unContenido))
+				if (tipoMsj == COMIENZO){
+					esperando = false;
+					break;
+				}
+		} catch ( NoSeRecibio &e ) {}
+
 		if (SDL_GetTicks()-time > 1000){
 			texto = texto + ".";
 			delete imagenEsperando;
@@ -53,9 +66,9 @@ EstadoFinVentana VentanaEspera::run(){
 			rect_wait.w = imagenEsperando->getPixelsX();
 			rect_wait.h = imagenEsperando->getPixelsY();
 		}
-		if (contador > 5){
-			esperando = false;
-		}
+		//if (contador > 5){
+		//	esperando = false;
+		//}
 
 		SDL_RenderCopy(renderer,imagenFondo->getTexture(),NULL,NULL);
 		SDL_RenderCopy(renderer,imagenEsperando->getTexture(),NULL,&rect_wait);
