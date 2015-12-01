@@ -114,7 +114,7 @@ public:
 
 
 	// Diferencio aquello Recibido como el conjunto de Mensajes, cada cual posee la etiqueta de TipoMensajeRed, un Contenido decodificable y un Final ('~').
-	// Extrae de recibidoSinParsear un mensaje entero, del cual parsea tipo y contenido.
+	// Extrae de recibidoSinParsear un mensaje entero, del cual parsea tipo y contenido.	<TIP>Contenido~
 	static bool parsearSiguienteMensaje(string* recibidoSinParsear, TipoMensajeRed* tipo, string* unContenido) {
 		if (recibidoSinParsear->length() == 0) return false;
 		stringstream ss(*recibidoSinParsear);

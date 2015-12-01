@@ -231,11 +231,12 @@ void Server::correr() {
 	/******************************************************************/
 
 
+	int modoDeJuego = 0;
 	/************************ COMIENZA JUEGO **************************/
 	// Enviar señal de comienzo junto a posición inicial.
 	std::cout << "Comenzando juego..."<<std::endl << std::endl;
 
-	mensaje = Red::agregarPrefijoYFinal("COM", "");
+	mensaje = Red::agregarPrefijoYFinal("COM", modoDeJuego);
 	for (j = 0; j < maxfd+1; j++) {
 		if (FD_ISSET(j, &readset)) {
 			send(j, mensaje.c_str(), 8, MSG_NOSIGNAL);

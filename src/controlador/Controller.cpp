@@ -15,15 +15,15 @@ Controller::Controller(Connection* lan = NULL) {
 	try {
 		if (lan != NULL) {
 			//infoJuego = Proxy::clienteEsperarConfigGame(lan);
-			Proxy::clienteEsperarComienzo(lan);
-			this->juego = new Juego(lan, NULL);//, &infoJuego);
+			int modoDeJuego = Proxy::clienteEsperarComienzo(lan);
+			this->juego = new Juego(lan, modoDeJuego, NULL);//, &infoJuego);
 		}
 	} catch ( Disconnected &e ) {
 		std::cout << "Desconectado."<<std::endl;
 		lan = NULL;
 	}
 	if (lan == NULL)
-		this->juego = new Juego(NULL, NULL);
+		this->juego = new Juego(NULL, 0, NULL);
 
 	this->controladorMouse = new ControladorMouse(juego);
 	this->controladorCamara = new ControladorCamara(juego);

@@ -11,8 +11,8 @@
 #include "Flecha.h"
 
 
-Juego::Juego(Connection* lan = NULL, ConfiguracionJuego* infoJuegoRed = NULL):
-			connection(lan) {
+Juego::Juego(Connection* lan = NULL, int modoDeJuego = 0, ConfiguracionJuego* infoJuegoRed = NULL):
+			connection(lan) { // TODO: guardar el modo!!! Hacerlo del Enum que creó octa
 	this->idJug = 1;
 	this->nombreJug = "Pepito";
 	this->cero_x = NULL;

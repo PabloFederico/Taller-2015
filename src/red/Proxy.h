@@ -32,7 +32,7 @@ private:
 	//static void procesarRecursoComido(Juego* juego, string posEnc);
 
 public:
-	static void clienteEsperarComienzo(Connection* lan);
+	static int clienteEsperarComienzo(Connection* lan);
 	//static ConfiguracionJuego clienteEsperarConfigGame(Connection* lan);
 	static TipoMensajeRed actualizarMultiplayer(Juego* juego);
 
