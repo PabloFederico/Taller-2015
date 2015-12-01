@@ -304,33 +304,33 @@ InfoEscenario Yaml::infoEscenarioDefault() {
 
 	infoEscenario.size_x = 50;
 	infoEscenario.size_y = 50;
-	infoEscenario.agregarEntidad(std::make_pair(10,10), AGUA);
-	infoEscenario.agregarEntidad(std::make_pair(11,10), AGUA);
-	infoEscenario.agregarEntidad(std::make_pair(12,10), AGUA);
-	infoEscenario.agregarEntidad(std::make_pair(13,10), AGUA);
-	infoEscenario.agregarEntidad(std::make_pair(10,11), AGUA);
-	infoEscenario.agregarEntidad(std::make_pair(11,11), AGUA);
-	infoEscenario.agregarEntidad(std::make_pair(12,11), AGUA);
-	infoEscenario.agregarEntidad(std::make_pair(13,11), AGUA);
+//	infoEscenario.agregarEntidad(std::make_pair(10,10), AGUA);
+//	infoEscenario.agregarEntidad(std::make_pair(11,10), AGUA);
+//	infoEscenario.agregarEntidad(std::make_pair(12,10), AGUA);
+//	infoEscenario.agregarEntidad(std::make_pair(13,10), AGUA);
+//	infoEscenario.agregarEntidad(std::make_pair(10,11), AGUA);
+//	infoEscenario.agregarEntidad(std::make_pair(11,11), AGUA);
+//	infoEscenario.agregarEntidad(std::make_pair(12,11), AGUA);
+//	infoEscenario.agregarEntidad(std::make_pair(13,11), AGUA);
+//
+//	infoEscenario.agregarEntidad(std::make_pair(4,10), TIERRA);
+//	infoEscenario.agregarEntidad(std::make_pair(4,11), TIERRA);
+//	infoEscenario.agregarEntidad(std::make_pair(4,12), TIERRA);
 
-	infoEscenario.agregarEntidad(std::make_pair(4,10), TIERRA);
-	infoEscenario.agregarEntidad(std::make_pair(4,11), TIERRA);
-	infoEscenario.agregarEntidad(std::make_pair(4,12), TIERRA);
-
-	infoEscenario.agregarEntidad(std::make_pair(4,5), ARBOL);
-	infoEscenario.agregarEntidad(std::make_pair(4,6), ARBOL);
-	infoEscenario.agregarEntidad(std::make_pair(5,5), ARBOL);
-	infoEscenario.agregarEntidad(std::make_pair(4,12), ARBOL);
+//	infoEscenario.agregarEntidad(std::make_pair(4,5), ARBOL);
+//	infoEscenario.agregarEntidad(std::make_pair(4,6), ARBOL);
+//	infoEscenario.agregarEntidad(std::make_pair(5,5), ARBOL);
+//	infoEscenario.agregarEntidad(std::make_pair(4,12), ARBOL);
 
 	infoEscenario.agregarEntidad(std::make_pair(3,0),BARRACK);
 	infoEscenario.agregarEntidad(std::make_pair(9,0),CENTRO_CIVICO);
 //	infoEscenario.agregarEntidad(std::make_pair(15,0),BARRACK_3);
 	infoEscenario.agregarEntidad(std::make_pair(6,7),CUARTEL);
 
-	infoEscenario.agregarEntidad(std::make_pair(10,14), ANIMAL);
+//	infoEscenario.agregarEntidad(std::make_pair(10,14), ANIMAL);
 
-	infoEscenario.agregarEntidad(std::make_pair(10,12), MINA_PIEDRA);
-	infoEscenario.agregarEntidad(std::make_pair(8,10), MINA_ORO);
+//	infoEscenario.agregarEntidad(std::make_pair(10,12), MINA_PIEDRA);
+//	infoEscenario.agregarEntidad(std::make_pair(8,10), MINA_ORO);
 
 	//código de prueba
 //	std::cout<<infoEscenario.getPosicionesEntidades().size()<<std::endl;//

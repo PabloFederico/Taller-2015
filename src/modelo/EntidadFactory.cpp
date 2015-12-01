@@ -10,36 +10,41 @@
 #include "../modelo/Edificio.h"
 
 
-EntidadFactory::EntidadFactory(int num_jug, vector<InfoEntidad> v): idJug(num_jug), vInfoEntidades(v) {};
+EntidadFactory::EntidadFactory(vector<InfoEntidad> v): vInfoEntidades(v) {};
 
-
-Entidad* EntidadFactory::nuevaEntidad(TipoEntidad tipo) {
+Entidad* EntidadFactory::nuevaEntidad(TipoEntidad tipo, int id_jug, int dni) {
 	Entidad *e;
 	switch (tipo){
-	case SOLDADO:
+
 	case ALDEANO:
-				e = new Unidad(tipo,idJug);
-				break;
+	case ARQUERO:
+	case SOLDADO:
+			e = new Unidad(tipo,id_jug,dni);
+			break;
+	case CONSTRUCCION:
+			e = new Construccion(tipo,id_jug,dni);
+			break;
+	case BARRACK:
+	case CASTILLO:
+	case CENTRO_CIVICO:
+	case CUARTEL:
 	case EDIFICIO:
-				e = new Edificio(tipo,idJug);
-				break;
+			e = new Edificio(tipo,id_jug,dni);
+			break;
 	default :
-				e = new Entidad(tipo,0);
-				break;
+			e = new Entidad(tipo,id_jug,dni);
+			break;
+
 	}
 
 	std::vector<InfoEntidad>::iterator it = std::find(this->vInfoEntidades.begin(), this->vInfoEntidades.end(), tipo);
 	if (it != this->vInfoEntidades.end()) {
 		e->setTam(it->ancho, it->alto);
 	}
+
 	return e;
 }
 
-int EntidadFactory::getId_Jug(){
-	return idJug;
-}
-
-
 EntidadFactory::~EntidadFactory() {
-	// TODO Auto-generated destructor stub
+	this->vInfoEntidades.clear();
 }

@@ -241,7 +241,7 @@ void ControladorMouse::procesarClickIzquierdo(Mouse* mouse){
 					std::cout << "se eligió un edificio para contruír : "<<edificioAConstruir<<"\n";
 					// TODO debería crearse una entidad tipo CONSTRUCCIÓN y cuando finalice convertirlo a edificio
 					if (escenario->getEntidadTemporal() != NULL) delete escenario->getEntidadTemporal();
-					Entidad* entidadConstruccion = new Construccion(edificioAConstruir,juego->getIDJugador());
+					Entidad* entidadConstruccion = new Construccion(edificioAConstruir,juego->getIDJugador());	// Llamar a juego->comenzarNuevaConstruccion() ???
 					entidadConstruccion->setPosicion(Coordenada(0,0));
 					entidadConstruccion->setTam(4,4); //hardcodeo prueba
 					juego->getEscenario()->iniciarEntidadTemporal(entidadConstruccion);
