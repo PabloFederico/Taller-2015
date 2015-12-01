@@ -139,27 +139,27 @@ void Juego::generarNuevasUnidadesYEdificiosIniciales() {
 	}
 
 	Coordenada c_uni, c_cc;
-	int m = 10; // margen de distancia al CC
+	int m = 8; // margen de distancia al CC
 	int size_x = configGame.escenarios[0].size_x - 1;
 	int size_y = configGame.escenarios[0].size_y - 1;
 
 	// segundo, creo: centro cívico y 3 aldeanos; con posiciones rándom
-	do { c_cc = Calculador::generarPosRandom(size_x-4, 0, size_y-4, 0, 12);
+	do { c_cc = Calculador::generarPosRandom(size_x-4, 0, size_y-4, 0);
 	} while (configGame.escenarios[0].posicionYaOcupada(c_cc));
 //	std::cout << "entidad inicial: centro civico "<<c_cc.enc() << std::endl;//
 	configGame.escenarios[0].agregarEntidad(c_cc, CENTRO_CIVICO);
 
-	do { c_uni = Calculador::generarPosRandomDentroDeEscenarioConLimites(size_x, c_cc.x+m, c_cc.x-m, size_y, c_cc.y+m, c_cc.y-m, 31);
+	do { c_uni = Calculador::generarPosRandomDentroDeEscenarioConLimites(size_x, c_cc.x+m, c_cc.x-m, size_y, c_cc.y+m, c_cc.y-m);
 	} while (configGame.escenarios[0].posicionYaOcupada(c_uni));
 //	std::cout << "entidad inicial: aldeano 1 "<<c_uni.enc() << std::endl;//
 	configGame.escenarios[0].agregarEntidad(c_uni, ALDEANO);
 
-	do { c_uni = Calculador::generarPosRandomDentroDeEscenarioConLimites(size_x, c_cc.x+m, c_cc.x-m, size_y, c_cc.y+m, c_cc.y-m, 72);
+	do { c_uni = Calculador::generarPosRandomDentroDeEscenarioConLimites(size_x, c_cc.x+m, c_cc.x-m, size_y, c_cc.y+m, c_cc.y-m);
 	} while (configGame.escenarios[0].posicionYaOcupada(c_uni));
 //	std::cout << "entidad inicial: aldeano 2 "<<c_uni.enc() << std::endl;//
 	configGame.escenarios[0].agregarEntidad(c_uni, ALDEANO);
 
-	do { c_uni = Calculador::generarPosRandomDentroDeEscenarioConLimites(size_x, c_cc.x+m, c_cc.x-m, size_y, c_cc.y+m, c_cc.y-m, 90);
+	do { c_uni = Calculador::generarPosRandomDentroDeEscenarioConLimites(size_x, c_cc.x+m, c_cc.x-m, size_y, c_cc.y+m, c_cc.y-m);
 	} while (configGame.escenarios[0].posicionYaOcupada(c_uni));
 //	std::cout << "entidad inicial: aldeano 3 "<<c_uni.enc() << std::endl;//
 	configGame.escenarios[0].agregarEntidad(c_uni, ALDEANO);
