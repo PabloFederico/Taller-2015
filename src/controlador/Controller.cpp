@@ -134,8 +134,6 @@ void Controller::capturarEvento(SDL_Event &event){
 		}
 
 	} // End while
-
-	juego->continuar();
 }
 
 void Controller::procesarEvento(){
@@ -143,6 +141,7 @@ void Controller::procesarEvento(){
 }
 
 void Controller::actualizarEstadoDelJuego(){
+	juego->continuar();
 	controladorJuego->actualizarJuego(mouse);
 	controladorCamara->actualizarScroll(mouse);
 

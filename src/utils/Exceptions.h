@@ -109,5 +109,11 @@ public:
 	NoExiste();
 };
 
+class FinJuego: public std::exception
+{
+public:
+	FinJuego();
+};
+
 
 #endif /* UTILS_EXCEPTIONS_H_ */

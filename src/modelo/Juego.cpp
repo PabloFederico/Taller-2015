@@ -342,8 +342,9 @@ void Juego::setConnection(Connection* conn) {
 /***************************************************/
 void Juego::olvidarConnection() {
 	std::cout << "~~~DESCONECTADO~~~"<<std::endl;
-	this->connection->finalizar();	// todo: imprimir que se perdió la conexión y cerrar
+	this->connection->finalizar();
 	this->connection = NULL;
+	throw FinJuego();
 }
 
 /***************************************************/

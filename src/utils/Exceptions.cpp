@@ -41,3 +41,4 @@ Disconnected::Disconnected() {}
 
 NoExiste::NoExiste() {}
 
+FinJuego::FinJuego() {}

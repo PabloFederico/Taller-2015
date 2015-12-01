@@ -127,9 +127,13 @@ EstadoFinVentana VentanaJuego::run(){
 					run = false;
 				}
 
-				controlador->procesarEvento();
+				try {
+					controlador->procesarEvento();
 
-				controlador->actualizarEstadoDelJuego();
+					controlador->actualizarEstadoDelJuego();
+				} catch ( FinJuego &e ) {
+					run = false;
+				}
 
 	            /* Actualiza el renderer */
 	            this->dibujar();
