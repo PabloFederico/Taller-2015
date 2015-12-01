@@ -112,7 +112,7 @@ inline const TipoEntidad TipoConstruccion(TipoEntidad tipoEdificio) {
 
 enum EstadoCapa { ESTADO_NEGRO, ESTADO_GRIS, ESTADO_COLOR };
 
-enum ObjetivoEscenario { DESTRUIR_CENTRO_CIVICO, CAPTURAR_BANDERA, PARTIDA_REGICIDA };
+enum ObjetivoEscenario { MODO_DEFAULT, DESTRUIR_CENTRO_CIVICO, CAPTURAR_BANDERA, PARTIDA_REGICIDA };
 
 enum EstadoMouse { NO_CLICK , CLICK_IZQUIERDO, CLICK_DERECHO, CLICK_IZQ_MOV, CLICK_DER_MOV };
 
