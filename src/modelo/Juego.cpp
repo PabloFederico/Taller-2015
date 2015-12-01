@@ -479,18 +479,20 @@ Entidad* Juego::agregarRecurso(TipoEntidad tipoRecurso, Coordenada coord, int id
 
 
 /********************************************************************************/
-void Juego::crearNuevaUnidadApartirDeEdificioSeleccionado(TipoEntidad tipoEntidadACrear){
+bool Juego::crearNuevaUnidadApartirDeEdificioSeleccionado(TipoEntidad tipoEntidadACrear){
 	Edificio* edificio = jugador->getEdificioSeleccionado();
-	if (edificio == NULL) return;
+	if (edificio == NULL) return false;
 	if (jugador->tieneRecursosParaCrearUnidad(tipoEntidadACrear)){
 		Coordenada c = Calculador::obtenerCoordenadaLibreCercaDeEdificio(edificio,escenario);
-		if (!escenario->coordEnEscenario(c)) return;
+		if (!escenario->coordEnEscenario(c)) return false;
 
-		if (crearNuevaUnidad(tipoEntidadACrear, c, this->getIDJugador()))
+		if (crearNuevaUnidad(tipoEntidadACrear, c, this->getIDJugador())) {
 			jugador->descontarRecursosPorCrearUnidad(tipoEntidadACrear);
-
+			return true;
+		}
+		return false;
 //		std::cout <<"creando nueva unidad tipo "<<tipoEntidadACrear<<" en : "<<c.x<<","<<c.y<<"\n";//
-	}
+	} else return false;
 }
 
 /********************************************************************************/

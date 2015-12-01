@@ -134,7 +134,7 @@ public:
 
 	void emitirSonido(Entidad* entidad);
 
-	void crearNuevaUnidadApartirDeEdificioSeleccionado(TipoEntidad tipoEntidadACrear);
+	bool crearNuevaUnidadApartirDeEdificioSeleccionado(TipoEntidad tipoEntidadACrear);
 
 	void apagarEnemigo(int id_jug);
 	void conversionDeEnemigo(int id_conversor, int id_convertido);

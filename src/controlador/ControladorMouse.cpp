@@ -251,7 +251,8 @@ void ControladorMouse::procesarClickIzquierdo(Mouse* mouse){
 				// Es un edificio
 				TipoEntidad unidadACrear = iconoSeleccionado(mouse,juego);
 				if (unidadACrear != DEFAULT){
-					juego->crearNuevaUnidadApartirDeEdificioSeleccionado(unidadACrear);
+					if (!juego->crearNuevaUnidadApartirDeEdificioSeleccionado(unidadACrear))
+						std::cout << "No se poseen recursos suficientes para crear la unidad."<<std::endl;
 				}
 
 			}
