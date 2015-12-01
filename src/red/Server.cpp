@@ -189,25 +189,10 @@ void Server::correr() {
 	FD_SET(srvsock, &readset);
 	maxfd = srvsock;
 
-
-	ObjetivoEscenario modoDeJuego = DEFAULT;
-
-	int cantJugadores = 3;
-
-	switch (modoDeJuego) {
-	case DESTRUIR_CENTRO_CIVICO: cantJugadores = 2;//3;
-		break;
-	case CAPTURAR_BANDERA: cantJugadores = 2;//4;
-		break;
-	case PARTIDA_REGICIDA: cantJugadores = 2;
-		break;
-	default: cantJugadores = MAX_CONEXIONES;
-	}
-
 	/********************** CONEXIONES INICIALES **********************/
-	std::cout << "Aceptando hasta "<<cantJugadores<<" jugadores ("<<MAX_ESPERA_CONEXION<<" s para conectarse)."<<std::endl;
+	std::cout << "Aceptando hasta "<<MAX_CONEXIONES<<" jugadores ("<<MAX_ESPERA_CONEXION<<" s para conectarse)."<<std::endl;
 
-	for (int i = 1; i <= cantJugadores; i++) {
+	for (int i = 1; i <= MAX_CONEXIONES; i++) {
 		std::cout << "#"<<i<<" ... ";
 		memcpy(&tempset, &readset, sizeof(tempset));
 		// Espera MAX_ESPERA_CONEXION segundos o hasta que aparezca una conexión.
@@ -222,7 +207,7 @@ void Server::correr() {
 		sleep(1); std::cout << "."; sleep(1); std::cout << "."; sleep(1); std::cout << ".";
 		sleep(1); std::cout << "."; sleep(1); std::cout << std::endl;
 		return;
-	} else if (clientes.cantConectados == cantJugadores) sleep(2);
+	} else if (clientes.cantConectados == MAX_CONEXIONES) sleep(2);
 
 	std::cout << std::endl << "Se recibieron "<<clientes.cantConectados<<" conexiones."<<std::endl;
 	/******************************************************************/
@@ -244,6 +229,7 @@ void Server::correr() {
 	/******************************************************************/
 
 
+	int modoDeJuego = 0;
 	/************************ COMIENZA JUEGO **************************/
 	// Enviar señal de comienzo junto a posición inicial.
 	std::cout << "Comenzando juego..."<<std::endl << std::endl;

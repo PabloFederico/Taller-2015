@@ -110,6 +110,7 @@ bool Controller::realizarConexion(string ip, string nombre, int puerto){
 	} catch (ConnectionProblem &e){
 		conexion_ok = false;
 	}
+	// TODO falta validar el nombre del jugador
 	return conexion_ok;
 }
 

@@ -333,8 +333,8 @@ Coordenada Calculador::generarPosRandom(int size_x_final, int size_x_inicial, in
 	random_device rd_gen;
 	mt19937 gen(rd_gen());				 		// hardcodeo de tamaño
 	uniform_int_distribution<int> distribucionX(size_x_inicial, size_x_final-1), distribucionY(size_y_inicial, size_y_final-1);
-	int x_rand = (distribucionX(gen));
-	int y_rand = (distribucionY(gen));
+	int x_rand = (distribucionX(gen));// % (size_x_final - size_x_inicial)) + size_x_inicial;
+	int y_rand = (distribucionY(gen));// % (size_y_final - size_y_inicial)) + size_y_inicial;
 
 	return Coordenada(x_rand,y_rand);
 }

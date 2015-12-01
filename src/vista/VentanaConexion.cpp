@@ -130,7 +130,7 @@ EstadoFinVentana VentanaConexion::run(){
 				controlador->getMouse()->setXY(Coordenada(x,y));
 				if (controlador->getMouse()->botonFuePresionado(buttonConnect)) {
 					if (inputIP != "" && inputName != "" && inputPort != ""){
-						int puerto = 8888;//std::stoi(inputPort);
+						int puerto = std::stoi(inputPort);
 						bool conexion_ok = controlador->realizarConexion(inputIP,inputName,puerto);
 						if (conexion_ok)
 							quit = true;
