@@ -11,6 +11,7 @@
 #include "../utils/Enumerados.h"
 #include "../utils/Structs.h"
 #include "../modelo/Entidad.h"
+#include "../modelo/Construccion.h"
 #include <vector>
 #include <algorithm>
 
@@ -23,6 +24,7 @@ private:
 public:
 	EntidadFactory(std::vector<InfoEntidad> v);
 	Entidad* nuevaEntidad(TipoEntidad tipo, int id_jug = 0, int dni = 0);
+	Construccion* nuevaConstruccionDe(TipoEntidad tipoAConstruir, int id_jug = 0, int dni = 0);
 
 	virtual ~EntidadFactory();
 

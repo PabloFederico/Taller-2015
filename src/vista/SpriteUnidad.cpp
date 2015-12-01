@@ -303,7 +303,7 @@ void SpriteUnidad::update(int vel_personaje, Mix_Chunk* sonido_caminar){
 											Coordenada c_tile_actual = Calculador::tileParaPixel(coordPixelSprite(),coord_ceros);
 											Coordenada c_tile_prox = Calculador::tileParaPixel(c_prox_punto,coord_ceros);
 											if (c_tile_actual != c_tile_prox){
-												Direccion direccion = Calculador::calcularDireccionEntrePuntosAdyascentes(c_tile_actual,c_tile_prox);
+												Direccion direccion = Calculador::calcularDireccionEntrePuntosAdyacentes(c_tile_actual,c_tile_prox);
 												this->setDireccion(direccion);
 											}
 											//Direccion direccion = Calculador::calcularDireccion(c_prox_punto, coordPixelSprite());

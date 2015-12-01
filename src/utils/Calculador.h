@@ -29,7 +29,7 @@ public:
 
 	static Direccion calcularDireccion(Coordenada coord_pixel_dest, Coordenada coord_pixel_orig);
 
-	static Direccion calcularDireccionEntrePuntosAdyascentes(Coordenada c_origen, Coordenada c_final);
+	static Direccion calcularDireccionEntrePuntosAdyacentes(Coordenada c_origen, Coordenada c_final);
 
 	//static bool puntoContenidoEnEscenario(Coordenada coord_pixel, Coordenada coord_ceros_pixel, Escenario *escenario);
 	static bool puntoContenidoEnEscenario(Coordenada coord_tile, Escenario *escenario);

@@ -87,6 +87,7 @@ void Unidad::interactuar() {
 			throw e;
 		}
 	} else {
+		cambioEstado(QUIETO); //cambioEstado(CAMINANDO);
 		throw UnidadDebeAcercarse(coordMasProximaDelReceptor->x, coordMasProximaDelReceptor->y);
 	}
 }

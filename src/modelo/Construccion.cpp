@@ -7,7 +7,7 @@
 
 #include "Construccion.h"
 
-Construccion::Construccion(TipoEntidad tipo, int id_jug, int identificador): Edificio(CONSTRUCCION,id_jug,identificador) {
+Construccion::Construccion(TipoEntidad tipo, int id_jug, int identificador): Edificio(TipoConstruccion(tipo),id_jug,identificador) {
 	tipoEdif = tipo;
 	this->progresoPorc = 0;
 }

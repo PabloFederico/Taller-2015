@@ -21,9 +21,12 @@ Entidad* EntidadFactory::nuevaEntidad(TipoEntidad tipo, int id_jug, int dni) {
 	case SOLDADO:
 			e = new Unidad(tipo,id_jug,dni);
 			break;
+	case CONSTRUCCION_BARRACK:
+		return nuevaConstruccionDe(BARRACK,id_jug,dni);
+	case CONSTRUCCION_CUARTEL:
+		return nuevaConstruccionDe(CUARTEL,id_jug,dni);
 	case CONSTRUCCION:
-			e = new Construccion(tipo,id_jug,dni);
-			break;
+		return nuevaConstruccionDe(CONSTRUCCION,id_jug,dni);
 	case BARRACK:
 	case CASTILLO:
 	case CENTRO_CIVICO:
@@ -43,6 +46,17 @@ Entidad* EntidadFactory::nuevaEntidad(TipoEntidad tipo, int id_jug, int dni) {
 	}
 
 	return e;
+}
+
+// Solo mandar los tipos construibles, BARRACA y CUARTEL.
+Construccion* EntidadFactory::nuevaConstruccionDe(TipoEntidad tipoAConstruir, int id_jug, int dni) {
+	Construccion *c = new Construccion(tipoAConstruir,id_jug,dni);
+
+	std::vector<InfoEntidad>::iterator it = std::find(this->vInfoEntidades.begin(), this->vInfoEntidades.end(), TipoConstruccion(tipoAConstruir));
+	if (it != this->vInfoEntidades.end()) {
+		c->setTam(it->ancho, it->alto);
+	}
+	return c;
 }
 
 EntidadFactory::~EntidadFactory() {

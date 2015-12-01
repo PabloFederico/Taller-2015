@@ -10,7 +10,9 @@
 
 #include <string>
 
-enum TipoEntidad  { OTROS, FLECHA, PASTO, TIERRA, AGUA, ARBOL, CASTILLO, SOLDADO, ARQUERO, ALDEANO, ANIMAL, MADERA, COMIDA, PIEDRA, ORO, DEFAULT, EDIFICIO, CONSTRUCCION, CENTRO_CIVICO, CUARTEL, BARRACK, MINA_ORO, MINA_PIEDRA };
+enum TipoEntidad  { OTROS, FLECHA, PASTO, TIERRA, AGUA, ARBOL, CASTILLO, SOLDADO, ARQUERO, ALDEANO, ANIMAL,
+					MADERA, COMIDA, PIEDRA, ORO, DEFAULT, EDIFICIO, CONSTRUCCION, CONSTRUCCION_CUARTEL, CONSTRUCCION_BARRACK,
+					CENTRO_CIVICO, CUARTEL, BARRACK, MINA_ORO, MINA_PIEDRA };
 
 enum TipoImagenUtil { CUADRADO_MAGENTA, CUADRADO_ROJO, CUADRADO_AZUL, CUADRADO_VERDE,
 					BARRA_FONDO , BARRA_DESCRIPCION, BARRA_NEGRA, SELECT_TILE,
@@ -87,11 +89,25 @@ inline const bool EsUnidad(TipoEntidad tipo) {
 	return false;
 }
 
+inline const bool EsConstruccion(TipoEntidad tipo) {
+	if (tipo == CONSTRUCCION || tipo == CONSTRUCCION_BARRACK || tipo == CONSTRUCCION_CUARTEL)
+		return true;
+	return false;
+}
+
 inline const bool EsEdificio(TipoEntidad tipo) {
-	if (tipo == EDIFICIO || tipo == CONSTRUCCION || tipo == CASTILLO || tipo == CUARTEL || tipo == CENTRO_CIVICO
+	if (tipo == EDIFICIO || EsConstruccion(tipo) || tipo == CASTILLO || tipo == CUARTEL || tipo == CENTRO_CIVICO
 		|| tipo == BARRACK)
 		return true;
 	return false;
+}
+
+inline const TipoEntidad TipoConstruccion(TipoEntidad tipoEdificio) {
+	switch (tipoEdificio) {
+	case CUARTEL: return CONSTRUCCION_CUARTEL;
+	case BARRACK: return CONSTRUCCION_BARRACK;
+	default: return CONSTRUCCION;
+	}
 }
 
 enum EstadoCapa { ESTADO_NEGRO, ESTADO_GRIS, ESTADO_COLOR };

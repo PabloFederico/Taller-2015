@@ -22,10 +22,15 @@ ConfiguracionJuego Yaml::cargarConfiguracionJuego(std::string archivoConfig) {
 		tipos["castillo"] = CASTILLO;
 		tipos["cuartel"] = CUARTEL;
 		tipos["barraca"] = BARRACK;
+		//		tipos["barraca_2"] = BARRACK_2;
+		//		tipos["barraca_3"] = BARRACK_3;
 		tipos["centro_civico"] = CENTRO_CIVICO;
 		tipos["construccion"] = CONSTRUCCION;
+		tipos["construccion_cuartel"] = CONSTRUCCION_CUARTEL;
+		tipos["construccion_barraca"] = CONSTRUCCION_BARRACK;
 		tipos["soldado"] = SOLDADO;
 		tipos["aldeano"] = ALDEANO;
+		tipos["arquero"] = ARQUERO;
 		tipos["animal"] = ANIMAL;
 		tipos["mina_oro"] = MINA_ORO;
 		tipos["mina_piedra"] = MINA_PIEDRA;
@@ -172,6 +177,8 @@ ConfiguracionJuego Yaml::OdioYAML() {
 		tipos["cuartel"] = CUARTEL;
 		tipos["centro_civico"] = CENTRO_CIVICO;
 		tipos["construccion"] = CONSTRUCCION;
+		tipos["construccion_barraca"] = CONSTRUCCION_BARRACK;
+		tipos["construccion_cuartel"] = CONSTRUCCION_CUARTEL;
 		tipos["soldado"] = SOLDADO;
 		tipos["aldeano"] = ALDEANO;
 		tipos["arquero"] = ARQUERO;
@@ -207,6 +214,13 @@ ConfiguracionJuego Yaml::OdioYAML() {
 	infoBarraca1.ancho = 4;
 	infoBarraca1.alto = 4;
 	infoBarraca1.descripcion = "Barraca_Arquero";
+
+	InfoEntidad infoBarraca1Constr;
+	infoBarraca1Constr.tipo = tipos["construccion_barraca"];
+	infoBarraca1Constr.path = "images/utils/Barracks5.png";
+	infoBarraca1Constr.ancho = 4;
+	infoBarraca1Constr.alto = 4;
+	infoBarraca1Constr.descripcion = "Construcción de barraca";
 /*
 	InfoEntidad infoBarraca2;
 	infoBarraca2.tipo = tipos["barraca_2"];
@@ -254,6 +268,13 @@ ConfiguracionJuego Yaml::OdioYAML() {
 	infoCuartel.ancho = 4;
 	infoCuartel.alto = 4;
 
+	InfoEntidad infoCuartelConstr;
+	infoCuartelConstr.tipo = tipos["construccion_cuartel"];
+	infoCuartelConstr.path = "images/utils/Barracks7.png";
+	infoCuartelConstr.descripcion = "Construcción de cuartel";
+	infoCuartelConstr.ancho = 4;
+	infoCuartelConstr.alto = 4;
+
 	InfoEntidad infoCentroCivico;
 	infoCentroCivico.tipo = tipos["centro_civico"];
 	infoCentroCivico.path = "images/utils/Barracks3.png";
@@ -281,6 +302,7 @@ ConfiguracionJuego Yaml::OdioYAML() {
 	configDefault.agregarInfoEntidad(infoArbol);
 	configDefault.agregarInfoEntidad(infoAgua);
 	configDefault.agregarInfoEntidad(infoCuartel);
+	configDefault.agregarInfoEntidad(infoCuartelConstr);
 	configDefault.agregarInfoEntidad(infoCentroCivico);
 	configDefault.agregarInfoEntidad(infoConstruccion);
 	configDefault.agregarInfoEntidad(infoSoldado);
@@ -288,6 +310,7 @@ ConfiguracionJuego Yaml::OdioYAML() {
 	configDefault.agregarInfoEntidad(infoAldeano);
 	configDefault.agregarInfoEntidad(infoAnimal);
 	configDefault.agregarInfoEntidad(infoBarraca1);
+	configDefault.agregarInfoEntidad(infoBarraca1Constr);
 //	configDefault.agregarInfoEntidad(infoBarraca2);
 //	configDefault.agregarInfoEntidad(infoBarraca3);
 	configDefault.agregarInfoEntidad(infoTierra);
