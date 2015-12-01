@@ -2,7 +2,7 @@
  * Entidad.cpp
  *
  *  Created on: 2 de sept. de 2015
- *      Author: pgfederi
+ *      Author: guidonegri
  */
 
 #include "../modelo/Entidad.h"

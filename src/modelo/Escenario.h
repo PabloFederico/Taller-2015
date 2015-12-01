@@ -2,7 +2,7 @@
  * Escenario.h
  *
  *  Created on: 2 de sept. de 2015
- *      Author: pgfederi
+ *      Author: guidonegri
  */
 
 #ifndef MODELO_ESCENARIO_H_
