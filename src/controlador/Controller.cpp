@@ -17,7 +17,7 @@ Controller::Controller(Connection* lan = NULL) {
 	try {
 		if (lan != NULL) {
 			//infoJuego = Proxy::clienteEsperarConfigGame(lan);
-			int modoDeJuego = Proxy::clienteEsperarComienzoYModoDeJuego(lan);
+			ObjetivoEscenario modoDeJuego = Proxy::clienteEsperarComienzoYModoDeJuego(lan);
 			this->juego = new Juego(lan, modoDeJuego, NULL);//, &infoJuego);
 		}
 	} catch ( Disconnected &e ) {
@@ -25,7 +25,7 @@ Controller::Controller(Connection* lan = NULL) {
 		lan = NULL;
 	}
 	if (lan == NULL)
-		this->juego = new Juego(NULL, 0, NULL);
+		this->juego = new Juego(NULL, MODO_DEFAULT, NULL);
 
 	this->controladorMouse = new ControladorMouse(juego);
 	this->controladorCamara = new ControladorCamara(juego);
