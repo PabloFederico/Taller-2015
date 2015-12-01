@@ -10,7 +10,7 @@
 #include "../vista/VentanaEspera.h"
 
 int main(int argc, char** argv) {
-	srand((time(0)) * (clock()+321) + 123);
+	srand(1707801);
 
 	Server* server = NULL;
 	Client* lan = NULL;

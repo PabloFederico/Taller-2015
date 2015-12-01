@@ -102,12 +102,12 @@ void Unidad::olvidarInteraccion() {
 }
 
 int Unidad::generarGolpe() {
-	random_device rd_gen;
+	/*random_device rd_gen;
 	mt19937 gen(rd_gen());
-	uniform_int_distribution<int> distribucion(this->obtenerAtk()/2,this->obtenerAtk());
-	int num_rndm = distribucion(gen);
+	uniform_int_distribution<int> distribucion(this->obtenerAtk()/2,this->obtenerAtk());*/
+	int num_rndm = rand() % (this->obtenerAtk() - (this->obtenerAtk()/2) + 1) + (this->obtenerAtk()/2);
 	int dmg = num_rndm -(receptor->obtenerArmor()*0.25);
-	if (dmg < 0) return 0; //por ahi el ataque es muy poronga con respecto a la armor de un edificio, ponele
+	if (dmg < 0) return 2; //por ahi el ataque es muy poronga con respecto a la armor de un edificio, ponele
 	return dmg;
 }
 
