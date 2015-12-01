@@ -15,7 +15,7 @@ Controller::Controller(Connection* lan = NULL) {
 	try {
 		if (lan != NULL) {
 			//infoJuego = Proxy::clienteEsperarConfigGame(lan);
-			int modoDeJuego = Proxy::clienteEsperarComienzo(lan);
+			int modoDeJuego = Proxy::clienteEsperarComienzoYModoDeJuego(lan);
 			this->juego = new Juego(lan, modoDeJuego, NULL);//, &infoJuego);
 		}
 	} catch ( Disconnected &e ) {
