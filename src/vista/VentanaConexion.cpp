@@ -116,7 +116,7 @@ EstadoFinVentana VentanaConexion::run(){
 
 	while( !quit ){
 
-		while( !quit && SDL_PollEvent( &e )){
+		while(SDL_PollEvent( &e )){
 
 			if( e.type == SDL_QUIT ) {
 				estado = EXIT;
@@ -128,7 +128,20 @@ EstadoFinVentana VentanaConexion::run(){
 				SDL_GetMouseState(&x,&y);
 				controlador->getMouse()->setEstado(CLICK_IZQUIERDO);
 				controlador->getMouse()->setXY(Coordenada(x,y));
-				if (controlador->getMouse()->botonFuePresionado(buttonConnect)) quit = true;
+				if (controlador->getMouse()->botonFuePresionado(buttonConnect)) {
+					if (inputIP != "" && inputName != "" && inputPort != ""){
+						int puerto = std::stoi(inputPort);
+						bool conexion_ok = controlador->realizarConexion(inputIP,inputName,puerto);
+						if (conexion_ok)
+							quit = true;
+						else{
+							inputIP = "";
+							inputName = "";
+							inputPort = "";
+						}
+					}
+					buttonConnect->resetBoton();
+				}
 				campoSelecionado = campoACompletar(controlador->getMouse(),par_de_campos);
 			}
 
@@ -242,6 +255,8 @@ EstadoFinVentana VentanaConexion::run(){
 
 		//Update screen
 		SDL_RenderPresent(renderer);
+
+		//SDL_Delay(20);
 
 	} /* Fin while quit */
 	delete buttonConnect;

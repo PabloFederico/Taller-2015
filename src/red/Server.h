@@ -145,9 +145,10 @@ private:
 	fd_set readset;
 	int maxfd;
 	Clientes clientes;
+	int PUERTO;
 
 public:
-	Server();
+	Server(int puerto);
 	bool iniciar();
 
 	void inicializarCliente(int peersock, int segundosDeEspera);

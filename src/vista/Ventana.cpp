@@ -11,7 +11,7 @@
 #include "../utils/Constantes.h"
 
 Ventana::Ventana(Controller *controlador) {
-	pair<int,int> dimensionVentana = controlador->getJuego()->getDimensionVentana();
+	pair<int,int> dimensionVentana = controlador->getDimensionVentana();
 	this->SCREEN_WIDTH = dimensionVentana.first;
 	this->SCREEN_HEIGHT = dimensionVentana.second;
 	this->window = NULL;
@@ -26,7 +26,7 @@ bool Ventana::init(){
 	 this->window = SDL_CreateWindow("Taller de Programación I: AoF",100,100,SCREEN_WIDTH,SCREEN_HEIGHT,SDL_WINDOW_SHOWN);
 	 if (this->window == NULL) return false;
 
-	 this->renderer = SDL_CreateRenderer(this->window,-1,SDL_RENDERER_ACCELERATED);
+	 this->renderer = SDL_CreateRenderer(this->window,-1,SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 	 if (this->renderer == NULL) return false;
 	 else {
 		  SDL_RenderSetLogicalSize(this->renderer,SCREEN_WIDTH,SCREEN_HEIGHT);

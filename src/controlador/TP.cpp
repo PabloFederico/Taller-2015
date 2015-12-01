@@ -17,10 +17,10 @@ int main(int argc, char** argv) {
 	if (argc > 1) {
 		try {
 			if (argv[1][0] == 's') {
-				server = new Server();
+				server = new Server(8888);
 				server->correr();
-			} else if (argv[1][0] == 'c')
-				lan = new Client();
+			} //else if (argv[1][0] == 'c')
+			//lan = new Client("127.0.0.1",8888);
 		} catch ( ConnectionProblem &e ) { return -1; }
 	}
 
@@ -50,17 +50,19 @@ int main(int argc, char** argv) {
 //		}
 		Controller *controller = new Controller(lan);
 
-		//VentanaConexion *ventanaConexion = new VentanaConexion(controller);
-		//EstadoFinVentana estado = ventanaConexion->run();
-		//delete ventanaConexion;
-		EstadoFinVentana estado = OK;//
+		VentanaConexion *ventanaConexion = new VentanaConexion(controller);
+		EstadoFinVentana estado = ventanaConexion->run();
+		delete ventanaConexion;
+		//EstadoFinVentana estado = OK;//
+		std::cout<<"Conexion exitosa\n";
 
 		if (estado == OK){
-			//VentanaEspera *ventanaEspera = new VentanaEspera(controller);
-			//estado = ventanaEspera->run();
-			//delete ventanaEspera;
+			VentanaEspera *ventanaEspera = new VentanaEspera(controller);
+			estado = ventanaEspera->run();
+			delete ventanaEspera;
 
 			if (estado == OK){
+				controller->crearJuego();
 				VentanaJuego *ventanaJuego = new VentanaJuego(controller);
 				estado = ventanaJuego->run();
 				delete ventanaJuego;

@@ -12,7 +12,7 @@
 class SocketCliente: public Socket {
 public:
 	SocketCliente();
-	SocketCliente(std::string string_IP);
+	SocketCliente(std::string string_IP, int puerto);
 	virtual ~SocketCliente();
 };
 
