@@ -126,7 +126,7 @@ void Proxy::procesarInteraccion(Juego* juego, string encodeado) {
 	ss >> jug2; ss.ignore(); // ','
 	ss >> dni2;
 
-//	if (jug1 == juego->getIDJugador()) return;
+	if (jug1 == juego->getIDJugador()) return;
 	try {
 		juego->iniciarInteraccionEntre(TipoEntidad(tip1), jug1, dni1, TipoEntidad(tip2), jug2, dni2);
 	} catch ( NoExiste &e ) { Log::imprimirALog(ERR, "Interacción incluye entidad inexistente."); }
@@ -140,7 +140,7 @@ void Proxy::procesarCamino(Juego* juego, string encodeado) {
 	ss >> id_jug; ss.ignore();	// ','
 	ss >> dni; ss.ignore();		// ';'
 	ss.get(camEnc, MAX_BYTES_LECTURA, '\0');
-//	if (id_jug == juego->getIDJugador()) return;
+	if (id_jug == juego->getIDJugador()) return;
 
 	Entidad *walker = juego->getEntidad(TipoEntidad(tipo), id_jug, dni);
 	if (!walker) {
