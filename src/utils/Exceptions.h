@@ -112,7 +112,11 @@ public:
 class FinJuego: public std::exception
 {
 public:
+	ObjetivoEscenario objetivo = MODO_DEFAULT;
+	int id_perdedor = -2;	// solo para modo bandera
 	FinJuego();
+	FinJuego(ObjetivoEscenario oe);
+	FinJuego(ObjetivoEscenario oe, int id_jug);
 };
 
 

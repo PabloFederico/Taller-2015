@@ -95,6 +95,14 @@ tipos:
   - nombre: mina_oro
     imagen: images/utils/mina_oro.png
 
+  - nombre: bandera
+    imagen: images/utils/arbol.png	#!!!
+    descripcion: ME HAS ENCONTRADO
+
+  - nombre: rey
+    imagen: images/sprites/aldeano_camina.png	#!!!
+    descripcion: EL REY
+
 escenario:
   - nombre: orleans
     size_x: 50

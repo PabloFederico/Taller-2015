@@ -34,6 +34,8 @@ ConfiguracionJuego Yaml::cargarConfiguracionJuego(std::string archivoConfig) {
 		tipos["animal"] = ANIMAL;
 		tipos["mina_oro"] = MINA_ORO;
 		tipos["mina_piedra"] = MINA_PIEDRA;
+		tipos["bandera"] = BANDERA;
+		tipos["rey"] = REY;
 
 
 	YAML::Node config;
@@ -185,6 +187,9 @@ ConfiguracionJuego Yaml::OdioYAML() {
 		tipos["animal"] = ANIMAL;
 		tipos["mina_oro"] = MINA_ORO;
 		tipos["mina_piedra"] = MINA_PIEDRA;
+		tipos["bandera"] = BANDERA;
+		tipos["rey"] = REY;
+
 
 	configDefault.nombreJugador = "Village Slayer";
 	configDefault.direccion_ip = "127.0.0.1";
@@ -299,6 +304,16 @@ ConfiguracionJuego Yaml::OdioYAML() {
 	infoMinaOro.path = "images/utils/mina_oro.png";
 	infoMinaOro.descripcion = "Mina de Oro";
 
+	InfoEntidad infoBandera;
+	infoBandera.tipo = tipos["bandera"];
+	infoBandera.path = "images/utils/arbol.png";
+	infoBandera.descripcion = "ABRAZAME";
+
+	InfoEntidad infoRey;
+	infoRey.tipo = tipos["rey"];
+	infoRey.path = "images/sprites/aldeano_camina.png";
+	infoRey.descripcion = "EL REY";
+
 	configDefault.agregarInfoEntidad(infoArbol);
 	configDefault.agregarInfoEntidad(infoAgua);
 	configDefault.agregarInfoEntidad(infoCuartel);
@@ -316,6 +331,7 @@ ConfiguracionJuego Yaml::OdioYAML() {
 	configDefault.agregarInfoEntidad(infoTierra);
 	configDefault.agregarInfoEntidad(infoMinaOro);
 	configDefault.agregarInfoEntidad(infoMinaPiedra);
+	configDefault.agregarInfoEntidad(infoBandera);
 
 	tipos.clear();
 	configDefault.agregarInfoEscenarios(infoEscenarioDefault());

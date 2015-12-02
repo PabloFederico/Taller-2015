@@ -140,6 +140,7 @@ public:
 	void apagarEnemigo(int id_jug);
 	void conversionDeEnemigo(int id_conversor, int id_convertido);
 	void reiniciar();
+	void verificarObjetivoPartida(ObjetivoEscenario oe);
 	void anunciarGanador(int id_ganador);
 	virtual ~Juego();
 };

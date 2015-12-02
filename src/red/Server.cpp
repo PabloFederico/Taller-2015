@@ -59,6 +59,21 @@ int parsearCantRecursosDelYaml() {
 }
 
 
+ObjetivoEscenario inputObjetivoEscenario() {
+	int obj = 0;
+	std::cout << "Elija modo de juego de la partida: " << std::endl;
+	std::cout << "  0 - Modo default, sin objetivos  " << std::endl;
+	std::cout << "  1 - Destrucción de centro cívico " << std::endl;
+	std::cout << "  2 - Captura de banderas          " << std::endl;
+	std::cout << "  3 - Partida regicida             " << std::endl;
+	std::cout << std::endl << "-> ";
+	std::cin >> obj;
+	if (obj < 0 || 3 < obj)
+		return MODO_DEFAULT;
+	return ObjetivoEscenario(obj);
+}
+
+
 // Intercambia mensajes iniciales.
 void Server::inicializarCliente(int peersock, int segundosDeEspera) {
 	ostringstream ss; string nombreJug;
@@ -192,10 +207,12 @@ void Server::correr() {
 	ObjetivoEscenario modoDeJuego = MODO_DEFAULT;
 	int cantJugadores = 3;
 
+	modoDeJuego = inputObjetivoEscenario();
+
 	switch (modoDeJuego) {
-	case DESTRUIR_CENTRO_CIVICO: cantJugadores = 2;//3;
+	case DESTRUIR_CENTRO_CIVICO: cantJugadores = 3;
 		break;
-	case CAPTURAR_BANDERA: cantJugadores = 2;//4;
+	case CAPTURAR_BANDERA: cantJugadores = 4;
 		break;
 	case PARTIDA_REGICIDA: cantJugadores = 2;
 		break;

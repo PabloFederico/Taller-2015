@@ -2,7 +2,7 @@
  * Entidad.cpp
  *
  *  Created on: 2 de sept. de 2015
- *      Author: cosmefulanito
+ *      Author: pgfederi
  */
 
 #include "../modelo/Entidad.h"
@@ -50,7 +50,7 @@ Entidad::Entidad(TipoEntidad tipo, int num_jug, int identificador): idJug(num_ju
 			movible = true;
 			ocupador = true;
 			info = "Aldeano";
-			armadura = 10;
+			armadura = 5;
 			ataque = 3;
 			break;
 		case ARQUERO:
@@ -142,6 +142,20 @@ Entidad::Entidad(TipoEntidad tipo, int num_jug, int identificador): idJug(num_ju
 			movible = false;
 			ocupador = true;
 			info = "Oro";
+			break;
+		case BANDERA:
+			vidaRestante = 10;
+			movible = false;
+			ocupador = true;
+			info = "BANDERA";
+			break;
+		case REY:
+			vidaRestante = 77;
+			movible = true;
+			ocupador = true;
+			info = "Rey de los perdedores";
+			armadura = 7;
+			ataque = 0;
 			break;
 		default:
 			vidaRestante = 1; // Así nunca mueren
@@ -275,7 +289,7 @@ void Entidad::interactuarCon(Entidad* receptor) {
 void Entidad::olvidarInteraccion() {
 	finalizaAccion();
 	this->receptor = NULL;
-	this->coordMasProximaDelReceptor = NULL;
+	delete this->coordMasProximaDelReceptor;
 }
 
 
@@ -337,7 +351,7 @@ std::string Entidad::getIDJugYVidaString() {
 	return enc.str();
 }
 
-// Para comunicación de redes
+///// Para comunicación de redes
 // Encodeado: "idJug,tipo,coord.enc(),dni"
 std::string Entidad::enc() {
 	ostringstream enc;
@@ -357,17 +371,25 @@ Entidad Entidad::dec(std::string s) {
 	u->setPosicion(Coordenada::dec(cs));
 	return *u;
 }
-//
+/////
 
 bool Entidad::sigueViva() {
 	return (this->vidaRestante > 0);
 }
 
 void Entidad::morir() {
-	//
+	switch (tipo) {
+	case CENTRO_CIVICO:
+		throw FinJuego(DESTRUIR_CENTRO_CIVICO);
+	case BANDERA:
+		throw FinJuego(CAPTURAR_BANDERA);
+	case REY:
+		throw FinJuego(PARTIDA_REGICIDA);
+	default: break;
+	}
 }
 
 Entidad::~Entidad() {
-	// TODO Auto-generated destructor stub
+	olvidarInteraccion();
 }
 

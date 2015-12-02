@@ -222,6 +222,10 @@ vector<Entidad*> Jugador::revisarMuertosPropios() {
 	return cuerpos;
 }
 
+bool Jugador::noTieneEntidades() {
+	return (this->edificios.empty() && this->unidades.empty());
+}
+
 Jugador::~Jugador() {
 	this->unidades.clear();
 	this->edificios.clear();

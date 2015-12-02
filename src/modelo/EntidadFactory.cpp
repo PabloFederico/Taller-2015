@@ -16,6 +16,7 @@ Entidad* EntidadFactory::nuevaEntidad(TipoEntidad tipo, int id_jug, int dni) {
 	Entidad *e;
 	switch (tipo){
 
+	case REY:
 	case ALDEANO:
 	case ARQUERO:
 	case SOLDADO:

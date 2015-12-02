@@ -75,6 +75,7 @@ public:
 	void ejecutoresOlvidarInteraccionCon(Entidad* muerto);
 	void limpiarSeleccionDeUnidadMuerta(Unidad* moribundo);
 	vector<Entidad*> revisarMuertosPropios();
+	bool noTieneEntidades();
 
 	virtual ~Jugador();
 };

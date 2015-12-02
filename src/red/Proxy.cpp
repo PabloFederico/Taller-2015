@@ -170,7 +170,7 @@ void Proxy::procesarConversion(Juego* juego, string encodeado) {
 	if (id_conversor == id_convertido || id_conversor < 0 || id_convertido < 0)
 		return;
 	if (id_convertido == juego->getIDJugador()) {
-		juego->olvidarConnection();//qué hacer?
+		juego->anunciarGanador(id_conversor);
 	} else
 		juego->conversionDeEnemigo(id_conversor, id_convertido);
 }
@@ -251,6 +251,10 @@ void Proxy::enviarConversion(Connection* lan, int id_jug_conversor, int id_jug_c
 	lan->enviar(t);
 }
 
+void Proxy::enviar(Connection* lan, int id_jug) {
+	string t = Red::agregarPrefijoYFinal("TOG", id_jug);
+	lan->enviar(t);
+}
 
 //void Proxy::completePaso(Connection* lan, int id_jug) {
 //	string t = Red::agregarPrefijoYFinal("PAS", id_jug);

@@ -151,7 +151,6 @@ void Controller::actualizarEstadoDelJuego(){
 		} catch ( NoSeRecibio &e ) {
 		} catch ( Disconnected &e ) {
 			this->juego->olvidarConnection();
-			// todo: terminar juego
 		}
 	}
 }

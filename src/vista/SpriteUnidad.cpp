@@ -56,10 +56,9 @@ SpriteUnidad::SpriteUnidad(int cant_dir, int frames_dif, Imagen* image, SDL_Rect
 
 					 FRAMES_ATAQUE = 15;
 					 FRAMES_MUERTE = 15;
-
 					 break;
-		case ARQUERO:
 
+		case ARQUERO:
 					 rectAtaque.x -= 15;
 					 rectAtaque.y -= 2;
 					 rectAtaque.w *= 1.30;
@@ -77,6 +76,7 @@ SpriteUnidad::SpriteUnidad(int cant_dir, int frames_dif, Imagen* image, SDL_Rect
 					 FRAMES_ATAQUE = 10;
 					 FRAMES_MUERTE = 10;
 					 break;
+
 		case SOLDADO:
 					 rectAtaque.x -= 17;
 					 rectAtaque.y -= 7;

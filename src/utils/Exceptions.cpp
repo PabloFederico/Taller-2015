@@ -42,3 +42,7 @@ Disconnected::Disconnected() {}
 NoExiste::NoExiste() {}
 
 FinJuego::FinJuego() {}
+
+FinJuego::FinJuego(ObjetivoEscenario oe): objetivo(oe) {}
+
+FinJuego::FinJuego(ObjetivoEscenario oe, int id_jug): objetivo(oe), id_perdedor(id_jug) {};

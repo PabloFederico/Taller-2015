@@ -2,7 +2,7 @@
  * Entidad.h
  *
  *  Created on: 2 de sept. de 2015
- *      Author: cosmefulanito
+ *      Author: pgfederi
  */
 
 #ifndef MODELO_ENTIDAD_H_

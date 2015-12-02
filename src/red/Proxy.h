@@ -42,7 +42,8 @@ public:
 	static void enviar(Connection* lan, Entidad ent);		// Enviar información de entidad
 	static void enviar(Connection* lan, Entidad ejecutor, Entidad receptor); // Enviar interacción
 	static void enviar(Connection* lan, Entidad ent, Camino cam);	// Enviar movimientos
-	static void enviarConversion(Connection* lan, int id_jug_conversor, int id_jug_convertido);
+	static void enviarConversion(Connection* lan, int id_jug_conversor, int id_jug_convertido);	// Enviar conversión de unidades de un jugador
+	static void enviar(Connection* lan, int id_jug);	// Enviar toggle
 	//static void completePaso(Connection* lan, int id_jug);
 	//static void enviarNombre(Connection* lan, string s);
 	//static void comiRecurso(Connection* lan, Coordenada c);
