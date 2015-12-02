@@ -313,7 +313,7 @@ void Server::correr() {
 					//// Lo recibido de un cliente, si no es únicamente para el servidor, mandarlo a todos los demás
 					//if (procesarComoServidor(j, string(buffer))) {
 					std::cout << "Echoing "<<j<<": "<<buffer<<std::endl;//
-					enviarATodos(buffer);//enviarATodosMenos(j, buffer);
+					enviarATodosMenos(j, buffer); //enviarATodos(buffer);//
 					//}
 				} else if (result == 0) {
 					conexionPerdida(j);

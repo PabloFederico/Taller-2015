@@ -619,8 +619,8 @@ void Juego::interaccionesDeUnidades() {
 
 		} catch ( FinJuego &e ) {
 			if (this->modo_de_juego == e.objetivo && modo_de_juego == CAPTURAR_BANDERA) {
-				Proxy::enviarConversion(this->connection, this->getIDJugador(), (*uniIt)->getIDJug());
-				conversionDeEnemigo(this->getIDJugador(), (*uniIt)->getIDJug());//
+				//Proxy::enviarConversion(this->connection, this->getIDJugador(), (*uniIt)->getIDJug());
+				//conversionDeEnemigo(this->getIDJugador(), (*uniIt)->getIDJug());//
 			}
 		}
 	}
@@ -835,6 +835,7 @@ void Juego::verificarObjetivoPartida(ObjetivoEscenario oe) {
 	switch (modo_de_juego) {
 	case DESTRUIR_CENTRO_CIVICO:
 	case PARTIDA_REGICIDA:
+	case CAPTURAR_BANDERA://
 		Proxy::enviar(this->connection, this->getIDJugador());
 		this->olvidarConnection();
 		break;
