@@ -279,7 +279,7 @@ void Server::correr() {
 			send(j, mensaje.c_str(), 8, MSG_NOSIGNAL);
 		}
 	}
-	sleep(3);//
+	sleep(1);//
 	/******************************************************************/
 
 	// Generación de cant recursos random iniciales

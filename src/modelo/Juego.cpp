@@ -534,8 +534,8 @@ vector<Entidad*> Juego::revisarMuertos() {
 	vector<Entidad*> funeral = this->jugador->revisarMuertosPropios();
 	// Enemigos
 	for (std::vector<Unidad*>::iterator uniIt = this->unidadesEnemigos->begin(); uniIt < this->unidadesEnemigos->end(); ) {
-		//if ((*uniIt)->getEstado() == MUERTO) {
-		if (!(*uniIt)->sigueViva()) {
+//		if (!(*uniIt)->sigueViva()) {
+		if ((*uniIt)->getEstado() == MUERTO) {
 			Unidad* moribundo = *uniIt;
 			unidadesEnemigos->erase(uniIt);
 			funeral.push_back(moribundo);
