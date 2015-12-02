@@ -198,8 +198,8 @@ void Jugador::ejecutoresOlvidarInteraccionCon(Entidad* muerto) {
 vector<Entidad*> Jugador::revisarMuertosPropios() {
 	vector<Entidad*> cuerpos;
 	for (std::vector<Unidad*>::iterator uniIt = this->vec_unidades.begin(); uniIt < this->vec_unidades.end(); ) {
-//		if ((*uniIt)->getEstado() == MUERTO){
-		if (!(*uniIt)->sigueViva()) {
+//		if (!(*uniIt)->sigueViva()) {
+		if ((*uniIt)->getEstado() == MUERTO){
 			Unidad* moribundo = *uniIt;
 			unidades.erase(moribundo->get_identificador());
 			vec_unidades.erase(uniIt);

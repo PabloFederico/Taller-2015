@@ -18,3 +18,14 @@ Bibliotecas usadas:
 		-> Dependencia de YAML: LibBoost (sudo apt-get install libboost-all-dev)
 		-> Dependencia de YAML : Cmake (sudo apt-get install cmake)
 
+
+Cómo jugar:
+
+Primero que nada, debe especificarse la dirección IP de quien será el servidor en
+el archivo config.yaml.
+Se debe correr una instancia de TP con el argumento 's' para iniciar el servidor.
+Este permitirá elegir el modo de juego para la partida. Tras esto, se dispondrá
+para escuchar conexiones entrantes. Ahora se podrán iniciar otras instancias con
+el argumento 'c', indicando que son clientes. Estos se irán conectando al servidor
+hasta cumplir el límite o no recibir más conexiones. Esperar unos segundos y
+comenzará la partida.

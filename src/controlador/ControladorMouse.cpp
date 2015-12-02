@@ -100,18 +100,20 @@ bool ControladorMouse::procesarClickEnVentana(Mouse* mouse, Tile** tile_clic, Co
 								unidades[i]->olvidarInteraccion();
 								/* Activamos localmente el movimiento del sprite y seteamos el nuevo camino que debe recorrer. */
 								if (entidadReceptora == NULL) {
-									spriteUnidad->setearNuevoCamino(camino, coord_pixel_ceros);
 									/* Si se está jugando en red, enviar el movimiento a los demás jugadores. */
 									if (juego->esCliente())
 										Proxy::enviar(juego->getConnection(), *unidades[i], camino);
+									else
+										spriteUnidad->setearNuevoCamino(camino, coord_pixel_ceros);	// para intentar mejorar el sincronismo
 								}
 							}
 
 							// Si la hay, settear interacción con nueva entidad cliqueada.
 							if (entidadReceptora != NULL) {
-								unidades[i]->interactuarCon(entidadReceptora);
 								if (juego->esCliente())
 									Proxy::enviar(juego->getConnection(), *unidades[i], *entidadReceptora);
+								else
+									unidades[i]->interactuarCon(entidadReceptora);	// Intentando mejorar el sincronismo
 							}
 						} catch ( FueraDeEscenario &e ) {}
 					}
@@ -285,18 +287,20 @@ void ControladorMouse::procesarClickDerecho(Mouse* mouse){
 					unidades[i]->olvidarInteraccion();
 					/* Activamos localmente el movimiento del sprite y seteamos el nuevo camino que debe recorrer. */
 					if (entidadReceptora == NULL) {
-						spriteUnidad->setearNuevoCamino(camino, coord_pixel_ceros);
 						/* Si se está jugando en red, enviar el movimiento a los demás jugadores. */
 						if (juego->esCliente())
 							Proxy::enviar(juego->getConnection(), *unidades[i], camino);
+						else
+							spriteUnidad->setearNuevoCamino(camino, coord_pixel_ceros);	// Intentando mejorar el sincronismo
 					}
 				}
 
 				// Si la hay, settear interacción con nueva entidad cliqueada.
 				if (entidadReceptora != NULL) {
-					unidades[i]->interactuarCon(entidadReceptora);
 					if (juego->esCliente())
 						Proxy::enviar(juego->getConnection(), *unidades[i], *entidadReceptora);
+					else
+						unidades[i]->interactuarCon(entidadReceptora);	// Intentando mejorar el sincronismo
 				}
 			} catch ( FueraDeEscenario &e ) {}
 

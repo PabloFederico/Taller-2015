@@ -68,6 +68,7 @@ ObjetivoEscenario inputObjetivoEscenario() {
 	std::cout << "  3 - Partida regicida             " << std::endl;
 	std::cout << std::endl << "-> ";
 	std::cin >> obj;
+	std::cout << std::endl;
 	if (obj < 0 || 3 < obj)
 		return MODO_DEFAULT;
 	return ObjetivoEscenario(obj);
@@ -212,7 +213,7 @@ void Server::correr() {
 	switch (modoDeJuego) {
 	case DESTRUIR_CENTRO_CIVICO: cantJugadores = 4;//3;
 		break;
-	case CAPTURAR_BANDERA: cantJugadores = 2;//4;
+	case CAPTURAR_BANDERA: cantJugadores = 5;//4;		// Uno más que cuanto iba. Si tiene 2 poner 3, etc.
 		break;
 	case PARTIDA_REGICIDA: cantJugadores = 3;//2;
 		break;
@@ -227,8 +228,14 @@ void Server::correr() {
 		memcpy(&tempset, &readset, sizeof(tempset));
 		// Espera MAX_ESPERA_CONEXION segundos o hasta que aparezca una conexión.
 		intentarNuevaConexion(&tempset, MAX_ESPERA_CONEXION);
-		if (clientes.cantConectados == cantJugadores-1)
+
+		/*if (clientes.cantConectados < i) {
+			std::cout << std::endl << "No se recibieron más conexiones."<<std::endl<<"Preparate para la partida."<<std::endl;
+			break;
+		} else*/ if (clientes.cantConectados == cantJugadores-1) {
 			std::cout << std::endl << "¡Todos los jugadores están conectados!"<<std::endl<<"Preparate para la partida."<<std::endl;
+			//break;
+		}
 	}
 	memcpy(&tempset, &readset, sizeof(tempset));
 	FD_CLR(srvsock, &readset);
@@ -272,6 +279,7 @@ void Server::correr() {
 			send(j, mensaje.c_str(), 8, MSG_NOSIGNAL);
 		}
 	}
+	sleep(1);//
 	/******************************************************************/
 
 	// Generación de cant recursos random iniciales
@@ -305,7 +313,7 @@ void Server::correr() {
 					//// Lo recibido de un cliente, si no es únicamente para el servidor, mandarlo a todos los demás
 					//if (procesarComoServidor(j, string(buffer))) {
 					std::cout << "Echoing "<<j<<": "<<buffer<<std::endl;//
-					enviarATodosMenos(j, buffer);
+					enviarATodos(buffer);//enviarATodosMenos(j, buffer);
 					//}
 				} else if (result == 0) {
 					conexionPerdida(j);

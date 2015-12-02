@@ -8,14 +8,15 @@
 #include "../controlador/Controller.h"
 
 
-Controller::Controller(Connection* lan = NULL) {
-	mouse = new Mouse();	
+Controller::Controller(Connection* lan = NULL, ObjetivoEscenario modoDeJuego = MODO_DEFAULT) {
+	mouse = new Mouse();
 	this->lan = lan;
 	ConfiguracionJuego infoJuego;
+
 	try {
 		if (lan != NULL) {
 			//infoJuego = Proxy::clienteEsperarConfigGame(lan);
-			ObjetivoEscenario modoDeJuego = Proxy::clienteEsperarComienzoYModoDeJuego(lan);
+			//ObjetivoEscenario modoDeJuego = Proxy::clienteEsperarComienzoYModoDeJuego(lan);
 			this->juego = new Juego(lan, modoDeJuego, NULL);//, &infoJuego);
 		}
 	} catch ( Disconnected &e ) {

@@ -534,8 +534,8 @@ vector<Entidad*> Juego::revisarMuertos() {
 	vector<Entidad*> funeral = this->jugador->revisarMuertosPropios();
 	// Enemigos
 	for (std::vector<Unidad*>::iterator uniIt = this->unidadesEnemigos->begin(); uniIt < this->unidadesEnemigos->end(); ) {
-		//if ((*uniIt)->getEstado() == MUERTO) {
-		if (!(*uniIt)->sigueViva()) {
+//		if (!(*uniIt)->sigueViva()) {
+		if ((*uniIt)->getEstado() == MUERTO) {
 			Unidad* moribundo = *uniIt;
 			unidadesEnemigos->erase(uniIt);
 			funeral.push_back(moribundo);
@@ -570,7 +570,7 @@ void Juego::iniciarInteraccionEntre(TipoEntidad tipo_ejecutor, int idJug_ejecuto
 
 	ejecutor->olvidarInteraccion();
 	getSpriteDeEntidad(ejecutor)->activarMovimiento(false);
-	ejecutor->interactuarCon(receptor);
+	iniciarInteraccionEntre(ejecutor, receptor);
 }
 
 /********************************************************************************/
@@ -620,7 +620,7 @@ void Juego::interaccionesDeUnidades() {
 		} catch ( FinJuego &e ) {
 			if (this->modo_de_juego == e.objetivo && modo_de_juego == CAPTURAR_BANDERA) {
 				Proxy::enviarConversion(this->connection, this->getIDJugador(), (*uniIt)->getIDJug());
-				conversionDeEnemigo(this->getIDJugador(), (*uniIt)->getIDJug());
+				//conversionDeEnemigo(this->getIDJugador(), (*uniIt)->getIDJug());//
 			}
 		}
 	}
@@ -768,14 +768,18 @@ void Juego::reemplazarEntidadPorRecurso(Entidad* entidad){
 
 /***************************************************/
 void Juego::apagarEnemigo(int id_jugador) {
-	for (vector<Unidad*>::iterator it = this->unidadesEnemigos->begin(); it < this->unidadesEnemigos->end(); ++it)
-		if ((*it)->perteneceAJugador(id_jugador)) {
-			try {
-				(*it)->sufrirGolpe( (*it)->getVidaRestante() );
-			} catch ( EntidadMurio &e ) {
-				ejecutoresOlvidarInteraccionCon(*it);
+	if (id_jugador == this->getIDJugador())
+		anunciarGanador(-1);
+	else {
+		for (vector<Unidad*>::iterator it = this->unidadesEnemigos->begin(); it < this->unidadesEnemigos->end(); ++it)
+			if ((*it)->perteneceAJugador(id_jugador)) {
+				try {
+					(*it)->sufrirGolpe( (*it)->getVidaRestante() );
+				} catch ( EntidadMurio &e ) {
+					ejecutoresOlvidarInteraccionCon(*it);
+				}
 			}
-		}
+	}
 }
 
 /***************************************************/

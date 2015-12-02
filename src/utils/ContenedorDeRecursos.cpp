@@ -626,7 +626,7 @@ ContenedorDeRecursos::~ContenedorDeRecursos() {
 
 	map<Entidad*, Sprite* >::iterator itttt = this->mapSpritesEntidades->begin();
 	while (itttt != this->mapSpritesEntidades->end()){
-		Sprite *sprite = itttt->second;
+//		Sprite *sprite = itttt->second;
 		itttt++;
 		//HAY SPRITES QUE SON DELETEADOS EN OTRO LADO PERO NO QUITADOS DE ESTE MAP
 		//delete sprite;
