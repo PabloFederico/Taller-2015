@@ -18,3 +18,6 @@ Bibliotecas usadas:
 		-> Dependencia de YAML: LibBoost (sudo apt-get install libboost-all-dev)
 		-> Dependencia de YAML : Cmake (sudo apt-get install cmake)
 
+
+#Un archivo tipo README que indique cómo iniciar el programa a partir del ejecutable. Debe contener 
+#los parámetros que recibe y cualquier información que alguien que no esté familiarizado con el programa requiera para poder ejecutarlo.

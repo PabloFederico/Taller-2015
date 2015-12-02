@@ -19,8 +19,7 @@ int main(int argc, char** argv) {
 			if (argv[1][0] == 's') {
 				server = new Server();
 				server->correr();
-			} else if (argv[1][0] == 'c')
-				lan = new Client();
+			}
 		} catch ( ConnectionProblem &e ) { return -1; }
 	}
 
@@ -38,30 +37,30 @@ int main(int argc, char** argv) {
 			return -1;
 		}
 
-//		try {
-//			if (lan != NULL) {
-//				//infoJuego = Proxy::clienteEsperarConfigGame(lan);
-//				//Proxy::clienteEsperarComienzo(lan);
-//				this->juego = new Juego(lan, NULL);//, &infoJuego);
-//			}
-//		} catch ( Disconnected &e ) {
-//			std::cout << "Desconectado."<<std::endl;
-//			lan = NULL;
-//		}
-		Controller *controller = new Controller(lan);
+		EstadoFinVentana estado = OK;
+		VentanaEspera *ventanaEspera = NULL;
+		ObjetivoEscenario modoDeJuego = MODO_DEFAULT;
 
-		//VentanaConexion *ventanaConexion = new VentanaConexion(controller);
-		//EstadoFinVentana estado = ventanaConexion->run();
-		//delete ventanaConexion;
-		EstadoFinVentana estado = OK;//
+		if (argc > 1) {
+			try {
+				if (argv[1][0] == 'c') {
+					//ventanaEspera = new VentanaEspera(std::pair<int,int>(640,800)); // hardcode sabroso
+					//estado = ventanaEspera->run();
+
+					lan = new Client();	// Se conecta.
+					modoDeJuego = Proxy::clienteEsperarComienzoYModoDeJuego(lan); // Espera comienzo de juego.
+				}
+			} catch ( ConnectionProblem &e ) { return -1; }
+		}
+
+		Controller *controller = new Controller(lan, modoDeJuego);	// Carga el juego (modelo)
+
+		delete ventanaEspera;
 
 		if (estado == OK){
-			//VentanaEspera *ventanaEspera = new VentanaEspera(controller);
-			//estado = ventanaEspera->run();
-			//delete ventanaEspera;
 
 			if (estado == OK){
-				VentanaJuego *ventanaJuego = new VentanaJuego(controller);
+				VentanaJuego *ventanaJuego = new VentanaJuego(controller);	// Carga y mantiene la vista.
 				estado = ventanaJuego->run();
 				delete ventanaJuego;
 			}

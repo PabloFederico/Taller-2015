@@ -26,7 +26,7 @@ private:
 	ControladorJuego *controladorJuego;
 
 public:
-	Controller(Connection* lan);
+	Controller(Connection* lan, ObjetivoEscenario modoDeJuego);
 
 	Juego* getJuego();
 

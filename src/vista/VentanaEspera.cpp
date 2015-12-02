@@ -8,12 +8,13 @@
 #include "VentanaEspera.h"
 #include "../utils/Loader.h"
 
-VentanaEspera::VentanaEspera(Controller* controlador):Ventana(controlador) {
-	if (!init()) std::cout << "error" << std::endl;
+VentanaEspera::VentanaEspera(std::pair<int,int> dimensionesVentana):Ventana(NULL) {//Controller* controlador):Ventana(controlador) {
+	if (!init()) { std::cout << "error VentanaEspera" << std::endl; return; }
+	this->SCREEN_WIDTH = dimensionesVentana.first;
+	this->SCREEN_HEIGHT = dimensionesVentana.second;
 	imagenFondo = Loader::cargarImagen(renderer,"images/utils/fondo_ventana_espera.png");
 	fuenteTexto = TTF_OpenFont("images/utils/censcbk.ttf",TAM_LETRA_CONEXION);
 	imagenEsperando = Loader::cargarTexto(renderer,fuenteTexto,"Esperando Conexiones");
-
 }
 
 EstadoFinVentana VentanaEspera::run(){
@@ -37,7 +38,8 @@ EstadoFinVentana VentanaEspera::run(){
 			esperando = false;
 			estado = EXIT;
 		}
-		if (SDL_GetTicks()-time > 1000){
+		contador = 5;//
+		if (SDL_GetTicks()-time > 1000) {
 			texto = texto + ".";
 			delete imagenEsperando;
 			imagenEsperando = Loader::cargarTexto(renderer,fuenteTexto,texto);
@@ -63,6 +65,7 @@ EstadoFinVentana VentanaEspera::run(){
 		SDL_RenderPresent(renderer);
 
 	}
+	std::cout << "fin run ventanaEspera"<<std::endl;//
 	return estado;
 }
 

@@ -9,13 +9,15 @@
 #define SRC_VISTA_VENTANAESPERA_H_
 #include "Ventana.h"
 
+
 class VentanaEspera: public Ventana {
 private:
 	Imagen* imagenFondo;
 	Imagen* imagenEsperando;
 
 public:
-	VentanaEspera(Controller* controlador);
+	VentanaEspera(std::pair<int,int> dimensionesVentana);
+	//VentanaEspera(Controller* controlador);
 	EstadoFinVentana run();
 	virtual ~VentanaEspera();
 };

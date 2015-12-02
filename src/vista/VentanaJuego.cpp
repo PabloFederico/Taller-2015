@@ -57,9 +57,9 @@ void VentanaJuego::cargarJuego(Juego *juego){
 		SDL_SetWindowTitle(window,nombreJugador.c_str());
 
 		//Cargamos la música de fondo. COMENTADO POR SANIDAD PROPIA
-		//Mix_Music *musica = Mix_LoadMUS("sound/fondo.mp3");
-		//if (musica == NULL) printf("Error al cargar la cancion. Error: %s\n", Mix_GetError());
-		//else this->musica_fondo = musica;
+//		Mix_Music *musica = Mix_LoadMUS("sound/fondo.mp3");
+//		if (musica == NULL) printf("Error al cargar la cancion. Error: %s\n", Mix_GetError());
+//		else this->musica_fondo = musica;
 	}
 }
 

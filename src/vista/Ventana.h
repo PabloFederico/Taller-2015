@@ -12,6 +12,7 @@
 #include <SDL2/SDL_mixer.h>
 #include "../controlador/Controller.h"
 
+
 class Ventana {
 protected:
 	Controller *controlador;
