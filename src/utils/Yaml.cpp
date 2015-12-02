@@ -306,12 +306,13 @@ ConfiguracionJuego Yaml::OdioYAML() {
 
 	InfoEntidad infoBandera;
 	infoBandera.tipo = tipos["bandera"];
-	infoBandera.path = "images/utils/arbol.png";
+	infoBandera.path = "images/utils/bandera.png";
 	infoBandera.descripcion = "ABRAZAME";
 
 	InfoEntidad infoRey;
 	infoRey.tipo = tipos["rey"];
-	infoRey.path = "images/sprites/aldeano_camina.png";
+	infoRey.fps = 20;
+	infoRey.path = "images/sprites/rey_camina.png";
 	infoRey.descripcion = "EL REY";
 
 	configDefault.agregarInfoEntidad(infoArbol);

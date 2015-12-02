@@ -35,6 +35,11 @@ SpriteUnidad::SpriteUnidad(int cant_dir, int frames_dif, Imagen* image, SDL_Rect
 	SDL_Rect rectConstruccion = pos;
 
 	switch (entidad->getTipo()){
+		case REY:
+					FRAMES_MUERTE = 10;
+					FRAMES_QUIETO = 10;
+					FPS_MUERTE = 10;
+					break;
 		case ALDEANO:
 					 rectAtaque.x -= 20;
 					 rectAtaque.y += 5;

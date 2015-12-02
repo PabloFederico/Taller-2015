@@ -96,11 +96,12 @@ tipos:
     imagen: images/utils/mina_oro.png
 
   - nombre: bandera
-    imagen: images/utils/arbol.png	#!!!
+    imagen: images/utils/bandera.png	#!!!
     descripcion: ME HAS ENCONTRADO
 
   - nombre: rey
-    imagen: images/sprites/aldeano_camina.png	#!!!
+    imagen: images/sprites/rey_camina.png	#!!!
+    fps: 20
     descripcion: EL REY
 
 escenario:

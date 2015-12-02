@@ -77,6 +77,20 @@ void ContenedorDeRecursos::generarYGuardarSpriteEntidad(Entidad* entidad, Coorde
 						break;
 			/* Modificamos los tamanios de la imagen castillo para que ocupe
 			 * los tiles que le corresponden */
+		case BANDERA: {
+						posicion.x -= 5;
+						posicion.y -= (2 * DISTANCIA_ENTRE_Y);
+						posicion.w = ANCHO_PIXEL_PASTO * 0.30;
+						posicion.h = 2*ALTO_PIXEL_PASTO;
+						sprite = new Sprite(1,1,this->getImagenTipo(entidad->getTipo()),posicion,escenario,coord_ceros,entidad);
+
+						int x_ini = posicion.x;
+						int y_ini = posicion.y;
+						Rectangulo rect1(x_ini + 0.25*ANCHO_PIXEL_PASTO, 0.5* ANCHO_PIXEL_PASTO, y_ini, 0.75*posicion.h);
+						sprite->agregarRectangulo(rect1);
+						}
+						break;
+
 		case CONSTRUCCION_BARRACK:
 		case CONSTRUCCION_CUARTEL:
 		case CONSTRUCCION:
@@ -124,6 +138,29 @@ void ContenedorDeRecursos::generarYGuardarSpriteEntidad(Entidad* entidad, Coorde
 						int x_ini = posicion.x;
 						int y_ini = posicion.y;
 						Rectangulo rect1(x_ini, mapInfoEntidades[entidad->getTipo()].ancho*ANCHO_PIXEL_PASTO, y_ini, mapInfoEntidades[entidad->getTipo()].ancho*ALTO_PIXEL_PASTO);
+						sprite->agregarRectangulo(rect1);
+						}
+						break;
+
+		case REY:       {
+						/* FRAMES:
+						 * CAMINAR : 10 frames
+						 * MUERE : 10 frames
+						 * */
+						posicion.x += 0.25 * ANCHO_PIXEL_PASTO;
+						posicion.y -= DISTANCIA_ENTRE_Y + 5;
+						posicion.w = 0.5*ANCHO_PIXEL_PASTO;
+						posicion.h = 1.4*ALTO_PIXEL_PASTO;
+
+						SpriteUnidad *spriteUnidad = new SpriteUnidad(DIRECCIONES,10,this->getImagenTipo(entidad->getTipo()),posicion,escenario,coord_ceros,entidad);
+						spriteUnidad->cargarFramesQuieto(mapImagenUnidades[REY_QUIETO]);
+						spriteUnidad->cargarFramesMuerte(mapImagenUnidades[REY_MURIENDO]);
+						spriteUnidad->acomodar();
+						sprite = spriteUnidad;
+
+						int x_ini = posicion.x;
+						int y_ini = posicion.y;
+						Rectangulo rect1(x_ini + 0.3*posicion.w, 0.3*posicion.w, y_ini + 0.1 * posicion.h, 0.8*posicion.h);
 						sprite->agregarRectangulo(rect1);
 						}
 						break;
@@ -324,7 +361,7 @@ void ContenedorDeRecursos::cargarFramesFaltantesDeUnidades(){
 	imagen = Loader::cargarImagen(this->renderer,"images/sprites/soldado_ataca.png");
 	mapImagenUnidades[SOLDADO_ATACANDO] = imagen;
 
-	imagen = Loader::cargarImagen(this->renderer,"images/sprites/soldado_muriendo.png"); // TODO conseguir sprite soldado muriendo
+	imagen = Loader::cargarImagen(this->renderer,"images/sprites/soldado_muriendo.png");
 	mapImagenUnidades[SOLDADO_MURIENDO] = imagen;
 
 	imagen = Loader::cargarImagen(this->renderer,"images/sprites/soldado_quieto.png");
@@ -338,6 +375,12 @@ void ContenedorDeRecursos::cargarFramesFaltantesDeUnidades(){
 
 	imagen = Loader::cargarImagen(this->renderer,"images/sprites/arquero_quieto.png");
 	mapImagenUnidades[ARQUERO_QUIETO] = imagen;
+
+	imagen = Loader::cargarImagen(this->renderer,"images/sprites/rey_muriendo.png");
+	mapImagenUnidades[REY_MURIENDO] = imagen;
+
+	imagen = Loader::cargarImagen(this->renderer,"images/sprites/rey_camina.png"); // TODO
+	mapImagenUnidades[REY_QUIETO] = imagen;
 }
 
 /********************************************************************************/

@@ -212,7 +212,7 @@ void Server::correr() {
 	switch (modoDeJuego) {
 	case DESTRUIR_CENTRO_CIVICO: cantJugadores = 4;//3;
 		break;
-	case CAPTURAR_BANDERA: cantJugadores = 5;//4;
+	case CAPTURAR_BANDERA: cantJugadores = 2;//4;
 		break;
 	case PARTIDA_REGICIDA: cantJugadores = 3;//2;
 		break;
