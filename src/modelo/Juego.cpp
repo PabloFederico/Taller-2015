@@ -186,7 +186,6 @@ void Juego::generarNuevasUnidadesYEdificiosIniciales() {
 /********************************************************************************/
 void Juego::envioInicialDeEntidadesPropias() {
 	if (!esCliente()) return;
-	std::cout << "empieza envío inicial"<<std::endl;//
 
 	vector<Edificio*> v_edif = this->jugador->getEdificios();
 	for (vector<Edificio*>::iterator it1 = v_edif.begin(); it1 < v_edif.end(); ++it1) {
@@ -196,7 +195,6 @@ void Juego::envioInicialDeEntidadesPropias() {
 	for (vector<Unidad*>::iterator it2 = v_unid.begin(); it2 < v_unid.end(); ++it2) {
 		Proxy::enviar(this->connection, **it2);
 	}
-	std::cout << "termina envío inicial"<<std::endl;//
 }
 
 
@@ -521,7 +519,6 @@ Edificio* Juego::terminarConstruccion(ConstruccionTermino c) {
 		for (vector<Edificio*>::iterator it = this->edificiosEnemigos->begin(); it < this->edificiosEnemigos->end(); ++it)
 			if ((*it)->get_identificador() == c.dni && (*it)->perteneceAJugador(c.idJug)) {
 				this->edificiosEnemigos->erase(it);
-				std::cout << "construcción a eliminar encontrada!"<<std::endl;//
 				break;
 			}
 		this->edificiosEnemigos->push_back(nuevoEdificio);
@@ -536,26 +533,20 @@ vector<Entidad*> Juego::revisarMuertos() {
 	// Propios
 	vector<Entidad*> funeral = this->jugador->revisarMuertosPropios();
 	// Enemigos
-	for (std::vector<Unidad*>::iterator uniIt = this->unidadesEnemigos->begin(); uniIt < this->unidadesEnemigos->end(); ++uniIt) {
-		if (!(*uniIt)->sigueViva()) {
+	for (std::vector<Unidad*>::iterator uniIt = this->unidadesEnemigos->begin(); uniIt < this->unidadesEnemigos->end(); ) {
 		//if ((*uniIt)->getEstado() == MUERTO) {
+		if (!(*uniIt)->sigueViva()) {
 			Unidad* moribundo = *uniIt;
-
 			unidadesEnemigos->erase(uniIt);
-			uniIt = this->unidadesEnemigos->begin(); //por las dudas
-
 			funeral.push_back(moribundo);
-		}
+		} else ++uniIt;
 	}
-	for (std::vector<Edificio*>::iterator ediIt = this->edificiosEnemigos->begin(); ediIt < this->edificiosEnemigos->end(); ++ediIt) {
+	for (std::vector<Edificio*>::iterator ediIt = this->edificiosEnemigos->begin(); ediIt < this->edificiosEnemigos->end(); ) {
 		if (!(*ediIt)->sigueViva()) {
 			Edificio* dilapidado = *ediIt;
-
 			edificiosEnemigos->erase(ediIt);
-			ediIt = this->edificiosEnemigos->begin(); //por las dudas
-
 			funeral.push_back(dilapidado);
-		}
+		} else ++ediIt;
 	}
 	vector<Entidad*> basurero = this->escenario->revisarMuertosDeNadie();
 	for (std::vector<Entidad*>::iterator entIt = basurero.begin(); entIt < basurero.end(); ++entIt)
@@ -629,6 +620,7 @@ void Juego::interaccionesDeUnidades() {
 		} catch ( FinJuego &e ) {
 			if (this->modo_de_juego == e.objetivo && modo_de_juego == CAPTURAR_BANDERA) {
 				Proxy::enviarConversion(this->connection, this->getIDJugador(), (*uniIt)->getIDJug());
+				conversionDeEnemigo(this->getIDJugador(), (*uniIt)->getIDJug());
 			}
 		}
 	}
@@ -834,7 +826,7 @@ void Juego::conversionDeEnemigo(int id_conversor, int id_convertido) {
 /***************************************************/
 
 void Juego::verificarObjetivoPartida(ObjetivoEscenario oe) {
-	if (modo_de_juego == MODO_DEFAULT || oe != this->modo_de_juego)
+	if (!esCliente() || modo_de_juego == MODO_DEFAULT || oe != this->modo_de_juego)
 		return;
 	switch (modo_de_juego) {
 	case DESTRUIR_CENTRO_CIVICO:

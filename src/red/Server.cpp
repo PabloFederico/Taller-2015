@@ -64,7 +64,7 @@ ObjetivoEscenario inputObjetivoEscenario() {
 	std::cout << "Elija modo de juego de la partida: " << std::endl;
 	std::cout << "  0 - Modo default, sin objetivos  " << std::endl;
 	std::cout << "  1 - Destrucción de centro cívico " << std::endl;
-	std::cout << "  2 - Captura de banderas          " << std::endl;
+	std::cout << "  2 - Captura de bandera           " << std::endl;
 	std::cout << "  3 - Partida regicida             " << std::endl;
 	std::cout << std::endl << "-> ";
 	std::cin >> obj;
@@ -210,23 +210,25 @@ void Server::correr() {
 	modoDeJuego = inputObjetivoEscenario();
 
 	switch (modoDeJuego) {
-	case DESTRUIR_CENTRO_CIVICO: cantJugadores = 3;
+	case DESTRUIR_CENTRO_CIVICO: cantJugadores = 4;//3;
 		break;
-	case CAPTURAR_BANDERA: cantJugadores = 4;
+	case CAPTURAR_BANDERA: cantJugadores = 5;//4;
 		break;
-	case PARTIDA_REGICIDA: cantJugadores = 2;
+	case PARTIDA_REGICIDA: cantJugadores = 3;//2;
 		break;
 	default: cantJugadores = MAX_CONEXIONES;
 	}
 
 	/********************** CONEXIONES INICIALES **********************/
-	std::cout << "Aceptando hasta "<<cantJugadores<<" jugadores ("<<MAX_ESPERA_CONEXION<<" s para conectarse)."<<std::endl;
+	std::cout << "Aceptando hasta "<<cantJugadores-1<<" jugadores ("<<MAX_ESPERA_CONEXION<<" s para conectarse)."<<std::endl;
 
 	for (int i = 1; i <= cantJugadores; i++) {
 		std::cout << "#"<<i<<" ... ";
 		memcpy(&tempset, &readset, sizeof(tempset));
 		// Espera MAX_ESPERA_CONEXION segundos o hasta que aparezca una conexión.
 		intentarNuevaConexion(&tempset, MAX_ESPERA_CONEXION);
+		if (clientes.cantConectados == cantJugadores-1)
+			std::cout << std::endl << "¡Todos los jugadores están conectados!"<<std::endl<<"Preparate para la partida."<<std::endl;
 	}
 	memcpy(&tempset, &readset, sizeof(tempset));
 	FD_CLR(srvsock, &readset);
@@ -237,9 +239,10 @@ void Server::correr() {
 		sleep(1); std::cout << "."; sleep(1); std::cout << "."; sleep(1); std::cout << ".";
 		sleep(1); std::cout << "."; sleep(1); std::cout << std::endl;
 		return;
-	} else if (clientes.cantConectados == cantJugadores) sleep(2);
+	} else if (clientes.cantConectados == cantJugadores) sleep(4);
 
-	std::cout << std::endl << "Se recibieron "<<clientes.cantConectados<<" conexiones."<<std::endl;
+	if (clientes.cantConectados < cantJugadores-1)
+		std::cout << std::endl << "Se recibieron "<<clientes.cantConectados<<" conexiones."<<std::endl;
 	/******************************************************************/
 
 
@@ -331,12 +334,12 @@ void Server::correr() {
 			if (FD_ISSET(j, &readset)) {
 				sleep(3);	// pausa para disfrutar la victoria, y ver caer a los enemigos restantes.
 				mensaje = Red::agregarPrefijoYFinal("FIN", clientes[j].id);
-				std::cout << "Envío aviso a los ganadores."<<std::endl;
+				std::cout << std::endl << std::endl << "Envío aviso a los ganadores."<<std::endl;
 				send(j, mensaje.c_str(), 10, MSG_NOSIGNAL);
 			}
 		}
 	} else
-		std::cout << std::endl << "Se han desconectado todos los jugadores."<<std::endl;
+		std::cout << std::endl << std::endl << "Se han desconectado todos los jugadores."<<std::endl;
 	std::cout << "Fin de la partida."<<std::endl;
 	sleep(4);
 }
@@ -350,5 +353,5 @@ void Server::finalizar() {
 }
 
 Server::~Server() {
-	std::cout << "====== /SERVIDOR/ ======" << std::endl;
+	std::cout << std::endl << std::endl << "====== /SERVIDOR/ ======" << std::endl;
 }

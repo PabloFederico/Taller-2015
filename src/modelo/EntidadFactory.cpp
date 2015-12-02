@@ -20,6 +20,7 @@ Entidad* EntidadFactory::nuevaEntidad(TipoEntidad tipo, int id_jug, int dni) {
 	case ALDEANO:
 	case ARQUERO:
 	case SOLDADO:
+	case BANDERA:
 			e = new Unidad(tipo,id_jug,dni);
 			break;
 	case CONSTRUCCION_BARRACK:

@@ -133,6 +133,7 @@ EstadoFinVentana VentanaJuego::run(){
 					controlador->actualizarEstadoDelJuego();
 				} catch ( FinJuego &e ) {
 					run = false;
+					break;
 				}
 
 	            /* Actualiza el renderer */

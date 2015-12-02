@@ -197,27 +197,21 @@ void Jugador::ejecutoresOlvidarInteraccionCon(Entidad* muerto) {
 
 vector<Entidad*> Jugador::revisarMuertosPropios() {
 	vector<Entidad*> cuerpos;
-	for (std::vector<Unidad*>::iterator uniIt = this->vec_unidades.begin(); uniIt < this->vec_unidades.end(); ++uniIt) {
-		//if (!(*uniIt)->sigueViva()) {
-		if ((*uniIt)->getEstado() == MUERTO){
+	for (std::vector<Unidad*>::iterator uniIt = this->vec_unidades.begin(); uniIt < this->vec_unidades.end(); ) {
+//		if ((*uniIt)->getEstado() == MUERTO){
+		if (!(*uniIt)->sigueViva()) {
 			Unidad* moribundo = *uniIt;
-
 			unidades.erase(moribundo->get_identificador());
 			vec_unidades.erase(uniIt);
-			uniIt = this->vec_unidades.begin(); //por las dudas
-
 			cuerpos.push_back(moribundo);
-		}
+		} else ++uniIt;
 	}
-	for (std::map<int,Edificio*>::iterator ediIt = this->edificios.begin(); ediIt != this->edificios.end(); ++ediIt) {
+	for (std::map<int,Edificio*>::iterator ediIt = this->edificios.begin(); ediIt != this->edificios.end(); ) {
 		if (!ediIt->second->sigueViva()) {
 			Edificio* dilapidado = ediIt->second;
-
 			edificios.erase(ediIt);
-			ediIt = this->edificios.begin(); //por las dudas
-
 			cuerpos.push_back(dilapidado);
-		}
+		} else ++ediIt;
 	}
 	return cuerpos;
 }

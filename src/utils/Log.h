@@ -28,7 +28,7 @@ public:
 		ofstream fLog("TP.log", std::ofstream::app);
 		fLog << "[" << timestamp << "]" << '\t' <<LogToString(tipo)<< '\t' << output << std::endl;
 		fLog.close();
-		std::cerr << output <<std::endl;
+		std::cout << output <<std::endl;
 	};
 };
 

@@ -297,6 +297,8 @@ void Entidad::sufrirGolpe(int fuerzaGolpe) {
 	if (!esAtacable()) return;
 	if (this->vidaRestante <= 0){
 		estado = MURIENDO;
+		if (tipo == BANDERA)
+			throw FinJuego(CAPTURAR_BANDERA, this->getIDJug());
 		throw EntidadMurio();
 	}
 	this->vidaRestante -= fuerzaGolpe;
@@ -304,6 +306,8 @@ void Entidad::sufrirGolpe(int fuerzaGolpe) {
 		this->vidaRestante = 0;
 		if (!esRecurso()){
 			estado = MURIENDO;
+			if (tipo == BANDERA)
+				throw FinJuego(CAPTURAR_BANDERA, this->getIDJug());
 			throw EntidadMurio();
 		}
 		else std::cout << "Es posible atacar un recurso, corregime"<<std::endl;//

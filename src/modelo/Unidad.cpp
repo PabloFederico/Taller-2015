@@ -105,7 +105,7 @@ void Unidad::olvidarInteraccion() {
 }
 
 int Unidad::generarGolpe() {
-	if (getTipo() == REY) return 0;
+	if (getTipo() == REY || getTipo() == BANDERA) return 0;
 	/*random_device rd_gen;
 	mt19937 gen(rd_gen());
 	uniform_int_distribution<int> distribucion(this->obtenerAtk()/2,this->obtenerAtk());*/
