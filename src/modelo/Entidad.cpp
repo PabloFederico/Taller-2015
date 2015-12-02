@@ -241,7 +241,7 @@ pair<int,int> Entidad::getTam() {
 }
 
 bool Entidad::esAtacable() {
-	return (esUnidad() || esEdificio() || tipo == ANIMAL || tipo == ARBOL || tipo == MINA_ORO || tipo == MINA_PIEDRA); // medio harcodeo; reemplazable por una variable esAtacable
+	return (esUnidad() || esEdificio() || tipo == ANIMAL || tipo == ARBOL || tipo == MINA_ORO || tipo == MINA_PIEDRA || tipo == BANDERA); // medio harcodeo; reemplazable por una variable esAtacable
 }
 
 bool Entidad::esMovible(){

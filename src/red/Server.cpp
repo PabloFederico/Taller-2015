@@ -211,9 +211,9 @@ void Server::correr() {
 	modoDeJuego = inputObjetivoEscenario();
 
 	switch (modoDeJuego) {
-	case DESTRUIR_CENTRO_CIVICO: cantJugadores = 4;//3;
+	case DESTRUIR_CENTRO_CIVICO: cantJugadores = 3;//3;
 		break;
-	case CAPTURAR_BANDERA: cantJugadores = 5;//4;		// Uno más que cuanto iba. Si tiene 2 poner 3, etc.
+	case CAPTURAR_BANDERA: cantJugadores = 3;//4;		// Uno más que cuanto iba. Si tiene 2 poner 3, etc.
 		break;
 	case PARTIDA_REGICIDA: cantJugadores = 3;//2;
 		break;

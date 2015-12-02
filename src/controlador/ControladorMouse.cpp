@@ -99,7 +99,7 @@ bool ControladorMouse::procesarClickEnVentana(Mouse* mouse, Tile** tile_clic, Co
 								// Si yo muevo la(s) unidad(es), espero que deje de interactuar con su último receptor.
 								unidades[i]->olvidarInteraccion();
 								/* Activamos localmente el movimiento del sprite y seteamos el nuevo camino que debe recorrer. */
-								if (entidadReceptora == NULL) {
+								if (entidadReceptora == NULL && !unidades[i]->esMovible()) {
 									/* Si se está jugando en red, enviar el movimiento a los demás jugadores. */
 									if (juego->esCliente())
 										Proxy::enviar(juego->getConnection(), *unidades[i], camino);
@@ -286,7 +286,7 @@ void ControladorMouse::procesarClickDerecho(Mouse* mouse){
 					// Si yo muevo la(s) unidad(es), espero que deje de interactuar con su último receptor.
 					unidades[i]->olvidarInteraccion();
 					/* Activamos localmente el movimiento del sprite y seteamos el nuevo camino que debe recorrer. */
-					if (entidadReceptora == NULL) {
+					if (entidadReceptora == NULL && !unidades[i]->esMovible()) {
 						/* Si se está jugando en red, enviar el movimiento a los demás jugadores. */
 						if (juego->esCliente())
 							Proxy::enviar(juego->getConnection(), *unidades[i], camino);
