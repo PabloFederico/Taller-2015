@@ -607,7 +607,7 @@ void ContenedorDeRecursos::borrarSpriteDeEntidad(Entidad* entidad) {
 /********************************************************************************/
 ContenedorDeRecursos::~ContenedorDeRecursos() {
 	this->mapInfoEntidades.clear();
-
+	return;
 	map<TipoEntidad, Imagen* >::iterator it = this->mapImagenes->begin();
 	while (it != this->mapImagenes->end()){
 		Imagen *imagen = it->second;

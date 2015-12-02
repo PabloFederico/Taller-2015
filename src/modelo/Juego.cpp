@@ -620,7 +620,7 @@ void Juego::interaccionesDeUnidades() {
 		} catch ( FinJuego &e ) {
 			if (this->modo_de_juego == e.objetivo && modo_de_juego == CAPTURAR_BANDERA) {
 				Proxy::enviarConversion(this->connection, this->getIDJugador(), (*uniIt)->getIDJug());
-				//conversionDeEnemigo(this->getIDJugador(), (*uniIt)->getIDJug());//
+				conversionDeEnemigo(this->getIDJugador(), (*uniIt)->getIDJug());//
 			}
 		}
 	}

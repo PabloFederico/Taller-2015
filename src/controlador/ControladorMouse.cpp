@@ -103,7 +103,7 @@ bool ControladorMouse::procesarClickEnVentana(Mouse* mouse, Tile** tile_clic, Co
 									/* Si se está jugando en red, enviar el movimiento a los demás jugadores. */
 									if (juego->esCliente())
 										Proxy::enviar(juego->getConnection(), *unidades[i], camino);
-									else
+							//		else
 										spriteUnidad->setearNuevoCamino(camino, coord_pixel_ceros);	// para intentar mejorar el sincronismo
 								}
 							}
@@ -112,7 +112,7 @@ bool ControladorMouse::procesarClickEnVentana(Mouse* mouse, Tile** tile_clic, Co
 							if (entidadReceptora != NULL) {
 								if (juego->esCliente())
 									Proxy::enviar(juego->getConnection(), *unidades[i], *entidadReceptora);
-								else
+					//			else
 									unidades[i]->interactuarCon(entidadReceptora);	// Intentando mejorar el sincronismo
 							}
 						} catch ( FueraDeEscenario &e ) {}
@@ -290,7 +290,7 @@ void ControladorMouse::procesarClickDerecho(Mouse* mouse){
 						/* Si se está jugando en red, enviar el movimiento a los demás jugadores. */
 						if (juego->esCliente())
 							Proxy::enviar(juego->getConnection(), *unidades[i], camino);
-						else
+				//		else
 							spriteUnidad->setearNuevoCamino(camino, coord_pixel_ceros);	// Intentando mejorar el sincronismo
 					}
 				}
@@ -299,7 +299,7 @@ void ControladorMouse::procesarClickDerecho(Mouse* mouse){
 				if (entidadReceptora != NULL) {
 					if (juego->esCliente())
 						Proxy::enviar(juego->getConnection(), *unidades[i], *entidadReceptora);
-					else
+			//		else
 						unidades[i]->interactuarCon(entidadReceptora);	// Intentando mejorar el sincronismo
 				}
 			} catch ( FueraDeEscenario &e ) {}
