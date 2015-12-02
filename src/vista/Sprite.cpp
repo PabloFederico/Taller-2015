@@ -243,7 +243,7 @@ void Sprite::setearNuevoCamino(Camino nuevoCamino, Coordenada coord_ceros){
 	this->caminoARecorrer.clear();
 	if (nuevoCamino.empty()) {
 		this->caminoARecorrer = nuevoCamino.v;
-		//this->activarMovimiento(false);
+		this->activarMovimiento(false);
 		return;
 	}
 
@@ -387,8 +387,8 @@ void Sprite::update(int vel_personaje, Mix_Chunk* sonido_caminar) {
 
 /********************************************************************************/
 Sprite::~Sprite() {
-	if (!entidad->esUnidad()){
-		for (int i = 0; i < this->cant_Direcciones; i++){
+	if (!entidad->esUnidad() && (this->frames) && (*this->frames)) {
+		for (int i = 0; i < this->cant_Direcciones; i++) {
 			delete[] this->frames[i];
 		}
 		delete[] this->frames;

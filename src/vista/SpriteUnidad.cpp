@@ -258,77 +258,79 @@ void SpriteUnidad::verificarEstadoEntidadConImagen(){
 void SpriteUnidad::update(int vel_personaje, Mix_Chunk* sonido_caminar){
 	verificarEstadoEntidadConImagen();
 	switch (entidad->getEstado()){
-		case CAMINANDO:
-						if (this->quedaCaminoPorRecorrer()) {
-
-							// Activo sonido del movimiento:
-							Mix_PlayChannel(1, sonido_caminar, 0);
-							/*	- calcular distancia al sig punto
-							 *  - si es mayor a 1, seguir moviendo la posicion
-							 *    sino cambiar al siguiente punto del camino (analizando la dirección)
-							 *  - si ya no quedan camino a recorrer, cambiar estado de activar movimiento y acomodar
-							 * */
-							Coordenada c_prox_pixel = this->getCaminoARecorrer()[0];
-
-							c_prox_pixel.x -= this->getPosicion().w / 2;
-							c_prox_pixel.y -= this->getPosicion().h;
-
-							float distancia = Calculador::calcularDistanciaEntrePixeles(Coordenada(this->regPos.posX_player, this->regPos.posY_player), c_prox_pixel);
-
-							if (distancia > 1){
-								if (this->regPos.posX_player != c_prox_pixel.x) {
-									float x_result = (this->regPos.posX_player - ((this->regPos.posX_player - c_prox_pixel.x) / distancia) * vel_personaje  * 0.05);
-									this->setPosX(int(x_result));
-									this->regPos.posX_player = x_result;
-								}
-								if (this->regPos.posY_player != c_prox_pixel.y) {
-									float y_result = (this->regPos.posY_player - ((this->regPos.posY_player - c_prox_pixel.y) / distancia) * vel_personaje * 0.05);
-									this->setPosY(int(y_result));
-									this->regPos.posY_player = y_result;
-								}
-							} else {
-
-								/* guardar última coordenada para desocuparla y cambiar a la próxima */
-								Coordenada c_ult_punto = this->getCaminoARecorrer()[0];
-								this->quitarPrimeraCoordenada();
-
-								/* Seteamos la dirección para el siguiente punto. */
-								if (this->getCaminoARecorrer().size() > 0){
-									try {
-										//this->escenario->desocuparTile(Calculador::tileParaPixel(c_ult_punto, coord_ceros));
-										if (this->revisarCamino(c_ult_punto)) {
-											Coordenada c_prox_punto = this->getCaminoARecorrer()[0];
-											c_prox_punto.x -= this->getPosicion().w / 2;
-											c_prox_punto.y -= this->getPosicion().h / 2;
-											Coordenada c_tile_actual = Calculador::tileParaCualquierPixel(coordPixelSprite(),coord_ceros);
-											Coordenada c_tile_prox = Calculador::tileParaCualquierPixel(c_prox_punto,coord_ceros);
-											if (c_tile_actual != c_tile_prox){
-												Direccion direccion = Calculador::calcularDireccionEntrePuntosAdyacentes(c_tile_actual,c_tile_prox);
-												this->setDireccion(direccion);
-											}
-											//Direccion direccion = Calculador::calcularDireccion(c_prox_punto, coordPixelSprite());
-											//this->setDireccion(direccion);
-										}
-									} catch ( FueraDeEscenario &e ) { setearNuevoCamino(Camino(), coord_ceros); }
-								} else // Se acaba de terminar el camino, que es de un solo paso.
-									throw PasoCompletado(entidad->getIDJug());
-							}
-
-						} else {
-							/* Cuando se deja de mover, se debería quedar en
-							 * una posición firme correspondiente a su dirección. */
-							 this->activarMovimiento(false);
-							 entidad->cambioEstado(QUIETO);
-							 // Paro el sonido:
-							 Mix_HaltChannel(1);
-						}
-					   break;
 		case MURIENDO :
 						if (indexSpriteActual+1 == FRAMES_MUERTE)
 							entidad->cambioEstado(MUERTO);
 						break;
 
-		default : break;
+		//default : //break;
+		case CAMINANDO:
+			if (this->quedaCaminoPorRecorrer()) {
+
+				// Activo sonido del movimiento:
+				Mix_PlayChannel(1, sonido_caminar, 0);
+				/*	- calcular distancia al sig punto
+				 *  - si es mayor a 1, seguir moviendo la posicion
+				 *    sino cambiar al siguiente punto del camino (analizando la dirección)
+				 *  - si ya no quedan camino a recorrer, cambiar estado de activar movimiento y acomodar
+				 * */
+				Coordenada c_prox_pixel = this->getCaminoARecorrer()[0];
+
+				c_prox_pixel.x -= this->getPosicion().w / 2;
+				c_prox_pixel.y -= this->getPosicion().h;
+
+				float distancia = Calculador::calcularDistanciaEntrePixeles(Coordenada(this->regPos.posX_player, this->regPos.posY_player), c_prox_pixel);
+
+				if (distancia > 1){
+					if (this->regPos.posX_player != c_prox_pixel.x) {
+						float x_result = (this->regPos.posX_player - ((this->regPos.posX_player - c_prox_pixel.x) / distancia) * vel_personaje  * 0.05);
+						this->setPosX(int(x_result));
+						this->regPos.posX_player = x_result;
+					}
+					if (this->regPos.posY_player != c_prox_pixel.y) {
+						float y_result = (this->regPos.posY_player - ((this->regPos.posY_player - c_prox_pixel.y) / distancia) * vel_personaje * 0.05);
+						this->setPosY(int(y_result));
+						this->regPos.posY_player = y_result;
+					}
+				} else {
+
+					/* guardar última coordenada para desocuparla y cambiar a la próxima */
+					Coordenada c_ult_punto = this->getCaminoARecorrer()[0];
+					this->quitarPrimeraCoordenada();
+
+					/* Seteamos la dirección para el siguiente punto. */
+					if (this->getCaminoARecorrer().size() > 0){
+						try {
+							//this->escenario->desocuparTile(Calculador::tileParaPixel(c_ult_punto, coord_ceros));
+							if (this->revisarCamino(c_ult_punto)) {
+								Coordenada c_prox_punto = this->getCaminoARecorrer()[0];
+								c_prox_punto.x -= this->getPosicion().w / 2;
+								c_prox_punto.y -= this->getPosicion().h / 2;
+								Coordenada c_tile_actual = Calculador::tileParaCualquierPixel(coordPixelSprite(),coord_ceros);
+								Coordenada c_tile_prox = Calculador::tileParaCualquierPixel(c_prox_punto,coord_ceros);
+								if (c_tile_actual != c_tile_prox){
+									Direccion direccion = Calculador::calcularDireccionEntrePuntosAdyacentes(c_tile_actual,c_tile_prox);
+									this->setDireccion(direccion);
+								}
+								//Direccion direccion = Calculador::calcularDireccion(c_prox_punto, coordPixelSprite());
+								//this->setDireccion(direccion);
+							}
+						} catch ( FueraDeEscenario &e ) { setearNuevoCamino(Camino(), coord_ceros); }
+					} else // Se acaba de terminar el camino, que es de un solo paso.
+						throw PasoCompletado(entidad->getIDJug());
+				}
+
+			} else {
+				/* Cuando se deja de mover, se debería quedar en
+				 * una posición firme correspondiente a su dirección. */
+				 this->activarMovimiento(false);
+				 entidad->cambioEstado(QUIETO);
+				 // Paro el sonido:
+				 Mix_HaltChannel(1);
+			}
+		   break;
+
+		default: break;//
 	}
 /*
 	if (estadoSprite != QUIETO){
@@ -343,10 +345,10 @@ void SpriteUnidad::update(int vel_personaje, Mix_Chunk* sonido_caminar){
 }
 
 SpriteUnidad::~SpriteUnidad() {
-	for (int i = 0; i < this->cant_Direcciones; i++){
-		delete[] this->framesCaminata[i];
-	}
-	delete[] this->framesCaminata;
+//	for (int i = 0; i < this->cant_Direcciones; i++){
+//		delete[] this->framesCaminata[i];
+//	}
+//	delete[] this->framesCaminata;
 
 	for (int i = 0; i < this->cant_Direcciones; i++){
 		delete[] this->framesAtaque[i];

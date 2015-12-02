@@ -575,6 +575,7 @@ void Juego::iniciarInteraccionEntre(TipoEntidad tipo_ejecutor, int idJug_ejecuto
 		throw NoExiste();
 
 	ejecutor->olvidarInteraccion();
+	getSpriteDeEntidad(ejecutor)->activarMovimiento(false);
 	ejecutor->interactuarCon(receptor);
 }
 
@@ -602,7 +603,7 @@ void Juego::interaccionesDeUnidades() {
 
 		} catch ( UnidadDebeAcercarse &u ) {
 			Sprite *sprite = this->contenedor->getSpriteDeEntidad(*uniIt);
-			if (!sprite->estaEnMovimiento()) {
+			if (!sprite->estaEnMovimiento() || !sprite->quedaCaminoPorRecorrer()) {
 				Coordenada coord_ceros = getCoordCeros();
 				Coordenada pos_tile_sprite = Calculador::tileParaPixel(sprite->getPosPies(), coord_ceros);
 				Camino cam = Calculador::obtenerCaminoMinParaAcercarse(escenario, pos_tile_sprite, Coordenada(u.x,u.y), coord_ceros, (*uniIt)->getRangoAccion());
@@ -799,7 +800,8 @@ void Juego::conversionDeEnemigo(int id_conversor, int id_convertido) {
 		}
 		++it;
 	}
-	// Caso contrario, se consiguió el mayor dni de las unidades del jugador convertido y se obtiene un dni seguro desde el cual subir.
+	// Caso contrario, se consiguió el mayor dni de las unidades del jugador convertido
+	//  y se obtiene un dni seguro desde el cual "subir".
 	max_dni = floor(max_dni / 300.0) + 300;
 	for (vector<Unidad*>::iterator it = unidadesConvertidas.begin(); it < unidadesConvertidas.end(); ++it) {
 		Unidad* uni = *it;
