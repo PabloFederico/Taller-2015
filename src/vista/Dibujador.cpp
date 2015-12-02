@@ -499,6 +499,9 @@ void Dibujador::dibujarMiniMapa(Escenario* esc, SDL_Rect rect){
 					switch (entidad->getTipo()){
 						case SOLDADO:
 						case ALDEANO:
+						case ARQUERO:
+						case REY:
+						case BANDERA:
 								image = contenedor->getImagenUtilTipo((TipoImagenUtil)entidad->getIDJug());	// hasta 3 jugadores!! alto hardcodeo TODO
 								rect_aux.w = 3;
 								rect_aux.h = 3;
@@ -513,6 +516,9 @@ void Dibujador::dibujarMiniMapa(Escenario* esc, SDL_Rect rect){
 								}
 								break;
 						case CASTILLO:
+						case CUARTEL:
+						case CENTRO_CIVICO:
+						case BARRACK:
 								image = contenedor->getImagenUtilTipo(ICONO_VIOLETA);
 								rect_aux = rectRelieve;
 								SDL_RenderCopy(this->renderer,image->getTexture(),NULL,&rect_aux);

@@ -599,7 +599,7 @@ InfoEntidad ContenedorDeRecursos::getInfoTipo(TipoEntidad tipo){
 void ContenedorDeRecursos::borrarSpriteDeEntidad(Entidad* entidad) {
 	map<Entidad*, Sprite*>::iterator it = this->mapSpritesEntidades->find(entidad);
 	if (it != this->mapSpritesEntidades->end()) {
-		delete (it->second);
+		//delete (it->second);
 		this->mapSpritesEntidades->erase(it->first);
 	}
 }
@@ -629,7 +629,7 @@ ContenedorDeRecursos::~ContenedorDeRecursos() {
 		Sprite *sprite = itttt->second;
 		itttt++;
 		//HAY SPRITES QUE SON DELETEADOS EN OTRO LADO PERO NO QUITADOS DE ESTE MAP
-		delete sprite;
+		//delete sprite;
 	}
 	delete this->mapSpritesEntidades;
 
